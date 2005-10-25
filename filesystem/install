@@ -1,4 +1,0 @@
-#!/bin/bash
-. $UTIL
-add_on callmonitor usr/bin
-add_on callmonitor.out usr/lib

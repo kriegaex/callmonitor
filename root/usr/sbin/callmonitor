@@ -23,7 +23,7 @@
 #
 # Lines starting with "#" are ignored, as are empty lines.
 
-: ${CALLMONITOR_LIBDIR:=/mod/root.callmonitor/usr/lib/callmonitor}
+: ${CALLMONITOR_LIBDIR:=/mod/.root/callmonitor/usr/lib/callmonitor}
 CALLMONITOR_LISTENERS=/var/tmp/callmonitor.listeners
 CONFIG=/mod/etc/conf/callmonitor.cfg
 

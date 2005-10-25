@@ -17,7 +17,7 @@ END
 # no-op implementation of reverse_lookup
 reverse_lookup() :
 
-: ${CALLMONITOR_LIBDIR:=/mod/root.callmonitor/usr/lib/callmonitor}
+: ${CALLMONITOR_LIBDIR:=/mod/.root/callmonitor/usr/lib/callmonitor}
 : ${CALLMONITOR_CFG:=/mod/etc/conf/callmonitor.cfg}
 
 TMP=/var/tmp
@@ -104,7 +104,9 @@ __put_local() {
     lock "$PHONEBOOK"
     local TMPFILE="$TMP/.callmonitor.tmp"
     { 
-	if [ -e "$PHONEBOOK" ]; then cat "$PHONEBOOK"; fi
+	if [ -e "$PHONEBOOK" ]; then
+	    sed -e "/^${PREFIX_RE}${MSISDN}${SEPARATOR_RE}/d" "$PHONEBOOK"
+	fi
 	echo "${PREFIX}${MSISDN}${SEPARATOR}${CALLER}"
     } > "$TMPFILE"
     cat "$TMPFILE" > "$PHONEBOOK"

@@ -1,0 +1,120 @@
+#!/bin/sh
+# phonebook v0.1
+#
+__usage() {
+    cat <<END
+Usage: phonebook [option]... command [argument]...
+       phonebook get 053712931
+       phonebook put 0357937829 "John Smith"
+Options:
+  -r, --reverse  enable reverse lookup of phone numbers
+  -u, --update   update persistent phonebook with results of reverse lookup
+      --debug    enable extra debugging output
+      --help     show this help and exit
+END
+}
+
+# no-op implementation of reverse_lookup
+reverse_lookup() :
+
+: ${CALLMONITOR_LIBDIR:=/usr/lib/callmonitor}
+: ${CALLMONITOR_CFG:=/mod/etc/conf/callmonitor.cfg}
+
+TMP=/var/tmp
+
+# format of phone book: ${PREFIX}${MSISDN}${SEPARATOR}${CALLER}
+PREFIX="#MSISDN="
+PREFIX_RE="#MSISDN="
+SEPARATOR=":"
+SEPARATOR_RE=":"
+
+. "$CALLMONITOR_CFG"
+
+. "$CALLMONITOR_LIBDIR/phonebook.sh"
+. "$CALLMONITOR_LIBDIR/lock.sh"
+
+REVERSE=0 UPDATE=0 DEBUG=0
+if [ "$CALLMONITOR_REVERSE" = "transient" ]; then
+    REVERSE=1
+    UPDATE=0
+elif [ "$CALLMONITOR_REVERSE" = "persistent" ]; then
+    REVERSE=1
+    UPDATE=1
+fi
+
+# parse options
+TEMP="$(getopt -o ru -l reverse,update,debug,help -n "${0##*/}" -- "$@")"
+if [ $? != 0 ]; then exit 1; fi
+eval "set -- $TEMP"
+
+while true; do
+    case $1 in
+	-r|--reverse) REVERSE=1; shift ;;
+	-u|--update)  UPDATE=1; shift ;;
+	--debug) DEBUG=1; shift ;;
+	--help) __usage; exit 0 ;;
+	--) shift; break ;;
+	*) shift ;; # should never happen
+    esac
+done
+
+# where to put new number-name pairs
+if [ $UPDATE = 1 ]; then
+    PHONEBOOK="$CALLMONITOR_PERSISTENT"
+else
+    PHONEBOOK="$CALLMONITOR_TRANSIENT"
+fi
+
+# set up logging
+if [ $DEBUG = 1 ]; then
+    __debug() { echo "phonebook: $*" >&2; }
+    __debug "entering DEBUG mode"
+else
+    __debug() :
+fi
+
+__get() {
+    local MSISDN="$1" CALLER
+    CALLER="$(__get_local "$MSISDN")"
+    if [ $? -ne 0 -a $REVERSE = 1 ]; then
+	CALLER="$(reverse_lookup "$MSISDN")"
+	CALLER="${CALLER:-"Kein Name gefunden"}"
+	__put_local "$MSISDN" "$CALLER"
+    fi
+    echo "$CALLER"
+}
+
+__get_local() {
+    local MSISDN="$1" CALLER
+    CALLER="$(sed -ne "/^${PREFIX_RE}${MSISDN}${SEPARATOR_RE}/{s/^${PREFIX_RE}${MSISDN}${SEPARATOR_RE}//p;q}" \
+	"$CALLMONITOR_PERSISTENT" "$CALLMONITOR_TRANSIENT" 2> /dev/null)"
+    if [ ! -z "$CALLER" ]; then
+	__debug "phone book contains {$MSISDN -> $CALLER}"
+	echo "$CALLER"
+	return 0
+    fi
+    return 1
+}
+
+__put_local() {
+    local MSISDN="$1" CALLER="$2"
+    __debug "putting {$MSISDN -> $CALLER} into phone book $PHONEBOOK"
+
+    # beware of concurrent updates
+    lock "$PHONEBOOK"
+    local TMPFILE="$TMP/.callmonitor.tmp"
+    { 
+	if [ -e "$PHONEBOOK" ]; then cat "$PHONEBOOK"; fi
+	echo "${PREFIX}${MSISDN}${SEPARATOR}${CALLER}"
+    } > "$TMPFILE"
+    cat "$TMPFILE" > "$PHONEBOOK"
+    rm "$TMPFILE"
+    unlock "$PHONEBOOK"
+}
+
+case $1 in
+    get) __get "$2" ;;
+    put) __put_local "$2" "$3" ;;
+    *)   __usage ;;
+esac
+exit $?

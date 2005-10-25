@@ -17,7 +17,7 @@ END
 # no-op implementation of reverse_lookup
 reverse_lookup() :
 
-: ${CALLMONITOR_LIBDIR:=/usr/lib/callmonitor}
+: ${CALLMONITOR_LIBDIR:=/mod/root.callmonitor/usr/lib/callmonitor}
 : ${CALLMONITOR_CFG:=/mod/etc/conf/callmonitor.cfg}
 
 TMP=/var/tmp
@@ -43,14 +43,14 @@ elif [ "$CALLMONITOR_REVERSE" = "persistent" ]; then
 fi
 
 # parse options
-TEMP="$(getopt -o ru -l reverse,update,debug,help -n "${0##*/}" -- "$@")"
+TEMP="$(getopt -o r::u:: -l reverse::,update::,debug,help -n "${0##*/}" -- "$@")"
 if [ $? != 0 ]; then exit 1; fi
 eval "set -- $TEMP"
 
 while true; do
     case $1 in
-	-r|--reverse) REVERSE=1; shift ;;
-	-u|--update)  UPDATE=1; shift ;;
+	-r|--reverse) REVERSE=${2:-1}; shift 2 ;;
+	-u|--update)  UPDATE=${2:-1}; shift 2 ;;
 	--debug) DEBUG=1; shift ;;
 	--help) __usage; exit 0 ;;
 	--) shift; break ;;

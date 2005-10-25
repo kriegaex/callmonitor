@@ -1,0 +1,94 @@
+#!/bin/sh
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin:/mod/bin:/mod/sbin
+DAEMON=dropbear
+
+case "$1" in
+	""|start|restart)
+		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+			echo "Error[$DAEMON]: not configured" 1>&2
+			exit 1
+		fi
+
+		eval "`cat /mod/etc/conf/$DAEMON.cfg`"
+		;;
+esac
+
+start() {
+	if [ ! -e "/tmp/flash/rsa_host_key" -o ! -e "/tmp/flash/dss_host_key" ]; then
+		echo "Creating RSA and DSS host keys"
+		rm -f /tmp/flash/rsa_host_key
+		rm -f /tmp/flash/dss_host_key
+		dropbearkey -t rsa -f /tmp/flash/rsa_host_key
+		dropbearkey -t dss -f /tmp/flash/dss_host_key
+		/usr/bin/modsave flash
+	fi
+
+	if [ ! -d "/mod/etc/ssh" ]; then
+		mkdir -p /mod/etc/ssh
+		ln -s /tmp/flash/rsa_host_key /mod/etc/ssh/rsa_host_key
+		ln -s /tmp/flash/dss_host_key /mod/etc/ssh/dss_host_key
+	fi
+
+	if cat /var/tmp/shadow | grep '^root:\*:' > /dev/null; then
+		echo "Error[$DAEMON]: no root password set - run 'modpasswd root'" 1>&2
+		exit 1
+	fi
+
+	echo -n "Starting ssh server..."
+	$DAEMON -p "$DROPBEAR_PORT"
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo "done."
+	else
+		echo "failed."
+		exit $exitval
+	fi
+}
+
+stop() {
+	echo -n "Stopping ssh server..."
+	killall $DAEMON > /dev/null 2>&1
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo "done."
+	else
+		echo "failed."
+		exit $exitval
+	fi
+}
+
+case "$1" in
+	"")
+		if [ "$DROPBEAR_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled" 1>&2
+			exit 1;
+		fi
+
+		start
+		;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	status)
+		if [ -z "`pidof $DAEMON`" ]; then
+			echo "stopped"
+		else
+			echo "running"
+		fi
+		;;
+	*)
+		echo "Usage: $0 [start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

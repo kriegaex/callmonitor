@@ -9,7 +9,7 @@
 # Example: telefon a127.0.0.1 | callmonitor --reverse > /dev/null &
 # Example: telefon | callmonitor 1 0
 
-# Syntax of rules in file $LISTENERS (not compatible with
+# Syntax of rules in file $CALLMONITOR_LISTENERS (not compatible with
 # versions in mod-0.57 and earlier):
 #
 # [NT:|*:][!]<caller-regexp> [!]<called-regexp> <command line (rest)>
@@ -23,19 +23,23 @@
 #
 # Lines starting with "#" are ignored, as are empty lines.
 
-: ${CALLMONITOR_LIBDIR:=/usr/lib/callmonitor}
-LISTENERS=/var/tmp/callmonitor.listeners
+: ${CALLMONITOR_LIBDIR:=/mod/root.callmonitor/usr/lib/callmonitor}
+CALLMONITOR_LISTENERS=/var/tmp/callmonitor.listeners
+CONFIG=/mod/etc/conf/callmonitor.cfg
+
+# read configuration
+. $CONFIG
 
 # parse options
-TEMP="$(getopt -o ru -l reverse,update,debug -n "${0##*/}" -- "$@")"
+TEMP="$(getopt -o r::u:: -l reverse::,update::,debug -n "${0##*/}" -- "$@")"
 if [ $? != 0 ]; then exit 1; fi
 eval "set -- $TEMP"
 
 REVERSE=0 UPDATE=0 DEBUG=0
 while true; do
     case $1 in
-	-r|--reverse) REVERSE=1; shift ;;
-	-u|--update)  UPDATE=1; shift ;;
+	-r|--reverse) REVERSE=${2:-1}; shift 2 ;;
+	-u|--update)  UPDATE=${2:-1}; shift 2 ;;
 	--debug) DEBUG=1; shift ;;
 	--) shift; break ;;
 	*) shift ;; # should never happen
@@ -94,14 +98,14 @@ __incoming_call() {
     __debug "CALLER='$CALLER'"
     __debug "CALLED='$CALLED'"
 
-    if [ ! -r "$LISTENERS" ]; then
+    if [ ! -r "$CALLMONITOR_LISTENERS" ]; then
 	return
     fi
 
     # make call information available to listeners
     export MSISDN CALLED CALLER
     local msisdn_pattern called_pattern listener rule=0
-    cat "$LISTENERS" | 
+    cat "$CALLMONITOR_LISTENERS" | 
     while read -r msisdn_pattern called_pattern listener
     do
 	# comment or empty line

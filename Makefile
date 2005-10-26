@@ -1,10 +1,13 @@
 ARCHIVE := callmonitor.tar.bz2
 
-.PHONY: $(ARCHIVE) install
+.PHONY: $(ARCHIVE) build install
 
-install: $(ARCHIVE)
-	cat $(ARCHIVE) | ssh root@fritz.box tar xvj -C /mod
+install: build
+	ssh root@fritz.box tar xvj -C /mod < $(ARCHIVE)
+
+build: $(ARCHIVE)
 
 $(ARCHIVE):
-	tar cvjf $@ -C root --format=oldgnu --exclude=.svn . 
-
+	tar cvjf $@ -C root \
+	--format=oldgnu --owner=root --group=root --exclude=.svn \
+	.

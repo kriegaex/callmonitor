@@ -17,8 +17,8 @@ esac
 start() {
 	echo -n "Starting call monitor..."
 
-	if [ ! -e /mod/etc/callmonitor.listeners ]; then
-		ln -s /tmp/flash/callmonitor.listeners \
+	if [ ! -L /mod/etc/callmonitor.listeners ]; then
+		ln -sf /tmp/flash/callmonitor.listeners \
 		/mod/etc/callmonitor.listeners
 	fi
 	# $DAEMON

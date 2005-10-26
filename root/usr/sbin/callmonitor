@@ -1,13 +1,15 @@
 #!/bin/sh
 # callmonitor v0.3
-#
-# Usage: callmonitor [OPTION]... [(0|1) (0|1)]
-#   -r, --reverse  enable reverse lookup of phone numbers
-#   -u, --update   update persistent phonebook with results of reverse lookup
-#       --debug    show rule matching and executed commands
-#
-# Example: telefon a127.0.0.1 | callmonitor --reverse > /dev/null &
-# Example: telefon | callmonitor 1 0
+
+usage() {
+    cat <<EOF
+Usage: callmonitor [OPTION]... [(0|1) (0|1)]
+      --debug    show rule matching and executed commands
+
+Example: telefon a127.0.0.1 | callmonitor > /dev/null &
+Example: telefon | callmonitor
+EOF
+}
 
 # Syntax of rules in file $CALLMONITOR_LISTENERS (not compatible with
 # versions in mod-0.57 and earlier):
@@ -23,40 +25,31 @@
 #
 # Lines starting with "#" are ignored, as are empty lines.
 
-: ${CALLMONITOR_LIBDIR:=/mod/pkg/callmonitor/usr/lib/callmonitor}
-CALLMONITOR_LISTENERS=/var/tmp/callmonitor.listeners
-CONFIG=/mod/etc/conf/callmonitor.cfg
+# Both callmonitor and phonebook are configured via variables in
+# $CALLMONITOR_CFG.
 
-# read configuration
-. $CONFIG
+. "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
+if [ -r "$CALLMONITOR_USERCFG" ]; then
+    . "$CALLMONITOR_USERCFG"
+fi
 
 # parse options
-TEMP="$(getopt -o r::u:: -l reverse::,update::,debug -n "${0##*/}" -- "$@")"
+TEMP="$(getopt -o '' -l debug,help -n "${0##*/}" -- "$@")"
 if [ $? != 0 ]; then exit 1; fi
 eval "set -- $TEMP"
 
-REVERSE=0 UPDATE=0 DEBUG=0
+DEBUG=0
 while true; do
     case $1 in
-	-r|--reverse) REVERSE=${2:-1}; shift 2 ;;
-	-u|--update)  UPDATE=${2:-1}; shift 2 ;;
 	--debug) DEBUG=1; shift ;;
+	--help) usage 1>&2; exit ;;
 	--) shift; break ;;
 	*) shift ;; # should never happen
     esac
 done
 
-# backwards compatibility (mod-0.57 and following)
-REVERSE=${1-$REVERSE} UPDATE=${2-$UPDATE}
-
 # pass options to phonebook
 PHONEBOOK_OPTIONS=""
-if [ $REVERSE -eq 1 ]; then
-    PHONEBOOK_OPTIONS="$PHONEBOOK_OPTIONS --reverse"
-fi
-if [ $UPDATE -eq 1 ]; then
-    PHONEBOOK_OPTIONS="$PHONEBOOK_OPTIONS --update"
-fi
 if [ $DEBUG -eq 1 ]; then
     PHONEBOOK_OPTIONS="$PHONEBOOK_OPTIONS --debug"
 fi

@@ -1,0 +1,9 @@
+/mod/pkg/<package>: Symlink auf Package-Root (/ oder /mod)
+
+PKGROOT=/mod/pkg/callmonitor
+. $PKGROOT/usr/lib/callmonitor/lock.sh
+
+------------------------------------------------------------------------
+
+rc.callmonitor schreiben
+PATH in rc.voip erweitern, so dass telefon-Wrapper gefunden wird.

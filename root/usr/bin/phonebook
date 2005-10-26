@@ -17,7 +17,7 @@ END
 # no-op implementation of reverse_lookup
 reverse_lookup() :
 
-: ${CALLMONITOR_LIBDIR:=/mod/.root/callmonitor/usr/share/callmonitor}
+: ${CALLMONITOR_LIBDIR:=/mod/.root/callmonitor/usr/lib/callmonitor}
 : ${CALLMONITOR_CFG:=/mod/etc/conf/callmonitor.cfg}
 
 TMP=/var/tmp

@@ -1,1 +1,14 @@
 #!/bin/sh
+PATH=/sbin:/usr/sbin:/mod/sbin:/mod/usr/sbin:/bin:/usr/bin:/mod/bin:/mod/usr/sbin
+CONFIG=/mod/etc/conf/callmonitor.cfg
+
+# config might not yet exist (when booting)
+if [ -r "$CONFIG" ]; then
+    . "$CONFIG"
+fi
+
+if [ "$CALLMONITOR_ENABLED" = "yes" ]; then
+    telefon "$@" | callmonitor
+else
+    exec telefon "$@"
+fi

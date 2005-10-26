@@ -73,11 +73,15 @@ fi
 
 # import listener functions
 __configure() {
-    local LISTENERS="${CALLMONITOR_LIBDIR}/listeners.sh"
-    if [ -r "$LISTENERS" ]; then
-	__debug "including $LISTENERS"
-	. "$LISTENERS"
-    fi
+    local LISTENERS
+    for LISTENERS in "${CALLMONITOR_LIBDIR}/listeners.sh" \
+	"${CALLMONITOR_LIBDIR}/listeners.sh.local"
+    do
+	if [ -r "$LISTENERS" ]; then
+	    __debug "including $LISTENERS"
+	    . "$LISTENERS"
+	fi
+    done
 }
 
 __incoming_call() {

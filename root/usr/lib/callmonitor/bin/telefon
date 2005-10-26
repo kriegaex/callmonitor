@@ -3,7 +3,6 @@ PATH=/sbin:/usr/sbin:/mod/sbin:/mod/usr/sbin:/bin:/usr/bin:/mod/bin:/mod/usr/sbi
 
 # configure: config might not yet exist (during the boot sequence)
 : ${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}
-
 if [ -r "$CALLMONITOR_CFG" ]; then
     . "$CALLMONITOR_CFG"
     if [ -r "$CALLMONITOR_USERCFG" ]; then
@@ -12,7 +11,7 @@ if [ -r "$CALLMONITOR_CFG" ]; then
 fi
 
 if [ "$CALLMONITOR_ENABLED" = "yes" ]; then
-    telefon "$@" | callmonitor
+    telefon "$@" | callmonitor &
 else
-    exec telefon "$@"
+    telefon "$@" &
 fi

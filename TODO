@@ -7,3 +7,5 @@ PKGROOT=/mod/pkg/callmonitor
 
 rc.callmonitor schreiben
 PATH in rc.voip erweitern, so dass telefon-Wrapper gefunden wird.
+
+TESTEN: Adressen, auf denen telefon lauscht, konfigurierbar machen

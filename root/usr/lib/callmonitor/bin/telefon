@@ -10,6 +10,13 @@ if [ -r "$CALLMONITOR_CFG" ]; then
     fi
 fi
 
+if [ "$CALLMONITOR_TELEFON_IP" != "" ]; then
+    case "$1" in a*) shift ;; esac
+    if [ $CALLMONITOR_TELEFON_IP" != "*" ]; then
+	set -- "a$CALLMONITOR_TELEFON_IP" "$@" ;;
+    fi
+fi
+
 if [ "$CALLMONITOR_ENABLED" = "yes" ]; then
     telefon "$@" | callmonitor &
 else

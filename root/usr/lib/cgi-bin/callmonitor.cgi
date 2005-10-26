@@ -9,15 +9,23 @@ case "$CALLMONITOR_REVERSE" in
     persistent) pers_chk=' checked' ;;
 esac
 
+ip_val="$(httpd -e "$CALLMONITOR_TELEFON_IP")"
+
 cat << EOF
 <h1>Call-Monitor-Konfiguration</h1>
 <form action="/cgi-bin/save.cgi?form=pkg_callmonitor" method="post">
 <p><i>Startverhalten von callmonitor beim Bootvorgang</i><br>
 <input type="radio" name="enabled" value="yes"$auto_chk> Automatisch
-<input type="radio" name="enabled" value="no"$man_chk> Manuell</p>
+<input type="radio" name="enabled" value="no"$man_chk> Manuell
+</p>
 <p><i>Rückwärtssuche durchführen und Ergebnis speichern</i><br>
 <input type="radio" name="reverse" value="no"$no_chk> Nein
 <input type="radio" name="reverse" value="transient"$trans_chk> Flüchtig
-<input type="radio" name="reverse" value="persistent"$pers_chk> Dauerhaft</p>
+<input type="radio" name="reverse" value="persistent"$pers_chk> Dauerhaft
+</p>
+<p><i>Adresse, unter der telefon auf Port 1011 lauscht</i><br>
+IP/Hostname: <input type="text" name="telefon_ip" value="$ip_val"><br>
+</p>
+<p>Bei <code>*</code> ist telefon von überall erreichbar. Ist keine Adresse angegeben, werden die Standardeinstellungen verwendet.<p>
 </form>
 EOF

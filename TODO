@@ -9,3 +9,6 @@ rc.callmonitor schreiben
 PATH in rc.voip erweitern, so dass telefon-Wrapper gefunden wird.
 
 TESTEN: Adressen, auf denen telefon lauscht, konfigurierbar machen
+
+Problem: Wenn ENABLED=0, aber callmonitor manuell gestartet, läuft er nach
+einem rc.voip restart nicht mehr.

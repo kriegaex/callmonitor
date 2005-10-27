@@ -10,7 +10,7 @@ case "$1" in
 			exit 1
 		fi
 
-		eval "`cat /mod/etc/conf/$DAEMON.cfg`"
+		. "/mod/etc/conf/$DAEMON.cfg"
 		;;
 esac
 
@@ -18,8 +18,7 @@ start() {
 	echo -n "Starting call monitor..."
 
 	if [ ! -L /mod/etc/callmonitor.listeners ]; then
-		ln -sf /tmp/flash/callmonitor.listeners \
-		/mod/etc/callmonitor.listeners
+		ln -sf "$CALLMONITOR_LISTENERS" /mod/etc/callmonitor.listeners
 	fi
 	# $DAEMON
 	exitval=$?

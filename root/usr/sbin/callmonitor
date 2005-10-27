@@ -11,8 +11,8 @@ Example: telefon | callmonitor
 EOF
 }
 
-# Syntax of rules in file $CALLMONITOR_LISTENERS (not compatible with
-# versions in mod-0.57 and earlier):
+# Syntax of rules in file /mod/etc/callmonitor.listeners (not compatible
+# with versions in mod-0.57 and earlier):
 #
 # [NT:|*:][!]<caller-regexp> [!]<called-regexp> <command line (rest)>
 #
@@ -95,14 +95,14 @@ __incoming_call() {
     __debug "CALLER='$CALLER'"
     __debug "CALLED='$CALLED'"
 
-    if [ ! -r "$CALLMONITOR_LISTENERS" ]; then
+    if [ ! -r /mod/etc/callmonitor.listeners ]; then
 	return
     fi
 
     # make call information available to listeners
     export MSISDN CALLED CALLER
     local msisdn_pattern called_pattern listener rule=0
-    cat "$CALLMONITOR_LISTENERS" | 
+    cat /mod/etc/callmonitor.listeners | 
     while read -r msisdn_pattern called_pattern listener
     do
 	# comment or empty line

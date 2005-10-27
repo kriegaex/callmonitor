@@ -10,6 +10,9 @@ if [ -r "$CALLMONITOR_CFG" ]; then
     fi
 fi
 
+FORCE=0
+if [ "$1" = "-f" ]; then shift; FORCE=1; fi
+
 if [ "$CALLMONITOR_TELEFON_IP" != "" ]; then
     case "$1" in a*) shift ;; esac
     if [ $CALLMONITOR_TELEFON_IP" != "*" ]; then
@@ -17,7 +20,7 @@ if [ "$CALLMONITOR_TELEFON_IP" != "" ]; then
     fi
 fi
 
-if [ "$CALLMONITOR_ENABLED" = "yes" ]; then
+if [ "$CALLMONITOR_ENABLED" = "yes" -o "$FORCE" -eq 1 ]; then
     telefon "$@" | callmonitor &
 else
     telefon "$@" &

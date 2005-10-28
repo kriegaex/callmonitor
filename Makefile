@@ -1,4 +1,6 @@
-ARCHIVE := callmonitor.tar.bz2
+MOD := ds
+ARCHIVE := callmonitor-$(MOD).tar.bz2
+CONF := conf.$(MOD)
 
 .PHONY: $(ARCHIVE) build install
 
@@ -8,6 +10,7 @@ install: build
 build: $(ARCHIVE)
 
 $(ARCHIVE):
-	tar cvjf $@ -C root \
+	tar cvjf $@ \
 	--format=oldgnu --owner=root --group=root --exclude=.svn \
-	.
+	-C base . \
+	-C ../$(CONF) .

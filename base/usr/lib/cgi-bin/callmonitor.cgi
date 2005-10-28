@@ -10,6 +10,7 @@ case "$CALLMONITOR_REVERSE" in
 esac
 
 ip_val="$(httpd -e "$CALLMONITOR_TELEFON_IP")"
+okz_val="$(httpd -e "$CALLMONITOR_OKZ")"
 
 cat << EOF
 <h1>Call-Monitor-Konfiguration</h1>
@@ -23,6 +24,7 @@ cat << EOF
 <input type="radio" name="reverse" value="transient"$trans_chk> Flüchtig
 <input type="radio" name="reverse" value="persistent"$pers_chk> Dauerhaft
 </p>
+<p>Vorwahl: <input type="text" name="okz" value="$okz_val"></p>
 <p><i>Adresse, unter der telefon auf Port 1011 lauscht</i><br>
 IP/Hostname: <input type="text" name="telefon_ip" value="$ip_val"><br>
 </p>

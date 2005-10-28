@@ -6,7 +6,7 @@ DAEMON=callmonitor
 TELEFON="$CALLMONITOR_LIBDIR/bin/telefon"
 
 if [ ! -d /var/run/$DAEMON ]; then
-    mkdir -p /var/run/$DAEMON
+	mkdir -p /var/run/$DAEMON
 fi
 
 case "$1" in

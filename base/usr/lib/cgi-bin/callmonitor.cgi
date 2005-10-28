@@ -4,9 +4,9 @@ if [ "$CALLMONITOR_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' 
 
 no_chk='' trans_chk='' pers_chk=''
 case "$CALLMONITOR_REVERSE" in
-    no) no_chk=' checked' ;;
-    transient) trans_chk=' checked' ;;
-    persistent) pers_chk=' checked' ;;
+	no) no_chk=' checked' ;;
+	transient) trans_chk=' checked' ;;
+	persistent) pers_chk=' checked' ;;
 esac
 
 ip_val="$(httpd -e "$CALLMONITOR_TELEFON_IP")"

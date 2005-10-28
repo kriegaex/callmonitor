@@ -61,16 +61,17 @@ else
     incoming_call() { __incoming_call "$@" < /dev/null > /dev/null 2>&1; }
 fi
 
-# import listener functions
+# import action functions
 __configure() {
-    local ACTIONS
-    for ACTIONS in "${CALLMONITOR_LIBDIR}/actions.sh" \
-	"${CALLMONITOR_ACTIONS_LOCAL}"
-    do
-	if [ -r "$ACTIONS" ]; then
-	    __debug "including $ACTIONS"
-	    . "$ACTIONS"
-	fi
+    local ACTIONSDIR ACTIONS
+    for ACTIONSDIR in "$CALLMONITOR_LIBDIR/actions.d" \
+	"$CALLMONITOR_LIBDIR/actions.local.d"; do
+	for ACTIONS in "$ACTIONSDIR"/*.sh; do
+	    if [ -r "$ACTIONS" ]; then
+		__debug "including $ACTIONS"
+		. "$ACTIONS"
+	    fi
+	done
     done
 }
 

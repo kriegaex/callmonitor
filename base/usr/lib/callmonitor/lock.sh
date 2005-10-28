@@ -1,5 +1,3 @@
-# lock.sh (callmonitor v0.3)
-
 # lock $file by creating a directory $file.lock
 lock() {
     local file="$1" interval="${2:-1000000}" first=1

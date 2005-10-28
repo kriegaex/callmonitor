@@ -1,5 +1,3 @@
-# actions.sh (callmonitor v0.3)
-#
 # Listener types and common utilities; separate function for each type
 # of listener. Add your own in the file $CALLMONITOR_ACTIONS_LOCAL!
 #

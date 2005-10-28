@@ -1,5 +1,3 @@
-# net.sh (callmonitor v0.3)
-#
 # Basic networking utilities
 
 CR=$(printf '\015')

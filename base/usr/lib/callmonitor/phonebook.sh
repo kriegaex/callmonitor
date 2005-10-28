@@ -1,5 +1,3 @@
-# phonebook.sh (callmonitor v0.3)
-
 . "${CALLMONITOR_LIBDIR}/net.sh"
 
 # resolve numbers to names and addresses (www.dasoertliche.de)

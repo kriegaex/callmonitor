@@ -1,6 +1,4 @@
 #!/bin/sh
-# phonebook v0.1
-#
 __usage() {
     cat <<END
 Usage: phonebook [option]... command [argument]...

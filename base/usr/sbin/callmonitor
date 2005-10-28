@@ -1,6 +1,4 @@
 #!/bin/sh
-# callmonitor v0.3
-
 usage() {
     cat <<EOF
 Usage: callmonitor [OPTION]... [(0|1) (0|1)]

@@ -22,8 +22,10 @@ if [ ! -d /var/run/callmonitor ]; then
 fi
 STATUS="$(cat /var/run/callmonitor/status 2> /dev/null)"
 
-if [ "$CALLMONITOR_ENABLED" = "yes" -o "$FORCE" -eq 1 \
-    -o "$STATUS" = "started" ]; then
+if [ "$STATUS" = "started" \
+    -o "$FORCE" -eq 1 \
+    -o \( "$STATUS" = "" -a "$CALLMONITOR_ENABLED" = "yes" \) \
+    ]; then
     echo started > /var/run/callmonitor/status
     telefon "$@" | callmonitor &
 else

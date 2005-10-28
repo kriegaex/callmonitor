@@ -98,6 +98,7 @@ __put_local() {
     cat "$TMPFILE" > "$PHONEBOOK"
     rm "$TMPFILE"
     unlock "$PHONEBOOK"
+    callmonitor_store
 }
 
 case $1 in

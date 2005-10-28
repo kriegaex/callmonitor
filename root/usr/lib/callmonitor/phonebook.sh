@@ -18,7 +18,7 @@ reverse_normalize() {
     case $NUMBER in
 	0049*) NUMBER="0${NUMBER#0049}" ;;
 	0*) ;;
-	*) OKZ="$(get_it OKZ)"; NUMBER="$OKZ$NUMBER" ;; 
+	*) OKZ="$(get_it CALLMONITOR_OKZ)"; NUMBER="$OKZ$NUMBER" ;; 
     esac
     echo "$NUMBER"
 }

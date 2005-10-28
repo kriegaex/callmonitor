@@ -139,10 +139,3 @@ rawmsg() {
 default_raw() {
     default_message
 }
-
-# get configuration entries from debug.cfg (included here for convenience)
-get_it() {
-    local VALUE="$(sed -ne "s/^$1=\(['\"]\?\)\(.*\)\1[        ]*/\2/p" \
-	/var/flash/debug.cfg)"
-    echo "${VALUE:-"$2"}"
-}

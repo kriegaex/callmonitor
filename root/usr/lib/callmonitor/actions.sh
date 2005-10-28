@@ -1,7 +1,7 @@
-# listeners.sh (callmonitor v0.3)
+# actions.sh (callmonitor v0.3)
 #
 # Listener types and common utilities; separate function for each type
-# of listener. Add your own!
+# of listener. Add your own in the file $CALLMONITOR_ACTIONS_LOCAL!
 #
 # These environment variables are set by callmonitor before calling
 # calling a listener:
@@ -65,29 +65,4 @@ vdr() {
 }
 default_vdr() {
     echo "Anruf $MSISDN - $CALLER"
-}
-
-# wake up all devices configured in debug.cfg
-etherwakes() {
-    local etheropt
-    get_it ETHERWAKES |
-    while read -r etheropt
-    do
-	/bin/etherwake $etheropt
-    done
-}
-
-# start or stop ssh daemon
-droptoggle() {
-    dropoff || dropon
-}
-
-# start ssh daemon
-dropon() {
-    /usr/sbin/dropbear $(get_it DROPBEAR_OPTIONS "-p $(get_it DROPPORT 22)")
-}
-
-# stop ssh daemon
-dropoff() {
-    killall dropbear
 }

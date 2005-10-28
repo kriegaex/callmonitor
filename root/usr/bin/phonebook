@@ -14,9 +14,6 @@ END
 
 # configure
 . "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
-if [ -r "$CALLMONITOR_USERCFG" ]; then
-    . "$CALLMONITOR_USERCFG"
-fi
 
 . "$CALLMONITOR_LIBDIR/phonebook.sh"
 . "$CALLMONITOR_LIBDIR/lock.sh"

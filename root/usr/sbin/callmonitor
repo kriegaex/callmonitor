@@ -29,9 +29,6 @@ EOF
 # $CALLMONITOR_CFG.
 
 . "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
-if [ -r "$CALLMONITOR_USERCFG" ]; then
-    . "$CALLMONITOR_USERCFG"
-fi
 
 # parse options
 TEMP="$(getopt -o '' -l debug,help -n "${0##*/}" -- "$@")"
@@ -66,13 +63,13 @@ fi
 
 # import listener functions
 __configure() {
-    local LISTENERS
-    for LISTENERS in "${CALLMONITOR_LIBDIR}/listeners.sh" \
-	"${CALLMONITOR_LIBDIR}/listeners.sh.local"
+    local ACTIONS
+    for ACTIONS in "${CALLMONITOR_LIBDIR}/actions.sh" \
+	"${CALLMONITOR_ACTIONS_LOCAL}"
     do
-	if [ -r "$LISTENERS" ]; then
-	    __debug "including $LISTENERS"
-	    . "$LISTENERS"
+	if [ -r "$ACTIONS" ]; then
+	    __debug "including $ACTIONS"
+	    . "$ACTIONS"
 	fi
     done
 }

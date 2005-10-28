@@ -3,6 +3,10 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin:/mod/usr/bin:/mod/usr/sbin
 DAEMON=callmonitor
 
+if [ ! -d /var/run/$DAEMON ]; then
+    mkdir -p /var/run/$DAEMON
+fi
+
 case "$1" in
 	""|start|restart)
 		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
@@ -10,8 +14,7 @@ case "$1" in
 			exit 1
 		fi
 
-		. "/mod/etc/default.callmonitor/system.cfg"
-		. "/mod/etc/conf/$DAEMON.cfg"
+		. "/mod/etc/default.$DAEMON/system.cfg"
 
 		TELEFON="$CALLMONITOR_LIBDIR/bin/telefon"
 		;;
@@ -28,6 +31,7 @@ start() {
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo "done."
+		echo started > /var/run/$DAEMON/status
 	else
 		echo "failed."
 		exit $exitval
@@ -36,10 +40,11 @@ start() {
 
 stop() {
 	echo -n "Stopping call monitor..."
-	killall telefon callmonitor > /dev/null 2>&1
+	killall telefon $DAEMON > /dev/null 2>&1
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo "done."
+		echo stopped > /var/run/$DAEMON/status
 	else
 		echo "failed."
 		exit $exitval

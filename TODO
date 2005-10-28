@@ -6,7 +6,8 @@ PKGROOT=/mod/pkg/callmonitor
 PATH in rc.voip erweitern, so dass telefon-Wrapper gefunden wird.
 
 get_it testen und umbenennen
-Dateien in base, ds-mod und m4.* aufteilen
+
+Install-Skript und Patches für m4.* schreiben
 
 ------------------------------------------------------------------------
 

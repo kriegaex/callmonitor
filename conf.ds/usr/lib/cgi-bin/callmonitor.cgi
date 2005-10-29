@@ -24,8 +24,8 @@ cat << EOF
 <input type="radio" name="reverse" value="transient"$trans_chk> Flüchtig
 <input type="radio" name="reverse" value="persistent"$pers_chk> Dauerhaft
 </p>
-<p><i>Bei Rückwärtssuche für lokale Rufnummern diese Vorwahl verwenden<br>
-<input type="text" name="okz" value="$okz_val"></p>
+<p><i>Bei Rückwärtssuche für lokale Rufnummern diese Vorwahl verwenden</i><br>
+Vorwahl: <input type="text" name="okz" value="$okz_val"></p>
 <p><i>Adresse, unter der telefon auf Port 1011 lauscht</i><br>
 IP/Hostname: <input type="text" name="telefon_ip" value="$ip_val"><br>
 </p>

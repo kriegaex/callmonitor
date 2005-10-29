@@ -1,18 +1,15 @@
-/mod/pkg/<package>: Symlink auf Package-Root (/ oder /mod)
-
 PKGROOT=/mod/pkg/callmonitor
 . $PKGROOT/usr/lib/callmonitor/lock.sh
-
-PATH in rc.voip erweitern, so dass telefon-Wrapper gefunden wird.
 
 get_it testen und umbenennen
 
 Install-Skript und Patches für m4.* schreiben
 
-------------------------------------------------------------------------
+===============================================================
+ds-mod
+---------------------------------------------------------------
 
-TESTEN: Adressen, auf denen telefon lauscht, konfigurierbar machen
-TESTEN: rc.callmonitor schreiben
-TESTEN: /var/run/callmonitor/status
-    Problem: Wenn ENABLED=0, aber callmonitor manuell gestartet, läuft er nach
-    einem rc.voip restart nicht mehr.
+- Weitere Optionen für dropbear
+- Beschreibbares ~root
+- /mod/pkg/<package>: Symlink auf Package-Root (/ oder /mod)
+- [?] PATH in rc.voip erweitern, so dass telefon-Wrapper gefunden wird.

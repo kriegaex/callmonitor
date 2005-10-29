@@ -5,11 +5,8 @@ get_it testen und umbenennen
 
 Install-Skript und Patches für m4.* schreiben
 
-===============================================================
 ds-mod
 ---------------------------------------------------------------
 
-- Weitere Optionen für dropbear
-- Beschreibbares ~root
 - /mod/pkg/<package>: Symlink auf Package-Root (/ oder /mod)
 - [?] PATH in rc.voip erweitern, so dass telefon-Wrapper gefunden wird.

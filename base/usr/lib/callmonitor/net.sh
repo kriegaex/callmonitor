@@ -42,47 +42,53 @@ else
 	__nc() { shift; nc "$@"; }
 fi
 
-# Usage: getmsg [OPTION]... <HOST> <url-template> [<message>]...
-#		 getmsg [OPTION]... -t <url-template> <host> [<message>]...
-# Send a message in a simple HTTP GET request.
-#
-#	-t, --template=FORMAT  use this printf-style template to build the URL,
-#						   all following messages are URL-encoded and filled
-#						   into this template
-#	-p, --port=PORT		   use a special target port (default 80)
-#	-w, --timeout=SECONDS  set connect timeout (default 3)
-#	-v, --virtual=VIRT	   use a different virtual host (default HOST)
-#	-U, --user=USER		   user for basic authorization
-#	-P, --password=PASS    password for basic authorization
+__getmsg_usage() {
+	cat <<\EOH
+Usage:  getmsg [OPTION]... <HOST> <url-template> [<message>]...
+        getmsg [OPTION]... -t <url-template> <host> [<message>]...
+Send a message in a simple HTTP GET request.
+
+  -t, --template=FORMAT  use this printf-style template to build the URL,
+                         all following messages are URL-encoded and filled
+                         into this template
+  -p, --port=PORT        use a special target port (default 80)
+  -w, --timeout=SECONDS  set connect timeout (default 3)
+  -v, --virtual=VIRT     use a different virtual host (default HOST)
+  -U, --user=USER        user for basic authorization
+  -P, --password=PASS    password for basic authorization
+      --help             show this help
+EOH
+}
 getmsg() {
 	local - IP= URL= TEMPLATE= VIRTUAL= USERNAME= PASSWORD= AUTH= TEMP=
 	local PORT=80 TIMEOUT=3
 	TEMP="$(getopt -n getmsg -o U:P:v:t:w:p: \
-	-l user:,password:,virtual:,port:,template:,timeout: -- "$@")"
+		-l user:,password:,virtual:,port:,template:,timeout:,help -- "$@")"
 	if [ $? != 0 ]; then return 1; fi
 	set -f; eval "set -- $TEMP"; set +f
 	while true; do
-	case $1 in
-		-U|--user) USERNAME="$2"; shift 2 ;;
-		-P|--password) PASSWORD="$2"; shift 2 ;;
-		-v|--virtual) VIRTUAL="$2"; shift 2 ;;
-		-t|--template) TEMPLATE="$2"; shift 2 ;;
-		-w|--timeout) TIMEOUT="$2"; shift 2 ;;
-		-p|--port) PORT="$2"; shift 2 ;;
-		--) shift; break ;;
-		*) shift ;; # should never happen
-	esac
+		case $1 in
+			-U|--user) USERNAME="$2"; shift 2 ;;
+			-P|--password) PASSWORD="$2"; shift 2 ;;
+			-v|--virtual) VIRTUAL="$2"; shift 2 ;;
+			-t|--template) TEMPLATE="$2"; shift 2 ;;
+			-w|--timeout) TIMEOUT="$2"; shift 2 ;;
+			-p|--port) PORT="$2"; shift 2 ;;
+			--help) __getmsg_usage 1>&2; return 1 ;;
+			--) shift; break ;;
+			*) shift ;; # should never happen
+		esac
 	done
 	if [ $# -eq 0 ]; then echo "Missing hostname or IP" >&2; return 1; fi
 	IP="$1"; shift
-	if [ -z "$TEMPLATE" ]; then 
-	if [ $# -eq 0 ]; then echo "Missing template" >&2; return 1; fi
-	TEMPLATE="$1"; shift
+	if [ -z "$TEMPLATE" ]; then
+		if [ $# -eq 0 ]; then echo "Missing template" >&2; return 1; fi
+		TEMPLATE="$1"; shift
 	fi
 	if [ $# -eq 0 ]; then set -- "$(default_message)"; fi
 	VIRTUAL="${VIRTUAL:-$IP}"
 	if [ -n "$USERNAME" -o -n "$PASSWORD" ]; then
-	AUTH="$(basic_auth "$USERNAME" "$PASSWORD")"
+		AUTH="$(basic_auth "$USERNAME" "$PASSWORD")"
 	fi
 	# If $1 is empty, it disappears completely in the output of "$@", which
 	# shifts all messages to the left. This seems to be a bug in the busybox
@@ -90,43 +96,49 @@ getmsg() {
 	URL="$(set -f; IFS=/; printf "$TEMPLATE" \
 	$(for arg in "$@"; do echo -n $(urlencode "$arg")/; done))"
 	{
-	echo "GET $URL HTTP/1.0$CR"
-	echo "Host: $VIRTUAL$CR"
-	[ -n "$AUTH" ] && echo "$AUTH"
-	echo "$CR"
+		echo "GET $URL HTTP/1.0$CR"
+		echo "Host: $VIRTUAL$CR"
+		[ -n "$AUTH" ] && echo "$AUTH"
+		echo "$CR"
 	} | __nc "$TIMEOUT" "$IP" "$PORT"
 }
 
-# Usage: rawmsg [OPTION]... <HOST> <template> [<param>]...
-#		 rawmsg [OPTION]... -t <template> <host> [<param>]...
-# Send a message over a plain TCP connection.
-#
-#	-t, --template=FORMAT  use this printf-style template to build the message,
-#						   all following parameters are filled in
-#	-d, --default=CODE	   default for first parameter (eval'ed later)
-#	-p, --port=PORT		   use a special target port (default 80)
-#	-w, --timeout=SECONDS  set connect timeout (default 3)
+__rawmsg_usage() {
+	cat <<\EOH
+Usage: rawmsg [OPTION]... <HOST> <template> [<param>]...
+       rawmsg [OPTION]... -t <template> <host> [<param>]...
+Send a message over a plain TCP connection.
+
+  -t, --template=FORMAT  use this printf-style template to build the message,
+                         all following parameters are filled in
+  -d, --default=CODE     default for first parameter (eval'ed later)
+  -p, --port=PORT        use a special target port (default 80)
+  -w, --timeout=SECONDS  set connect timeout (default 3)
+      --help             show this help
+EOH
+}
 rawmsg() {
 	local - IP= TEMPLATE= TEMP= PORT=80 TIMEOUT=3 DEFAULT=default_raw
 	TEMP="$(getopt -n rawmsg -o t:w:p:d: \
-	-l port:,template:,timeout:,default: -- "$@")"
+		-l port:,template:,timeout:,default:,help -- "$@")"
 	if [ $? != 0 ]; then return 1; fi
 	set -f; eval "set -- $TEMP"; set +f
 	while true; do
-	case $1 in
-		-t|--template) TEMPLATE="$2"; shift 2 ;;
-		-w|--timeout) TIMEOUT="$2"; shift 2 ;;
-		-p|--port) PORT="$2"; shift 2 ;;
-		-d|--default) DEFAULT="$2"; shift 2 ;;
-		--) shift; break ;;
-		*) shift ;; # should never happen
-	esac
+		case $1 in
+			-t|--template) TEMPLATE="$2"; shift 2 ;;
+			-w|--timeout) TIMEOUT="$2"; shift 2 ;;
+			-p|--port) PORT="$2"; shift 2 ;;
+			-d|--default) DEFAULT="$2"; shift 2 ;;
+			--help) __rawmsg_usage 1>&2; return 1 ;;
+			--) shift; break ;;
+			*) shift ;; # should never happen
+		esac
 	done
 	if [ $# -eq 0 ]; then echo "Missing hostname or IP" >&2; return 1; fi
 	IP="$1"; shift
-	if [ -z "$TEMPLATE" ]; then 
-	if [ $# -eq 0 ]; then echo "Missing template" >&2; return 1; fi
-	TEMPLATE="$1"; shift
+	if [ -z "$TEMPLATE" ]; then
+		if [ $# -eq 0 ]; then echo "Missing template" >&2; return 1; fi
+		TEMPLATE="$1"; shift
 	fi
 	if [ $# -eq 0 ]; then set -- "$(eval "$DEFAULT")"; fi
 	# If $1 is empty, it disappears completely in the output of "$@", which

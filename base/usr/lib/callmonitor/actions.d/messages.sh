@@ -1,5 +1,5 @@
 # Listener types and common utilities; separate function for each type
-# of listener. Add your own in the file $CALLMONITOR_ACTIONS_LOCAL!
+# of listener. Put your own into $CALLMONITOR_LIBDIR/actions.local.d/*.sh
 #
 # These environment variables are set by callmonitor before calling
 # calling a listener:
@@ -30,9 +30,8 @@ for_leases() {
 	local IPS="$(fgrep -i "$1" /var/flash/multid.leases | awk '{ print $3 }')"
 	local COMMAND="$2" IP=
 	shift 2
-	for IP in $IPS
-	do
-	"$COMMAND" "$IP" "$@" &
+	for IP in $IPS; do
+		"$COMMAND" "$IP" "$@" &
 	done
 }
 

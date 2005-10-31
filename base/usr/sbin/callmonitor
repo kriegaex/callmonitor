@@ -37,10 +37,10 @@ eval "set -- $TEMP"
 DEBUG=0
 while true; do
 	case $1 in
-	--debug) DEBUG=1; shift ;;
-	--help) usage 1>&2; exit ;;
-	--) shift; break ;;
-	*) shift ;; # should never happen
+		--debug) DEBUG=1; shift ;;
+		--help) usage 1>&2; exit ;;
+		--) shift; break ;;
+		*) shift ;; # should never happen
 	esac
 done
 
@@ -65,12 +65,12 @@ __configure() {
 	local ACTIONSDIR ACTIONS
 	for ACTIONSDIR in "$CALLMONITOR_LIBDIR/actions.d" \
 	"$CALLMONITOR_LIBDIR/actions.local.d"; do
-	for ACTIONS in "$ACTIONSDIR"/*.sh; do
-		if [ -r "$ACTIONS" ]; then
-		__debug "including $ACTIONS"
-		. "$ACTIONS"
-		fi
-	done
+		for ACTIONS in "$ACTIONSDIR"/*.sh; do
+			if [ -r "$ACTIONS" ]; then
+				__debug "including $ACTIONS"
+				. "$ACTIONS"
+			fi
+		done
 	done
 }
 
@@ -83,17 +83,17 @@ __incoming_call() {
 	__debug "detected '$line'"
 	case $line in "IncomingCall from NT:"*) NT=1 ;; esac
 	if [ -z "$MSISDN" ]; then
-	MSISDN="ohne Rufnummer/CLIP"
-	CALLER="..."
+		MSISDN="ohne Rufnummer/CLIP"
+		CALLER="..."
 	else
-	CALLER="$(phonebook $PHONEBOOK_OPTIONS get "$MSISDN")"
+		CALLER="$(phonebook $PHONEBOOK_OPTIONS get "$MSISDN")"
 	fi
 	__debug "MSISDN='$MSISDN'"
 	__debug "CALLER='$CALLER'"
 	__debug "CALLED='$CALLED'"
 
 	if [ ! -r /mod/etc/callmonitor.listeners ]; then
-	return
+		return
 	fi
 
 	# make call information available to listeners
@@ -102,15 +102,15 @@ __incoming_call() {
 	cat /mod/etc/callmonitor.listeners | 
 	while read -r msisdn_pattern called_pattern listener
 	do
-	# comment or empty line
-	case $msisdn_pattern in \#*|"") continue ;; esac
+		# comment or empty line
+		case $msisdn_pattern in \#*|"") continue ;; esac
 
-	# process rule asynchronously; currently stdin is coming from the pipe
-	# above, and the rule must not read from it
-	RULE=$rule \
-	__process_rule "$msisdn_pattern" "$called_pattern" "$listener" \
-	< /dev/null &
-	let rule="$rule + 1"
+		# process rule asynchronously; currently stdin is coming from the pipe
+		# above, and the rule must not read from it
+		RULE=$rule \
+		__process_rule "$msisdn_pattern" "$called_pattern" "$listener" \
+		< /dev/null &
+		let rule="$rule + 1"
 	done
 }
 
@@ -124,21 +124,24 @@ __process_rule() {
 
 	# match and strip NT/* prefix
 	case $msisdn_pattern in
-	NT:*)
-		if [ $NT = 0 ]; then 
-		__debug_rule "call is NOT from NT"
-		__debug_rule "FAILED"
-		return 1
-		fi
-		msisdn_pattern=${msisdn_pattern#NT:} ;;
-	\*:*)  
-		msisdn_pattern=${msisdn_pattern#\*:} ;;
-	*)
-		if [ $NT = 1 ]; then 
-		__debug_rule "call IS from NT"
-		__debug_rule "FAILED"
-		return 1
-		fi ;;
+		NT:*)
+			if [ $NT = 0 ]; then 
+				__debug_rule "call is NOT from NT"
+				__debug_rule "FAILED"
+				return 1
+			fi
+			msisdn_pattern=${msisdn_pattern#NT:}
+			;;
+		\*:*)  
+			msisdn_pattern=${msisdn_pattern#\*:}
+			;;
+		*)
+			if [ $NT = 1 ]; then 
+				__debug_rule "call IS from NT"
+				__debug_rule "FAILED"
+				return 1
+			fi
+			;;
 	esac
 
 	# match
@@ -163,34 +166,34 @@ __match() {
 	local SHPAT="${REGEXP#^}"
 	SHPAT="${SHPAT%\$}"
 	case "$SHPAT" in
-	*[!A-Za-z_0-9-]*)
-		if echo "$VALUE" | egrep -q "$REGEXP"; then
-		RESULT=0
-		fi
-		;;
-	*) # match simple patterns on our own
-		case "$REGEXP" in
-		^*) ;;
-		*) SHPAT="*$SHPAT" ;;
-		esac
-		case "$REGEXP" in
-		*\$) ;;
-		*) SHPAT="$SHPAT*" ;;
-		esac
-		case "$VALUE" in
-		$SHPAT) RESULT=0 ;;
-		esac
-		;;
+		*[!A-Za-z_0-9-]*)
+			if echo "$VALUE" | egrep -q "$REGEXP"; then
+				RESULT=0
+			fi
+			;;
+		*) # match simple patterns on our own
+			case "$REGEXP" in
+				^*) ;;
+				*) SHPAT="*$SHPAT" ;;
+			esac
+			case "$REGEXP" in
+				*\$) ;;
+				*) SHPAT="$SHPAT*" ;;
+			esac
+				case "$VALUE" in
+				$SHPAT) RESULT=0 ;;
+			esac
+			;;
 	esac
 	case $PATTERN in
-	!*) let RESULT="!$RESULT" ;;
+		!*) let RESULT="!$RESULT" ;;
 	esac
 	if [ $RESULT -eq 0 ]; then
-	__debug_rule "parameter $PARAM='$VALUE' matches pattern '$PATTERN'"
+		__debug_rule "parameter $PARAM='$VALUE' matches pattern '$PATTERN'"
 	else
-	__debug_rule "parameter $PARAM='$VALUE' does NOT match" \
-		"pattern '$PATTERN'"
-	__debug_rule "FAILED"
+		__debug_rule "parameter $PARAM='$VALUE' does NOT match" \
+			"pattern '$PATTERN'"
+		__debug_rule "FAILED"
 	fi
 	return $RESULT
 }
@@ -205,7 +208,7 @@ __configure
 while IFS= read -r line
 do
 	case $line in
-	"IncomingCall"*"caller: "*"called: "*) incoming_call "$line" & ;;
+		"IncomingCall"*"caller: "*"called: "*) incoming_call "$line" & ;;
 	esac
 	echo "$line"
 done

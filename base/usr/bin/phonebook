@@ -35,10 +35,10 @@ eval "set -- $TEMP"
 
 while true; do
 	case $1 in
-	--debug) DEBUG=1; shift ;;
-	--help) __usage 1>&2; exit 0 ;;
-	--) shift; break ;;
-	*) shift ;; # should never happen
+		--debug) DEBUG=1; shift ;;
+		--help) __usage 1>&2; exit 0 ;;
+		--) shift; break ;;
+		*) shift ;; # should never happen
 	esac
 done
 
@@ -61,21 +61,22 @@ __get() {
 	local MSISDN="$1" CALLER
 	CALLER="$(__get_local "$MSISDN")"
 	if [ $? -ne 0 -a $REVERSE = 1 ]; then
-	CALLER="$(reverse_lookup "$MSISDN")"
-	CALLER="${CALLER:-"Kein Name gefunden"}"
-	__put_local "$MSISDN" "$CALLER"
+		CALLER="$(reverse_lookup "$MSISDN")"
+		CALLER="${CALLER:-"Kein Name gefunden"}"
+		__put_local "$MSISDN" "$CALLER" 1>&2 &
 	fi
 	echo "$CALLER"
 }
 
 __get_local() {
 	local MSISDN="$1" CALLER
-	CALLER="$(sed -ne "/^${PRE_RE}${MSISDN}${SEP_RE}/{s/^${PRE_RE}${MSISDN}${SEP_RE}//p;q}" \
+	CALLER="$(sed -ne "/^${PRE_RE}${MSISDN}${SEP_RE}/{
+		s/^${PRE_RE}${MSISDN}${SEP_RE}//p;q}" \
 	"$CALLMONITOR_TRANSIENT" "$CALLMONITOR_PERSISTENT" 2> /dev/null)"
 	if [ ! -z "$CALLER" ]; then
-	__debug "phone book contains {$MSISDN -> $CALLER}"
-	echo "$CALLER"
-	return 0
+		__debug "phone book contains {$MSISDN -> $CALLER}"
+		echo "$CALLER"
+		return 0
 	fi
 	return 1
 }
@@ -85,23 +86,28 @@ __put_local() {
 	__debug "putting {$MSISDN -> $CALLER} into phone book $PHONEBOOK"
 
 	# beware of concurrent updates
-	lock "$PHONEBOOK"
-	local TMPFILE="$CALLMONITOR_TMPDIR/.callmonitor.tmp"
-	{ 
-	if [ -e "$PHONEBOOK" ]; then
-		sed -e "/^${PRE_RE}${MSISDN}${SEP_RE}/d" "$PHONEBOOK"
+	if lock "$PHONEBOOK"; then
+		local TMPFILE="$CALLMONITOR_TMPDIR/.callmonitor.tmp"
+		{ 
+			if [ -e "$PHONEBOOK" ]; then
+				sed -e "/^${PRE_RE}${MSISDN}${SEP_RE}/d" "$PHONEBOOK"
+			fi
+			echo "${PRE}${MSISDN}${SEP}${CALLER}"
+		} > "$TMPFILE"
+		cat "$TMPFILE" > "$PHONEBOOK"
+		rm "$TMPFILE"
+		unlock "$PHONEBOOK"
+	else
+		__debug "locking $PHONEBOOK failed"
 	fi
-	echo "${PRE}${MSISDN}${SEP}${CALLER}"
-	} > "$TMPFILE"
-	cat "$TMPFILE" > "$PHONEBOOK"
-	rm "$TMPFILE"
-	unlock "$PHONEBOOK"
-	callmonitor_store
+	if [ "$UPDATE" -eq 1 ]; then
+		callmonitor_store
+	fi
 }
 
 case $1 in
-	get) __get "$2" ;;
-	put) __put_local "$2" "$3" ;;
+	get) __get "$(normalize_number "$2")" ;;
+	put) __put_local "$(normalize_number "$2")" "$3" ;;
 	*)	 __usage 1>&2; exit 1 ;;
 esac
 exit $?

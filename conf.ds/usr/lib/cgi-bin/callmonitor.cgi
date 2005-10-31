@@ -13,7 +13,7 @@ ip_val="$(httpd -e "$CALLMONITOR_TELEFON_IP")"
 okz_val="$(httpd -e "$CALLMONITOR_OKZ")"
 
 cat << EOF
-<h1>Call-Monitor-Konfiguration</h1>
+<h1>Callmonitor-Konfiguration</h1>
 <form action="/cgi-bin/save.cgi?form=pkg_callmonitor" method="post">
 <p><i>Startverhalten von callmonitor beim Bootvorgang</i><br>
 <input type="radio" name="enabled" value="yes"$auto_chk> Automatisch

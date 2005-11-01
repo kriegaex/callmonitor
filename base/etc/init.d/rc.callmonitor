@@ -54,6 +54,16 @@ stop() {
 
 case "$1" in
 	"")
+		if type modreg 2> /dev/null; then
+			modreg cgi $DAEMON 'Callmonitor'
+			if [ -r "/tmp/flash/exhosts.def" ]; then 
+				deffile='/tmp/flash/callmonitor/listeners.def'
+			else 
+				deffile="/etc/default.$DAEMON/listeners.def"
+			fi
+			modreg file 'listeners' 'Listeners' "$deffile"
+		fi
+		
 		if [ "$CALLMONITOR_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
 			exit 1;

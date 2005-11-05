@@ -13,7 +13,9 @@ TELEFON="${CALLMONITOR_LIBDIR}/telefon"
 
 if [ ! -e "$BOOTED" -a "$CALLMONITOR_ENABLED" = "yes" ]; then
 	touch "$BOOTED"
-	callmonitor
+	callmonitor > /dev/null 2>&1
+fi
+if [ ! -z "$(pidof callmonitor)" ]; then
 	"$TELEFON" > "$FIFO"
 else
 	"$TELEFON"

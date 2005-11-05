@@ -1,0 +1,57 @@
+#!/bin/sh
+PROGRAM="${0##*/}"
+usage() {
+	cat <<EOF
+Usage:	$PROGRAM [OPTION]... CALLER [CALLED]
+Options:
+	-n	generate call "from NT"
+	-s	output to stdout instead of callmonitor's fifo
+	--help	show this help
+EOF
+}
+TEMP="$(getopt -o 'ns' -l 'help' -n "$PROGRAM" -- "$@")"
+if [ $? != 0 ]; then exit 1; fi
+eval "set -- $TEMP"
+
+NT=false
+STDOUT=false
+while true; do
+	case $1 in
+		-n) NT=true; shift ;;
+		-s) STDOUT=true; shift ;;
+		--help) usage 1>&2; exit 1 ;;
+		--) shift; break ;;
+		*) shift ;; # should never happen
+	esac
+done
+if [ $# -lt 1 ]; then
+	usage 1>&2; exit
+fi
+MSISDN="$1"
+CALLED="${2:-SIP0}"
+
+# check if fifo exists and if callmonitor is running
+if ! $STDOUT; then
+	FIFO="/var/run/callmonitor/fifo"
+	if [ ! -p "$FIFO" ]; then
+		echo "callmonitor's fifo $FIFO does not exist" 1>&2
+		exit 1
+	fi
+	if ! pidof callmonitor > /dev/null; then
+		echo "callmonitor seems not to be running" 1>&2
+		exit 1
+	fi
+fi
+
+# IncomingCall from NT: ID 0, caller: "0927340284" called: "234972"
+# IncomingCall: ID 0, caller: "02938423742" called: "SIP0"
+if $NT; then
+	PATTERN='\nIncomingCall from NT: ID 0, caller: "%s" called: "%s"\n'
+else
+	PATTERN='\nIncomingCall: ID 0, caller: "%s" called: "%s"\n'
+fi
+if $STDOUT; then
+	printf "$PATTERN" "$MSISDN" "$CALLED"
+else
+	printf "$PATTERN" "$MSISDN" "$CALLED" > "$FIFO"
+fi

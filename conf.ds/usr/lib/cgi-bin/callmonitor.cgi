@@ -53,8 +53,8 @@ cat << EOF
 <label for="ip">IP/Hostname:</label>
 <input type="text" name="telefon_ip" value="$(httpd -e "$CALLMONITOR_TELEFON_IP")" id="ip">
 </p>
-<p>Bei <kbd>*</kbd> ist telefon von überall erreichbar. Ist
-keine Adresse angegeben, werden die Standardeinstellungen verwendet.<p>
+<p>Bei <kbd>*</kbd> ist telefon von überall erreichbar, bei keiner
+Adresse nur von der Fritz!Box selbst.<p>
 EOF
 
 sec_end

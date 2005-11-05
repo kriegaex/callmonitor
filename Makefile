@@ -7,7 +7,8 @@ CONF := conf.$(MOD)
 install: install-$(MOD)
 
 install-ds: build
-	ssh root@fritz.box tar xvj -C /mod < $(ARCHIVE)
+	scp $(ARCHIVE) root@fritz.box:
+	ssh root@fritz.box 'tar xvj -C /mod < $(ARCHIVE)'
 
 build: $(ARCHIVE)
 

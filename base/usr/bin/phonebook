@@ -22,10 +22,10 @@ PRE_RE="$CALLMONITOR_PREFIX_RE"
 SEP="$CALLMONITOR_SEPARATOR"
 SEP_RE="$CALLMONITOR_SEPARATOR_RE"
 
-REVERSE=0 UPDATE=0 DEBUG=0
+REVERSE=false UPDATE=false DEBUG=false
 case "$CALLMONITOR_REVERSE" in
-	transient) REVERSE=1 UPDATE=0 ;;
-	persistent) REVERSE=1 UPDATE=1 ;;
+	transient) REVERSE=true UPDATE=false ;;
+	persistent) REVERSE=true UPDATE=true ;;
 esac
 
 # parse options
@@ -35,7 +35,7 @@ eval "set -- $TEMP"
 
 while true; do
 	case $1 in
-		--debug) DEBUG=1; shift ;;
+		--debug) DEBUG=true; shift ;;
 		--help) __usage 1>&2; exit 0 ;;
 		--) shift; break ;;
 		*) shift ;; # should never happen
@@ -43,14 +43,14 @@ while true; do
 done
 
 # where to put new number-name pairs
-if [ $UPDATE = 1 ]; then
+if $UPDATE; then
 	PHONEBOOK="$CALLMONITOR_PERSISTENT"
 else
 	PHONEBOOK="$CALLMONITOR_TRANSIENT"
 fi
 
 # set up logging
-if [ $DEBUG = 1 ]; then
+if $DEBUG; then
 	__debug() { echo "phonebook: $*" >&2; }
 	__debug "entering DEBUG mode"
 else
@@ -60,9 +60,9 @@ fi
 __get() {
 	local MSISDN="$1" CALLER
 	CALLER="$(__get_local "$MSISDN")"
-	if [ $? -ne 0 -a $REVERSE = 1 ]; then
+	if [ $? -ne 0 ] && $REVERSE; then
 		CALLER="$(reverse_lookup "$MSISDN")"
-		CALLER="${CALLER:-"Kein Name gefunden"}"
+		CALLER="${CALLER:-"$CALLMONITOR_REVERSE_NOTFOUND"}"
 		__put_local "$MSISDN" "$CALLER" 1>&2 &
 	fi
 	echo "$CALLER"
@@ -72,7 +72,7 @@ __get_local() {
 	local MSISDN="$1" CALLER
 	CALLER="$(sed -ne "/^${PRE_RE}${MSISDN}${SEP_RE}/{
 		s/^${PRE_RE}${MSISDN}${SEP_RE}//p;q}" \
-	"$CALLMONITOR_TRANSIENT" "$CALLMONITOR_PERSISTENT" 2> /dev/null)"
+		"$CALLMONITOR_TRANSIENT" "$CALLMONITOR_PERSISTENT" 2> /dev/null)"
 	if [ ! -z "$CALLER" ]; then
 		__debug "phone book contains {$MSISDN -> $CALLER}"
 		echo "$CALLER"
@@ -100,7 +100,7 @@ __put_local() {
 	else
 		__debug "locking $PHONEBOOK failed"
 	fi
-	if [ "$UPDATE" -eq 1 ]; then
+	if $UPDATE; then
 		callmonitor_store
 	fi
 }

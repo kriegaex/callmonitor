@@ -2,21 +2,17 @@
 PATH=/sbin:/usr/sbin:/mod/sbin:/mod/usr/sbin:/bin:/usr/bin:/mod/bin:/mod/usr/bin
 
 # configure
-. ${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}
+. "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
+. "${CALLMONITOR_LIBDIR}/rc.sh"
 
-if [ ! -d /var/run/callmonitor ]; then
-	mkdir -p /var/run/callmonitor
-fi
-FIFO="/var/run/callmonitor/fifo"
 BOOTED="/var/run/callmonitor/booted"
-TELEFON="${CALLMONITOR_LIBDIR}/telefon"
 
 if [ ! -e "$BOOTED" -a "$CALLMONITOR_ENABLED" = "yes" ]; then
 	touch "$BOOTED"
-	callmonitor > /dev/null 2>&1
+	start_daemon
 fi
 if [ ! -z "$(pidof callmonitor)" ]; then
-	"$TELEFON" < /dev/null > "$FIFO" 2> /dev/null
+	start_telefon 3> "$FIFO"
 else
-	"$TELEFON" < /dev/null > /dev/null 2>&1
+	start_telefon 3> /dev/null
 fi

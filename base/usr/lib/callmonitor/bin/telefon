@@ -16,7 +16,7 @@ if [ ! -e "$BOOTED" -a "$CALLMONITOR_ENABLED" = "yes" ]; then
 	callmonitor > /dev/null 2>&1
 fi
 if [ ! -z "$(pidof callmonitor)" ]; then
-	"$TELEFON" > "$FIFO"
+	"$TELEFON" < /dev/null > "$FIFO" 2> /dev/null
 else
-	"$TELEFON"
+	"$TELEFON" < /dev/null > /dev/null 2>&1
 fi

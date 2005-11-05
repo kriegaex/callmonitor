@@ -1,3 +1,4 @@
+. "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
 . "${CALLMONITOR_LIBDIR}/net.sh"
 
 # resolve numbers to names and addresses (www.dasoertliche.de); the number is
@@ -15,11 +16,11 @@ reverse_lookup() {
 }
 # normalize phone numbers
 normalize_number() {
-	local NUMBER="$1" OKZ=
+	local NUMBER="$1"
 	case $NUMBER in
 		0049*) NUMBER="0${NUMBER#0049}" ;;
 		0*) ;;
-		*) OKZ="$(get_it CALLMONITOR_OKZ)"; NUMBER="$OKZ$NUMBER" ;; 
+		*) NUMBER="${CALLMONITOR_OKZ}${NUMBER}" ;; 
 	esac
 	echo "$NUMBER"
 }

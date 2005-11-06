@@ -29,17 +29,17 @@ case "$CALLMONITOR_REVERSE" in
 esac
 
 # parse options
-TEMP="$(getopt -o '' -l debug,help -n "${0##*/}" -- "$@")"
-if [ $? != 0 ]; then exit 1; fi
+TEMP="$(getopt -o '' -l debug,help -n "${0##*/}" -- "$@")" || exit 1
 eval "set -- $TEMP"
 
 while true; do
 	case $1 in
-		--debug) DEBUG=true; shift ;;
-		--help) __usage 1>&2; exit 0 ;;
+		--debug) DEBUG=true ;;
+		--help) __usage 1>&2; exit 1 ;;
 		--) shift; break ;;
-		*) shift ;; # should never happen
+		*) ;; # should never happen
 	esac
+	shift
 done
 
 # where to put new number-name pairs

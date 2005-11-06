@@ -64,20 +64,21 @@ getmsg() {
 	local PORT=80 TIMEOUT=3
 	TEMP="$(getopt -n getmsg -o U:P:v:t:w:p: \
 		-l user:,password:,virtual:,port:,template:,timeout:,help -- "$@")"
-	if [ $? != 0 ]; then return 1; fi
+	if [ $? -ne 0 ]; then return 1; fi
 	set -f; eval "set -- $TEMP"; set +f
 	while true; do
 		case $1 in
-			-U|--user) USERNAME="$2"; shift 2 ;;
-			-P|--password) PASSWORD="$2"; shift 2 ;;
-			-v|--virtual) VIRTUAL="$2"; shift 2 ;;
-			-t|--template) TEMPLATE="$2"; shift 2 ;;
-			-w|--timeout) TIMEOUT="$2"; shift 2 ;;
-			-p|--port) PORT="$2"; shift 2 ;;
+			-U|--user) USERNAME="$2"; shift ;;
+			-P|--password) PASSWORD="$2"; shift ;;
+			-v|--virtual) VIRTUAL="$2"; shift ;;
+			-t|--template) TEMPLATE="$2"; shift ;;
+			-w|--timeout) TIMEOUT="$2"; shift ;;
+			-p|--port) PORT="$2"; shift ;;
 			--help) __getmsg_usage 1>&2; return 1 ;;
 			--) shift; break ;;
-			*) shift ;; # should never happen
+			*) ;; # should never happen
 		esac
+		shift
 	done
 	if [ $# -eq 0 ]; then echo "Missing hostname or IP" >&2; return 1; fi
 	IP="$1"; shift
@@ -121,18 +122,19 @@ rawmsg() {
 	local - IP= TEMPLATE= TEMP= PORT=80 TIMEOUT=3 DEFAULT=default_raw
 	TEMP="$(getopt -n rawmsg -o t:w:p:d: \
 		-l port:,template:,timeout:,default:,help -- "$@")"
-	if [ $? != 0 ]; then return 1; fi
+	if [ $? -ne 0 ]; then return 1; fi
 	set -f; eval "set -- $TEMP"; set +f
 	while true; do
 		case $1 in
-			-t|--template) TEMPLATE="$2"; shift 2 ;;
-			-w|--timeout) TIMEOUT="$2"; shift 2 ;;
-			-p|--port) PORT="$2"; shift 2 ;;
-			-d|--default) DEFAULT="$2"; shift 2 ;;
+			-t|--template) TEMPLATE="$2"; shift ;;
+			-w|--timeout) TIMEOUT="$2"; shift ;;
+			-p|--port) PORT="$2"; shift ;;
+			-d|--default) DEFAULT="$2"; shift ;;
 			--help) __rawmsg_usage 1>&2; return 1 ;;
 			--) shift; break ;;
-			*) shift ;; # should never happen
+			*) ;; # should never happen
 		esac
+		shift
 	done
 	if [ $# -eq 0 ]; then echo "Missing hostname or IP" >&2; return 1; fi
 	IP="$1"; shift

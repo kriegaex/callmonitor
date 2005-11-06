@@ -33,8 +33,7 @@ EOF
 . "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
 
 # parse options
-TEMP="$(getopt -o 'fs' -l debug,help -n "$PROGRAM" -- "$@")"
-if [ $? != 0 ]; then exit 1; fi
+TEMP="$(getopt -o 'fs' -l debug,help -n "$PROGRAM" -- "$@")" || exit 1
 eval "set -- $TEMP"
 
 DEBUG=false
@@ -42,13 +41,14 @@ FOREGROUND=false
 STOP=false
 while true; do
 	case $1 in
-		-f) FOREGROUND=true; shift ;;
-		-s) STOP=true; shift ;;
-		--debug) DEBUG=true; shift ;;
+		-f) FOREGROUND=true ;;
+		-s) STOP=true ;;
+		--debug) DEBUG=true ;;
 		--help) usage 1>&2; exit ;;
 		--) shift; break ;;
-		*) shift ;; # should never happen
+		*) ;; # should never happen
 	esac
+	shift
 done
 
 # pass options to phonebook
@@ -95,9 +95,9 @@ __incoming_call() {
 	local MSISDN="${line##*caller: \"}"; MSISDN="${MSISDN%%\"*}"
 	local CALLED="${line##*called: \"}"; CALLED="${CALLED%%\"*}"
 	local CALLER="$MSISDN"
-	local NT=0
+	local NT=false
 	__debug "detected '$line'"
-	case $line in "IncomingCall from NT:"*) NT=1 ;; esac
+	case $line in "IncomingCall from NT:"*) NT=true ;; esac
 	if [ -z "$MSISDN" ]; then
 		MSISDN="$CALLMONITOR_NOCLIP"
 		CALLER=""
@@ -141,7 +141,7 @@ __process_rule() {
 	# match and strip NT/* prefix
 	case $msisdn_pattern in
 		NT:*)
-			if [ $NT = 0 ]; then 
+			if ! $NT; then 
 				__debug_rule "call is NOT from NT"
 				__debug_rule "FAILED"
 				return 1
@@ -152,7 +152,7 @@ __process_rule() {
 			msisdn_pattern=${msisdn_pattern#\*:}
 			;;
 		*)
-			if [ $NT = 1 ]; then 
+			if $NT; then 
 				__debug_rule "call IS from NT"
 				__debug_rule "FAILED"
 				return 1
@@ -169,8 +169,8 @@ __process_rule() {
 	set --
 	eval "$listener"
 	local status=$?
-	if [ $status != 0 ]; then
-	__debug_rule "listener failed with an exit status of $status"
+	if [ $status -ne 0 ]; then
+		__debug_rule "listener failed with an exit status of $status"
 	fi
 
 	return 0
@@ -196,7 +196,7 @@ __match() {
 				*\$) ;;
 				*) SHPAT="$SHPAT*" ;;
 			esac
-				case "$VALUE" in
+			case "$VALUE" in
 				$SHPAT) RESULT=0 ;;
 			esac
 			;;
@@ -218,16 +218,18 @@ __read() {
 	local line
 	while IFS= read -r line
 	do
+		echo "$line"
 		case $line in
 			"IncomingCall"*"caller: "*"called: "*) incoming_call "$line" & ;;
 		esac
-		echo "$line"
 	done
 }
 
 __work() {
 	# a USR1 signal will cause the callmonitor to re-read its configuration
 	trap __configure USR1
+	trap 'rm -f "$PIDFILE"' EXIT
+	trap 'exit 2' HUP INT QUIT TERM
 
 	# initial configuration
 	__log_setup
@@ -248,11 +250,7 @@ if $STOP; then
 		exit 1
 	else
 		PID="$(cat "$PIDFILE")"
-		kill "$PID"
-		exitcode=$?
-		if [ $exitcode -eq 0 ]; then
-			rm -f "$PIDFILE"
-		fi
+		kill "$PID" && rm -f "$PIDFILE"
 		exit $?
 	fi
 else

@@ -1,6 +1,6 @@
 # lock $file by creating a symlink $file.lock -> PID
 lock() {
-	local file="$1" interval="${2:-1000000}" first=1
+	local file="$1" interval="${2:-1000000}" first=true
 	# race conditions between touch and realpath still possible
 	if [ ! -e "$1" ] && ! touch "$1"; then
 		return 1
@@ -8,8 +8,8 @@ lock() {
 	file="$(realpath "$file")"
 	local lock="$file.lock"
 	while ! ln -s $$ "$lock" 2> /dev/null; do
-		if [ $first -eq 1 ]; then 
-			first=0
+		if $first; then 
+			first=false
 			echo "Waiting for exclusive lock on $file" 1>&2
 		fi
 		usleep $interval

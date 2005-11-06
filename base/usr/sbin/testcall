@@ -9,20 +9,20 @@ Options:
 	--help	show this help
 EOF
 }
-TEMP="$(getopt -o 'ns' -l 'help' -n "$PROGRAM" -- "$@")"
-if [ $? != 0 ]; then exit 1; fi
+TEMP="$(getopt -o 'ns' -l 'help' -n "$PROGRAM" -- "$@")" || exit 1
 eval "set -- $TEMP"
 
 NT=false
 STDOUT=false
 while true; do
 	case $1 in
-		-n) NT=true; shift ;;
-		-s) STDOUT=true; shift ;;
+		-n) NT=true ;;
+		-s) STDOUT=true ;;
 		--help) usage 1>&2; exit 1 ;;
 		--) shift; break ;;
-		*) shift ;; # should never happen
+		*) ;; # should never happen
 	esac
+	shift
 done
 if [ $# -lt 1 ]; then
 	usage 1>&2; exit

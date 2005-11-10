@@ -1,5 +1,5 @@
 #!/bin/sh
-PATH=/sbin:/usr/sbin:/mod/sbin:/mod/usr/sbin:/bin:/usr/bin:/mod/bin:/mod/usr/bin
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
 
 # configure
 . "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"

@@ -1,5 +1,5 @@
 #!/bin/sh
-PATH=/bin:/usr/bin:/sbin:/usr/sbin:/mod/usr/bin:/mod/usr/sbin
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
 DAEMON=callmonitor
 
 . "${CALLMONITOR_CFG:="/mod/etc/default.$DAEMON/system.cfg"}"

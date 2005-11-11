@@ -5,6 +5,13 @@ DAEMON=callmonitor
 . "${CALLMONITOR_CFG:="/mod/etc/default.$DAEMON/system.cfg"}"
 . "${CALLMONITOR_LIBDIR}/rc.sh"
 
+RC_TELEFON=/mod/etc/init.d/rc.telefon
+FIFO="/var/run/$DAEMON/fifo"
+
+if [ ! -d /var/run/$DAEMON ]; then
+	mkdir -p /var/run/$DAEMON
+fi
+
 case "$1" in
 	""|start|restart)
 		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
@@ -14,22 +21,37 @@ case "$1" in
 		;;
 esac
 
+start_daemon() {
+	if [ ! -e /mod/etc/callmonitor.listeners ]; then
+		ln -sf "$CALLMONITOR_LISTENERS" /mod/etc/callmonitor.listeners
+	fi
+
+	echo -n "Starting callmonitor..."
+	"$DAEMON" > /dev/null 2>&1
+	check_status
+}
+stop_daemon() {
+	echo -n "Stopping callmonitor..."
+	"$DAEMON" -s
+	check_status
+}
+
 start() {
 	local exitval=0
-	stop_telefon
+	$RC_TELEFON stop
 	start_daemon || exitval=$?
 	if [ $exitval -ne 0 ]; then
-		start_telefon 3> /dev/null
+		$RC_TELEFON start null
 	else
-		start_telefon 3> "$FIFO"
+		$RC_TELEFON start fifo
 	fi
 	return $exitval
 }
 stop() {
 	local exitval=0
-	stop_telefon
+	$RC_TELEFON stop
 	stop_daemon || exitval=$?
-	start_telefon 3> /dev/null
+	$RC_TELEFON start null
 	return $exitval
 }
 restart() {

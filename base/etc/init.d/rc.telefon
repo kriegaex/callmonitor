@@ -1,0 +1,72 @@
+#!/bin/sh
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+DAEMON_TELEFON=telefon
+PKG=callmonitor
+
+. "${CALLMONITOR_CFG:="/mod/etc/default.$PKG/system.cfg"}"
+. "${CALLMONITOR_LIBDIR}/rc.sh"
+
+TELEFON="$CALLMONITOR_LIBDIR/telefon"
+RC_CALLMONITOR=/mod/etc/init.d/rc.callmonitor
+FIFO="/var/run/callmonitor/fifo"
+
+start_telefon() {
+	echo -n "Starting telefon..."
+	"$TELEFON" < /dev/null 1>&3 3>&- 2> /dev/null
+	check_status
+}
+stop_telefon() {
+	echo -n "Stopping telefon..."
+	killall telefon > /dev/null 2>&1
+	check_status
+}
+
+start() {
+	case "$1" in
+		fifo)
+			start_telefon 3> "$FIFO" ;;
+		null)
+			start_telefon 3> /dev/null ;;
+		*)
+			if [ "$($RC_CALLMONITOR status)" = "running" ]; then
+				start_telefon 3> "$FIFO"
+			else
+				start_telefon 3> /dev/null
+			fi
+			;;
+	esac
+}
+stop() {
+	stop_telefon
+}
+
+case "$1" in
+	"")
+		if [ ! -z "$(pidof $DAEMON_TELEFON)" ]; then
+			echo "$DAEMON_TELEFON already started."
+		else
+			start
+		fi
+		;;
+	start)
+		start "$2"
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		start "$2"
+		;;
+	status)
+		if [ -z "$(pidof $DAEMON_TELEFON)" ]; then
+			echo "stopped"
+		else
+			echo "running"
+		fi
+		;;
+	*)
+		echo "Usage: $0 [start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac

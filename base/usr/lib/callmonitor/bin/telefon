@@ -1,7 +1,5 @@
 #!/bin/sh
-PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-
-RC_TELEFON="/mod/etc/init.d/rc.telefon"
+RC_TELEFON="/mod/pkg/callmonitor/etc/init.d/rc.telefon"
 RC_CALLMONITOR="/mod/etc/init.d/rc.callmonitor"
 
 $RC_CALLMONITOR start

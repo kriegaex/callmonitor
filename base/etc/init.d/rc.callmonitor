@@ -5,7 +5,7 @@ DAEMON=callmonitor
 . "${CALLMONITOR_CFG:="/mod/etc/default.$DAEMON/system.cfg"}"
 . "${CALLMONITOR_LIBDIR}/rc.sh"
 
-RC_TELEFON=/mod/etc/init.d/rc.telefon
+RC_TELEFON="/mod/pkg/$DAEMON/etc/init.d/rc.telefon"
 FIFO="/var/run/$DAEMON/fifo"
 
 if [ ! -d /var/run/$DAEMON ]; then
@@ -54,22 +54,31 @@ stop() {
 	$RC_TELEFON start null
 	return $exitval
 }
-restart() {
+fast_restart() {
+	# restart telefon only if needed
+	$RC_TELEFON reload
+	
 	# keep pipe alive while callmonitor is restartet
 	cat "$FIFO" > /dev/null &
 	catpid=$!
 	stop_daemon && start_daemon && kill "$catpid" > /dev/null 2>&1
 }
+restart() {
+	stop
+	start
+}
 
 case "$1" in
 	"")
-		modreg cgi $DAEMON 'Callmonitor'
-		if [ -r "/tmp/flash/exhosts.def" ]; then 
-			deffile='/tmp/flash/callmonitor/listeners.def'
-		else 
-			deffile="/etc/default.$DAEMON/listeners.def"
+		if type modreg > /dev/null; then
+			modreg cgi $DAEMON 'Callmonitor'
+			if [ -r "/tmp/flash/exhosts.def" ]; then 
+				deffile='/tmp/flash/callmonitor/listeners.def'
+			else 
+				deffile="/etc/default.$DAEMON/listeners.def"
+			fi
+			modreg file 'listeners' 'Listeners' "$deffile"
 		fi
-		modreg file 'listeners' 'Listeners' "$deffile"
 		
 		if [ "$CALLMONITOR_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2
@@ -83,13 +92,22 @@ case "$1" in
 		fi
 		;;
 	start)
-		start
+		if [ -z "$(pidof $DAEMON)" ]; then
+			start
+		else
+			exit 0
+		fi
 		;;
 	stop)
 		stop
 		;;
 	restart)
-		restart
+		pid="$(pidof $DAEMON)"
+		if [ -z "$pid" ]; then
+			restart
+		else
+			fast_restart
+		fi
 		;;
 	status)
 		if [ -z "$(pidof $DAEMON)" ]; then

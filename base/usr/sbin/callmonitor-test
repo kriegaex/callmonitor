@@ -1,0 +1,18 @@
+#!/bin/sh
+# run callmonitor in test mode: do not run as a daemon, do not write
+# pid file, read from stdin only once, show trace of rule processing
+# on stdout
+
+# same path as in rc.callmonitor
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:\
+/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+
+. "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
+. "${CALLMONITOR_LIBDIR}/callmonitor.sh"
+
+__debug() { echo "$*"; }
+
+__configure
+__read
+wait
+exit 0

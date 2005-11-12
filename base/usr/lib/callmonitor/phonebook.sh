@@ -1,4 +1,3 @@
-. "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
 . "${CALLMONITOR_LIBDIR}/net.sh"
 
 # resolve numbers to names and addresses (www.dasoertliche.de); the number is

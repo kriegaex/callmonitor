@@ -9,16 +9,8 @@ nt_chk="${TESTCALL_NT:+" checked"}"
 source_val="$(httpd -e "$TESTCALL_SOURCE")"
 target_val="$(httpd -e "$TESTCALL_TARGET")"
 
-
-cgi_begin 'Testanruf...'
-echo -n "<p>Testanruf von \"$source_val\"${TESTCALL_NT:+ (NT)}"
-echo "${TESTCALL_TARGET:+" an \"$target_val\""}:</p>"
-echo -n '<pre>'
-testcall -s ${TESTCALL_NT:+"-n"} "$TESTCALL_SOURCE" "$TESTCALL_TARGET" |
-callmonitor-test
-echo '</pre>'
-
-cat <<EOF
+new_testcall_form() {
+    cat <<EOF
 <form action="/cgi-bin/testcall.cgi" method="post">
 <table><tr>
 	<td><label for="source">Quellrufnummer:</label> </td>
@@ -31,8 +23,28 @@ cat <<EOF
 </tr></table>
 <div class="btn"><input type="submit" value="Testanruf"></div>
 </form>
+EOF
+}
+
+do_testcall() {
+    cgi_begin 'Testanruf...'
+    echo -n "<p>Testanruf von \"$source_val\"${TESTCALL_NT:+ (NT)}"
+    echo "${TESTCALL_TARGET:+" an \"$target_val\""}:</p>"
+    echo -n '<pre>'
+    testcall -s ${TESTCALL_NT:+"-n"} "$TESTCALL_SOURCE" "$TESTCALL_TARGET" |
+	callmonitor-test
+    echo '</pre>'
+    new_testcall_form
+    cat <<EOF
 <form class="btn" action="/cgi-bin/pkgconf.cgi?pkg=callmonitor" method="get">
 <div class="btn"><input type="submit" value="Zur&uuml;ck"></div>
 </form>
 EOF
-cgi_end
+    cgi_end
+}
+
+if [ "$1" = "form" ]; then
+    new_testcall_form
+else
+    do_testcall
+fi

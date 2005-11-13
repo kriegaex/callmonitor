@@ -1,6 +1,4 @@
 #!/bin/sh
-
-PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
 . /usr/lib/libmodcgi.sh
 
 eval "$(modcgi source:target:nt testcall)"
@@ -10,7 +8,7 @@ source_val="$(httpd -e "$TESTCALL_SOURCE")"
 target_val="$(httpd -e "$TESTCALL_TARGET")"
 
 new_testcall_form() {
-    cat <<EOF
+	cat <<EOF
 <form action="/cgi-bin/testcall.cgi" method="post">
 <table><tr>
 	<td><label for="source">Quellrufnummer:</label> </td>
@@ -27,24 +25,39 @@ EOF
 }
 
 do_testcall() {
-    cgi_begin 'Testanruf...'
-    echo -n "<p>Testanruf von \"$source_val\"${TESTCALL_NT:+ (NT)}"
-    echo "${TESTCALL_TARGET:+" an \"$target_val\""}:</p>"
-    echo -n '<pre>'
-    testcall -s ${TESTCALL_NT:+"-n"} "$TESTCALL_SOURCE" "$TESTCALL_TARGET" |
-	callmonitor-test
-    echo '</pre>'
-    new_testcall_form
-    cat <<EOF
-<form class="btn" action="/cgi-bin/pkgconf.cgi?pkg=callmonitor" method="get">
+	testcall -s ${TESTCALL_NT:+"-n"} "$TESTCALL_SOURCE" "$TESTCALL_TARGET" |
+		callmonitor-test
+}
+
+show_testcall_results() {
+	echo -n "<p>Testanruf von \"$source_val\"${TESTCALL_NT:+ (NT)}"
+	echo "${TESTCALL_TARGET:+ an \"$target_val\"}:</p>"
+	echo -n '<pre>'
+	do_testcall
+	echo '</pre>'
+}
+
+config_button() {
+	cat <<EOF
+<form class="btn" action="/cgi-bin/pkgconf.cgi" method="get">
+<input type="hidden" name="pkg" value="callmonitor">
 <div class="btn"><input type="submit" value="Zur&uuml;ck"></div>
 </form>
 EOF
-    cgi_end
+}
+
+cgi_main() {
+	cgi_begin 'Testanruf...'
+	if [ "${TESTCALL_SOURCE+set}" ]; then
+		show_testcall_results
+	fi
+	new_testcall_form
+	config_button
+	cgi_end
 }
 
 if [ "$1" = "form" ]; then
-    new_testcall_form
+	new_testcall_form
 else
-    do_testcall
+	cgi_main
 fi

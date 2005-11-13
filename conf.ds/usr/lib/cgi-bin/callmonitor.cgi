@@ -1,6 +1,4 @@
 #!/bin/sh
-
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
 auto_chk=''; man_chk=''

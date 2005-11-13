@@ -1,8 +1,8 @@
 #!/bin/sh
-PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+. "${CALLMONITOR_CFG:="/mod/etc/default.callmonitor/system.cfg"}"
+export PATH=$CALLMONITOR_PATH
 DAEMON=callmonitor
 
-. "${CALLMONITOR_CFG:="/mod/etc/default.$DAEMON/system.cfg"}"
 . "${CALLMONITOR_LIBDIR}/rc.sh"
 
 RC_TELEFON="/mod/pkg/$DAEMON/etc/init.d/rc.telefon"

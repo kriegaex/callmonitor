@@ -23,7 +23,7 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin 'Aktionen'
+sec_begin 'Aktionen bei Anrufen'
 
 cat << EOF
 <ul>

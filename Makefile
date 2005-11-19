@@ -1,6 +1,7 @@
 MOD := ds
 VERSION := $(shell cat .version)
-ARCHIVE := callmonitor-$(VERSION)-$(MOD).tar.bz2
+NAME := callmonitor-$(VERSION)
+ARCHIVE := $(NAME)-$(MOD).tar.bz2
 CONF := conf.$(MOD)
 
 echo:
@@ -17,10 +18,11 @@ install-ds: build
 build: $(ARCHIVE)
 
 $(ARCHIVE): check
-	tar cvjf $@ \
-	--format=oldgnu --owner=root --group=root --exclude=.svn \
-	-C base . \
-	-C ../$(CONF) . || (rm $(ARCHIVE) && false)
+	rm -rf ./$(NAME)
+	mkdir $(NAME)
+	tar c --exclude=.svn -C base . -C ../$(CONF) . | tar x -C $(NAME)
+	tar cvjf $@ --format=oldgnu --owner=root --group=root $(NAME) \
+	|| (rm $(ARCHIVE) && false)
 
 check:
 	find base conf.* -name .svn -prune \

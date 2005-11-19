@@ -23,6 +23,16 @@ cat << EOF
 EOF
 
 sec_end
+sec_begin 'Aktionen'
+
+cat << EOF
+<ul>
+<li><a href="/cgi-bin/file.cgi?id=listeners">Listeners bearbeiten</a></li>
+<li><a href="/cgi-bin/testcall.cgi">Testanruf</a></li>
+</ul>
+EOF
+
+sec_end
 sec_begin 'Rückwärtssuche'
 
 cat << EOF
@@ -34,6 +44,7 @@ cat << EOF
 <label for="r2">Flüchtig</label>
 <input type="radio" name="reverse" value="persistent"$pers_chk id="r3">
 <label for="r3">Dauerhaft</label>
+(<a href="/cgi-bin/file.cgi?id=callers">Callers bearbeiten</a>)
 </p>
 <h2>Bei Rückwärtssuche für lokale Rufnummern diese Vorwahl verwenden:</h2>
 <p>

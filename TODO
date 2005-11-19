@@ -1,7 +1,7 @@
-(Install-Skript und Patches für m4.* schreiben)
-
-Schema für Listeners schreiben, sobald Daniel das Framework fertig hat
-
-testcall.cgi integrieren
+Sobald Daniel das Framework fertig hat:
+- Schema für Listeners schreiben
+- testcall.cgi als Extra integrieren
 
 title bei d.*popup/message (?) parametrisierbar machen
+
+(Install-Skript und Patches für m4.* schreiben?)

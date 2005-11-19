@@ -77,7 +77,7 @@ case "$1" in
 			else 
 				deffile="/etc/default.$DAEMON/listeners.def"
 			fi
-			modreg file 'listeners' 'Listeners' "$deffile"
+			modreg file 'listeners' 'Listeners' 0 "$deffile"
 		fi
 		
 		if [ "$CALLMONITOR_ENABLED" != "yes" ]; then

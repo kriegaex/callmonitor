@@ -1,0 +1,5 @@
+CONFIG_FILE='/tmp/flash/callmonitor/listeners'
+CONFIG_SAVE='modsave flash'
+CONFIG_TYPE='text'
+
+CAPTION='Listeners (Callmonitor)'

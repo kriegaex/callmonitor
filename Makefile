@@ -1,6 +1,10 @@
 MOD := ds
-ARCHIVE := callmonitor-$(MOD).tar.bz2
+VERSION := $(shell cat .version)
+ARCHIVE := callmonitor-$(VERSION)-$(MOD).tar.bz2
 CONF := conf.$(MOD)
+
+echo:
+	echo $(VERSION)
 
 .PHONY: $(ARCHIVE) build install-ds clean check
 

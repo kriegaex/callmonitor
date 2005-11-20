@@ -4,16 +4,13 @@ NAME := callmonitor-$(VERSION)
 ARCHIVE := $(NAME)-$(MOD).tar.bz2
 CONF := conf.$(MOD)
 
-echo:
-	echo $(VERSION)
-
 .PHONY: $(ARCHIVE) build install-ds clean check
 
 install: install-$(MOD)
 
-install-ds: build
-	scp $(ARCHIVE) root@fritz.box:
-	ssh root@fritz.box 'tar xvj -C /mod < $(ARCHIVE)'
+#install-ds: build
+#	scp $(ARCHIVE) root@fritz.box:
+#	ssh root@fritz.box 'tar xvj -C /mod < $(ARCHIVE)'
 
 build: $(ARCHIVE)
 

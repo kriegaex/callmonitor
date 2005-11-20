@@ -13,7 +13,7 @@ if [ ! -d /var/run/$DAEMON ]; then
 fi
 
 case "$1" in
-	""|start|restart)
+	""|load|start|restart)
 		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
 			echo "Error[$DAEMON]: not configured" 1>&2
 			exit 1
@@ -69,9 +69,10 @@ restart() {
 }
 
 case "$1" in
-	"")
+	""|load)
 		if type modreg > /dev/null; then
 			modreg cgi $DAEMON 'Callmonitor'
+			modreg extra $DAEMON 'Testanruf' 1 'testcall'
 			if [ -r "/tmp/flash/$DAEMON/listeners.def" ]; then 
 				deffile="/tmp/flash/$DAEMON/listeners.def"
 			else 
@@ -95,6 +96,15 @@ case "$1" in
 			echo "$DAEMON already started."
 		else
 			start
+		fi
+		;;
+	unload)
+		stop
+		if type modunreg > /dev/null; then
+			modunreg file 'callers'
+			modunreg file 'listeners'
+			modunreg extra $DAEMON 'testcall'
+			modunreg cgi $DAEMON
 		fi
 		;;
 	start)
@@ -131,7 +141,7 @@ case "$1" in
 		kill -USR1 "$pid" > /dev/null 2>&1
 		;;
 	*)
-		echo "Usage: $0 [start|stop|restart|status|reload]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|status|reload]" 1>&2
 		exit 1
 		;;
 esac

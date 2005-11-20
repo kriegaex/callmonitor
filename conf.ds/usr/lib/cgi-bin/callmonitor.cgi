@@ -28,7 +28,7 @@ sec_begin 'Aktionen bei Anruf'
 cat << EOF
 <ul>
 <li><a href="/cgi-bin/file.cgi?id=listeners">Listeners bearbeiten</a></li>
-<li><a href="/cgi-bin/extra.cgi/callmonitor/testcall">Testanruf</a></li>
+<li><a href="/cgi-bin/extras.cgi/callmonitor/testcall">Testanruf</a></li>
 </ul>
 EOF
 

@@ -9,7 +9,7 @@ target_val="$(httpd -e "$TESTCALL_TARGET")"
 
 new_testcall_form() {
 	cat <<EOF
-<form action="/cgi-bin/testcall.cgi" method="post">
+<form action="/cgi-bin/extra.cgi/callmonitor/testcall" method="post">
 <table><tr>
 	<td><label for="source">Quellrufnummer:</label> </td>
 	<td><input type="text" name="source" id="source" value="$source_val">

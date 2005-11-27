@@ -5,7 +5,7 @@ require webui
 latest_call() {
 	local NUMBER="$1"
 	wget "http://127.0.0.1/cgi-bin/webcm?getpage=../html/de/FRITZ!Box_Anrufliste.csv" -O - |
-	grep "$NUMBER" | head -1
+	fgrep ";$NUMBER;" | head -1
 }
 
 call_status() {

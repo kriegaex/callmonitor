@@ -27,7 +27,11 @@ start_daemon() {
 	fi
 
 	echo -n "Starting $DAEMON..."
-	"$DAEMON" > /dev/null 2>&1
+	if [ "$CALLMONITOR_DEBUG" = "yes" ]; then
+		"$DAEMON" --debug > /dev/null 2>&1
+	else 
+		"$DAEMON" > /dev/null 2>&1
+	fi
 	check_status
 }
 stop_daemon() {

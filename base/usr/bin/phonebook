@@ -70,9 +70,10 @@ __get() {
 __get_local() {
 	local MSISDN="$1" CALLER
 	CALLER="$(sed -ne "/^${PRE_RE}${MSISDN}${SEP_RE}/{
-		s/^${PRE_RE}${MSISDN}${SEP_RE}//p;q}" \
+		s/^${PRE_RE}${MSISDN}${SEP_RE}/:/p;q}" \
 		"$CALLMONITOR_TRANSIENT" "$CALLMONITOR_PERSISTENT" 2> /dev/null)"
 	if [ ! -z "$CALLER" ]; then
+		CALLER="${CALLER#:}"
 		__debug "phone book contains {$MSISDN -> $CALLER}"
 		echo "$CALLER"
 		return 0

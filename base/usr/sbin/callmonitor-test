@@ -9,6 +9,7 @@ export PATH=$CALLMONITOR_PATH
 require callmonitor
 
 __debug() { echo "$*"; }
+__info() { echo "$*"; }
 
 __configure
 __read

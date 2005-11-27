@@ -1,8 +1,19 @@
 #!/bin/sh
 . /usr/lib/libmodcgi.sh
 
-auto_chk=''; man_chk=''
-if [ "$CALLMONITOR_ENABLED" = "yes" ]; then auto_chk=' checked'; else man_chk=' checked'; fi
+auto_chk='' man_chk=''
+if [ "$CALLMONITOR_ENABLED" = "yes" ]; then
+	auto_chk=' checked'
+else
+	man_chk=' checked'
+fi
+
+normal_chk='' debug_chk=''
+if [ "$CALLMONITOR_DEBUG" = "yes" ]; then
+	normal_chk=' checked'
+else 
+	debug_chk=' checked'
+fi
 
 no_chk='' trans_chk='' pers_chk=''
 case "$CALLMONITOR_REVERSE" in

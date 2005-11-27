@@ -1,14 +1,13 @@
 #!/bin/sh
 readonly PROGRAM="${0##*/}"
-readonly LOG="/var/log/callmonitor.log"
 usage() {
 	cat <<EOF
 Usage:	callmonitor [OPTION]...
 Options:
 	-f	run in foreground
 	-s	stop the callmonitor
-	--debug	log rule matching/executed commands to $LOG
-		(or to stderr with -f)
+	--debug	log rule matching/executed commands to syslog
+		(and to stderr with -f)
 	--help	show this help
 EOF
 }
@@ -47,21 +46,20 @@ fi
 
 # set up logging
 __log_setup() {
-	if $DEBUG; then
-		if ! $FOREGROUND; then
-			__debug() { echo "$PROGRAM: $*" >> "$LOG"; }
-		else
-			__debug() { echo "$PROGRAM: $*" >&2; }
-		fi
-		__debug "entering DEBUG mode"
-	else
-		__debug() :
-	fi
 	if $FOREGROUND; then
+		if $DEBUG; then
+			__debug() { logger -s -t "$PROGRAM" -p daemon.debug "$*"; }
+		fi
+		__info() { logger -s -t "$PROGRAM" -p daemon.info "$*"; }
 		incoming_call() { __incoming_call "$@"; }
 	else
+		if $DEBUG; then
+			__debug() { logger -t "$PROGRAM" -p daemon.debug "$*"; }
+		fi
+		__info() { logger -t "$PROGRAM" -p daemon.info "$*"; }
 		incoming_call() { __incoming_call "$@" > /dev/null 2>&1; }
 	fi
+	__debug "entering DEBUG mode"
 }
 
 __work() {

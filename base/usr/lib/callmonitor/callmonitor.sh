@@ -15,6 +15,7 @@
 # these stubs/defaults can be overridden (the configuration from system.cfg
 # is needed, too; it must be included separately)
 __debug() :
+__info() :
 incoming_call() { __incoming_call "$@"; }
 PHONEBOOK_OPTIONS=""
 
@@ -44,9 +45,7 @@ __incoming_call() {
 	if [ ! -z "$MSISDN" ]; then
 		CALLER="$(phonebook $PHONEBOOK_OPTIONS get "$MSISDN")"
 	fi
-	__debug "MSISDN='$MSISDN'"
-	__debug "CALLER='$CALLER'"
-	__debug "CALLED='$CALLED'"
+	__info "MSISDN='$MSISDN' CALLED='$CALLED' CALLER='$CALLER'" 
 
 	if [ ! -r /mod/etc/callmonitor.listeners ]; then
 		__debug "/mod/etc/callmonitor.listeners is missing"

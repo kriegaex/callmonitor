@@ -230,6 +230,7 @@ case "$1" in
 		;;
 	process)
 		for mail in "$SPOOL"/*; do
+			if [ ! -e "$mail" ]; then continue; fi
 			id="$(basename "$mail" .tar.gz)"
 			process_mail $id
 		done

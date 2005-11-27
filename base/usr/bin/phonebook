@@ -13,8 +13,8 @@ END
 # configure
 . "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
 
-. "$CALLMONITOR_LIBDIR/phonebook.sh"
-. "$CALLMONITOR_LIBDIR/lock.sh"
+require phonebook
+require lock
 
 # format of phone book: ${PRE}${MSISDN}${SEP}${CALLER}
 PRE="$CALLMONITOR_PREFIX"

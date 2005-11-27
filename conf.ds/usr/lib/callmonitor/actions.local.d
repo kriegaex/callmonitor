@@ -1,1 +1,1 @@
-/var/flash/callmonitor/actions.d
+/tmp/flash/callmonitor/actions.local.d

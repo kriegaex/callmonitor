@@ -7,7 +7,7 @@
 #	CALLER	caller's name
 #	CALLED	number called
 
-. "${CALLMONITOR_LIBDIR}/net.sh"
+require net
 
 # convert latin1 to utf8
 latin1_utf8() {

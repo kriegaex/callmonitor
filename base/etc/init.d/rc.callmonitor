@@ -3,7 +3,7 @@
 export PATH=$CALLMONITOR_PATH
 DAEMON=callmonitor
 
-. "${CALLMONITOR_LIBDIR}/rc.sh"
+require rc
 
 RC_TELEFON="/mod/pkg/$DAEMON/etc/init.d/rc.telefon"
 FIFO="/var/run/$DAEMON/fifo"

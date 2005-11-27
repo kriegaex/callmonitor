@@ -1,0 +1,204 @@
+#!/bin/sh
+readonly PROGRAM="mail"
+readonly SPOOL="/var/spool/mail"
+readonly MAILER="/sbin/mailer"
+readonly TMP="/tmp/$PROGRAM"
+
+usage() {
+	cat <<EOF
+Usage: $PROGRAM {send|sendonce|enqueue} [MAILER_OPTION]...
+       $PROGRAM {process|config}
+EOF
+	echo
+	"$MAILER" -?
+}
+
+if [ ! -e "$SPOOL" ]; then
+	mkdir -p "$SPOOL"
+fi
+
+unset From To SMTPServer accountname passwd
+
+config() {
+	allcfgconv -C ar7 -c -o - | 
+	sed -ne '/^emailnotify {/,/^}/{/=/{s/ *= */=/;s/^[	]*//;p}}'
+}
+
+case "$1" in
+	enqueue) 
+		# use push service configuration per default
+		eval "$(config)"
+		FROM="$From"
+		TO="$To"
+		MAILSERVER="$SMTPServer"
+		AUTHNAME="$accountname"
+		PASSWORD="$passwd"
+
+		# parse command line options
+		TEMP="$(getopt -o 'M:p:s:f:t:m:a:w:d:i:D:' -n "$PROGRAM" -- "$@")"
+		if [ $? != 0 ]; then 
+			usage 1>&2
+			exit 1
+		fi
+		eval "set -- $TEMP"
+
+		alias roll='set -- "$@" "$1"; shift'
+		while true; do
+			case "$1" in
+				-[MpD]) roll; roll ;;
+				-s) SUBJECT="$2"; shift 2 ;;
+				-f) FROM="$2"; shift 2 ;;
+				-t) TO="$2"; shift 2 ;;
+				-m) MAILSERVER="$2"; shift 2 ;;
+				-a) AUTHNAME="$2"; shift 2 ;;
+				-w) PASSWORD="$2"; shift 2 ;;
+				-d) ATTACHMENTS="$2"; shift 2 ;;
+				-i) INLINES="$2"; shift 2 ;;
+				--) shift; break ;;
+			esac
+		done
+		;;
+esac
+
+# apply a function to each item in a comma-separated list
+foreach() {
+	local - list="$1" IFS=,
+	alias func="$2"
+	set -f
+	for item in $1; do
+		eval 'func "$item"'
+	done
+	unalias func
+}
+
+# add an item to a comma-separated list
+add() {
+	local name="$1" item="$2"
+	eval "$name=\"\$$name\${$name:+,}\$item\""
+}
+
+# remove all items matching a pattern from the list
+remove() {
+	local name="$1" pattern="$2" TEMP
+	unset TEMP
+	eval "foreach \"\$$name\" remove_func"
+	eval "$name=\$TEMP"
+}
+remove_func() {
+	case "$1" in
+		$pattern) ;;
+		*) add TEMP "$1" ;;
+	esac
+}
+
+escape() {
+	echo "$1" | sed -e "s/'/'\\\\''/g;1s/^/'/;\$s/$/'/"
+}
+
+process_mail() {
+	local id="$1"
+	local archive="$SPOOL/$id.tar.gz"
+	local dir="$TMP/$id"
+	local tmparchive="$dir.tar.gz"
+	ln "$archive" "$TMP"/ && rm "$archive" || return 1
+	tar xzf "$tmparchive" -C "$TMP"
+	(
+		cd "$dir"
+		./send
+		if [ $? -eq 0 ]; then
+			rm "$tmparchive"
+		else
+			ln "$tmparchive" "$SPOOL"/ && rm "$tmparchive"
+		fi
+	)
+	rm -r "$dir"
+}
+
+case "$1" in
+	config)
+		config
+		;;
+	send)
+		shift
+		id="$("$0" enqueue "$@")"
+		process_mail "$id"
+		;;
+
+	# should be improved
+	sendonce)
+		shift
+		id="$("$0" enqueue "$@")"
+		process_mail "$id"
+		rm -f "$SPOOL/$id.tar.gz"
+		;;
+	process)
+		shift
+		for mail in "$SPOOL"/*; do
+			id="$(basename "$mail" .tar.gz)"
+			process_mail "$id"
+		done
+		;;
+	enqueue)
+		shift
+		id="$(date +%s)-$$"
+		dir="$TMP/$id"
+		mkdir -p "$dir"
+		COUNT=0
+		save_attachment() {
+			local file="$1" realpath
+			local basename="$(basename "$file")"
+			if [ "$file" = "-" ]; then
+				basename="stdin.txt"
+				realpath="-"
+			else
+				realpath="$(realpath "$file")"
+			fi
+			local subdir="$COUNT"
+			local target="$dir/$subdir/$basename"
+			mkdir "$dir/$subdir"
+			case "$realpath" in
+				/var/*|-) cat "$file" > "$target" ;;
+				*)	ln -s "$realpath" "$target" ;;
+			esac
+			add TEMP "$subdir/$basename"
+			let COUNT="$COUNT + 1"
+		}
+		if [ "${ATTACHMENTS+set}" ]; then
+			unset TEMP
+			foreach "$ATTACHMENTS" save_attachment
+			ATTACHMENTS="$TEMP"
+		fi
+		if [ "${INLINES+set}" ]; then
+			unset TEMP
+			foreach "$INLINES" save_attachment
+			INLINES="$TEMP"
+		fi
+		set -- "$MAILER" "$@" \
+			${SUBJECT+	   "-s" "$SUBJECT"} \
+			${FROM+		   "-f" "$FROM"} \
+			${TO+		   "-t" "$TO"} \
+			${MAILSERVER+  "-m" "$MAILSERVER"} \
+			${AUTHNAME+    "-a" "$AUTHNAME"} \
+			${PASSWORD+    "-w" "$PASSWORD"} \
+			${ATTACHMENTS+ "-d" "$ATTACHMENTS"} \
+			${INLINES+	   "-i" "$INLINES"}
+		script="$dir/send"
+		{
+			printf "#!/bin/sh\n"
+			for arg in "$@"; do
+				printf "%s " "$(escape "$arg")"
+			done
+			printf "\n"
+		} > "$script"
+		chmod +x "$script"
+		archive="$dir.tar.gz"
+		tar czf "$archive" -C "$TMP" "$id" && rm -r "$dir"
+		ln "$archive" "$SPOOL"/ && rm "$archive"
+		echo "$id"
+		;;
+	*)
+		usage 1>&2
+		exit 1
+		;;
+esac
+exit 0

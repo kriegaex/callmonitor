@@ -27,3 +27,4 @@ check:
 
 clean:
 	-rm callmonitor*.tar.bz2
+	-rm -r callmonitor-*

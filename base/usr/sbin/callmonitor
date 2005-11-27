@@ -17,7 +17,8 @@ EOF
 # $CALLMONITOR_CFG.
 
 . "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
-. "${CALLMONITOR_LIBDIR}/callmonitor.sh"
+
+require callmonitor
 
 # parse options
 TEMP="$(getopt -o 'fs' -l debug,help -n "$PROGRAM" -- "$@")" || exit 1

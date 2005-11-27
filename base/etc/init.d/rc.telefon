@@ -4,7 +4,7 @@ PATH=$CALLMONITOR_PATH
 DAEMON=telefon
 PKG=callmonitor
 
-. "${CALLMONITOR_LIBDIR}/rc.sh"
+require rc
 
 RC_CALLMONITOR="/mod/etc/init.d/rc.callmonitor"
 FIFO="/var/run/callmonitor/fifo"

@@ -1,4 +1,4 @@
-. "${CALLMONITOR_LIBDIR}/net.sh"
+require net
 
 # resolve numbers to names and addresses (www.dasoertliche.de); the number is
 # used as given (should be normalized beforehand)
@@ -18,8 +18,10 @@ normalize_number() {
 	local NUMBER="$1"
 	case $NUMBER in
 		0049*) NUMBER="0${NUMBER#0049}" ;;
-		0*) ;;
-		*) NUMBER="${CALLMONITOR_OKZ}${NUMBER}" ;; 
+		49*) if [ ${#NUMBER} -gt 10 ]; then NUMBER="0${NUMBER#49}"; fi ;;
+	esac
+	case $NUMBER in
+		[1-9]*) NUMBER="${CALLMONITOR_OKZ}${NUMBER}" ;; 
 	esac
 	echo "$NUMBER"
 }

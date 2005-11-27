@@ -6,7 +6,7 @@
 . "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
 export PATH=$CALLMONITOR_PATH
 
-. "${CALLMONITOR_LIBDIR}/callmonitor.sh"
+require callmonitor
 
 __debug() { echo "$*"; }
 

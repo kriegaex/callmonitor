@@ -1,6 +1,10 @@
+Möglichkeit, ein Log der verarbeiteten Anrufe zu schreiben
++ CGI-Seite, um das Log anzuzeigen/herunterzuladen
+-> man kann sehen, wie die Anrufe aussehen, die man matchen will (wie heißen
+zum Beispiel die SIP-Accounts)
+
 Sobald Daniel das Framework fertig hat:
 - Schema für Listeners schreiben
-- testcall.cgi als Extra integrieren
 
 title bei d.*popup/message (?) parametrisierbar machen
 

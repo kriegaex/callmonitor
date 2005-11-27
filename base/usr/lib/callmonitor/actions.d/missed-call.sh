@@ -24,8 +24,8 @@ call_date() {
 
 mail_call_subject() {
 	case $STATUS in
-		missed) echo "Verpasst: Anruf von $MSISDN" ;;
-		incoming) echo "Anruf von $MSISDN" ;;
+		missed) echo "Verpasst: Anruf${MSISDN:+" von $MSISDN"}" ;;
+		incoming) echo "Anruf${MSISDN:+" von $MSISDN"}" ;;
 		*) echo "Anruf" ;;
 	esac
 }

@@ -20,6 +20,7 @@ $(ARCHIVE): check
 	tar c --exclude=.svn -C base . -C ../$(CONF) . | tar x -C $(NAME)
 	tar cvjf $@ --format=oldgnu --owner=root --group=root $(NAME) \
 	|| (rm $(ARCHIVE) && false)
+	rm -rf ./$(NAME)
 
 check:
 	find base conf.* -name .svn -prune \

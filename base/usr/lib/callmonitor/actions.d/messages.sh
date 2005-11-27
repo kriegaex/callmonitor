@@ -61,5 +61,5 @@ vdr() {
 	rawmsg -p 2001 -t "MESG %s\nQUIT\n" -d default_vdr "$@"
 }
 default_vdr() {
-	echo "Anruf $MSISDN - $CALLER"
+	echo "Anruf${MSISDN:+" $MSISDN"}${CALLER:+" - $CALLER"}"
 }

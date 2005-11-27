@@ -41,10 +41,7 @@ __incoming_call() {
 	local NT=false
 	__debug "detected '$line'"
 	case $line in "IncomingCall from NT:"*) NT=true ;; esac
-	if [ -z "$MSISDN" ]; then
-		MSISDN="$CALLMONITOR_NOCLIP"
-		CALLER=""
-	else
+	if [ ! -z "$MSISDN" ]; then
 		CALLER="$(phonebook $PHONEBOOK_OPTIONS get "$MSISDN")"
 	fi
 	__debug "MSISDN='$MSISDN'"

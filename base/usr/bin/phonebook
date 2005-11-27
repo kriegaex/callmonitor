@@ -62,7 +62,6 @@ __get() {
 	CALLER="$(__get_local "$MSISDN")"
 	if [ $? -ne 0 ] && $REVERSE; then
 		CALLER="$(reverse_lookup "$MSISDN")"
-		CALLER="${CALLER:-"$CALLMONITOR_REVERSE_NOTFOUND"}"
 		__put_local "$MSISDN" "$CALLER" 1>&2 &
 	fi
 	echo "$CALLER"

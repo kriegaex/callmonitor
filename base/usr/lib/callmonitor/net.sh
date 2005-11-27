@@ -22,12 +22,13 @@ basic_auth() {
 
 # default message
 default_message() {
-	cat <<-EOM
-	Anruf an $CALLED
-
-	von $MSISDN
-	$CALLER
-	EOM
+	echo "Anruf${CALLED:+" an $CALLED"}"
+	if [ "${MSISDN:+set}" ]; then
+		echo "von $MSISDN"
+	fi
+	if [ "${CALLER:+set}" ]; then
+		echo "$CALLER"
+	fi
 }
 
 # check if nc has the timeout option -w

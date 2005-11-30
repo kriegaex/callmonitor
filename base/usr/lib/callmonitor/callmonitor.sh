@@ -31,27 +31,6 @@ __configure() {
 			fi
 		done
 	done
-
-	# read SIP[0-9] to address mapping
-	if [ -r /var/run/callmonitor/sip ]; then
-		. /var/run/callmonitor/sip
-	fi
-}
-
-__resolve_sip_dest() {
-	local dest="$1"
-	case "$dest" in
-		SIP[0-9])
-			if eval "[ \"\${${dest}_address+set}\" ]"; then
-				eval "echo \"\$${dest}_address\""
-			else
-				echo "$dest"
-			fi
-			;;
-		*)
-			echo "$dest"
-			;;
-	esac
 }
 
 # process an "IncomingCall" line
@@ -66,8 +45,7 @@ __incoming_call() {
 		SOURCE_NAME="$(phonebook $PHONEBOOK_OPTIONS get "$SOURCE")"
 	fi
 	if [ ! -z "$DEST" ]; then
-		DEST="$(__resolve_sip_dest "$DEST")"
-		DEST_NAME="$(phonebook $PHONEBOOK_OPTIONS localget "$DEST")"
+		DEST_NAME="$(phonebook $PHONEBOOK_OPTIONS --local get "$DEST")"
 	fi
 	__info "SOURCE='$SOURCE' DEST='$DEST' SOURCE_NAME='$SOURCE_NAME'" \
 		"DEST_NAME='$DEST_NAME' NT=$NT" 

@@ -1,4 +1,4 @@
-# lock $file by creating a symlink $file.lock -> PID
+# lock $file by creating a symlink $file.lock -> PID;
 lock() {
 	local file="$1" interval="${2:-1000000}" first=true
 	# race conditions between touch and realpath still possible

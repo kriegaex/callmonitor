@@ -2,10 +2,11 @@
 __usage() {
 	cat <<END
 Usage:	phonebook [option]... command [argument]...
-	phonebook get 053712931
+	phonebook {get|exists} 053712931
 	phonebook put 0357937829 "John Smith"
-	phonebook {localget|localexists} me@sip.example # no reverse lookup
+	phonebook init # prepare SIP to name mapping
 Options:
+	--local	suppress reverse lookup
 	--debug	enable extra debugging output
 	--help	show this help and exit
 END
@@ -23,18 +24,19 @@ PRE_RE="$CALLMONITOR_PREFIX_RE"
 SEP="$CALLMONITOR_SEPARATOR"
 SEP_RE="$CALLMONITOR_SEPARATOR_RE"
 
-REVERSE=false UPDATE=false DEBUG=false
+REVERSE=false UPDATE=false DEBUG=false LOCAL=false
 case "$CALLMONITOR_REVERSE" in
 	transient) REVERSE=true UPDATE=false ;;
 	persistent) REVERSE=true UPDATE=true ;;
 esac
 
 # parse options
-TEMP="$(getopt -o '' -l debug,help -n "${0##*/}" -- "$@")" || exit 1
+TEMP="$(getopt -o '' -l debug,local,help -n "${0##*/}" -- "$@")" || exit 1
 eval "set -- $TEMP"
 
 while true; do
 	case $1 in
+		--local) LOCAL=true ;;
 		--debug) DEBUG=true ;;
 		--help) __usage 1>&2; exit 1 ;;
 		--) shift; break ;;
@@ -42,6 +44,10 @@ while true; do
 	esac
 	shift
 done
+
+if $LOCAL; then
+	REVERSE=false
+fi
 
 # where to put new number-name pairs
 if $UPDATE; then
@@ -63,15 +69,17 @@ __get() {
 	NAME="$(__get_local "$NUMBER")"
 	exitval=$?
 	if [ $exitval -ne 0 ]; then
-		NUMBER_NORM="$(normalize_number "$NUMBER")"
+		NUMBER_NORM="$(normalize_address "$NUMBER")"
 		if [ "$NUMBER_NORM" != "$NUMBER" ]; then
 			NAME="$(__get_local "$NUMBER_NORM")"
 			exitval=$?
 		fi
 		if [ $exitval -ne 0 ] && $REVERSE; then
 			NAME="$(reverse_lookup "$NUMBER_NORM")"
-			__put_local "$NUMBER_NORM" "$NAME" 1>&2 &
-			exitval=0
+			if [ $? -eq 0 ]; then
+				__put_local "$NUMBER_NORM" "$NAME" 1>&2 &
+				exitval=0
+			fi
 		fi
 	fi
 	echo "$NAME"
@@ -116,11 +124,19 @@ __put_local() {
 	fi
 }
 
+init() {
+	RUN="/var/run/phonebook"
+	if [ ! -d "$RUN" ]; then
+		mkdir -p "$RUN"
+	fi
+	"$CALLMONITOR_LIBDIR/sipnames" > "$RUN"/sip
+}
+
 case $1 in
 	get) __get "$2" ;;
-	localget) REVERSE=false __get "$2" ;;
-	localexists) REVERSE=false __get "$2" > /dev/null ;;
+	exists) __get "$2" > /dev/null ;;
 	put) __put_local "$2" "$3" ;;
-	*)	 __usage 1>&2; exit 1 ;;
+	init) init ;;
+	*) __usage 1>&2; exit 1 ;;
 esac
 exit $?

@@ -26,7 +26,6 @@ start_daemon() {
 		ln -sf "$CALLMONITOR_LISTENERS" /mod/etc/callmonitor.listeners
 	fi
 	echo -n "Starting $DAEMON..."
-	"$CALLMONITOR_LIBDIR/sipnames" > /var/run/$DAEMON/sip
 	if [ "$CALLMONITOR_DEBUG" = "yes" ]; then
 		"$DAEMON" --debug > /dev/null 2>&1
 	else 
@@ -90,6 +89,8 @@ case "$1" in
 			fi
 			modreg file 'callers' 'Callers' 1 "$deffile"
 		fi
+
+		phonebook init
 		
 		if [ "$CALLMONITOR_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled" 1>&2

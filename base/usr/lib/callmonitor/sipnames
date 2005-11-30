@@ -2,66 +2,66 @@
 # put default names for each SIP account into the phone book
 # and print a mapping SIP[0-9] -> SIP address
 sip_info() {
-    allcfgconv -C voip -c -o - |
-    sed -ne '
-	# trace nested elements in hold space
-	/^[[:space:]]*[[:alnum:]][[:alnum:]_]* {/ {
-	    s/^[[:space:]]*\([[:alnum:]][[:alnum:]_]*\).*/\1/; H; d
+	allcfgconv -C voip -c -o - |
+	sed -ne '
+		# trace nested elements in hold space
+		/^[[:space:]]*[[:alnum:]][[:alnum:]_]* {/ {
+			s/^[[:space:]]*\([[:alnum:]][[:alnum:]_]*\).*/\1/; H; d
+		}
+		/^ *}/ {
+			x; s/\(.*\)\n.*$/\1/; h; d
+		}
+		/=/ {
+			# append parents, swap, and clean up
+			G
+			s/^[[:space:]]*\(.*\)\n\n\(.*\)/\2\n\1/
+			s/\n/_/g
+			s/[[:space:]]*=[[:space:]]*/=/
+			s/\$/\\$/g
+			s/`/\\`/g
+		}
+		/^voipcfg_ua[[:digit:]]\+_\(username\|registrar\)=/ {
+			s/^voipcfg_ua\([[:digit:]]\+\)\(.*\)$/\1 \2/
+			p
+		}
+	' | {
+		SIP_LIST=
+		while read num rest; do
+			account="SIP$(($num-1))"
+			case " $SIP_LIST " in
+				*" $account "*) ;;
+				*) SIP_LIST="$SIP_LIST${SIP_LIST:+ }$account" ;;
+			esac
+			echo "$account$rest"
+		done
+		echo "SIP_LIST=\"$SIP_LIST\""
 	}
-	/^ *}/ {
-	    x; s/\(.*\)\n.*$/\1/; h; d
-	}
-	/=/ {
-	    # append parents, swap, and clean up
-	    G
-	    s/^[[:space:]]*\(.*\)\n\n\(.*\)/\2\n\1/
-	    s/\n/_/g
-	    s/[[:space:]]*=[[:space:]]*/=/
-	    s/\$/\\$/g
-	    s/`/\\`/g
-	}
-	/^voipcfg_ua[[:digit:]]\+_\(username\|registrar\)=/ {
-	    s/^voipcfg_ua\([[:digit:]]\+\)\(.*\)$/\1 \2/
-	    p
-	}
-    ' | {
-	SIP_LIST=
-	while read num rest; do
-	    account="SIP$(($num-1))"
-	    case " $SIP_LIST " in
-		*" $account "*) ;;
-		*) SIP_LIST="$SIP_LIST${SIP_LIST:+ }$account" ;;
-	    esac
-	    echo "$account$rest"
-	done
-	echo "SIP_LIST=\"$SIP_LIST\""
-    }
 }
 
 shorten_registrar() {
-    local registrar="$1"
-    local short="$registrar"
-    short="${short%.*}"
-    short="${short%.??}"
-    short="${short##*.}"
-    echo "$short"
+	local registrar="$1"
+	local short="$registrar"
+	short="${short%.*}"
+	short="${short%.??}"
+	short="${short##*.}"
+	echo "$short"
 }
 
 add_phonebook_default() {
-    local address="$1" name="$2"
-    if ! phonebook localexists "$address"; then
-	phonebook put "$address" "$name"
-    fi
+	local address="$1" name="$2"
+	if ! phonebook --local exists "$address"; then
+		phonebook put "$address" "$name"
+	fi
 }
 
 eval "$(sip_info)"
 
 for sip in $SIP_LIST; do
-    eval 'username="$'$sip'_username"'
-    eval 'registrar="$'$sip'_registrar"'
-    address="$username@$registrar"
-    short="$(shorten_registrar "$registrar")"
+	eval 'username="$'$sip'_username"'
+	eval 'registrar="$'$sip'_registrar"'
+	address="$username@$registrar"
+	short="$(shorten_registrar "$registrar")"
 
-    add_phonebook_default "$address" "$short" > /dev/null 2>&1 &
-    echo "${sip}_address=\"$address\""
+	add_phonebook_default "$address" "$short" > /dev/null 2>&1 &
+	echo "${sip}_address=\"$address\""
 done

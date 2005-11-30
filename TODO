@@ -1,14 +1,3 @@
-Namen für Angerufenen/Namen für SIP? -> Testen (Idee von dsl123)
-
-Bessere Vorgaben für SIP-Namen aus voip.cfg ableiten (Registrar, evtl. gekürzt
-%.?? #sip.)
-
-Auflösung SIP? zu SIP-Adressen im Telefonbuch, analog zu Vorwahl bei normalen
-Nummmern: Erst "unbehandelte" Nummer nachschlagen, dann transformierte
-Vorteil SIP-Adressen: Unabhängigkeit von Verschiebungen
-    Analyse von voip.cfg beim Start des Callmonitors; Zuordnung SIPx ->
-    SIP-Adresse in Variablen, berechnete Namen in Telefonbuch
-
 Bei mehreren parallelen Schreibern sollte nur der letzte 'modsave flash'
 aufrufen.
 -> in lock() vor dem Versuch, die Sperre zu etablieren, eigene PID in

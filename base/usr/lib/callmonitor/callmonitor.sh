@@ -19,8 +19,8 @@ __info() :
 incoming_call() { __incoming_call "$@"; }
 PHONEBOOK_OPTIONS=""
 
-# import action functions
 __configure() {
+	# import action functions
 	local ACTIONSDIR ACTIONS
 	for ACTIONSDIR in "$CALLMONITOR_LIBDIR/actions.d" \
 		"$CALLMONITOR_LIBDIR/actions.local.d"; do
@@ -31,21 +31,46 @@ __configure() {
 			fi
 		done
 	done
+
+	# read SIP[0-9] to address mapping
+	if [ -r /var/run/callmonitor/sip ]; then
+		. /var/run/callmonitor/sip
+	fi
+}
+
+__resolve_sip_dest() {
+	local dest="$1"
+	case "$dest" in
+		SIP[0-9])
+			if eval "[ \"\${${dest}_address+set}\" ]"; then
+				eval "echo \"\$${dest}_address\""
+			else
+				echo "$dest"
+			fi
+			;;
+		*)
+			echo "$dest"
+			;;
+	esac
 }
 
 # process an "IncomingCall" line
 __incoming_call() {
 	local line="$1"
-	local MSISDN="${line##*caller: \"}"; MSISDN="${MSISDN%%\"*}"
-	local CALLED="${line##*called: \"}"; CALLED="${CALLED%%\"*}"
-	local CALLER="$MSISDN"
-	local NT=false
+	local SOURCE="${line##*caller: \"}"; SOURCE="${SOURCE%%\"*}"
+	local DEST="${line##*called: \"}"; DEST="${DEST%%\"*}"
+	local SOURCE_NAME="" DEST_NAME="" NT=false
 	__debug "detected '$line'"
-	case $line in "IncomingCall from NT:"*) NT=true ;; esac
-	if [ ! -z "$MSISDN" ]; then
-		CALLER="$(phonebook $PHONEBOOK_OPTIONS get "$MSISDN")"
+	case "$line" in "IncomingCall from NT:"*) NT=true ;; esac
+	if [ ! -z "$SOURCE" ]; then
+		SOURCE_NAME="$(phonebook $PHONEBOOK_OPTIONS get "$SOURCE")"
 	fi
-	__info "MSISDN='$MSISDN' CALLED='$CALLED' CALLER='$CALLER'" 
+	if [ ! -z "$DEST" ]; then
+		DEST="$(__resolve_sip_dest "$DEST")"
+		DEST_NAME="$(phonebook $PHONEBOOK_OPTIONS localget "$DEST")"
+	fi
+	__info "SOURCE='$SOURCE' DEST='$DEST' SOURCE_NAME='$SOURCE_NAME'" \
+		"DEST_NAME='$DEST_NAME' NT=$NT" 
 
 	if [ ! -r /mod/etc/callmonitor.listeners ]; then
 		__debug "/mod/etc/callmonitor.listeners is missing"
@@ -55,7 +80,11 @@ __incoming_call() {
 	fi
 
 	# make call information available to listeners
-	export MSISDN CALLED CALLER
+	export SOURCE DEST SOURCE_NAME DEST_NAME
+
+	# deprecated interface
+	export MSISDN="$SOURCE" CALLER="$SOURCE_NAME" CALLED="$DEST"
+
 	local msisdn_pattern called_pattern listener rule=0
 	cat /mod/etc/callmonitor.listeners | {
 		while read -r msisdn_pattern called_pattern listener
@@ -102,8 +131,8 @@ __process_rule() {
 	esac
 
 	# match
-	__match MSISDN "$MSISDN" "$msisdn_pattern" || return 1
-	__match CALLED "$CALLED" "$called_pattern" || return 1
+	__match SOURCE "$SOURCE" "$msisdn_pattern" || return 1
+	__match DEST "$DEST" "$called_pattern" || return 1
 
 	# execute listener
 	__debug_rule "SUCCEEDED: executing '$listener'"

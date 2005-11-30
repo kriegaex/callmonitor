@@ -5,13 +5,19 @@ require net
 reverse_lookup() {
 	local NUMBER="$1"
 	case "$NUMBER" in
-		00*|[1-9]*) return;
+		00*|[^0]*|*[^0-9]*) return;
 	esac
 	getmsg -w 5 www.dasoertliche.de "$NUMBER" \
 	-t '/DB4Web/es/oetb2suche/home.htm?main=Antwort&s=2&kw_invers=%s' |
-	sed -e '/<a class="blb" href="home.htm/!d' \
-	-e 's#<br>#, #g' -e 's#<[^>]*># #g' \
-	-e 's#[ 	][ 	]*# #g' -e 's#^ ##' -e 's# $##' -e 's# ,#,#'
+	sed -e '
+		/<a class="blb" href="home.htm/!d
+		s#<br>#, #g
+		s#<[^>]*># #g
+		s#[[:space:]]\+# #g
+		s#^ ##
+		s# $##
+		s# ,#,#
+	'
 }
 # normalize phone numbers
 normalize_number() {

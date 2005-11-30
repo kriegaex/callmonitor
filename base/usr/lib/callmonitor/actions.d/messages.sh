@@ -3,24 +3,25 @@
 #
 # These environment variables are set by callmonitor before calling
 # calling a listener:
-#	MSISDN	caller's number
-#	CALLER	caller's name
-#	CALLED	number called
+#	SOURCE		source number
+#	SOURCE_NAME	source name
+#	DEST		destination number
+#	DEST_NAME	destination name
 
 require net
 
 # convert latin1 to utf8
 latin1_utf8() {
 	hexdump -v -e '100/1 " %02x" "\n"' |
-	sed -f /proc/self/fd/9 9<<-\EOF |
-	s/ \([89ab]\)/c2\1/g
-	s/ c/c38/g
-	s/ d/c39/g
-	s/ e/c3a/g
-	s/ f/c3b/g
-	s/ //g
-	s/\(..\)/\\x\1/g
-	EOF
+	sed -e '
+		s/ \([89ab]\)/c2\1/g
+		s/ c/c38/g
+		s/ d/c39/g
+		s/ e/c3a/g
+		s/ f/c3b/g
+		s/ //g
+		s/\(..\)/\\x\1/g
+	' |
 	while IFS= read -r line; do echo -ne "$line"; done
 }
 
@@ -52,7 +53,7 @@ yac() {
 	rawmsg -p 10629 -t "%s\0" -d default_yac "$@"
 }
 default_yac() {
-	echo "@CALL$CALLER~$MSISDN"
+	echo "@CALL$SOURCE_NAME~$SOURCE"
 }
 
 # Usage: vdr [OPTION]... [MESSAGE]
@@ -61,5 +62,5 @@ vdr() {
 	rawmsg -p 2001 -t "MESG %s\nQUIT\n" -d default_vdr "$@"
 }
 default_vdr() {
-	echo "Anruf${MSISDN:+" $MSISDN"}${CALLER:+" - $CALLER"}"
+	echo "Anruf${SOURCE:+" $SOURCE"}${SOURCE_NAME:+" - $SOURCE_NAME"}"
 }

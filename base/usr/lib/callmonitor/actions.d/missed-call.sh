@@ -17,15 +17,15 @@ call_status() {
 	esac
 }
 call_date() {
-	local dd='\([0-9][0-9]\)'
+	local dd='\([[:digit:]]\{2\}\)'
 	echo "$1" | cut -d\; -f 2 |
 		sed -e "s/^$dd\.$dd\.$dd $dd:$dd\$/"'\2\1\4\520\3/'
 }
 
 mail_call_subject() {
 	case $STATUS in
-		missed) echo "Verpasst: Anruf${MSISDN:+" von $MSISDN"}" ;;
-		incoming) echo "Anruf${MSISDN:+" von $MSISDN"}" ;;
+		missed) echo "Verpasst: Anruf${SOURCE:+" von $SOURCE"}" ;;
+		incoming) echo "Anruf${SOURCE:+" von $SOURCE"}" ;;
 		*) echo "Anruf" ;;
 	esac
 }
@@ -50,7 +50,7 @@ mail_missed_call() {
 
 	# get call from log and check timestamp approximately (if the call has been
 	# accepted and has not finished yet, we might find old calls in the log)
-	export CALL="$(latest_call "$MSISDN")"
+	export CALL="$(latest_call "$SOURCE")"
 	if [ -z "$CALL" ]; then return 1; fi
 	time="$(date +%s -d "$(call_date "$CALL")")"
 	if [ -z "$time" ]; then return 1; fi

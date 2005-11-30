@@ -26,7 +26,9 @@ webui_login() {
 
 webui_config() {
 	allcfgconv -C ar7 -c -o - | 
-	sed -ne '/^webui {/,/^}/{/=/{s/ *= */=/;s/^[ 	]*//;p}}'
+	sed -ne '/^webui[[:space:]]*{/,/^}/{
+		/=/{s/[[:space:]]*=[[:space:]]*/=/;s/^[[:space:]]*//;p}
+	}'
 }
 webui_password() {
 	local password=

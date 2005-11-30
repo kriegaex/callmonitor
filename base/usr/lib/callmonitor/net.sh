@@ -6,10 +6,10 @@ CR=$(printf '\015')
 urlencode() {
 	echo -e $(echo -n "$*" |
 	hexdump -v -e '/1 "!%02x"' |
-	sed -f /proc/self/fd/9 9<<-\END )
+	sed '
 		s/!\(2[1ade]\|3[0-9]\|4[1-9a-f]\|5[0-9af]\|6[1-9a-f]\|7[0-9a]\)/\\x\1/g
 		s/!/%/g
-	END
+	')
 }
 
 # output an HTTP Authorization header (Basic)
@@ -22,12 +22,12 @@ basic_auth() {
 
 # default message
 default_message() {
-	echo "Anruf${CALLED:+" an $CALLED"}"
-	if [ "${MSISDN:+set}" ]; then
-		echo "von $MSISDN"
+	echo "Anruf${DEST:+" an $DEST"}"
+	if [ "${SOURCE:+set}" ]; then
+		echo "von $SOURCE"
 	fi
-	if [ "${CALLER:+set}" ]; then
-		echo "$CALLER"
+	if [ "${SOURCE_NAME:+set}" ]; then
+		echo "$SOURCE_NAME"
 	fi
 }
 

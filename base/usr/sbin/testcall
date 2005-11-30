@@ -2,7 +2,7 @@
 PROGRAM="${0##*/}"
 usage() {
 	cat <<EOF
-Usage:	$PROGRAM [OPTION]... CALLER [CALLED]
+Usage:	$PROGRAM [OPTION]... SOURCE [DEST]
 Options:
 	-n	generate call "from NT"
 	-s	output to stdout instead of callmonitor's fifo
@@ -27,8 +27,8 @@ done
 if [ $# -lt 1 ]; then
 	usage 1>&2; exit
 fi
-MSISDN="$1"
-CALLED="${2:-SIP0}"
+SOURCE="$1"
+DEST="${2:-SIP0}"
 
 # check if fifo exists and if callmonitor is running
 if ! $STDOUT; then
@@ -51,7 +51,7 @@ else
 	PATTERN='\nIncomingCall: ID 0, caller: "%s" called: "%s"\n'
 fi
 if $STDOUT; then
-	printf "$PATTERN" "$MSISDN" "$CALLED"
+	printf "$PATTERN" "$SOURCE" "$DEST"
 else
-	printf "$PATTERN" "$MSISDN" "$CALLED" > "$FIFO"
+	printf "$PATTERN" "$SOURCE" "$DEST" > "$FIFO"
 fi

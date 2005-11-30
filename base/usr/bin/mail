@@ -164,7 +164,9 @@ unset From To SMTPServer accountname passwd
 
 config() {
 	allcfgconv -C ar7 -c -o - | 
-	sed -ne '/^emailnotify {/,/^}/{/=/{s/ *= */=/;s/^[ 	]*//;p}}'
+	sed -ne '/^emailnotify[[:space:]]*{/,/^}/{
+		/=/{s/[[:space:]]*=[[:space:]]*/=/;s/^[[:space:]]*//;p}
+	}'
 }
 
 trap 'exit 2' HUP INT QUIT TERM

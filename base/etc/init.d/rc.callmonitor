@@ -41,12 +41,18 @@ stop_daemon() {
 
 start() {
 	local exitval=0
+	local telefon_running=false
+	if [ "$($RC_TELEFON status)" = "running" ]; then
+		telefon_running=true
+	fi
 	$RC_TELEFON stop
 	start_daemon || exitval=$?
-	if [ $exitval -ne 0 ]; then
-		$RC_TELEFON start null
-	else
-		$RC_TELEFON start fifo
+	if $telefon_running; then
+		if [ $exitval -ne 0 ]; then
+			$RC_TELEFON start null
+		else
+			$RC_TELEFON start fifo
+		fi
 	fi
 	return $exitval
 }

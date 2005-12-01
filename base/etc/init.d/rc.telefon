@@ -73,6 +73,9 @@ case "$1" in
 		restart
 		;;
 	reload)
+		if [ -z "$(pidof $DAEMON)" ]; then
+			exit
+		fi
 		ARG="$(get_arg)"
 		if [ "$ARG" != "$TELEFON_ARG" ]; then
 			restart

@@ -5,8 +5,12 @@ lock() {
 	if [ ! -e "$1" ] && ! touch "$1"; then
 		return 1
 	fi
-	file="$(realpath "$file")"
+	file="$(lock_filename "$file")"
 	local lock="$file.lock"
+	if [ -e "$lock" -a "$$" = "$(realpath "$lock" 2> /dev/null)" ]; then
+		# process already has lock
+		return 0
+	fi
 	while ! ln -s $$ "$lock" 2> /dev/null; do
 		if $first; then 
 			first=false
@@ -18,7 +22,9 @@ lock() {
 }
 
 unlock() {
-	local file="$(realpath "$1")"
+	local file="$(lock_filename "$1")"
 	local lock="$file.lock"
-	rm "$lock"
+	if [ -e "$lock" -a "$$" = "$(realpath "$lock" 2> /dev/null)" ]; then
+		rm "$lock"
+	fi
 }

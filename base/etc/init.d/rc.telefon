@@ -28,7 +28,7 @@ start_telefon() {
 }
 stop_telefon() {
 	echo -n "Stopping telefon..."
-	killall telefon > /dev/null 2>&1
+	killall -q telefon
 	check_status
 }
 

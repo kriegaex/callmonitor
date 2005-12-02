@@ -7,6 +7,7 @@ require rc
 
 RC_TELEFON="/mod/pkg/$DAEMON/etc/init.d/rc.telefon"
 FIFO="/var/run/$DAEMON/fifo"
+TELEFON_STATUS=
 
 if [ ! -d /var/run/$DAEMON ]; then
 	mkdir -p /var/run/$DAEMON
@@ -38,29 +39,47 @@ stop_daemon() {
 	"$DAEMON" -s
 	check_status
 }
+pause_telefon() {
+	TELEFON_STATUS="$($RC_TELEFON status)"
+	if [ "$TELEFON_STATUS" = "running" ]; then
+		$RC_TELEFON stop
+	fi
+}
+resume_telefon() {
+	if [ "$TELEFON_STATUS" = "running" ]; then
+		$RC_TELEFON start "$@"
+	fi
+}
 
+try_start() {
+	if [ "$CALLMONITOR_ENABLED" != "yes" ]; then
+		echo "$DAEMON is disabled" 1>&2
+		exit 1;
+	fi
+
+	start
+}
 start() {
 	local exitval=0
 	local telefon_running=false
-	if [ "$($RC_TELEFON status)" = "running" ]; then
-		telefon_running=true
+	if [ ! -z "$(pidof $DAEMON)" ]; then
+		echo "$DAEMON already started."
+		exit 0
 	fi
-	$RC_TELEFON stop
+	pause_telefon
 	start_daemon || exitval=$?
-	if $telefon_running; then
-		if [ $exitval -ne 0 ]; then
-			$RC_TELEFON start null
-		else
-			$RC_TELEFON start fifo
-		fi
+	if [ $exitval -ne 0 ]; then
+		resume_telefon null
+	else
+		resume_telefon fifo
 	fi
 	return $exitval
 }
 stop() {
 	local exitval=0
-	$RC_TELEFON stop
+	pause_telefon
 	stop_daemon || exitval=$?
-	$RC_TELEFON start null
+	resume_telefon null
 	return $exitval
 }
 fast_restart() {
@@ -76,54 +95,48 @@ restart() {
 	stop
 	start
 }
+register() {
+	if type modreg > /dev/null; then
+		modreg cgi $DAEMON 'Callmonitor'
+		modreg extra $DAEMON 'Testanruf' 1 'testcall'
+		if [ -r "/tmp/flash/$DAEMON/listeners.def" ]; then 
+			deffile="/tmp/flash/$DAEMON/listeners.def"
+		else 
+			deffile="/etc/default.$DAEMON/listeners.def"
+		fi
+		modreg file 'listeners' 'Listeners' 0 "$deffile"
+		if [ -r "/tmp/flash/$DAEMON/callers.def" ]; then 
+			deffile="/tmp/flash/$DAEMON/callers.def"
+		else 
+			deffile="/etc/default.$DAEMON/callers.def"
+		fi
+		modreg file 'callers' 'Callers' 1 "$deffile"
+	fi
+}
+unregister() {
+	if type modunreg > /dev/null; then
+		modunreg file 'callers'
+		modunreg file 'listeners'
+		modunreg extra $DAEMON 'testcall'
+		modunreg cgi $DAEMON
+	fi
+}
 
 case "$1" in
 	""|load)
-		if type modreg > /dev/null; then
-			modreg cgi $DAEMON 'Callmonitor'
-			modreg extra $DAEMON 'Testanruf' 1 'testcall'
-			if [ -r "/tmp/flash/$DAEMON/listeners.def" ]; then 
-				deffile="/tmp/flash/$DAEMON/listeners.def"
-			else 
-				deffile="/etc/default.$DAEMON/listeners.def"
-			fi
-			modreg file 'listeners' 'Listeners' 0 "$deffile"
-			if [ -r "/tmp/flash/$DAEMON/callers.def" ]; then 
-				deffile="/tmp/flash/$DAEMON/callers.def"
-			else 
-				deffile="/etc/default.$DAEMON/callers.def"
-			fi
-			modreg file 'callers' 'Callers' 1 "$deffile"
-		fi
-
+		register
 		phonebook init
-		
-		if [ "$CALLMONITOR_ENABLED" != "yes" ]; then
-			echo "$DAEMON is disabled" 1>&2
-			exit 1;
-		fi
-
-		if [ ! -z "$(pidof $DAEMON)" ]; then
-			echo "$DAEMON already started."
-		else
-			start
-		fi
+		try_start
 		;;
 	unload)
 		stop
-		if type modunreg > /dev/null; then
-			modunreg file 'callers'
-			modunreg file 'listeners'
-			modunreg extra $DAEMON 'testcall'
-			modunreg cgi $DAEMON
-		fi
+		unregister
+		;;
+	try-start)
+		try_start
 		;;
 	start)
-		if [ -z "$(pidof $DAEMON)" ]; then
-			start
-		else
-			exit 0
-		fi
+		start
 		;;
 	stop)
 		stop
@@ -152,7 +165,7 @@ case "$1" in
 		kill -USR1 "$pid" > /dev/null 2>&1
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status|reload]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|status|reload|try-start]" 1>&2
 		exit 1
 		;;
 esac

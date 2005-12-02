@@ -1,17 +1,3 @@
-Wenn telefon nicht (auch) auf localhost lauscht, kann er von der Box selbst
-nicht erreicht werden!! (z.B. vom Webinterface (ISDN-Endgeräte)
-
-telefon wird bei 'rc.callmonitor stop' gestartet, auch wenn es vorher gar nicht
-lief
-
-callmonitor wird durch .../bin/telefon gestartet, auch wenn vorher nicht lief
-und ENABLED=no
-    -> try-start oder ähnlich einbauen
-
-Standard-Message umbauen (DEST_NAME)
-
-mail_missed_call sollte nicht 1 zurückgeben, wenn keine Mail geschickt wurde
-
 Bei mehreren parallelen Schreibern sollte nur der letzte 'modsave flash'
 aufrufen.
 -> in lock() vor dem Versuch, die Sperre zu etablieren, eigene PID in

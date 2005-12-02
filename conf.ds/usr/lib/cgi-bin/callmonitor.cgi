@@ -22,6 +22,12 @@ case "$CALLMONITOR_REVERSE" in
 	persistent) pers_chk=' checked' ;;
 esac
 
+remote_tel_chk='' local_tel_chk=''
+case "$CALLMONITOR_TELEFON_IP" in
+	"") local_tel_chk=' checked' ;;
+	"*") remote_tel_chk=' checked' ;;
+esac
+
 sec_begin 'Starttyp'
 
 cat << EOF
@@ -68,13 +74,13 @@ sec_end
 sec_begin 'Telefon-Daemon'
 
 cat << EOF
-<h2>Adresse, unter der telefon auf Port 1011 lauscht:</h2>
+<h2>Zugriff von außen erlauben? (Port 1011)</h2>
 <p>
-<label for="ip">IP/Hostname:</label>
-<input type="text" name="telefon_ip" value="$(httpd -e "$CALLMONITOR_TELEFON_IP")" id="ip">
+<input type="radio" name="telefon_ip" value="*"$remote_tel_chk id="t1">
+<label for="t1">Ja</label>
+<input type="radio" name="telefon_ip" value=""$local_tel_chk id="t2">
+<label for="t2">Nein</label>
 </p>
-<p>Bei <kbd>*</kbd> ist telefon von überall erreichbar, bei keiner
-Adresse nur von der Fritz!Box selbst.<p>
 EOF
 
 sec_end

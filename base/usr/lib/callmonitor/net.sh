@@ -22,7 +22,13 @@ basic_auth() {
 
 # default message
 default_message() {
-	echo "Anruf${DEST:+" an $DEST"}"
+	if [ "${DEST_NAME:+set}" ]; then
+		echo "Anruf an $DEST_NAME"
+	elif [ "${DEST:+set}" ]; then
+		echo "Anruf an $DEST"
+	else
+		echo "Anruf"
+	fi
 	if [ "${SOURCE:+set}" ]; then
 		echo "von $SOURCE"
 	fi

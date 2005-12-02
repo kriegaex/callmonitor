@@ -7,7 +7,7 @@ lock() {
 	fi
 	file="$(lock_filename "$file")"
 	local lock="$file.lock"
-	if [ -e "$lock" -a "$$" = "$(realpath "$lock" 2> /dev/null)" ]; then
+	if [ "$$" = "$(read_lock_pid "$lock")" ]; then
 		# process already has lock
 		return 0
 	fi
@@ -24,7 +24,14 @@ lock() {
 unlock() {
 	local file="$(lock_filename "$1")"
 	local lock="$file.lock"
-	if [ -e "$lock" -a "$$" = "$(realpath "$lock" 2> /dev/null)" ]; then
+	if [ "$$" = "$(read_lock_pid "$lock")" ]; then
 		rm "$lock"
 	fi
+}
+
+read_lock_pid() {
+	local lock="$1" pid=
+	if [ ! -L "$lock" ]; then return 1; fi
+	pid="$(/bin/ls -l "$lock")"
+	echo ${pid#*-> }
 }

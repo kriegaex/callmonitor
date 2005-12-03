@@ -39,13 +39,25 @@ __incoming_call() {
 	local SOURCE="${line##*caller: \"}"; SOURCE="${SOURCE%%\"*}"
 	local DEST="${line##*called: \"}"; DEST="${DEST%%\"*}"
 	local SOURCE_NAME="" DEST_NAME="" NT=false
+	local SOURCE_OPTIONS= DEST_OPTIONS=
 	__debug "detected '$line'"
-	case "$line" in "IncomingCall from NT:"*) NT=true ;; esac
+	case "$line" in
+		"IncomingCall from NT:"*) NT=true ;; 
+	esac
+
+	# only one reverse lookup; it is expensive
+	if $NT; then
+		SOURCE_OPTIONS="--local"
+	else
+		DEST_OPTIONS="--local"
+	fi
 	if [ ! -z "$SOURCE" ]; then
-		SOURCE_NAME="$(phonebook $PHONEBOOK_OPTIONS get "$SOURCE")"
+		SOURCE_NAME="$(phonebook $PHONEBOOK_OPTIONS $SOURCE_OPTIONS \
+			get "$SOURCE")"
 	fi
 	if [ ! -z "$DEST" ]; then
-		DEST_NAME="$(phonebook $PHONEBOOK_OPTIONS --local get "$DEST")"
+		DEST_NAME="$(phonebook $PHONEBOOK_OPTIONS $DEST_OPTIONS \
+			get "$DEST")"
 	fi
 	__info "SOURCE='$SOURCE' DEST='$DEST' SOURCE_NAME='$SOURCE_NAME'" \
 		"DEST_NAME='$DEST_NAME' NT=$NT" 
@@ -58,7 +70,7 @@ __incoming_call() {
 	fi
 
 	# make call information available to listeners
-	export SOURCE DEST SOURCE_NAME DEST_NAME
+	export SOURCE DEST SOURCE_NAME DEST_NAME NT
 
 	# deprecated interface
 	export MSISDN="$SOURCE" CALLER="$SOURCE_NAME" CALLED="$DEST"

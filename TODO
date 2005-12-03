@@ -1,26 +1,13 @@
-Bei mehreren parallelen Schreibern sollte nur der letzte 'modsave flash'
-aufrufen.
--> in lock() vor dem Versuch, die Sperre zu etablieren, eigene PID in
-$file.lock.last schreiben; beim Freigeben der Sperre schauen, ob eigene PID in
-$file.lock.last steht -> falls ja: Aufräumen/Tür zu ;-)
-
 require umschreiben, so dass in einem Pfad gesucht wird: praktisch zum Testen
 neuer Funktionen
 
 Sobald Daniel das Framework fertig hat:
 - Schema für Listeners schreiben
 
-title bei d.*popup/message (?) parametrisierbar machen
-
-== Teilweise erledigt ==
-
-(Install-Skript und Patches für m4.* schreiben?)
-
-Möglichkeit, ein Log der verarbeiteten Anrufe zu schreiben
-+ CGI-Seite, um das Log anzuzeigen/herunterzuladen
--> man kann sehen, wie die Anrufe aussehen, die man matchen will (wie heißen
-zum Beispiel die SIP-Accounts)
-
 == Nicht so wichtig ==
 
+title bei d.*popup/message (?) parametrisierbar machen
+
 ar7cfgconv-"Parser" separieren
+
+(Install-Skript und Patches für m4.* schreiben?)

@@ -76,7 +76,7 @@ getmsg() {
 			-t|--template) TEMPLATE="$2"; shift ;;
 			-w|--timeout) TIMEOUT="$2"; shift ;;
 			-p|--port) PORT="$2"; shift ;;
-			--help) __getmsg_usage 1>&2; return 1 ;;
+			--help) __getmsg_usage >&2; return 1 ;;
 			--) shift; break ;;
 			*) ;; # should never happen
 		esac
@@ -132,7 +132,7 @@ rawmsg() {
 			-w|--timeout) TIMEOUT="$2"; shift ;;
 			-p|--port) PORT="$2"; shift ;;
 			-d|--default) DEFAULT="$2"; shift ;;
-			--help) __rawmsg_usage 1>&2; return 1 ;;
+			--help) __rawmsg_usage >&2; return 1 ;;
 			--) shift; break ;;
 			*) ;; # should never happen
 		esac

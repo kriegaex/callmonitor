@@ -38,7 +38,7 @@ while true; do
 	case $1 in
 		--local) LOCAL=true ;;
 		--debug) DEBUG=true ;;
-		--help) __usage 1>&2; exit 1 ;;
+		--help) __usage >&2; exit 1 ;;
 		--) shift; break ;;
 		*) ;; # should never happen
 	esac
@@ -77,7 +77,7 @@ __get() {
 		if [ $exitval -ne 0 ] && $REVERSE; then
 			NAME="$(reverse_lookup "$NUMBER_NORM")"
 			if [ $? -eq 0 ]; then
-				__put_local "$NUMBER_NORM" "$NAME" 1>&2 &
+				__put_local "$NUMBER_NORM" "$NAME" >&2 &
 				exitval=0
 			fi
 		fi
@@ -137,6 +137,6 @@ case $1 in
 	exists) __get "$2" > /dev/null ;;
 	put) __put_local "$2" "$3" ;;
 	init) init ;;
-	*) __usage 1>&2; exit 1 ;;
+	*) __usage >&2; exit 1 ;;
 esac
 exit $?

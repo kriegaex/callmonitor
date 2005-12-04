@@ -18,14 +18,14 @@ while true; do
 	case $1 in
 		-n) NT=true ;;
 		-s) STDOUT=true ;;
-		--help) usage 1>&2; exit 1 ;;
+		--help) usage >&2; exit 1 ;;
 		--) shift; break ;;
 		*) ;; # should never happen
 	esac
 	shift
 done
 if [ $# -lt 1 ]; then
-	usage 1>&2; exit
+	usage >&2; exit
 fi
 SOURCE="$1"
 DEST="${2:-SIP0}"
@@ -34,11 +34,11 @@ DEST="${2:-SIP0}"
 if ! $STDOUT; then
 	FIFO="/var/run/callmonitor/fifo"
 	if [ ! -p "$FIFO" ]; then
-		echo "callmonitor's fifo $FIFO does not exist" 1>&2
+		echo "callmonitor's fifo $FIFO does not exist" >&2
 		exit 1
 	fi
 	if ! pidof callmonitor > /dev/null; then
-		echo "callmonitor seems not to be running" 1>&2
+		echo "callmonitor seems not to be running" >&2
 		exit 1
 	fi
 fi

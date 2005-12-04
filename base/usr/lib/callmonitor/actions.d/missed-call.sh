@@ -52,23 +52,23 @@ mail_missed_call() {
 	# accepted and has not finished yet, we might find old calls in the log)
 	export CALL="$(latest_call "$SOURCE")"
 	if [ -z "$CALL" ]; then 
-		echo "could not find call from '$SOURCE' in log" 1>&2
+		echo "could not find call from '$SOURCE' in log" >&2
 		return 1
 	fi
 	time="$(date +%s -d "$(call_date "$CALL")")"
 	if [ -z "$time" ]; then
-		echo "did not understand time and date in '$CALL'" 1>&2
+		echo "did not understand time and date in '$CALL'" >&2
 		return 1
 	fi
 	let diff="$time - $start"
 	diff="${diff#-}" # abs()
 	if [ "$diff" -gt 90 ]; then # +- 1.5 minutes
-		echo "call '$CALL': time did not match (diff $diff)" 1>&2
+		echo "call '$CALL': time did not match (diff $diff)" >&2
 		return 1
 	fi
 	
 	export STATUS="$(call_status "$CALL")"
-	echo "call status: $STATUS" 1>&2
+	echo "call status: $STATUS" >&2
 	if [ "$STATUS" = missed ] ; then
 		mail_call_body | mail send -i - -s "$(mail_call_subject)" "$@"
 	fi

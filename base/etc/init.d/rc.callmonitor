@@ -16,7 +16,7 @@ fi
 case "$1" in
 	""|load|start|restart)
 		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
-			echo "Error[$DAEMON]: not configured" 1>&2
+			echo "Error[$DAEMON]: not configured" >&2
 			exit 1
 		fi
 		;;
@@ -53,7 +53,7 @@ resume_telefon() {
 
 try_start() {
 	if [ "$CALLMONITOR_ENABLED" != "yes" ]; then
-		echo "$DAEMON is disabled" 1>&2
+		echo "$DAEMON is disabled" >&2
 		exit 1;
 	fi
 
@@ -159,13 +159,13 @@ case "$1" in
 	reload)
 		pid="$(pidof $DAEMON)"
 		if [ -z "$pid" ]; then
-			echo "$DAEMON is not running" 1>&2
+			echo "$DAEMON is not running" >&2
 			exit 1
 		fi
 		kill -USR1 "$pid" > /dev/null 2>&1
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status|reload|try-start]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|status|reload|try-start]" >&2
 		exit 1
 		;;
 esac

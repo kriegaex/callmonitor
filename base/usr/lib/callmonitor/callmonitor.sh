@@ -82,11 +82,9 @@ __incoming_call() {
 			# comment or empty line
 			case $msisdn_pattern in \#*|"") continue ;; esac
 
-			# process rule asynchronously; currently stdin is coming from the
-			# pipe above, and the rule must not read from it
+			# process rule asynchronously
 			RULE=$rule \
-			__process_rule "$msisdn_pattern" "$called_pattern" "$listener" \
-			< /dev/null &
+			__process_rule "$msisdn_pattern" "$called_pattern" "$listener" &
 			let rule="$rule + 1"
 		done
 		wait
@@ -186,7 +184,7 @@ __read() {
 		echo "$line"
 		case $line in
 			"IncomingCall"*"caller: "*"called: "*)
-				incoming_call "$line" < /dev/null & ;;
+				incoming_call "$line" & ;;
 		esac
 	done
 }

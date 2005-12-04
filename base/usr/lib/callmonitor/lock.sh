@@ -14,7 +14,7 @@ lock() {
 	while ! ln -s $$ "$lock" 2> /dev/null; do
 		if $first; then 
 			first=false
-			echo "Waiting for exclusive lock on $file" 1>&2
+			echo "Waiting for exclusive lock on $file" >&2
 		fi
 		usleep $interval
 	done

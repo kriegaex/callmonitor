@@ -1,8 +1,13 @@
+bei nicht interaktiver Shell ist stdin von im Hintergrund ausgeführten
+Kommandos /dev/null -> inspizieren/vereinfachen
+
 require umschreiben, so dass in einem Pfad gesucht wird: praktisch zum Testen
 neuer Funktionen
 
 Sobald Daniel das Framework fertig hat:
 - Schema für Listeners schreiben
+
+telefon 1 a127.0.0.1 -> "stdio enabled" ? (Harald)
 
 == Nicht so wichtig ==
 

@@ -183,7 +183,7 @@ case "$1" in
 		# parse command line options
 		TEMP="$(getopt -o 'M:p:s:f:t:m:a:w:d:i:D:' -n "$PROGRAM" -- "$@")"
 		if [ $? != 0 ]; then 
-			usage 1>&2
+			usage >&2
 			exit 1
 		fi
 		eval "set -- $TEMP"
@@ -244,7 +244,7 @@ case "$1" in
 		ls -l "$SPOOL"
 		;;
 	*)
-		usage 1>&2
+		usage >&2
 		exit 1
 		;;
 esac

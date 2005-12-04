@@ -31,7 +31,7 @@ while true; do
 		-f) FOREGROUND=true ;;
 		-s) STOP=true ;;
 		--debug) DEBUG=true ;;
-		--help) usage 1>&2; exit ;;
+		--help) usage >&2; exit ;;
 		--) shift; break ;;
 		*) ;; # should never happen
 	esac

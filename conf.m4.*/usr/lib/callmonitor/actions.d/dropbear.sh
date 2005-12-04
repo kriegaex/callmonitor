@@ -11,5 +11,5 @@ dropon() {
 
 # stop ssh daemon
 dropoff() {
-	killall -q dropbear
+	killall -q -TERM dropbear
 }

@@ -23,12 +23,12 @@ get_arg() {
 
 start_telefon() {
 	echo -n "Starting telefon..."
-	telefon ${TELEFON_ARG+"$TELEFON_ARG"} < /dev/null 1>&3 3>&- 2> /dev/null
+	telefon ${TELEFON_ARG+"$TELEFON_ARG"} < /dev/null >&3 3>&- 2> /dev/null
 	check_status
 }
 stop_telefon() {
 	echo -n "Stopping telefon..."
-	killall -q telefon
+	killall -q -TERM telefon
 	check_status
 }
 
@@ -89,7 +89,7 @@ case "$1" in
 		fi
 		;;
 	*)
-		echo "Usage: $0 [start|stop|restart|status|reload]" 1>&2
+		echo "Usage: $0 [start|stop|restart|status|reload]" >&2
 		exit 1
 		;;
 esac

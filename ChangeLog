@@ -1,0 +1,66 @@
+0.2
+	* phonebook: 49er-Rufnummern (ohne 00, länger als 10 Zeichen) erkennen
+
+	* mail_missed_call: Bei verpassten Anrufen eine Mail schicken
+
+	* mail: Skript, um Mails bei Mailserverfehlern zwischenzuspeichern und
+	erneut zu schicken
+
+	* actions.local.d: Symlink war falsch
+
+	* callmonitor: MSISDN und CALLER sind ab sofort leer, wenn keine
+	Information übertragen/gefunden wurde. Für alternative Texte in den
+	Benachrichtigungen können die Listener sorgen
+
+	* callmonitor: Logging ins Syslog (hauptsächlich im Debug-Modus; aber
+	auch Infos über erkannte Anrufe)
+
+0.2.1
+	* phonebook: Ortsvorwahl erst hinzufügen, wenn Nummer im lokalen
+	Adressbuch nicht gefunden wurde; dann nochmal lokal, dann erst bei
+	dasoertliche probieren.
+	
+	* Regexps überarbeitet: [:alnum:], [:digit:], [:space:] etc., \?, \+
+	gehen doch!
+
+	* callmonitor: Umbenennen der Variablen MSISDN, CALLER, CALLED
+	    MSISDN -> SOURCE
+	    CALLER -> SOURCE_NAME
+	    CALLED -> DEST
+	    (neu)  -> DEST_NAME
+
+	* phonebook: Namen für Angerufenen/Namen für SIP? -> Testen (Idee von
+	dsl123)
+
+	Bessere Vorgaben für SIP-Namen aus voip.cfg ableiten (Registrar, evtl.
+	gekürzt %.?? #sip.)
+
+	Auflösung SIP? zu username@registrar im Telefonbuch, analog zu Vorwahl
+	bei normalen Nummmern: Erst "unbehandelte" Nummer nachschlagen, dann
+	transformierte 
+	Vorteil: Unabhängigkeit von Verschiebungen
+	    Analyse von voip.cfg beim Start; Zuordnung SIPx ->
+	    "SIP-Adresse" in Variablen, berechnete Namen in Telefonbuch
+
+0.2.3
+	* telefon: Wenn telefon nicht (auch) auf localhost lauscht, kann er
+	von der Box selbst nicht erreicht werden!! (z.B. vom Webinterface
+	(ISDN-Endgeräte)); Dank an carlo65
+
+	* init.d: telefon wird bei 'rc.callmonitor stop' gestartet, auch wenn
+	es vorher gar nicht lief
+
+	* init.d: callmonitor wird durch .../bin/telefon gestartet, auch wenn
+	vorher nicht lief und ENABLED=no -> try-start oder ähnlich einbauen
+
+	* callmonitor: Standard-Message umbauen (DEST_NAME)
+
+0.2.4
+	* phonebook: Bei mehreren parallelen Schreibern sollte nur der letzte
+	'modsave flash' aufrufen.
+
+	* phonebook: bei ausgehenden Anrufen (von NT) die angerufene Nummer
+	nachschlagen und nicht die eigene (Dank an tzhs)
+
+	* callmonitor: Auch die Variable NT ist nun für die Listener
+	verfügbar.

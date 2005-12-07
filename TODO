@@ -1,5 +1,9 @@
-bei nicht interaktiver Shell ist stdin von im Hintergrund ausgeführten
-Kommandos /dev/null -> inspizieren/vereinfachen
+useless use of cat
+
+telefon 1 ... | tee foo bar > baz !!
+-> telfifo enable /bla/blupp.fifo, telfifo disable /bla/blupp.fifo
+
+Auch bei abweichendem stdout telefon neustarten
 
 require umschreiben, so dass in einem Pfad gesucht wird: praktisch zum Testen
 neuer Funktionen

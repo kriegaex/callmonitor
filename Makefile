@@ -1,4 +1,4 @@
-MOD := ds
+MOD := dsmod
 VERSION := $(shell cat .version)
 NAME := callmonitor-$(VERSION)
 ARCHIVE := $(NAME)-$(MOD).tar.bz2

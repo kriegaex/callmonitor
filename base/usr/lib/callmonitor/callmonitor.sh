@@ -1,11 +1,11 @@
 # Syntax of rules in file /mod/etc/callmonitor.listeners (not compatible
 # with versions in mod-0.57 and earlier):
 #
-# [NT:|*:][!]<caller-regexp> [!]<called-regexp> <command line (rest)>
+# [NT:|*:][!]<source-regexp> [!]<dest-regexp> <command line (rest)>
 #
 # A command line is executed whenever an incoming call is detected that
-# matches both (egrep) regexps (caller and called). The prefix "NT:" to
-# the caller-regexp can be used to restrict matches to calls coming from
+# matches both (egrep) regexps (source and dest). The prefix "NT:" to
+# the source-regexp can be used to restrict matches to calls coming from
 # the S0 bus ("Incoming from NT"); no prefix ignores these calls (the
 # default); "*:" matches both. !-prefixed regexps must NOT match for the
 # rule to succeed.
@@ -75,39 +75,37 @@ __incoming_call() {
 	# deprecated interface
 	export MSISDN="$SOURCE" CALLER="$SOURCE_NAME" CALLED="$DEST"
 
-	local msisdn_pattern called_pattern listener rule=0
-	cat /mod/etc/callmonitor.listeners | {
-		while read -r msisdn_pattern called_pattern listener
-		do
-			# comment or empty line
-			case $msisdn_pattern in \#*|"") continue ;; esac
+	local source_pattern dest_pattern listener rule=0
+	while read -r source_pattern dest_pattern listener
+	do
+		# comment or empty line
+		case $source_pattern in \#*|"") continue ;; esac
 
-			# process rule asynchronously
-			RULE=$rule \
-			__process_rule "$msisdn_pattern" "$called_pattern" "$listener" &
-			let rule="$rule + 1"
-		done
-		wait
-	}
+		# process rule asynchronously
+		RULE=$rule \
+		__process_rule "$source_pattern" "$dest_pattern" "$listener" &
+		let rule="$rule + 1"
+	done < /mod/etc/callmonitor.listeners 
+	wait
 }
 
 # process a single rule
 __process_rule() {
-	local msisdn_pattern="$1" called_pattern="$2" listener="$3"
-	__debug_rule "processing rule '$msisdn_pattern' '$called_pattern' '$listener'"
+	local source_pattern="$1" dest_pattern="$2" listener="$3"
+	__debug_rule "processing rule '$source_pattern' '$dest_pattern' '$listener'"
 
 	# match and strip NT/* prefix
-	case $msisdn_pattern in
+	case $source_pattern in
 		NT:*)
 			if ! $NT; then 
 				__debug_rule "call is NOT from NT"
 				__debug_rule "FAILED"
 				return 1
 			fi
-			msisdn_pattern=${msisdn_pattern#NT:}
+			source_pattern=${source_pattern#NT:}
 			;;
 		\*:*)  
-			msisdn_pattern=${msisdn_pattern#\*:}
+			source_pattern=${source_pattern#\*:}
 			;;
 		*)
 			if $NT; then 
@@ -119,8 +117,8 @@ __process_rule() {
 	esac
 
 	# match
-	__match SOURCE "$SOURCE" "$msisdn_pattern" || return 1
-	__match DEST "$DEST" "$called_pattern" || return 1
+	__match SOURCE "$SOURCE" "$source_pattern" || return 1
+	__match DEST "$DEST" "$dest_pattern" || return 1
 
 	# execute listener
 	__debug_rule "SUCCEEDED: executing '$listener'"

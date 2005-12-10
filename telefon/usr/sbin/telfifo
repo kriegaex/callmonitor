@@ -6,22 +6,14 @@ Usage: telfifo {enable|disable} FIFO
 EOF
 }
 
-. /mod/etc/default.telefon/system.cfg
+. "${TELEFON_CFG:=/mod/etc/default.telefon/system.cfg}"
 
 if [ ! -d "$TELEFON_FIFODIR" ]; then
 	mkdir -p "$TELEFON_FIFODIR"
 fi
 
-if [ $# -lt 2 ]; then
-	_usage >&2
-	exit 1
-fi
-case "$2" in
-	/*) FIFO="$2" ;;
-	*)  FIFO="$PWD/$2" ;;
-esac
-
 _enable() {
+	local FIFO="$1"
 	if [ -d "$FIFO" ]; then
 		echo "$FIFO is a directory" >&2
 		exit 1
@@ -34,6 +26,7 @@ _enable() {
 	ln -s "$FIFO" "$TELEFON_FIFODIR/$id"
 }
 _disable() {
+	local FIFO="$1"
 	real_fifo="$(realpath "$FIFO")"
 	for fifo in "$TELEFON_FIFODIR"/*; do
 		[ -e "$fifo" ] || continue
@@ -44,13 +37,25 @@ _disable() {
 }
 
 case "$1" in
+	enable|disable)
+		if [ $# -lt 2 ]; then
+			_usage >&2
+			exit 1
+		fi
+		case "$2" in
+			/*) FIFO="$2" ;;
+			*)  FIFO="$PWD/$2" ;;
+		esac
+		;;
+esac
+case "$1" in
 	enable)
-		_disable
-		_enable
+		_disable "$FIFO"
+		_enable "$FIFO"
 		"$TELEFON_RC" reload
 		;;
 	disable)
-		_disable
+		_disable "$FIFO"
 		"$TELEFON_RC" reload
 		;;
 	list)

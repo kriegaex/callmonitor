@@ -1,13 +1,11 @@
 #!/bin/sh
 . "${CALLMONITOR_CFG:="/mod/etc/default.callmonitor/system.cfg"}"
-export PATH=$CALLMONITOR_PATH
+export PATH="$CALLMONITOR_PATH"
 DAEMON=callmonitor
 
 require rc
 
-RC_TELEFON="/mod/pkg/$DAEMON/etc/init.d/rc.telefon"
 FIFO="/var/run/$DAEMON/fifo"
-TELEFON_STATUS=
 
 if [ ! -d /var/run/$DAEMON ]; then
 	mkdir -p /var/run/$DAEMON
@@ -39,17 +37,6 @@ stop_daemon() {
 	"$DAEMON" -s
 	check_status
 }
-pause_telefon() {
-	TELEFON_STATUS="$($RC_TELEFON status)"
-	if [ "$TELEFON_STATUS" = "running" ]; then
-		$RC_TELEFON stop
-	fi
-}
-resume_telefon() {
-	if [ "$TELEFON_STATUS" = "running" ]; then
-		$RC_TELEFON start "$@"
-	fi
-}
 
 try_start() {
 	if [ "$CALLMONITOR_ENABLED" != "yes" ]; then
@@ -61,32 +48,24 @@ try_start() {
 }
 start() {
 	local exitval=0
-	local telefon_running=false
 	if [ ! -z "$(pidof $DAEMON)" ]; then
 		echo "$DAEMON already started."
 		exit 0
 	fi
-	pause_telefon
 	start_daemon || exitval=$?
-	if [ $exitval -ne 0 ]; then
-		resume_telefon null
-	else
-		resume_telefon fifo
+	if [ $exitval -eq 0 ]; then
+		telfifo enable "$FIFO"
 	fi
 	return $exitval
 }
 stop() {
 	local exitval=0
-	pause_telefon
+	telfifo disable "$FIFO"
 	stop_daemon || exitval=$?
-	resume_telefon null
 	return $exitval
 }
 fast_restart() {
-	# restart telefon only if needed
-	$RC_TELEFON reload
-	
-	# keep pipe alive while callmonitor is restartet
+	# keep pipe alive while callmonitor is restarted
 	cat "$FIFO" > /dev/null &
 	catpid=$!
 	stop_daemon && start_daemon && kill "$catpid" > /dev/null 2>&1
@@ -125,7 +104,7 @@ unregister() {
 case "$1" in
 	""|load)
 		register
-		phonebook init
+		phonebook init 2> /dev/null
 		try_start
 		;;
 	unload)

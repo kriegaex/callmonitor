@@ -22,12 +22,6 @@ case "$CALLMONITOR_REVERSE" in
 	persistent) pers_chk=' checked' ;;
 esac
 
-remote_tel_chk='' local_tel_chk=''
-case "$CALLMONITOR_TELEFON_IP" in
-	"") local_tel_chk=' checked' ;;
-	"*") remote_tel_chk=' checked' ;;
-esac
-
 sec_begin 'Starttyp'
 
 cat << EOF
@@ -67,19 +61,6 @@ cat << EOF
 <p>
 <label for="okz">Vorwahl:</label>
 <input type="text" name="okz" value="$(httpd -e "$CALLMONITOR_OKZ")" id="okz">
-</p>
-EOF
-
-sec_end
-sec_begin 'Telefon-Daemon'
-
-cat << EOF
-<h2>Zugriff von auﬂen erlauben? (Port 1011)</h2>
-<p>
-<input type="radio" name="telefon_ip" value="*"$remote_tel_chk id="t1">
-<label for="t1">Ja</label>
-<input type="radio" name="telefon_ip" value=""$local_tel_chk id="t2">
-<label for="t2">Nein</label>
 </p>
 EOF
 

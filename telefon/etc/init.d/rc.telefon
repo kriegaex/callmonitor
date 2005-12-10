@@ -1,0 +1,100 @@
+#!/bin/sh
+. "${TELEFON_CFG:="/mod/etc/default.telefon/system.cfg"}"
+export PATH="$TELEFON_PATH"
+DAEMON=telefon
+
+. "$TELEFON_LIBDIR"/rc.sh
+
+case "$TELEFON_IP" in
+	"") TELEFON_ARG="a127.0.0.1" ;;
+	\*) unset TELEFON_ARG ;;
+	*)  TELEFON_ARG="a$TELEFON_IP" ;;
+esac
+
+start() {
+	echo -n "Starting telefon..."
+	if [ ! -d "$TELEFON_FIFODIR" ]; then
+	    mkdir -p "$TELEFON_FIFODIR"
+	fi
+	(
+		set --
+		cd "$TELEFON_FIFODIR" || exit 1
+		for fifo in *; do
+			[ -e "$fifo" ] || continue
+			[ -w "$fifo" -a ! -d "$fifo" ] && set -- "$@" "$fifo"
+		done
+		out="${1-/dev/null}"
+		if [ $# -le 1 ]; then
+			telefon 1 ${TELEFON_ARG+"$TELEFON_ARG"} > "$out" 2> /dev/null &
+		else
+			shift
+			{
+				telefon 1 ${TELEFON_ARG+"$TELEFON_ARG"} |
+				tee "$@" > "$out"
+			} 2> /dev/null &
+		fi
+	)
+	check_status
+}
+stop() {
+	echo -n "Stopping telefon..."
+	killall -q -TERM telefon
+	check_status
+}
+
+restart() {
+	stop
+	start
+}
+
+register() {
+	if type modreg > /dev/null; then
+		modreg cgi $DAEMON 'Telefon'
+	fi
+}
+unregister() {
+	if type modreg > /dev/null; then
+		modunreg cgi $DAEMON
+	fi
+}
+
+case "$1" in
+	""|load)
+		register
+		if [ ! -z "$(pidof $DAEMON)" ]; then
+			echo "$DAEMON already started."
+		else
+			start
+		fi
+		;;
+	unload)
+		stop
+		unregister
+		;;
+	start)
+		start "$2"
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		restart
+		;;
+	reload)
+		if [ -z "$(pidof $DAEMON)" ]; then
+			exit
+		fi
+		restart
+		;;
+	status)
+		if [ -z "$(pidof $DAEMON)" ]; then
+			echo "stopped"
+		else
+			echo "running"
+		fi
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status|reload]" >&2
+		exit 1
+		;;
+esac

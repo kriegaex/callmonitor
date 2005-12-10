@@ -1,0 +1,4 @@
+#!/bin/sh
+. "${TELEFON_CFG:=/mod/etc/default.telefon/system.cfg}"
+
+"$TELEFON_RC" start

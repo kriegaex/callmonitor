@@ -14,7 +14,7 @@ esac
 start() {
 	echo -n "Starting telefon..."
 	if [ ! -d "$TELEFON_FIFODIR" ]; then
-	    mkdir -p "$TELEFON_FIFODIR"
+		mkdir -p "$TELEFON_FIFODIR"
 	fi
 	(
 		set --
@@ -72,7 +72,7 @@ case "$1" in
 		unregister
 		;;
 	start)
-		start "$2"
+		start
 		;;
 	stop)
 		stop

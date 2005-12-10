@@ -6,13 +6,7 @@ ARCHIVE := $(NAME)-$(MOD).tar.bz2
 TEL_ARCHIVE := $(TEL_NAME)-$(MOD).tar.bz2
 CONF := conf.$(MOD)
 
-.PHONY: $(ARCHIVE) build install-ds clean check
-
-install: install-$(MOD)
-
-#install-ds: build
-#	scp $(ARCHIVE) root@fritz.box:
-#	ssh root@fritz.box 'tar xvj -C /mod < $(ARCHIVE)'
+.PHONY: $(ARCHIVE) build clean check
 
 build: $(ARCHIVE) $(TEL_ARCHIVE)
 

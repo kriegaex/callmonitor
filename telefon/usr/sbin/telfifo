@@ -59,7 +59,11 @@ case "$1" in
 		"$TELEFON_RC" reload
 		;;
 	list)
-		ls -lF "$TELEFON_FIFODIR"
+		ls -l "$TELEFON_FIFODIR" |
+		sed -e '
+			/->/! d
+			s/^\(.*\)\([[:alnum:]_]\+\)[[:space:]]\+->[[:space:]]\+\(.*\)$/\2 \3/
+		'
 		;;
 	*)
 		_usage >&2

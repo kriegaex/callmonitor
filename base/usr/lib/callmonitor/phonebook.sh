@@ -9,7 +9,7 @@ reverse_lookup() {
 		00*|[^0]*|*[^0-9]*) return 1;
 	esac
 	getmsg -w 5 www.dasoertliche.de "$NUMBER" \
-	-t '/DB4Web/es/oetb2suche/home.htm?main=Antwort&s=2&kw_invers=%s' |
+	-t '/DB4Web/es/oetb2suche/home.htm?main=Antwort&s=2&SKN=2&kw_invers=%s' |
 	sed -e '
 		/<a class="blb" href="home.htm/!d
 		s#<br>#, #g

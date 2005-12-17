@@ -71,3 +71,7 @@
 	erlaubt die Registrierung mehrerer Leser der Ausgabe von telefon
 
 	* telefon: Ungepufferte Ausgabe (Dank an Harald): "telefon 1"
+
+2005-12-17
+
+	* rc.callmonitor: Vorhandensein des telefon-Pakets überprüfen

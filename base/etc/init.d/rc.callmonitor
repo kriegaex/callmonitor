@@ -3,6 +3,12 @@
 export PATH="$CALLMONITOR_PATH"
 DAEMON=callmonitor
 
+# we need the telefon package
+if ! has_package telefon; then
+	echo "Fatal error: Package 'telefon' is missing" >&2
+	exit 1
+fi
+
 require rc
 
 FIFO="/var/run/$DAEMON/fifo"

@@ -16,3 +16,13 @@ require() {
 	fi
 }
 CALLMONITOR_LOADED_system=
+
+# return true if another package is installed (no version check)
+has_package() {
+	local pkg="$1"
+	if [ -e "/mod/pkg/$pkg" ]; then
+		return 0
+	else
+		return 1
+	fi
+}

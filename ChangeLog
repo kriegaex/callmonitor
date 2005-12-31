@@ -75,3 +75,8 @@
 2005-12-17
 
 	* rc.callmonitor: Vorhandensein des telefon-Pakets überprüfen
+	* callmonitor.cgi: Debug-Modus über Web-Oberfläche einstellbar
+
+2006-01-01
+
+	* Makefile: Neue Paket-Konvention (./root, ./docs)

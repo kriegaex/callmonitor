@@ -8,10 +8,8 @@ else
 	man_chk=' checked'
 fi
 
-normal_chk='' debug_chk=''
+debug_chk=''
 if [ "$CALLMONITOR_DEBUG" = "yes" ]; then
-	normal_chk=' checked'
-else 
 	debug_chk=' checked'
 fi
 
@@ -30,6 +28,11 @@ cat << EOF
 <label for="e1">Automatisch</label>
 <input type="radio" name="enabled" value="no"$man_chk id="e2">
 <label for="e2">Manuell</label>
+</p>
+<p>
+<input type="hidden" name="debug" value="no">
+<input type="checkbox" name="debug" value="yes"$debug_chk id="d1">
+<label for="d1">mit Debug-Ausgaben (ins System-Log)</label>
 </p>
 EOF
 
@@ -60,7 +63,7 @@ cat << EOF
 <h2>Bei Rückwärtssuche für lokale Rufnummern diese Vorwahl verwenden:</h2>
 <p>
 <label for="okz">Vorwahl:</label>
-<input type="text" name="okz" value="$(httpd -e "$CALLMONITOR_OKZ")" id="okz">
+<input type="text" name="okz" value="$(httpd -e "$CALLMONITOR_OKZ")" size="5" id="okz">
 </p>
 EOF
 

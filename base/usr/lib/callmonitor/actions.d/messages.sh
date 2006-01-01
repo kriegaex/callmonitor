@@ -43,18 +43,15 @@ dboxpopup() {
 dboxmessage() {
 	getmsg -t "/control/message?nmsg=%s" -d default_dboxmessage "$@"
 }
-default_dboxpopup() {
-    default_dbox
-}
-default_dboxmessage() {
-    default_dbox
-}
+default_dboxpopup() { default_dbox; }
+default_dboxmessage() { default_dbox; }
 default_dbox() {
-    default_message | latin1_utf8 | sed -e 's/,[[:space:]]\+/\n/g'
+	default_message | latin1_utf8 | sed -e 's/,[[:space:]]\+/\n/g'
 }
 dreammessage() {
-	getmsg -t "/cgi-bin/xmessage?timeout=10&caption=Telefonanruf&body=%s" "$@"
+	getmsg -t "/cgi-bin/xmessage?timeout=10&caption=Telefonanruf&body=%s" -d default_dreammessage "$@"
 }
+default_dreammessage() { default_message; }
 
 # Usage: yac [OPTION]... [MESSAGE]
 # Send a message to a yac listener (Yet Another Caller ID Program)

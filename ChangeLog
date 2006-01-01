@@ -81,4 +81,4 @@
 
 	* Makefile: Neue Paket-Konvention (./root, ./docs)
 	* dboxpopup, dboxmessage: Standardnachricht in UTF-8 mit
-	Zeilenwechseln statt Kommas
+	Zeilenwechseln statt Kommas (Dank an IngoB)

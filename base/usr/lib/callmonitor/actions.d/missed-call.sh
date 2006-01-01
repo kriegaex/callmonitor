@@ -31,13 +31,14 @@ mail_call_subject() {
 }
 mail_call_body() {
 	{
-		default_message
+		default_mail
 		if [ "${CALL:+set}" ]; then
 			echo
 			echo "$CALL"
 		fi
 	} | sed -e 's/$//'
 }
+default_mail() { default_message; }
 	
 mail_missed_call() {
 	local start="$(date +%s)" time diff

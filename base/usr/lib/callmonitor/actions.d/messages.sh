@@ -38,10 +38,19 @@ for_leases() {
 
 # simple *box listeners
 dboxpopup() {
-	getmsg -t "/control/message?popup=%s" "$@"
+	getmsg -t "/control/message?popup=%s" -d default_dboxpopup "$@"
 }
 dboxmessage() {
-	getmsg -t "/control/message?nmsg=%s" "$@"
+	getmsg -t "/control/message?nmsg=%s" -d default_dboxmessage "$@"
+}
+default_dboxpopup() {
+    default_dbox
+}
+default_dboxmessage() {
+    default_dbox
+}
+default_dbox() {
+    default_message | latin1_utf8 | sed -e 's/,[[:space:]]\+/\n/g'
 }
 dreammessage() {
 	getmsg -t "/cgi-bin/xmessage?timeout=10&caption=Telefonanruf&body=%s" "$@"

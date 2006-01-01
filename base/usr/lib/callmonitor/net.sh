@@ -53,6 +53,7 @@ Send a message in a simple HTTP GET request.
   -t, --template=FORMAT  use this printf-style template to build the URL,
                          all following messages are URL-encoded and filled
                          into this template
+  -d, --default=CODE     default for first parameter (eval'ed later)
   -p, --port=PORT        use a special target port (default 80)
   -w, --timeout=SECONDS  set connect timeout (default 3)
   -v, --virtual=VIRT     use a different virtual host (default HOST)
@@ -63,9 +64,9 @@ EOH
 }
 getmsg() {
 	local - IP= URL= TEMPLATE= VIRTUAL= USERNAME= PASSWORD= AUTH= TEMP=
-	local PORT=80 TIMEOUT=3
-	TEMP="$(getopt -n getmsg -o U:P:v:t:w:p: \
-		-l user:,password:,virtual:,port:,template:,timeout:,help -- "$@")"
+	local DEFAULT=default_message PORT=80 TIMEOUT=3
+	TEMP="$(getopt -n getmsg -o U:P:v:t:w:p:d: \
+		-l user:,password:,virtual:,port:,template:,timeout:,default:,help -- "$@")"
 	if [ $? -ne 0 ]; then return 1; fi
 	set -f; eval "set -- $TEMP"; set +f
 	while true; do
@@ -76,6 +77,7 @@ getmsg() {
 			-t|--template) TEMPLATE="$2"; shift ;;
 			-w|--timeout) TIMEOUT="$2"; shift ;;
 			-p|--port) PORT="$2"; shift ;;
+			-d|--default) DEFAULT="$2"; shift ;;
 			--help) __getmsg_usage >&2; return 1 ;;
 			--) shift; break ;;
 			*) ;; # should never happen
@@ -88,7 +90,7 @@ getmsg() {
 		if [ $# -eq 0 ]; then echo "Missing template" >&2; return 1; fi
 		TEMPLATE="$1"; shift
 	fi
-	if [ $# -eq 0 ]; then set -- "$(default_message)"; fi
+	if [ $# -eq 0 ]; then set -- "$(eval "$DEFAULT")"; fi
 	VIRTUAL="${VIRTUAL:-$IP}"
 	if [ -n "$USERNAME" -o -n "$PASSWORD" ]; then
 		AUTH="$(basic_auth "$USERNAME" "$PASSWORD")"

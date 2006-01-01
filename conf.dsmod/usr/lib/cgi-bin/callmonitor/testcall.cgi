@@ -7,6 +7,13 @@ nt_chk="${TESTCALL_NT:+" checked"}"
 source_val="$(httpd -e "$TESTCALL_SOURCE")"
 dest_val="$(httpd -e "$TESTCALL_DEST")"
 
+html_encode() {
+    while IFS= read -r line; do
+	httpd -e "$line"
+	echo
+    done
+}
+
 new_testcall_form() {
 	cat <<EOF
 <form action="/cgi-bin/extras.cgi/callmonitor/testcall" method="post">
@@ -33,7 +40,7 @@ show_testcall_results() {
 	echo -n "<p>Testanruf von \"$source_val\"${TESTCALL_NT:+ (NT)}"
 	echo "${TESTCALL_DEST:+ an \"$dest_val\"}:</p>"
 	echo -n '<pre>'
-	do_testcall
+	do_testcall | html_encode
 	echo '</pre>'
 }
 

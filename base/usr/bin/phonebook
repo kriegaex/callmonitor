@@ -1,10 +1,11 @@
 #!/bin/sh
-__usage() {
+_usage() {
 	cat <<END
 Usage:	phonebook [option]... command [argument]...
 	phonebook {get|exists} 053712931
 	phonebook put 0357937829 "John Smith"
 	phonebook init # prepare SIP to name mapping
+	phonebook tidy # tidy up phonebook (sort)
 Options:
 	--local	suppress reverse lookup
 	--debug	enable extra debugging output
@@ -43,7 +44,7 @@ while true; do
 	case $1 in
 		--local) LOCAL=true ;;
 		--debug) DEBUG=true ;;
-		--help) __usage >&2; exit 1 ;;
+		--help) _usage >&2; exit 1 ;;
 		--) shift; break ;;
 		*) ;; # should never happen
 	esac
@@ -69,20 +70,20 @@ else
 	__debug() :
 fi
 
-__get() {
+_get() {
 	local NUMBER="$1" NUMBER_NORM NAME exitval
-	NAME="$(__get_local "$NUMBER")"
+	NAME="$(_get_local "$NUMBER")"
 	exitval=$?
 	if [ $exitval -ne 0 ]; then
 		NUMBER_NORM="$(normalize_address "$NUMBER")"
 		if [ "$NUMBER_NORM" != "$NUMBER" ]; then
-			NAME="$(__get_local "$NUMBER_NORM")"
+			NAME="$(_get_local "$NUMBER_NORM")"
 			exitval=$?
 		fi
 		if [ $exitval -ne 0 ] && $REVERSE; then
 			NAME="$(reverse_lookup "$NUMBER_NORM")"
 			if [ $? -eq 0 ] && $CACHE; then
-				__put_local "$NUMBER_NORM" "$NAME" >&2 &
+				_put_local "$NUMBER_NORM" "$NAME" >&2 &
 				exitval=0
 			fi
 		fi
@@ -91,7 +92,7 @@ __get() {
 	return $exitval
 }
 
-__get_local() {
+_get_local() {
 	local NUMBER="$1" NAME
 	NAME="$(sed -ne "/^${PRE_RE}${NUMBER}${SEP_RE}/{
 		s/^${PRE_RE}${NUMBER}${SEP_RE}/:/p;q}" \
@@ -105,7 +106,7 @@ __get_local() {
 	return 1
 }
 
-__put_local() {
+_put_local() {
 	local NUMBER="$1" NAME="$2"
 	__debug "putting {$NUMBER -> $NAME} into phone book $PHONEBOOK"
 
@@ -129,7 +130,7 @@ __put_local() {
 	fi
 }
 
-init() {
+_init() {
 	RUN="/var/run/phonebook"
 	if [ ! -d "$RUN" ]; then
 		mkdir -p "$RUN"
@@ -137,11 +138,39 @@ init() {
 	"$CALLMONITOR_LIBDIR/sipnames" > "$RUN"/sip
 }
 
+_tidy() {
+	local exitval=1
+	local book="$CALLMONITOR_PERSISTENT"
+	echo -n "Tidying up $book: " >&2
+	if lock "$book"; then
+		echo -n "sorting and cleansing, " >&2
+		local TMPFILE="$CALLMONITOR_TMPDIR/.callmonitor.tmp"
+		sort -u "$book" | 
+		sed -e '
+		    /^[[:space:]]*$/d
+		    s/^[[:space:]]*//
+		    s/[[:space:]]\+/	/
+		' > "$TMPFILE" && cat "$TMPFILE" > "$book"
+		exitval=$?
+		rm "$TMPFILE"
+		unlock "$book"
+	fi
+	if [ $exitval -eq 0 ] && $PERSISTENT; then
+		callmonitor_store
+	fi
+	if [ $exitval -eq 0 ]; then
+		echo "done." >&2
+	else
+		echo "failed." >&2
+	fi
+}
+
 case $1 in
-	get) __get "$2" ;;
-	exists) __get "$2" > /dev/null ;;
-	put) __put_local "$2" "$3" ;;
-	init) init ;;
-	*) __usage >&2; exit 1 ;;
+	get) _get "$2" ;;
+	exists) _get "$2" > /dev/null ;;
+	put) _put_local "$2" "$3" ;;
+	init) _init ;;
+	tidy) _tidy ;;
+	*) _usage >&2; exit 1 ;;
 esac
 exit $?

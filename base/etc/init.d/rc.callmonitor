@@ -84,6 +84,7 @@ register() {
 	if type modreg > /dev/null; then
 		modreg cgi $DAEMON 'Callmonitor'
 		modreg extra $DAEMON 'Testanruf' 1 'testcall'
+		modreg extra $DAEMON 'Wartung' 1 'maint'
 		if [ -r "/tmp/flash/$DAEMON/listeners.def" ]; then 
 			deffile="/tmp/flash/$DAEMON/listeners.def"
 		else 
@@ -103,6 +104,7 @@ unregister() {
 		modunreg file 'callers'
 		modunreg file 'listeners'
 		modunreg extra $DAEMON 'testcall'
+		modunreg extra $DAEMON 'maint'
 		modunreg cgi $DAEMON
 	fi
 }

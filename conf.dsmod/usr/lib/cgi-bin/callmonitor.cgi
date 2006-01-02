@@ -6,26 +6,26 @@ CHECKED=' checked'
 
 auto_chk='' man_chk=''
 if [ "$CALLMONITOR_ENABLED" = "yes" ]; then
-	auto_chk="$CHECKED"
+	auto_chk=$CHECKED
 else
-	man_chk="$CHECKED"
+	man_chk=$CHECKED
 fi
 
 debug_chk=''
 if [ "$CALLMONITOR_DEBUG" = "yes" ]; then
-	debug_chk="$CHECKED"
+	debug_chk=$CHECKED
 fi
 
 reverse_chk=''
 if [ "$CALLMONITOR_REVERSE" = "yes" ]; then
-	reverse_chk="$CHECKED"
+	reverse_chk=$CHECKED
 fi
 
 no_chk='' trans_chk='' pers_chk=''
 case "$CALLMONITOR_REVERSE_CACHE" in
-	no) no_chk="$CHECKED" ;;
-	transient) trans_chk="$CHECKED" ;;
-	persistent) pers_chk="$CHECKED" ;;
+	no) no_chk=$CHECKED ;;
+	transient) trans_chk=$CHECKED ;;
+	persistent) pers_chk=$CHECKED ;;
 esac
 
 SYSLOG='System-Log'
@@ -66,7 +66,7 @@ cat << EOF
 <p>
 <input type="hidden" name="reverse" value="no">
 <input type="checkbox" name="reverse" value="yes"$reverse_chk id="r4">
-<label for="r4">Rückwärtssuche durchführen</label> (<a href="http://www.dasoertliche.de/">DasÖrtliche</a>)
+<label for="r4">Rückwärtssuche durchführen</label> (bei <a href="http://www.dasoertliche.de/">DasÖrtliche</a>)
 </p>
 <h2>Suchergebnis zwischenspeichern?</h2>
 <p>

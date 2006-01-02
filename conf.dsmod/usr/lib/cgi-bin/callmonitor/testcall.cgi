@@ -55,7 +55,7 @@ EOF
 
 cgi_main() {
 	if [ "${TESTCALL_SOURCE+set}" ]; then
-		cgi_begin 'Testanruf...'
+		cgi_begin 'Testanruf ...'
 		show_testcall_results
 	else
 		cgi_begin 'Testanruf'

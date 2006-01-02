@@ -24,10 +24,15 @@ PRE_RE="$CALLMONITOR_PREFIX_RE"
 SEP="$CALLMONITOR_SEPARATOR"
 SEP_RE="$CALLMONITOR_SEPARATOR_RE"
 
-REVERSE=false UPDATE=false DEBUG=false LOCAL=false
+REVERSE=false CACHE=true PERSISTENT=false DEBUG=false LOCAL=false
 case "$CALLMONITOR_REVERSE" in
-	transient) REVERSE=true UPDATE=false ;;
-	persistent) REVERSE=true UPDATE=true ;;
+	yes) REVERSE=true ;;
+	no)  REVERSE=false ;;
+esac
+case "$CALLMONITOR_REVERSE_CACHE" in
+	no)  CACHE=false PERSISTENT=false ;;
+	transient)  CACHE=true PERSISTENT=false ;;
+	persistent) CACHE=true PERSISTENT=true ;;
 esac
 
 # parse options
@@ -50,7 +55,7 @@ if $LOCAL; then
 fi
 
 # where to put new number-name pairs
-if $UPDATE; then
+if $PERSISTENT; then
 	PHONEBOOK="$CALLMONITOR_PERSISTENT"
 else
 	PHONEBOOK="$CALLMONITOR_TRANSIENT"
@@ -76,7 +81,7 @@ __get() {
 		fi
 		if [ $exitval -ne 0 ] && $REVERSE; then
 			NAME="$(reverse_lookup "$NUMBER_NORM")"
-			if [ $? -eq 0 ]; then
+			if [ $? -eq 0 ] && $CACHE; then
 				__put_local "$NUMBER_NORM" "$NAME" >&2 &
 				exitval=0
 			fi
@@ -119,7 +124,7 @@ __put_local() {
 	else
 		__debug "locking $PHONEBOOK failed"
 	fi
-	if $UPDATE; then
+	if $PERSISTENT; then
 		callmonitor_store
 	fi
 }

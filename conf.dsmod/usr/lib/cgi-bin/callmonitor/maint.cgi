@@ -41,11 +41,7 @@ sec_begin 'Callers'
 let LINES="$({ 
 	grep '[[:print:]]' "$CALLMONITOR_PERSISTENT" | wc -l; } 2>/dev/null)+0"
 let BYTES="$(wc -c < "$CALLMONITOR_PERSISTENT" 2>/dev/null)+0"
-if [ $BYTES -lt 2048 ]; then
-	SIZE="$BYTES B"
-else
-	SIZE="$(($BYTES/1024)) KB"
-fi
+SIZE="$BYTES Bytes"
 
 cat << EOF
 <p>$LINES Einträge (Größe: $SIZE)

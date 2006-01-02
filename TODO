@@ -1,3 +1,16 @@
+Funktioniert LCD-Ansteuerung von DBox?
+
+http://dbox/control/lcd?lock=1&clear=1&xpos=20&ypos=27&size=22&font=2&text=Anruftext-hierhin&update=1
+http://dbox/control/lcd?lock=0
+
+vgl.
+http://cvs.tuxbox.org/tuxbox/apps/tuxbox/neutrino/daemons/nhttpd/api_doku.txt
+    mehrzeilig %0a
+    UTF-8
+    wieviel Platz?? Koordinaten?
+
+----------------------------------------------------------------------
+
 require umschreiben, so dass in einem Pfad gesucht wird: praktisch zum Testen
 neuer Funktionen
 

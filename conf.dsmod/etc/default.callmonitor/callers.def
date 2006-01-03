@@ -3,3 +3,4 @@ CONFIG_SAVE='modsave flash'
 CONFIG_TYPE='text'
 
 CAPTION='Callers (Callmonitor)'
+DESCRIPTION="Syntax: &lt;number&gt; &lt;name&gt;"

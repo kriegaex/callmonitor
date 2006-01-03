@@ -85,3 +85,5 @@
 	* phonebook: Rückwärtssuche ohne Caching möglich (Dank an mode)
 	* maint.cgi: Wartungsseite zum Aufräumen des Telefonbuchs
 	* phonebook: Löschen von Einträgen (phonebook remove <id>)
+
+	callmonitor-0.5 veröffentlicht

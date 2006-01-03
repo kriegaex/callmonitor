@@ -27,6 +27,7 @@ if [ -n "$MAINT_CMD" ]; then
 		phonebook_init)
 			echo "<p>SIP-Update wird durchgeführt.</p>"
 			phonebook init 2>&1 | pre
+			;;
 		*)
 			echo "<p>Unbekannter Befehl</p>"
 			;;

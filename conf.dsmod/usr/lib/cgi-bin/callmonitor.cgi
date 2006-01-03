@@ -1,6 +1,6 @@
 #!/bin/sh
-. /usr/lib/libmodcgi.sh
 . "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
+require cgi
 
 CHECKED=' checked'
 

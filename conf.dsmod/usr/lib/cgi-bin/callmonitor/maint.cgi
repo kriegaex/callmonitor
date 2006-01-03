@@ -1,6 +1,6 @@
 #!/bin/sh
-. /usr/lib/libmodcgi.sh
 . "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
+require cgi
 
 SELF=maint
 TITLE='Callmonitor-Wartung'
@@ -18,14 +18,15 @@ EOF
 eval "$(modcgi cmd maint)"
 
 if [ -n "$MAINT_CMD" ]; then
-	cgi_begin 'Callmonitor-Wartung ...'
+	cgi_begin "$TITLE ..."
 	case "$MAINT_CMD" in
-		tidy)
+		phonebook_tidy)
 			echo "<p>Räume Callers auf:</p>"
-			echo -n "<pre>"
-			httpd -e "$(phonebook tidy 2>&1)"
-			echo "</pre>"
+			phonebook tidy 2>&1 | pre
 			;;
+		phonebook_init)
+			echo "<p>SIP-Update wird durchgeführt.</p>"
+			phonebook init 2>&1 | pre
 		*)
 			echo "<p>Unbekannter Befehl</p>"
 			;;
@@ -35,7 +36,7 @@ if [ -n "$MAINT_CMD" ]; then
 	exit
 fi
 
-cgi_begin 'Callmonitor-Wartung' extras
+cgi_begin "$TITLE" extras
 sec_begin 'Callers'
 
 let LINES="$({ 
@@ -48,7 +49,10 @@ cat << EOF
 	<a href="/cgi-bin/file.cgi?id=callers">bearbeiten</a></p>
 <p>Beim Aufräumen werden die Einträge im Telefonbuch sortiert und Leerzeilen
 entfernt.</p>
+<p>SIP-Update erstellt Standardeinträge für neu angelegte
+Internetrufnummern.</p>
 EOF
-cmd_button tidy 'Aufräumen'
+cmd_button phonebook_tidy 'Aufräumen'
+cmd_button phonebook_init 'SIP-Update'
 sec_end
 cgi_end

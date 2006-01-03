@@ -1,5 +1,9 @@
 #!/bin/sh
-. /usr/lib/libmodcgi.sh
+. "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
+require cgi
+
+SELF=testcall
+TITLE="Testanruf"
 
 eval "$(modcgi source:dest:nt testcall)"
 
@@ -7,13 +11,9 @@ nt_chk="${TESTCALL_NT:+" checked"}"
 source_val="$(httpd -e "$TESTCALL_SOURCE")"
 dest_val="$(httpd -e "$TESTCALL_DEST")"
 
-html_encode() {
-	sed -e 's/&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'
-}
-
 new_testcall_form() {
-	cat <<EOF
-<form action="/cgi-bin/extras.cgi/callmonitor/testcall" method="post">
+	cat << EOF
+<form action="$SELF" method="post">
 <table><tr>
 	<td><label for="source">Quellrufnummer:</label> </td>
 	<td><input type="text" name="source" id="source" value="$source_val">
@@ -36,9 +36,7 @@ do_testcall() {
 show_testcall_results() {
 	echo -n "<p>Testanruf von \"$source_val\"${TESTCALL_NT:+ (NT)}"
 	echo "${TESTCALL_DEST:+ an \"$dest_val\"}:</p>"
-	echo -n '<pre>'
-	do_testcall | html_encode
-	echo '</pre>'
+	do_testcall | pre
 }
 
 config_button() {
@@ -52,18 +50,14 @@ EOF
 
 cgi_main() {
 	if [ "${TESTCALL_SOURCE+set}" ]; then
-		cgi_begin 'Testanruf ...'
+		cgi_begin "$TITLE ..."
 		show_testcall_results
 	else
-		cgi_begin 'Testanruf'
+		cgi_begin "$TITLE"
 	fi
 	new_testcall_form
 	config_button
 	cgi_end
 }
 
-if [ "$1" = "form" ]; then
-	new_testcall_form
-else
-	cgi_main
-fi
+cgi_main

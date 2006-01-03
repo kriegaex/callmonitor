@@ -56,12 +56,15 @@ add_phonebook_default() {
 
 eval "$(sip_info)"
 
+echo "Generating short names for all SIP accounts ..." >&2
 for sip in $SIP_LIST; do
 	eval 'username="$'$sip'_username"'
 	eval 'registrar="$'$sip'_registrar"'
 	address="$username@$registrar"
 	short="$(shorten_registrar "$registrar")"
 
+	echo "$sip: $address -> $short" >&2
 	add_phonebook_default "$address" "$short" > /dev/null 2>&1 &
 	echo "${sip}_address=\"$address\""
 done
+echo "done." >&2

@@ -18,6 +18,7 @@ END
 
 require phonebook
 require lock
+require util
 
 # format of phone book: ${PRE}${NUMBER}${SEP}${NAME}
 PRE="$CALLMONITOR_PREFIX"
@@ -93,8 +94,9 @@ _get() {
 }
 
 _get_local() {
-	local NUMBER="$1" NAME
-	NAME="$(sed -ne "/^${PRE_RE}${NUMBER}${SEP_RE}/{
+	local NUMBER="$1" NAME NUMBER_RE
+	NUMBER_RE="$(echo "$NUMBER" | sed_re_escape)"
+	NAME="$(sed -ne "/^${PRE_RE}${NUMBER_RE}${SEP_RE}/{
 		s/^${PRE_RE}${NUMBER}${SEP_RE}/:/p;q}" \
 		"$CALLMONITOR_TRANSIENT" "$CALLMONITOR_PERSISTENT" 2> /dev/null)"
 	if [ ! -z "$NAME" ]; then
@@ -107,7 +109,8 @@ _get_local() {
 }
 
 _put_local() {
-	local NUMBER="$1" NAME="$2"
+	local NUMBER="$1" NAME="$2" NUMBER_RE
+	NUMBER_RE="$(echo "$NUMBER" | sed_re_escape)"
 	__debug "putting {$NUMBER -> $NAME} into phone book $PHONEBOOK"
 
 	# beware of concurrent updates
@@ -115,7 +118,7 @@ _put_local() {
 		local TMPFILE="$CALLMONITOR_TMPDIR/.callmonitor.tmp"
 		{ 
 			if [ -e "$PHONEBOOK" ]; then
-				sed -e "/^${PRE_RE}${NUMBER}${SEP_RE}/d" "$PHONEBOOK"
+				sed -e "/^${PRE_RE}${NUMBER_RE}${SEP_RE}/d" "$PHONEBOOK"
 			fi
 			echo "${PRE}${NUMBER}${SEP}${NAME}"
 		} > "$TMPFILE"

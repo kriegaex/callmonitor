@@ -1,5 +1,6 @@
 #!/bin/sh
 require webui
+require net
 
 # remember to login first
 latest_call() {
@@ -36,7 +37,7 @@ mail_call_body() {
 			echo
 			echo "$CALL"
 		fi
-	} | sed -e 's/$//'
+	} | sed -e "s/\$/$CR/"
 }
 default_mail() { default_message; }
 	

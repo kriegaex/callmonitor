@@ -8,10 +8,7 @@ source_val="$(httpd -e "$TESTCALL_SOURCE")"
 dest_val="$(httpd -e "$TESTCALL_DEST")"
 
 html_encode() {
-    while IFS= read -r line; do
-	httpd -e "$line"
-	echo
-    done
+	sed -e 's/&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'
 }
 
 new_testcall_form() {

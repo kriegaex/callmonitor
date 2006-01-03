@@ -2,7 +2,7 @@
 _usage() {
 	cat <<END
 Usage:	phonebook [option]... command [argument]...
-	phonebook {get|exists} 053712931
+	phonebook {get|exists|remove} 053712931
 	phonebook put 0357937829 "John Smith"
 	phonebook init # prepare SIP to name mapping
 	phonebook tidy # tidy up phonebook (sort)
@@ -108,10 +108,20 @@ _get_local() {
 	return 1
 }
 
+_remove() {
+	MODE=remove _put_or_remove "$@"
+}
 _put_local() {
+	MODE=put _put_or_remove "$@"
+}
+_put_or_remove() {
 	local NUMBER="$1" NAME="$2" NUMBER_RE
 	NUMBER_RE="$(echo "$NUMBER" | sed_re_escape)"
-	__debug "putting {$NUMBER -> $NAME} into phone book $PHONEBOOK"
+	if [ "$MODE" = "remove" ]; then
+		__debug "removing $NUMBER from phone book $PHONEBOOK"
+	else
+		__debug "putting {$NUMBER -> $NAME} into phone book $PHONEBOOK"
+	fi
 
 	# beware of concurrent updates
 	if lock "$PHONEBOOK"; then
@@ -120,7 +130,9 @@ _put_local() {
 			if [ -e "$PHONEBOOK" ]; then
 				sed -e "/^${PRE_RE}${NUMBER_RE}${SEP_RE}/d" "$PHONEBOOK"
 			fi
-			echo "${PRE}${NUMBER}${SEP}${NAME}"
+			if [ "$MODE" = "put" ]; then
+				echo "${PRE}${NUMBER}${SEP}${NAME}"
+			fi
 		} > "$TMPFILE"
 		cat "$TMPFILE" > "$PHONEBOOK"
 		rm "$TMPFILE"
@@ -171,6 +183,7 @@ _tidy() {
 case $1 in
 	get) _get "$2" ;;
 	exists) _get "$2" > /dev/null ;;
+	remove) _remove "$2" ;;
 	put) _put_local "$2" "$3" ;;
 	init) _init ;;
 	tidy) _tidy ;;

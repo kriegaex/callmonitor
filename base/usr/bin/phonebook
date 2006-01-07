@@ -26,7 +26,7 @@ PRE_RE="$CALLMONITOR_PREFIX_RE"
 SEP="$CALLMONITOR_SEPARATOR"
 SEP_RE="$CALLMONITOR_SEPARATOR_RE"
 
-REVERSE=false CACHE=true PERSISTENT=false DEBUG=false LOCAL=false
+REVERSE=false CACHE=true PERSISTENT=false DEBUG=false
 case "$CALLMONITOR_REVERSE" in
 	yes) REVERSE=true ;;
 	no)  REVERSE=false ;;
@@ -43,7 +43,7 @@ eval "set -- $TEMP"
 
 while true; do
 	case $1 in
-		--local) LOCAL=true ;;
+		--local) REVERSE=false ;;
 		--debug) DEBUG=true ;;
 		--help) _usage >&2; exit 1 ;;
 		--) shift; break ;;
@@ -51,10 +51,6 @@ while true; do
 	esac
 	shift
 done
-
-if $LOCAL; then
-	REVERSE=false
-fi
 
 # where to put new number-name pairs
 if $PERSISTENT; then
@@ -120,6 +116,7 @@ _put_or_remove() {
 	if [ "$MODE" = "remove" ]; then
 		__debug "removing $NUMBER from phone book $PHONEBOOK"
 	else
+		NAME="$(_norm_value "$NAME")"
 		__debug "putting {$NUMBER -> $NAME} into phone book $PHONEBOOK"
 	fi
 
@@ -143,6 +140,10 @@ _put_or_remove() {
 	if $PERSISTENT; then
 		callmonitor_store
 	fi
+}
+# a value must always be a single line (we normalize whitespace as we go)
+_norm_value() {
+    echo $(echo "$@" | sed -e 's/$/;/')
 }
 
 _init() {

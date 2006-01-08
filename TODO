@@ -1,3 +1,13 @@
+Betrieb ohne Mod vorbereiten (zum Nachladen auf unveränderte Firmware)
+    Was geht mit der normalen Busybox (nicht)?
+	evtl. Mod-Busybox auch nachladen
+    Weitere "Binary"-Abhängigkeiten?
+    Systemabhängigkeiten wieder strenger separieren
+
+./usr/lib/callmonitor/bin/telefon: Link entfernen, sobald ds-0.2final da ist
+
+----------------------------------------------------------------------
+
 Funktioniert LCD-Ansteuerung von DBox?
 
 http://dbox/control/lcd?lock=1&clear=1&xpos=20&ypos=27&size=22&font=2&text=Anruftext-hierhin&update=1

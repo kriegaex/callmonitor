@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /usr/bin/env ash
 . "${CALLMONITOR_CFG:="/mod/etc/default.callmonitor/system.cfg"}"
 export PATH="$CALLMONITOR_PATH"
 DAEMON=callmonitor
@@ -10,16 +10,18 @@ if ! has_package telefon; then
 fi
 
 require rc
+require modreg
 
-FIFO="/var/run/$DAEMON/fifo"
-
-if [ ! -d /var/run/$DAEMON ]; then
-	mkdir -p /var/run/$DAEMON
+FIFO="$CALLMONITOR_FIFO"
+FIFO_DIR="${FIFO%/*}"
+if [ ! -d "$FIFO_DIR" ]; then
+	mkdir -p "$FIFO_DIR"
 fi
+PIDFILE="/var/run/$DAEMON.pid"
 
 case "$1" in
 	""|load|start|restart)
-		if [ ! -r "/mod/etc/conf/$DAEMON.cfg" ]; then
+		if [ ! -r "$CALLMONITOR_USERCFG" ]; then
 			echo "Error[$DAEMON]: not configured" >&2
 			exit 1
 		fi
@@ -27,9 +29,6 @@ case "$1" in
 esac
 
 start_daemon() {
-	if [ ! -e /mod/etc/callmonitor.listeners ]; then
-		ln -sf "$CALLMONITOR_LISTENERS" /mod/etc/callmonitor.listeners
-	fi
 	echo -n "Starting $DAEMON..."
 	if [ "$CALLMONITOR_DEBUG" = "yes" ]; then
 		"$DAEMON" --debug > /dev/null 2>&1
@@ -54,7 +53,7 @@ try_start() {
 }
 start() {
 	local exitval=0
-	if [ ! -z "$(pidof $DAEMON)" ]; then
+	if is_running; then
 		echo "$DAEMON already started."
 		exit 0
 	fi
@@ -80,44 +79,20 @@ restart() {
 	stop
 	start
 }
-register() {
-	if type modreg > /dev/null; then
-		modreg cgi $DAEMON 'Callmonitor'
-		modreg extra $DAEMON 'Testanruf' 1 'testcall'
-		modreg extra $DAEMON 'Wartung' 1 'maint'
-		if [ -r "/tmp/flash/$DAEMON/listeners.def" ]; then 
-			deffile="/tmp/flash/$DAEMON/listeners.def"
-		else 
-			deffile="/etc/default.$DAEMON/listeners.def"
-		fi
-		modreg file 'listeners' 'Listeners' 0 "$deffile"
-		if [ -r "/tmp/flash/$DAEMON/callers.def" ]; then 
-			deffile="/tmp/flash/$DAEMON/callers.def"
-		else 
-			deffile="/etc/default.$DAEMON/callers.def"
-		fi
-		modreg file 'callers' 'Callers' 1 "$deffile"
-	fi
-}
-unregister() {
-	if type modunreg > /dev/null; then
-		modunreg file 'callers'
-		modunreg file 'listeners'
-		modunreg extra $DAEMON 'testcall'
-		modunreg extra $DAEMON 'maint'
-		modunreg cgi $DAEMON
-	fi
+
+is_running() {
+	[ -e "$PIDFILE" ] && kill -0 $(cat "$PIDFILE") 2> /dev/null
 }
 
 case "$1" in
 	""|load)
-		register
+		mod_register
 		phonebook init 2> /dev/null
 		try_start
 		;;
 	unload)
 		stop
-		unregister
+		mod_unregister
 		;;
 	try-start)
 		try_start
@@ -129,23 +104,21 @@ case "$1" in
 		stop
 		;;
 	restart)
-		pid="$(pidof $DAEMON)"
-		if [ -z "$pid" ]; then
-			restart
-		else
+		if is_running; then
 			fast_restart
+		else
+			restart
 		fi
 		;;
 	status)
-		if [ -z "$(pidof $DAEMON)" ]; then
-			echo "stopped"
-		else
+		if is_running; then
 			echo "running"
+		else
+			echo "stopped"
 		fi
 		;;
 	reload)
-		pid="$(pidof $DAEMON)"
-		if [ -z "$pid" ]; then
+		if ! is_running; then
 			echo "$DAEMON is not running" >&2
 			exit 1
 		fi

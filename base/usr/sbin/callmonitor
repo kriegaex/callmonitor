@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /usr/bin/env ash
 readonly PROGRAM="${0##*/}"
 usage() {
 	cat <<EOF
@@ -79,7 +79,7 @@ __work() {
 }
 
 PIDFILE="/var/run/callmonitor.pid"
-FIFO="/var/run/callmonitor/fifo"
+FIFO="$CALLMONITOR_FIFO"
 
 if $STOP; then
 	if [ ! -e "$PIDFILE" ]; then

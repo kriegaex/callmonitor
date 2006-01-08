@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/ash
 . "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
 require cgi
 
@@ -53,7 +53,7 @@ cgi_main() {
 		cgi_begin "$TITLE ..."
 		show_testcall_results
 	else
-		cgi_begin "$TITLE"
+		cgi_begin "$TITLE" extras
 	fi
 	new_testcall_form
 	config_button

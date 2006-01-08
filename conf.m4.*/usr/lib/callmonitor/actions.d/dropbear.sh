@@ -1,4 +1,3 @@
-#!/bin/sh
 # start or stop ssh daemon
 droptoggle() {
 	dropoff || dropon

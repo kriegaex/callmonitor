@@ -1,4 +1,5 @@
-#!/bin/sh
+#! /usr/bin/env ash
+. "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
 PROGRAM="${0##*/}"
 usage() {
 	cat <<EOF
@@ -32,12 +33,13 @@ DEST="${2:-SIP0}"
 
 # check if fifo exists and if callmonitor is running
 if ! $STDOUT; then
-	FIFO="/var/run/callmonitor/fifo"
+	FIFO="$CALLMONITOR_FIFO"
 	if [ ! -p "$FIFO" ]; then
 		echo "callmonitor's fifo $FIFO does not exist" >&2
 		exit 1
 	fi
-	if ! pidof callmonitor > /dev/null; then
+	status="$("$CALLMONITOR_ROOT/etc/init.d/rc.callmonitor" status)"
+	if [ "$status" != "running" ]; then
 		echo "callmonitor seems not to be running" >&2
 		exit 1
 	fi

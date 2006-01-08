@@ -1,4 +1,4 @@
-# Syntax of rules in file /mod/etc/callmonitor.listeners (not compatible
+# Syntax of rules in file $CALLMONITOR_LISTENERS (not compatible
 # with versions in mod-0.57 and earlier):
 #
 # [NT:|*:][!]<source-regexp> [!]<dest-regexp> <command line (rest)>
@@ -62,11 +62,11 @@ __incoming_call() {
 	__info "SOURCE='$SOURCE' DEST='$DEST' SOURCE_NAME='$SOURCE_NAME'" \
 		"DEST_NAME='$DEST_NAME' NT=$NT" 
 
-	if [ ! -r /mod/etc/callmonitor.listeners ]; then
-		__debug "/mod/etc/callmonitor.listeners is missing"
+	if [ ! -r "$CALLMONITOR_LISTENERS" ]; then
+		__debug "$CALLMONITOR_LISTENERS is missing"
 		return
 	else
-		__debug "processing rules from /mod/etc/callmonitor.listeners"
+		__debug "processing rules from $CALLMONITOR_LISTENERS"
 	fi
 
 	# make call information available to listeners
@@ -85,7 +85,7 @@ __incoming_call() {
 		RULE=$rule \
 		__process_rule "$source_pattern" "$dest_pattern" "$listener" &
 		let rule="$rule + 1"
-	done < /mod/etc/callmonitor.listeners 
+	done < "$CALLMONITOR_LISTENERS"
 	wait
 }
 

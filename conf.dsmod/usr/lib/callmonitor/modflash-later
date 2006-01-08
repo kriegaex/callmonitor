@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/ash
 # modflash-later: flash at most $1 seconds later
 
 . "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"

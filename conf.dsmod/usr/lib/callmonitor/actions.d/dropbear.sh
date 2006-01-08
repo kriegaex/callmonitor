@@ -1,4 +1,3 @@
-#!/bin/sh
 # start or stop ssh daemon
 RC_DROPBEAR="/mod/etc/init.d/rc.dropbear"
 droptoggle() {

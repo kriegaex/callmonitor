@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /usr/bin/env ash
 _usage() {
 	cat <<END
 Usage:	phonebook [option]... command [argument]...

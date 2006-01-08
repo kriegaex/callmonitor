@@ -1,4 +1,3 @@
-#!/bin/sh
 require webui
 require net
 

@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/ash
 . "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
 require cgi
 

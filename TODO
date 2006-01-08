@@ -1,10 +1,11 @@
 Betrieb ohne Mod vorbereiten (zum Nachladen auf unveränderte Firmware)
-    Was geht mit der normalen Busybox (nicht)?
-	evtl. Mod-Busybox auch nachladen
+    Mod-Busybox nachladen
     Weitere "Binary"-Abhängigkeiten?
     Systemabhängigkeiten wieder strenger separieren
 
 ./usr/lib/callmonitor/bin/telefon: Link entfernen, sobald ds-0.2final da ist
+
+Defaults/Interfaces in base-Zweig, überschreiben in conf.*
 
 ----------------------------------------------------------------------
 

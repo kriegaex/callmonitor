@@ -1,4 +1,4 @@
-# start or stop ssh daemon
+## start or stop ssh daemon
 RC_DROPBEAR="/mod/etc/init.d/rc.dropbear"
 droptoggle() {
 	if [ -x "$RC_DROPBEAR" ]; then
@@ -10,14 +10,14 @@ droptoggle() {
 	fi
 }
 
-# start ssh daemon
+## start ssh daemon
 dropon() {
 	if [ -x "$RC_DROPBEAR" ]; then
 		"$RC_DROPBEAR" start
 	fi
 }
 
-# stop ssh daemon
+## stop ssh daemon
 dropoff() {
 	if [ -x "$RC_DROPBEAR" ]; then
 		"$RC_DROPBEAR" stop

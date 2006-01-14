@@ -1,10 +1,12 @@
 usage() {
 	cat <<EOF
+#<
 Usage:	$APPLET [OPTION]... SOURCE [DEST]
 Options:
 	-n	generate call "from NT"
 	-s	output to stdout instead of callmonitor's fifo
 	--help	show this help
+#>
 EOF
 }
 TEMP="$(getopt -o 'ns' -l 'help' -n "$APPLET" -- "$@")" || exit 1
@@ -28,7 +30,7 @@ fi
 SOURCE="$1"
 DEST="${2:-SIP0}"
 
-# check if fifo exists and if callmonitor is running
+## check if fifo exists and if callmonitor is running
 if ! $STDOUT; then
 	FIFO="$CALLMONITOR_FIFO"
 	if [ ! -p "$FIFO" ]; then
@@ -42,8 +44,8 @@ if ! $STDOUT; then
 	fi
 fi
 
-# IncomingCall from NT: ID 0, caller: "0927340284" called: "234972"
-# IncomingCall: ID 0, caller: "02938423742" called: "SIP0"
+## IncomingCall from NT: ID 0, caller: "0927340284" called: "234972"
+## IncomingCall: ID 0, caller: "02938423742" called: "SIP0"
 if $NT; then
 	PATTERN='\nIncomingCall from NT: ID 0, caller: "%s" called: "%s"\n'
 else

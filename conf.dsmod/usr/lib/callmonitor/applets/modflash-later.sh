@@ -1,4 +1,4 @@
-# modflash-later: flash at most $1 seconds later
+## modflash-later: flash at most $1 seconds later
 
 require lock
 
@@ -17,15 +17,15 @@ case "$NAME" in
 		trap "kill $! 2> /dev/null; exit" TERM
 		wait
 		if lock "$FLASH"; then
-			# in case something goes wrong
+			## in case something goes wrong
 			trap 'unlock "$FLASH"' EXIT
 
-			# change name so we do not kill ourselves
+			## change name so we do not kill ourselves
 			exec "$DIR/$NOW_NAME"
 		fi
 		;;
 	"$NOW_NAME")
-		# kill all of our competitors
+		## kill all of our competitors
 		killall -q "$LATER_NAME"
 		modsave flash
 		unlock "$FLASH"

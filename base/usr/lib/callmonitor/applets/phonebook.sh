@@ -1,5 +1,6 @@
 _usage() {
 	cat <<END
+#<
 Usage:	phonebook [option]... command [argument]...
 	phonebook {get|exists|remove} 053712931
 	phonebook put 0357937829 "John Smith"
@@ -9,6 +10,7 @@ Options:
 	--local	suppress reverse lookup
 	--debug	enable extra debugging output
 	--help	show this help and exit
+#>
 END
 }
 
@@ -16,7 +18,7 @@ require phonebook
 require lock
 require util
 
-# format of phone book: ${PRE}${NUMBER}${SEP}${NAME}
+## format of phone book: ${PRE}${NUMBER}${SEP}${NAME}
 PRE="$CALLMONITOR_PREFIX"
 PRE_RE="$CALLMONITOR_PREFIX_RE"
 SEP="$CALLMONITOR_SEPARATOR"
@@ -33,7 +35,7 @@ case "$CALLMONITOR_REVERSE_CACHE" in
 	persistent) CACHE=true PERSISTENT=true ;;
 esac
 
-# parse options
+## parse options
 TEMP="$(getopt -o '' -l debug,local,help -n "${0##*/}" -- "$@")" || exit 1
 eval "set -- $TEMP"
 
@@ -48,14 +50,14 @@ while true; do
 	shift
 done
 
-# where to put new number-name pairs
+## where to put new number-name pairs
 if $PERSISTENT; then
 	PHONEBOOK="$CALLMONITOR_PERSISTENT"
 else
 	PHONEBOOK="$CALLMONITOR_TRANSIENT"
 fi
 
-# set up logging
+## set up logging
 if $DEBUG; then
 	__debug() { echo "phonebook: $*" >&2; }
 	__debug "entering DEBUG mode"
@@ -116,7 +118,7 @@ _put_or_remove() {
 		__debug "putting {$NUMBER -> $NAME} into phone book $PHONEBOOK"
 	fi
 
-	# beware of concurrent updates
+	## beware of concurrent updates
 	if lock "$PHONEBOOK"; then
 		local TMPFILE="$CALLMONITOR_TMPDIR/.callmonitor.tmp"
 		{ 
@@ -137,7 +139,7 @@ _put_or_remove() {
 		callmonitor_store
 	fi
 }
-# a value must always be a single line (we normalize whitespace as we go)
+## a value must always be a single line (we normalize whitespace as we go)
 _norm_value() {
     echo $(echo "$@" | sed -e 's/$/;/')
 }

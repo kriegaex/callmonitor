@@ -1,4 +1,4 @@
-# utilities for managing "libraries"
+## utilities for managing "libraries"
 
 require() {
 	local lib="$1"
@@ -8,7 +8,7 @@ require() {
 		exit 2
 	fi
 	if eval "[ \"\${CALLMONITOR_LOADED_$lib+set}\" ]"; then
-		# already loaded
+		## already loaded
 		return
 	else
 		. "$file"

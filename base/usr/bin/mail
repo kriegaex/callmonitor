@@ -6,8 +6,10 @@ readonly TMP="/var/tmp/$PROGRAM"
 
 usage() {
 	cat <<EOF
+#<
 Usage: $PROGRAM {send|sendonce|enqueue} [MAILER_OPTION]...
        $PROGRAM {process|config|list}
+#>
 EOF
 	echo
 	"$MAILER" -?
@@ -17,7 +19,7 @@ if [ ! -e "$SPOOL" ]; then
 	mkdir -p "$SPOOL"
 fi
 
-# apply a function to each item in a comma-separated list
+## apply a function to each item in a comma-separated list
 foreach() {
 	local - list="$1" IFS=,
 	alias func="$2"
@@ -28,7 +30,7 @@ foreach() {
 	unalias func
 }
 
-# add an item to a comma-separated list
+## add an item to a comma-separated list
 add() {
 	local name="$1" item="$2"
 	eval "$name=\"\$$name\${$name:+,}\$item\""
@@ -52,7 +54,7 @@ process_mail() {
 	trap "" EXIT
 }
 
-# try to send a mail that has been prepared
+## try to send a mail that has been prepared
 send() (
 	local id="$1"
 	local dir="$TMP/$id"
@@ -61,8 +63,8 @@ send() (
 	return $?
 )
 
-# remove a mail that should not be send again (it does not matter what state
-# the mail is in)
+## remove a mail that should not be send again (it does not matter what state
+## the mail is in)
 remove() {
 	local id="$1"
 	local dir="$TMP/$id"
@@ -72,7 +74,7 @@ remove() {
 	rm -rf "$dir"
 }
 
-# move mail to spool directory for later processing (and clean up)
+## move mail to spool directory for later processing (and clean up)
 spool() {
 	local id="$1"
 	local dir="$TMP/$id"
@@ -172,7 +174,7 @@ config() {
 trap 'exit 2' HUP INT QUIT TERM
 case "$1" in
 	send|sendonce|enqueue) 
-		# use push service configuration per default
+		## use push service configuration per default
 		eval "$(config)"
 		FROM="$From"
 		TO="$To"
@@ -180,7 +182,7 @@ case "$1" in
 		AUTHNAME="$accountname"
 		PASSWORD="$passwd"
 
-		# parse command line options
+		## parse command line options
 		TEMP="$(getopt -o 'M:p:s:f:t:m:a:w:d:i:D:' -n "$PROGRAM" -- "$@")"
 		if [ $? != 0 ]; then 
 			usage >&2

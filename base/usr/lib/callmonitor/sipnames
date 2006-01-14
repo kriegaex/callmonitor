@@ -1,10 +1,10 @@
 #! /usr/bin/env ash
-# put default names for each SIP account into the phone book
-# and print a mapping SIP[0-9] -> SIP address
+## put default names for each SIP account into the phone book
+## and print a mapping SIP[0-9] -> SIP address
 sip_info() {
 	allcfgconv -C voip -c -o - |
 	sed -ne '
-		# trace nested elements in hold space
+		## trace nested elements in hold space
 		/^[[:space:]]*[[:alnum:]][[:alnum:]_]* {/ {
 			s/^[[:space:]]*\([[:alnum:]][[:alnum:]_]*\).*/\1/; H; d
 		}
@@ -12,7 +12,7 @@ sip_info() {
 			x; s/\(.*\)\n.*$/\1/; h; d
 		}
 		/=/ {
-			# append parents, swap, and clean up
+			## append parents, swap, and clean up
 			G
 			s/^[[:space:]]*\(.*\)\n\n\(.*\)/\2\n\1/
 			s/\n/_/g

@@ -1,7 +1,7 @@
 require webui
 require net
 
-# remember to login first
+## remember to login first
 latest_call() {
 	local NUMBER="$1"
 	wget "http://127.0.0.1/cgi-bin/webcm?getpage=../html/de/FRITZ!Box_Anrufliste.csv" -O - |
@@ -42,15 +42,15 @@ default_mail() { default_message; }
 	
 mail_missed_call() {
 	local start="$(date +%s)" time diff
-	# wait long enough for caller to give up
+	## wait long enough for caller to give up
 	sleep 60
 
-	# login to web interface and force refresh of list of phone calls
+	## login to web interface and force refresh of list of phone calls
 	webui_login
 	webui_get "getpage=../html/de/menus/menu2.html&var:lang=de&var:menu=fon&var:pagename=foncalls" > /dev/null
 
-	# get call from log and check timestamp approximately (if the call has been
-	# accepted and has not finished yet, we might find old calls in the log)
+	## get call from log and check timestamp approximately (if the call has been
+	## accepted and has not finished yet, we might find old calls in the log)
 	export CALL="$(latest_call "$SOURCE")"
 	if [ -z "$CALL" ]; then 
 		echo "could not find call from '$SOURCE' in log" >&2
@@ -74,5 +74,5 @@ mail_missed_call() {
 		mail_call_body | mail send -i - -s "$(mail_call_subject)" "$@"
 	fi
 }
-# put a call to 'mail process' into your crontab in order to process mails
-# that could not yet be delivered
+## put a call to 'mail process' into your crontab in order to process mails
+## that could not yet be delivered

@@ -1,8 +1,8 @@
-# Basic networking utilities
+## Basic networking utilities
 
 CR=$(printf '\015')
 
-# URL encoding
+## URL encoding
 urlencode() {
 	echo -e $(echo -n "$*" |
 	hexdump -v -e '/1 "!%02x"' |
@@ -12,15 +12,15 @@ urlencode() {
 	')
 }
 
-# output an HTTP Authorization header (Basic)
-# basic_auth <user> <password>
+## output an HTTP Authorization header (Basic)
+## basic_auth <user> <password>
 basic_auth() {
 	local user="$1" password="$2"
 	echo -n "$user:$password" | uuencode -m - |
 	sed -e '1d;2s/^/Authorization: Basic /;3,$s/^/ /;s/$/'$CR'/;$d'
 }
 
-# default message
+## default message
 default_message() {
 	if [ "${DEST_NAME:+set}" ]; then
 		echo "Anruf an $DEST_NAME"
@@ -37,7 +37,7 @@ default_message() {
 	fi
 }
 
-# check if nc has the timeout option -w
+## check if nc has the timeout option -w
 if nc --help 2>&1 | grep -q -- "-w"; then
 	__nc() { nc -w "$@"; }
 else
@@ -46,6 +46,7 @@ fi
 
 __getmsg_usage() {
 	cat <<\EOH
+#<
 Usage:  getmsg [OPTION]... <HOST> <url-template> [<message>]...
         getmsg [OPTION]... -t <url-template> <host> [<message>]...
 Send a message in a simple HTTP GET request.
@@ -60,6 +61,7 @@ Send a message in a simple HTTP GET request.
   -U, --user=USER        user for basic authorization
   -P, --password=PASS    password for basic authorization
       --help             show this help
+#>
 EOH
 }
 getmsg() {
@@ -95,9 +97,9 @@ getmsg() {
 	if [ -n "$USERNAME" -o -n "$PASSWORD" ]; then
 		AUTH="$(basic_auth "$USERNAME" "$PASSWORD")"
 	fi
-	# If $1 is empty, it disappears completely in the output of "$@", which
-	# shifts all messages to the left. This seems to be a bug in the busybox
-	# version of ash (?). Other empty arguments work as expected.
+	## If $1 is empty, it disappears completely in the output of "$@", which
+	## shifts all messages to the left. This seems to be a bug in the busybox
+	## version of ash (?). Other empty arguments work as expected.
 	URL="$(set -f; IFS=/; printf "$TEMPLATE" \
 	$(for arg in "$@"; do echo -n $(urlencode "$arg")/; done))"
 	{
@@ -110,6 +112,7 @@ getmsg() {
 
 __rawmsg_usage() {
 	cat <<\EOH
+#<
 Usage: rawmsg [OPTION]... <HOST> <template> [<param>]...
        rawmsg [OPTION]... -t <template> <host> [<param>]...
 Send a message over a plain TCP connection.
@@ -120,6 +123,7 @@ Send a message over a plain TCP connection.
   -p, --port=PORT        use a special target port (default 80)
   -w, --timeout=SECONDS  set connect timeout (default 3)
       --help             show this help
+#>
 EOH
 }
 rawmsg() {
@@ -147,9 +151,9 @@ rawmsg() {
 		TEMPLATE="$1"; shift
 	fi
 	if [ $# -eq 0 ]; then set -- "$(eval "$DEFAULT")"; fi
-	# If $1 is empty, it disappears completely in the output of "$@", which
-	# shifts all messages to the left. This seems to be a bug in the busybox
-	# version of ash (?). Other empty arguments work as expected.
+	## If $1 is empty, it disappears completely in the output of "$@", which
+	## shifts all messages to the left. This seems to be a bug in the busybox
+	## version of ash (?). Other empty arguments work as expected.
 	printf "$TEMPLATE" "$@" | __nc "$TIMEOUT" "$IP" "$PORT"
 }
 default_raw() {

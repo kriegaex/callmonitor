@@ -1,16 +1,16 @@
-# Listener types and common utilities; separate function for each type
-# of listener. Put your own into $CALLMONITOR_LIBDIR/actions.local.d/*.sh
-#
-# These environment variables are set by callmonitor before calling
-# calling a listener:
-#	SOURCE		source number
-#	SOURCE_NAME	source name
-#	DEST		destination number
-#	DEST_NAME	destination name
+## Listener types and common utilities; separate function for each type
+## of listener. Put your own into $CALLMONITOR_LIBDIR/actions.local.d/*.sh
+## 
+## These environment variables are set by callmonitor before calling
+## calling a listener:
+##	SOURCE		source number
+##	SOURCE_NAME	source name
+##	DEST		destination number
+##	DEST_NAME	destination name
 
 require net
 
-# convert latin1 to utf8
+## convert latin1 to utf8
 latin1_utf8() {
 	hexdump -v -e '100/1 " %02x" "\n"' |
 	sed -e '
@@ -25,8 +25,8 @@ latin1_utf8() {
 	while IFS= read -r line; do echo -ne "$line"; done
 }
 
-# get matching IPs from multid.leases and execute a command for each of them
-# example: for_leases 192.168.10. dboxpopup "Ring!"
+## get matching IPs from multid.leases and execute a command for each of them
+## example: for_leases 192.168.10. dboxpopup "Ring!"
 for_leases() {
 	local IPS="$(fgrep -i "$1" /var/flash/multid.leases | awk '{ print $3 }')"
 	local COMMAND="$2" IP=
@@ -36,7 +36,7 @@ for_leases() {
 	done
 }
 
-# simple *box listeners
+## simple *box listeners
 dboxpopup() {
 	getmsg -t "/control/message?popup=%s" -d default_dboxpopup "$@"
 }
@@ -53,8 +53,8 @@ dreammessage() {
 }
 default_dreammessage() { default_message; }
 
-# Usage: yac [OPTION]... [MESSAGE]
-# Send a message to a yac listener (Yet Another Caller ID Program)
+## Usage: yac [OPTION]... [MESSAGE]
+## Send a message to a yac listener (Yet Another Caller ID Program)
 yac() {
 	rawmsg -p 10629 -t "%s\0" -d default_yac "$@"
 }
@@ -62,8 +62,8 @@ default_yac() {
 	echo "@CALL$SOURCE_NAME~$SOURCE"
 }
 
-# Usage: vdr [OPTION]... [MESSAGE]
-# Send a message to a VDR (Video Disk Recorder, http://www.cadsoft.de/vdr/)
+## Usage: vdr [OPTION]... [MESSAGE]
+## Send a message to a VDR (Video Disk Recorder, http://www.cadsoft.de/vdr/)
 vdr() {
 	rawmsg -p 2001 -t "MESG %s\nQUIT\n" -d default_vdr "$@"
 }

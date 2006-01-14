@@ -1,7 +1,7 @@
 export PATH="$CALLMONITOR_PATH"
 DAEMON=callmonitor
 
-# we need the telefon package
+## we need the telefon package
 if ! has_package telefon; then
 	echo "Fatal error: Package 'telefon' is missing" >&2
 	exit 1
@@ -68,7 +68,7 @@ stop() {
 	return $exitval
 }
 fast_restart() {
-	# keep pipe alive while callmonitor is restarted
+	## keep pipe alive while callmonitor is restarted
 	cat "$FIFO" > /dev/null &
 	catpid=$!
 	stop_daemon && start_daemon && kill "$catpid" > /dev/null 2>&1

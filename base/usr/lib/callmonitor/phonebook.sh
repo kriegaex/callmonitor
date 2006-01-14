@@ -1,8 +1,8 @@
 require net
 
-# resolve numbers to names and addresses (www.dasoertliche.de); the number is
-# used as given (should be normalized beforehand); returns 1 if no lookup
-# performed (no need to cache)
+## resolve numbers to names and addresses (www.dasoertliche.de); the number is
+## used as given (should be normalized beforehand); returns 1 if no lookup
+## performed (no need to cache)
 reverse_lookup() {
 	local NUMBER="$1"
 	case "$NUMBER" in
@@ -29,7 +29,7 @@ normalize_address() {
 	esac
 }
 
-# normalize phone numbers
+## normalize phone numbers
 normalize_tel() {
 	local NUMBER="$1"
 	case $NUMBER in
@@ -42,7 +42,7 @@ normalize_tel() {
 	echo "$NUMBER"
 }
 
-# transform SIP[0-9] into SIP addresses
+## transform SIP[0-9] into SIP addresses
 normalize_sip() {
 	local NUMBER="$1"
 	case "$NUMBER" in
@@ -54,7 +54,7 @@ normalize_sip() {
 	esac
 	echo "$NUMBER"
 }
-# read SIP[0-9] to address mapping
+## read SIP[0-9] to address mapping
 if [ -r /var/run/phonebook/sip ]; then
 	. /var/run/phonebook/sip
 fi

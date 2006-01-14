@@ -43,6 +43,11 @@ collect: check
 	echo $(VERSION) > $(BNAME)/root/etc/default.$(PKG)/.version
 	echo $(MOD) > $(BNAME)/root/etc/default.$(PKG)/.subversion
 	cp $(EXTRAS) $(BNAME)
+	find $(BNAME)/root -type f -print0 | \
+	    xargs -0 sed -i -e '/^[[:space:]]*#</,/^[[:space:]]*#>/{p;d}' \
+	    -e 's/^[[:space:]]*//' -e '/^$$/d'
+	find $(BNAME)/root -type f -print0 | \
+	    xargs -0 sed -i -e '/^[[:space:]]*#[#<>]/d'
 
 check:
 	@[ -d $(CONF) ] || (echo Configuration $(CONF) is missing; false)

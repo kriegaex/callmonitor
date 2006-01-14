@@ -1,8 +1,9 @@
 #! /usr/bin/env ash
 readonly APPLET="${0##*/}"
 
-# Both callmonitor and phonebook are configured via variables in
-# $CALLMONITOR_CFG.
+## Both callmonitor and phonebook are configured via variables in
+## $CALLMONITOR_CFG.
 
 . "${CALLMONITOR_CFG:=/var/mod/etc/default.callmonitor/system.cfg}"
+. "$CALLMONITOR_LIBDIR/config.sh"
 . "$CALLMONITOR_LIBDIR/applets/$APPLET.sh"

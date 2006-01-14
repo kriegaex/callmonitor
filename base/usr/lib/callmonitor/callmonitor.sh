@@ -1,26 +1,26 @@
-# Syntax of rules in file $CALLMONITOR_LISTENERS (not compatible
-# with versions in mod-0.57 and earlier):
-#
-# [NT:|*:][!]<source-regexp> [!]<dest-regexp> <command line (rest)>
-#
-# A command line is executed whenever an incoming call is detected that
-# matches both (egrep) regexps (source and dest). The prefix "NT:" to
-# the source-regexp can be used to restrict matches to calls coming from
-# the S0 bus ("Incoming from NT"); no prefix ignores these calls (the
-# default); "*:" matches both. !-prefixed regexps must NOT match for the
-# rule to succeed.
-#
-# Lines starting with "#" are ignored, as are empty lines.
+## Syntax of rules in file $CALLMONITOR_LISTENERS (not compatible
+## with versions in mod-0.57 and earlier):
+## 
+## [NT:|*:][!]<source-regexp> [!]<dest-regexp> <command line (rest)>
+## 
+## A command line is executed whenever an incoming call is detected that
+## matches both (egrep) regexps (source and dest). The prefix "NT:" to
+## the source-regexp can be used to restrict matches to calls coming from
+## the S0 bus ("Incoming from NT"); no prefix ignores these calls (the
+## default); "*:" matches both. !-prefixed regexps must NOT match for the
+## rule to succeed.
+## 
+## Lines starting with "#" are ignored, as are empty lines.
 
-# these stubs/defaults can be overridden (the configuration from system.cfg
-# is needed, too; it must be included separately)
+## these stubs/defaults can be overridden (the configuration from system.cfg
+## is needed, too; it must be included separately)
 __debug() { true; }
 __info() { true; }
 incoming_call() { __incoming_call "$@"; }
 PHONEBOOK_OPTIONS=""
 
 __configure() {
-	# import action functions
+	## import action functions
 	local ACTIONSDIR ACTIONS
 	for ACTIONSDIR in "$CALLMONITOR_LIBDIR/actions.d" \
 		"$CALLMONITOR_LIBDIR/actions.local.d"; do
@@ -33,7 +33,7 @@ __configure() {
 	done
 }
 
-# process an "IncomingCall" line
+## process an "IncomingCall" line
 __incoming_call() {
 	local line="$1"
 	local SOURCE="${line##*caller: \"}"; SOURCE="${SOURCE%%\"*}"
@@ -45,7 +45,7 @@ __incoming_call() {
 		"IncomingCall from NT:"*) NT=true ;; 
 	esac
 
-	# only one reverse lookup; it is expensive
+	## only one reverse lookup; it is expensive
 	if $NT; then
 		SOURCE_OPTIONS="--local"
 	else
@@ -69,19 +69,19 @@ __incoming_call() {
 		__debug "processing rules from $CALLMONITOR_LISTENERS"
 	fi
 
-	# make call information available to listeners
+	## make call information available to listeners
 	export SOURCE DEST SOURCE_NAME DEST_NAME NT
 
-	# deprecated interface
+	## deprecated interface
 	export MSISDN="$SOURCE" CALLER="$SOURCE_NAME" CALLED="$DEST"
 
 	local source_pattern dest_pattern listener rule=0
 	while read -r source_pattern dest_pattern listener
 	do
-		# comment or empty line
+		## comment or empty line
 		case $source_pattern in \#*|"") continue ;; esac
 
-		# process rule asynchronously
+		## process rule asynchronously
 		RULE=$rule \
 		__process_rule "$source_pattern" "$dest_pattern" "$listener" &
 		let rule="$rule + 1"
@@ -89,12 +89,12 @@ __incoming_call() {
 	wait
 }
 
-# process a single rule
+## process a single rule
 __process_rule() {
 	local source_pattern="$1" dest_pattern="$2" listener="$3"
 	__debug_rule "processing rule '$source_pattern' '$dest_pattern' '$listener'"
 
-	# match and strip NT/* prefix
+	## match and strip NT/* prefix
 	case $source_pattern in
 		NT:*)
 			if ! $NT; then 
@@ -116,11 +116,11 @@ __process_rule() {
 			;;
 	esac
 
-	# match
+	## match
 	__match SOURCE "$SOURCE" "$source_pattern" || return 1
 	__match DEST "$DEST" "$dest_pattern" || return 1
 
-	# execute listener
+	## execute listener
 	__debug_rule "SUCCEEDED: executing '$listener'"
 	set --
 	eval "$listener"
@@ -135,7 +135,7 @@ __debug_rule() {
 	__debug "[$RULE]" "$@"
 }
 
-# match a single pattern from a rule
+## match a single pattern from a rule
 __match() {
 	local PARAM="$1" VALUE="$2" PATTERN="$3" RESULT=1
 	local REGEXP="${PATTERN#!}"
@@ -174,7 +174,7 @@ __match() {
 	return $RESULT
 }
 
-# copy stdin to stdout while looking for incoming calls
+## copy stdin to stdout while looking for incoming calls
 __read() {
 	local line
 	while IFS= read -r line

@@ -1,5 +1,6 @@
 usage() {
 	cat <<EOF
+#<
 Usage:	$APPLET [OPTION]...
 Options:
 	-f	run in foreground
@@ -7,12 +8,13 @@ Options:
 	--debug	log rule matching/executed commands to syslog
 		(and to stderr with -f)
 	--help	show this help
+#>
 EOF
 }
 
 require callmonitor
 
-# parse options
+## parse options
 TEMP="$(getopt -o 'fs' -l debug,help -n "$APPLET" -- "$@")" || exit 1
 eval "set -- $TEMP"
 
@@ -31,13 +33,13 @@ while true; do
 	shift
 done
 
-# pass options to phonebook
+## pass options to phonebook
 PHONEBOOK_OPTIONS=""
 if $DEBUG; then
 	PHONEBOOK_OPTIONS="$PHONEBOOK_OPTIONS --debug"
 fi
 
-# set up logging
+## set up logging
 __log_setup() {
 	if $FOREGROUND; then
 		if $DEBUG; then
@@ -56,16 +58,16 @@ __log_setup() {
 }
 
 __work() {
-	# a USR1 signal will cause the callmonitor to re-read its configuration
+	## a USR1 signal will cause the callmonitor to re-read its configuration
 	trap __configure USR1
 	trap 'rm -f "$PIDFILE"' EXIT
 	trap 'exit 2' HUP INT QUIT TERM
 
-	# initial configuration
+	## initial configuration
 	__log_setup
 	__configure
 
-	# enter main loop
+	## enter main loop
 	while true; do
 		__read < "$FIFO"
 	done

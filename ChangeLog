@@ -87,3 +87,7 @@
 	* phonebook: Löschen von Einträgen (phonebook remove <id>)
 
 	callmonitor-0.5 veröffentlicht
+
+	* controller: Controller mit den gemeinsamen Initialisierungen
+	(system.cfg, ...), der dann Applets aufruft
+

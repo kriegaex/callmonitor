@@ -26,6 +26,8 @@ Betrieb ohne Mod vorbereiten (zum Nachladen auf unveränderte Firmware)
 
 Defaults/Interfaces in base-Zweig, überschreiben in conf.*
 
+Launcher mit den gemeinsamen Initialisierungen (SELFAUTODIR, system.cfg, ...)?
+
 ----------------------------------------------------------------------
 
 Funktioniert LCD-Ansteuerung von DBox?

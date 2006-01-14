@@ -4,5 +4,5 @@ readonly APPLET="${0##*/}"
 # Both callmonitor and phonebook are configured via variables in
 # $CALLMONITOR_CFG.
 
-. "$CALLMONITOR_CFG" # to be configured
+. "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
 . "$CALLMONITOR_LIBDIR/applets/$APPLET.sh"

@@ -1,6 +1,6 @@
 mod_register() {
-	: nothing
+    : nothing
 }
 mod_unregister() {
-	: nothing
+    : nothing
 }

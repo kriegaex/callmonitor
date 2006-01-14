@@ -5,250 +5,250 @@ readonly MAILER="/sbin/mailer"
 readonly TMP="/var/tmp/$PROGRAM"
 
 usage() {
-	cat <<EOF
+    cat <<EOF
 #<
 Usage: $PROGRAM {send|sendonce|enqueue} [MAILER_OPTION]...
        $PROGRAM {process|config|list}
 #>
 EOF
-	echo
-	"$MAILER" -?
+    echo
+    "$MAILER" -?
 }
 
 if [ ! -e "$SPOOL" ]; then
-	mkdir -p "$SPOOL"
+    mkdir -p "$SPOOL"
 fi
 
 ## apply a function to each item in a comma-separated list
 foreach() {
-	local - list="$1" IFS=,
-	alias func="$2"
-	set -f
-	for item in $1; do
-		eval 'func "$item"'
-	done
-	unalias func
+    local - list="$1" IFS=,
+    alias func="$2"
+    set -f
+    for item in $1; do
+	eval 'func "$item"'
+    done
+    unalias func
 }
 
 ## add an item to a comma-separated list
 add() {
-	local name="$1" item="$2"
-	eval "$name=\"\$$name\${$name:+,}\$item\""
+    local name="$1" item="$2"
+    eval "$name=\"\$$name\${$name:+,}\$item\""
 }
 
 escape() {
-	echo "$1" | sed -e "s/'/'\\\\''/g;1s/^/'/;\$s/$/'/"
+    echo "$1" | sed -e "s/'/'\\\\''/g;1s/^/'/;\$s/$/'/"
 }
 
 process_mail() {
-	local id="$1"
-	trap "spool $id" EXIT
-	local dir="$TMP/$id"
-	local tmparchive="$dir.tar.gz"
-	unspool $id || return 1
-	if send $id; then
-		remove $id
-	else
-		spool $id
-	fi
-	trap "" EXIT
+    local id="$1"
+    trap "spool $id" EXIT
+    local dir="$TMP/$id"
+    local tmparchive="$dir.tar.gz"
+    unspool $id || return 1
+    if send $id; then
+	remove $id
+    else
+	spool $id
+    fi
+    trap "" EXIT
 }
 
 ## try to send a mail that has been prepared
 send() (
-	local id="$1"
-	local dir="$TMP/$id"
-	cd "$dir"
-	./send
-	return $?
+    local id="$1"
+    local dir="$TMP/$id"
+    cd "$dir"
+    ./send
+    return $?
 )
 
 ## remove a mail that should not be send again (it does not matter what state
 ## the mail is in)
 remove() {
-	local id="$1"
-	local dir="$TMP/$id"
-	local archive="$SPOOL/$id.tar.gz"
-	local tmparchive="$dir.tar.gz"
-	rm -f "$archive" "$tmparchive"
-	rm -rf "$dir"
+    local id="$1"
+    local dir="$TMP/$id"
+    local archive="$SPOOL/$id.tar.gz"
+    local tmparchive="$dir.tar.gz"
+    rm -f "$archive" "$tmparchive"
+    rm -rf "$dir"
 }
 
 ## move mail to spool directory for later processing (and clean up)
 spool() {
-	local id="$1"
-	local dir="$TMP/$id"
-	local tmparchive="$TMP/$id.tar.gz"
-	if [ ! -e "$tmparchive" ]; then
-		pack $id
-	fi
-	ln "$tmparchive" "$SPOOL"/ && rm "$tmparchive"
-	if [ -d "$dir" ]; then
-		rm -rf "$dir"
-	fi
+    local id="$1"
+    local dir="$TMP/$id"
+    local tmparchive="$TMP/$id.tar.gz"
+    if [ ! -e "$tmparchive" ]; then
+	pack $id
+    fi
+    ln "$tmparchive" "$SPOOL"/ && rm "$tmparchive"
+    if [ -d "$dir" ]; then
+	rm -rf "$dir"
+    fi
 }
 unspool() {
-	local id="$1"
-	local archive="$SPOOL/$id.tar.gz"
-	ln "$archive" "$TMP"/ && rm "$archive"
-	unpack $id
+    local id="$1"
+    local archive="$SPOOL/$id.tar.gz"
+    ln "$archive" "$TMP"/ && rm "$archive"
+    unpack $id
 }
 
 prepare_mail() {
-	local id="$1" TEMP
-	local dir="$TMP/$id"
-	mkdir -p "$dir"
-	COUNT=0
-	save_attachment() {
-		local file="$1" realpath
-		local basename="$(basename "$file")"
-		if [ "$file" = "-" ]; then
-			basename="stdin.txt"
-			realpath="-"
-		else
-			realpath="$(realpath "$file")"
-		fi
-		local subdir="$COUNT"
-		local target="$dir/$subdir/$basename"
-		mkdir "$dir/$subdir"
-		case "$realpath" in
-			/var/*|-) cat "$file" > "$target" ;;
-			*)	ln -s "$realpath" "$target" ;;
-		esac
-		add TEMP "$subdir/$basename"
-		let COUNT="$COUNT + 1"
-	}
-	if [ "${ATTACHMENTS+set}" ]; then
-		unset TEMP
-		foreach "$ATTACHMENTS" save_attachment
-		ATTACHMENTS="$TEMP"
+    local id="$1" TEMP
+    local dir="$TMP/$id"
+    mkdir -p "$dir"
+    COUNT=0
+    save_attachment() {
+	local file="$1" realpath
+	local basename="$(basename "$file")"
+	if [ "$file" = "-" ]; then
+	    basename="stdin.txt"
+	    realpath="-"
+	else
+	    realpath="$(realpath "$file")"
 	fi
-	if [ "${INLINES+set}" ]; then
-		unset TEMP
-		foreach "$INLINES" save_attachment
-		INLINES="$TEMP"
-	fi
-	set -- "$MAILER" \
-		${SUBJECT+	   "-s" "$SUBJECT"} \
-		${FROM+		   "-f" "$FROM"} \
-		${TO+		   "-t" "$TO"} \
-		${MAILSERVER+  "-m" "$MAILSERVER"} \
-		${AUTHNAME+    "-a" "$AUTHNAME"} \
-		${PASSWORD+    "-w" "$PASSWORD"} \
-		${ATTACHMENTS+ "-d" "$ATTACHMENTS"} \
-		${INLINES+	   "-i" "$INLINES"}
-	script="$dir/send"
-	{
-		printf "#! /usr/bin/env ash\n"
-		for arg in "$@"; do
-			printf "%s " "$(escape "$arg")"
-		done
-		printf "\n"
-	} > "$script"
-	chmod +x "$script"
-	echo $id
+	local subdir="$COUNT"
+	local target="$dir/$subdir/$basename"
+	mkdir "$dir/$subdir"
+	case "$realpath" in
+	    /var/*|-) cat "$file" > "$target" ;;
+	    *)	ln -s "$realpath" "$target" ;;
+	esac
+	add TEMP "$subdir/$basename"
+	let COUNT="$COUNT + 1"
+    }
+    if [ "${ATTACHMENTS+set}" ]; then
+	unset TEMP
+	foreach "$ATTACHMENTS" save_attachment
+	ATTACHMENTS="$TEMP"
+    fi
+    if [ "${INLINES+set}" ]; then
+	unset TEMP
+	foreach "$INLINES" save_attachment
+	INLINES="$TEMP"
+    fi
+    set -- "$MAILER" \
+	${SUBJECT+     "-s" "$SUBJECT"} \
+	${FROM+        "-f" "$FROM"} \
+	${TO+	       "-t" "$TO"} \
+	${MAILSERVER+  "-m" "$MAILSERVER"} \
+	${AUTHNAME+    "-a" "$AUTHNAME"} \
+	${PASSWORD+    "-w" "$PASSWORD"} \
+	${ATTACHMENTS+ "-d" "$ATTACHMENTS"} \
+	${INLINES+     "-i" "$INLINES"}
+    script="$dir/send"
+    {
+	printf "#! /usr/bin/env ash\n"
+	for arg in "$@"; do
+	    printf "%s " "$(escape "$arg")"
+	done
+	printf "\n"
+    } > "$script"
+    chmod +x "$script"
+    echo $id
 }
 
 pack() {
-	local id="$1"
-	local dir="$TMP/$id"
-	local archive="$dir.tar.gz"
-	tar czf "$archive" -C "$TMP" $id && rm -r "$dir"
+    local id="$1"
+    local dir="$TMP/$id"
+    local archive="$dir.tar.gz"
+    tar czf "$archive" -C "$TMP" $id && rm -r "$dir"
 }
 unpack() {
-	local id="$1"
-	local dir="$TMP/$id"
-	local archive="$dir.tar.gz"
-	tar xzf "$archive" -C "$TMP"
+    local id="$1"
+    local dir="$TMP/$id"
+    local archive="$dir.tar.gz"
+    tar xzf "$archive" -C "$TMP"
 }
 
 unset From To SMTPServer accountname passwd
 
 config() {
-	allcfgconv -C ar7 -c -o - | 
-	sed -ne '/^emailnotify[[:space:]]*{/,/^}/{
-		/=/{s/[[:space:]]*=[[:space:]]*/=/;s/^[[:space:]]*//;p}
-	}'
+    allcfgconv -C ar7 -c -o - | 
+    sed -ne '/^emailnotify[[:space:]]*{/,/^}/{
+	/=/{s/[[:space:]]*=[[:space:]]*/=/;s/^[[:space:]]*//;p}
+    }'
 }
 
 trap 'exit 2' HUP INT QUIT TERM
 case "$1" in
-	send|sendonce|enqueue) 
-		## use push service configuration per default
-		eval "$(config)"
-		FROM="$From"
-		TO="$To"
-		MAILSERVER="$SMTPServer"
-		AUTHNAME="$accountname"
-		PASSWORD="$passwd"
+    send|sendonce|enqueue) 
+	## use push service configuration per default
+	eval "$(config)"
+	FROM="$From"
+	TO="$To"
+	MAILSERVER="$SMTPServer"
+	AUTHNAME="$accountname"
+	PASSWORD="$passwd"
 
-		## parse command line options
-		TEMP="$(getopt -o 'M:p:s:f:t:m:a:w:d:i:D:' -n "$PROGRAM" -- "$@")"
-		if [ $? != 0 ]; then 
-			usage >&2
-			exit 1
-		fi
-		eval "set -- $TEMP"
+	## parse command line options
+	TEMP="$(getopt -o 'M:p:s:f:t:m:a:w:d:i:D:' -n "$PROGRAM" -- "$@")"
+	if [ $? != 0 ]; then 
+	    usage >&2
+	    exit 1
+	fi
+	eval "set -- $TEMP"
 
-		alias roll='set -- "$@" "$1"; shift'
-		while true; do
-			case "$1" in
-				-[MpD]) roll; roll ;;
-				-s) SUBJECT="$2"; shift 2 ;;
-				-f) FROM="$2"; shift 2 ;;
-				-t) TO="$2"; shift 2 ;;
-				-m) MAILSERVER="$2"; shift 2 ;;
-				-a) AUTHNAME="$2"; shift 2 ;;
-				-w) PASSWORD="$2"; shift 2 ;;
-				-d) ATTACHMENTS="$2"; shift 2 ;;
-				-i) INLINES="$2"; shift 2 ;;
-				--) shift; break ;;
-			esac
-		done
-		id="$(date +%s)-$$"
-		case "$1" in
-			send|enqueue)
-				trap "spool $id" EXIT
-				;;
-			sendonce)
-				trap "remove $id" EXIT
-				;;
-		esac
-		prepare_mail $id
+	alias roll='set -- "$@" "$1"; shift'
+	while true; do
+	    case "$1" in
+		-[MpD]) roll; roll ;;
+		-s) SUBJECT="$2"; shift 2 ;;
+		-f) FROM="$2"; shift 2 ;;
+		-t) TO="$2"; shift 2 ;;
+		-m) MAILSERVER="$2"; shift 2 ;;
+		-a) AUTHNAME="$2"; shift 2 ;;
+		-w) PASSWORD="$2"; shift 2 ;;
+		-d) ATTACHMENTS="$2"; shift 2 ;;
+		-i) INLINES="$2"; shift 2 ;;
+		--) shift; break ;;
+	    esac
+	done
+	id="$(date +%s)-$$"
+	case "$1" in
+	    send|enqueue)
+		trap "spool $id" EXIT
 		;;
+	    sendonce)
+		trap "remove $id" EXIT
+		;;
+	esac
+	prepare_mail $id
+	;;
 esac
 case "$1" in
-	send)
-		if send $id; then
-			remove $id
-		else
-			spool $id
-		fi
-		;;
-	sendonce)
-		send $id
-		remove $id
-		;;
-	enqueue)
-		spool $id
-		;;
-	process)
-		for mail in "$SPOOL"/*; do
-			if [ ! -e "$mail" ]; then continue; fi
-			id="$(basename "$mail" .tar.gz)"
-			process_mail $id
-		done
-		;;
-	config)
-		config
-		;;
-	list)
-		ls -l "$SPOOL"
-		;;
-	*)
-		usage >&2
-		exit 1
-		;;
+    send)
+	if send $id; then
+	    remove $id
+	else
+	    spool $id
+	fi
+	;;
+    sendonce)
+	send $id
+	remove $id
+	;;
+    enqueue)
+	spool $id
+	;;
+    process)
+	for mail in "$SPOOL"/*; do
+	    if [ ! -e "$mail" ]; then continue; fi
+	    id="$(basename "$mail" .tar.gz)"
+	    process_mail $id
+	done
+	;;
+    config)
+	config
+	;;
+    list)
+	ls -l "$SPOOL"
+	;;
+    *)
+	usage >&2
+	exit 1
+	;;
 esac
 trap "" EXIT
 exit 0

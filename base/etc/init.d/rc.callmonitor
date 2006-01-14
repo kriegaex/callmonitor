@@ -1,5 +1,8 @@
 #! /usr/bin/env ash
-. "${CALLMONITOR_CFG:="/mod/etc/default.callmonitor/system.cfg"}"
+SELFAUTODIR="${0%/*}"
+case $SELFAUTODIR in [^/]*) SELFAUTODIR="$PWD/$SELFAUTODIR";; esac
+
+. "${CALLMONITOR_CFG:="$SELFAUTODIR/../default.callmonitor/system.cfg"}"
 export PATH="$CALLMONITOR_PATH"
 DAEMON=callmonitor
 

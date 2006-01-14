@@ -2,7 +2,7 @@
 readonly PROGRAM="${0##*/}"
 usage() {
 	cat <<EOF
-Usage:	callmonitor [OPTION]...
+Usage:	$PROGRAM [OPTION]...
 Options:
 	-f	run in foreground
 	-s	stop the callmonitor
@@ -11,11 +11,13 @@ Options:
 	--help	show this help
 EOF
 }
+SELFAUTODIR="${0%/*}"
+case $SELFAUTODIR in [^/]*) SELFAUTODIR="$PWD/$SELFAUTODIR";; esac
 
 # Both callmonitor and phonebook are configured via variables in
 # $CALLMONITOR_CFG.
 
-. "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
+. "${CALLMONITOR_CFG:=$SELFAUTODIR/../../etc/default.callmonitor/system.cfg}"
 
 require callmonitor
 

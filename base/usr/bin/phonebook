@@ -12,9 +12,11 @@ Options:
 	--help	show this help and exit
 END
 }
+SELFAUTODIR="${0%/*}"
+case $SELFAUTODIR in [^/]*) SELFAUTODIR="$PWD/$SELFAUTODIR";; esac
 
 # configure
-. "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
+. "${CALLMONITOR_CFG:=$SELFAUTODIR/../../etc/default.callmonitor/system.cfg}"
 
 require phonebook
 require lock

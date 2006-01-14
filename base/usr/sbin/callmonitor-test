@@ -2,8 +2,10 @@
 # run callmonitor in test mode: do not run as a daemon, do not write
 # pid file, read from stdin only once, show trace of rule processing
 # on stdout
+SELFAUTODIR="${0%/*}"
+case $SELFAUTODIR in [^/]*) SELFAUTODIR="$PWD/$SELFAUTODIR";; esac
 
-. "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}"
+. "${CALLMONITOR_CFG:=$SELFAUTODIR/../../etc/default.callmonitor/system.cfg}"
 export PATH=$CALLMONITOR_PATH
 
 require callmonitor

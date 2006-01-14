@@ -64,7 +64,7 @@ if $DEBUG; then
 	__debug() { echo "phonebook: $*" >&2; }
 	__debug "entering DEBUG mode"
 else
-	__debug() :
+	__debug() { true; }
 fi
 
 _get() {

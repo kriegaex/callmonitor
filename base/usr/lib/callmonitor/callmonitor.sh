@@ -14,8 +14,8 @@
 
 # these stubs/defaults can be overridden (the configuration from system.cfg
 # is needed, too; it must be included separately)
-__debug() :
-__info() :
+__debug() { true; }
+__info() { true; }
 incoming_call() { __incoming_call "$@"; }
 PHONEBOOK_OPTIONS=""
 

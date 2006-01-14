@@ -1,0 +1,10 @@
+#! /usr/bin/env ash
+readonly APPLET="${0##*/}"
+SELFAUTODIR="${0%/*}"
+case $SELFAUTODIR in [^/]*) SELFAUTODIR="$PWD/$SELFAUTODIR";; esac
+
+# Both callmonitor and phonebook are configured via variables in
+# $CALLMONITOR_CFG.
+
+. "${CALLMONITOR_CFG:=/mod/etc/default.callmonitor/system.cfg}" # FIXME
+. "$CALLMONITOR_LIBDIR/applets/$APPLET.sh"

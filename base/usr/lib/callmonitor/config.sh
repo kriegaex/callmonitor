@@ -2,4 +2,5 @@ if [ -r "$CALLMONITOR_USERCFG" ]; then
     . "$CALLMONITOR_USERCFG"
 fi
 
+PATH="$CALLMONITOR_PATH"
 . "${CALLMONITOR_LIBDIR}/system.sh"

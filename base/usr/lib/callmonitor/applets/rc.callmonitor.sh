@@ -1,4 +1,3 @@
-export PATH="$CALLMONITOR_PATH"
 DAEMON=callmonitor
 
 ## we need the telefon package

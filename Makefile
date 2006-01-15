@@ -1,16 +1,16 @@
 MOD := dsmod
 PKG := callmonitor
 
-MOD_LIST := $(patsubst conf.%, %, $(wildcard conf.*))
+MOD_LIST := $(notdir $(wildcard mod/*))
 VERSION := $(shell cat .version)
 NAME := $(PKG)-$(VERSION)
 ARCHIVE := $(NAME)-$(MOD).tar.bz2
-CONF := conf.$(MOD)
-BUILD := build.$(MOD)
+CONF := mod/$(MOD)/root
+BUILD := build/$(MOD)
 BNAME := $(BUILD)/$(NAME)
 EXTRAS := README COPYING ChangeLog
-ifneq (,$(wildcard install.$(MOD)))
-EXTRAS += install.$(MOD)
+ifneq (,$(wildcard mod/$(MOD)/install))
+EXTRAS += mod/$(MOD)/install
 endif
 
 TAR := tar
@@ -47,9 +47,9 @@ collect: check
 
 check:
 	@[ -d $(CONF) ] || (echo Configuration $(CONF) is missing; false)
-	find base conf.* $(wildcard install.*) -name .svn -prune \
+	find base mod/*/root $(wildcard mod/*/install) -name .svn -prune \
 	    -or -type f -exec busybox ash -n {} \;
 
 clean:
 	-rm -f $(PKG)*.tar.bz2
-	-rm -rf build.*
+	-rm -rf build

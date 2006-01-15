@@ -1,3 +1,7 @@
+reload: modreg.sh
+
+Gemeinsame Teile aus telefon und callmonitor irgendwo ablegen
+
 Meldungen von telefon beim Auflegen unterstützen: Ermöglicht auch Erkennung
 inkrementell eingegebener "Telefon-Codes" (allerdings keine Unterscheidung NT
 oder nicht)
@@ -24,8 +28,6 @@ Betrieb ohne Mod vorbereiten (zum Nachladen auf unveränderte Firmware)
 
 ./usr/lib/callmonitor/bin/telefon: Link entfernen, sobald ds-0.2final da ist
 
-Defaults/Interfaces in base-Zweig, überschreiben in conf.*
-
 ----------------------------------------------------------------------
 
 Funktioniert LCD-Ansteuerung von DBox?
@@ -41,10 +43,12 @@ http://cvs.tuxbox.org/tuxbox/apps/tuxbox/neutrino/daemons/nhttpd/api_doku.txt
 
 ----------------------------------------------------------------------
 
+== Nicht so wichtig ==
+
 require umschreiben, so dass in einem Pfad gesucht wird: praktisch zum Testen
 neuer Funktionen
 
-== Nicht so wichtig ==
+Defaults/Interfaces in base-Zweig, überschreiben in conf.*
 
 Kommentare beim Zusammenpacken für die Box entfernen
 

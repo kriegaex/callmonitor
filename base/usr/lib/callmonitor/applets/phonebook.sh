@@ -179,6 +179,21 @@ _tidy() {
     fi
 }
 
+## check syntax:
+## number of arguments (to phonebook) expected
+expect=0
+case $1 in
+    put) expect=3 ;;
+    get|exists|remove) expect=2 ;;
+    init|tidy) expect=1 ;;
+    *) expect=0 ;;
+    ;;
+esac
+if [ $# -ne $expect ]; then
+    _usage >&2
+    exit 1
+fi
+
 case $1 in
     get) _get "$2" ;;
     exists) _get "$2" > /dev/null ;;
@@ -186,6 +201,6 @@ case $1 in
     put) _put_local "$2" "$3" ;;
     init) _init ;;
     tidy) _tidy ;;
-    *) _usage >&2; exit 1 ;;
+    *) exit 1 ;;
 esac
 exit $?

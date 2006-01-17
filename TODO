@@ -1,6 +1,8 @@
 reload: modreg.sh
 
 Gemeinsame Teile aus telefon und callmonitor irgendwo ablegen
+    /fritzbox/common
+    svn:externals
 
 Meldungen von telefon beim Auflegen unterstützen: Ermöglicht auch Erkennung
 inkrementell eingegebener "Telefon-Codes" (allerdings keine Unterscheidung NT
@@ -14,9 +16,6 @@ oder nicht)
 11.01.06 20:40     0s Slot: -1 ID: 0 CIP: 16                *22* incoming                 123 ChargeU:    0
 11.01.06 20:41     0s Slot: -1 ID: 0 CIP: 16                *22* incoming                 123 ChargeU:    0
 11.01.06 20:42     0s Slot: -1 ID: 0 CIP: 16                SIP0 incoming         01452356567 ChargeU:    0
-
-phonebook: Argumente prüfen! Momentan funktioniert "phonebook get" und
-hinterlässt einen leeren Eintrag im Telefonbuch.
 
 Rückwärtssuche 0201777989: Nur einer von zwei Einträgen kommt durch. Liegt es
 an dem speziellen Format des gewerblichen Eintrags?
@@ -49,8 +48,6 @@ require umschreiben, so dass in einem Pfad gesucht wird: praktisch zum Testen
 neuer Funktionen
 
 Defaults/Interfaces in base-Zweig, überschreiben in conf.*
-
-Kommentare beim Zusammenpacken für die Box entfernen
 
 Sobald Daniel das Framework fertig hat:
 - Schema für Listeners schreiben

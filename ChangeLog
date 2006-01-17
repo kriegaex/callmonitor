@@ -91,3 +91,8 @@
 	* controller: Controller mit den gemeinsamen Initialisierungen
 	(system.cfg, ...), der dann Applets aufruft
 
+	* phonebook: Argumente prüfen: "phonebook get" hinterließ einen leeren
+	Eintrag im Telefonbuch.
+
+	* shstrip: Kommentare beim Zusammenpacken für die Box entfernen
+

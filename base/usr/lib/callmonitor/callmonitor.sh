@@ -42,7 +42,7 @@ __incoming_call() {
     local SOURCE_OPTIONS= DEST_OPTIONS=
     __debug "detected '$line'"
     case "$line" in
-	"IncomingCall from NT:"*) NT=true ;; 
+	*"IncomingCall from NT:"*) NT=true ;; 
     esac
 
     ## only one reverse lookup; it is expensive
@@ -181,7 +181,7 @@ __read() {
     do
 	echo "$line"
 	case $line in
-	    "IncomingCall"*"caller: "*"called: "*)
+	    *"IncomingCall"*"caller: "*"called: "*)
 		incoming_call "$line" & ;;
 	esac
     done

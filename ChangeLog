@@ -96,3 +96,6 @@
 
 	* shstrip: Kommentare beim Zusammenpacken für die Box entfernen
 
+	* callmonitor.sh: Auch IncomingCall-Zeilen mit Präfix erkennen
+	(z.B. bei Fritz!Box 7170)
+

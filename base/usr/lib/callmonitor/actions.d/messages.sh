@@ -49,7 +49,7 @@ default_dbox() {
     default_message | latin1_utf8 | sed -e 's/,[[:space:]]\+/\n/g'
 }
 dreammessage() {
-    getmsg -t "/cgi-bin/xmessage?timeout=10&caption=Telefonanruf&body=%s" -d default_dreammessage "$@"
+    getmsg -t "/cgi-bin/xmessage?timeout=${TIMEOUT:-10}&caption=${CAPTION:-Telefonanruf}&body=%s" -d default_dreammessage "$@"
 }
 default_dreammessage() { default_message; }
 

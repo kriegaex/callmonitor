@@ -99,3 +99,6 @@
 	* callmonitor.sh: Auch IncomingCall-Zeilen mit Präfix erkennen
 	(z.B. bei Fritz!Box 7170)
 
+	* messages.sh: dreammessage ist über die Umgebungsvariablen TIMEOUT
+	und CAPTION weiter parametrisierbar
+

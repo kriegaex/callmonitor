@@ -1,8 +1,8 @@
-reload: modreg.sh
+----------------------------------------------------------------------
+Demnächst anschauen
+----------------------------------------------------------------------
 
-Gemeinsame Teile aus telefon und callmonitor irgendwo ablegen
-    /fritzbox/common
-    svn:externals
+Timeout, Titel etc. in Aktionen parametrisierbar machen
 
 Meldungen von telefon beim Auflegen unterstützen: Ermöglicht auch Erkennung
 inkrementell eingegebener "Telefon-Codes" (allerdings keine Unterscheidung NT
@@ -25,6 +25,8 @@ Betrieb ohne Mod vorbereiten (zum Nachladen auf unveränderte Firmware)
     Weitere "Binary"-Abhängigkeiten?
     Systemabhängigkeiten wieder strenger separieren
 
+reload: modreg.sh
+
 ./usr/lib/callmonitor/bin/telefon: Link entfernen, sobald ds-0.2final da ist
 
 ----------------------------------------------------------------------
@@ -41,8 +43,11 @@ http://cvs.tuxbox.org/tuxbox/apps/tuxbox/neutrino/daemons/nhttpd/api_doku.txt
     wieviel Platz?? Koordinaten?
 
 ----------------------------------------------------------------------
+Nicht so wichtig
+----------------------------------------------------------------------
 
-== Nicht so wichtig ==
+System zur Ersetzung von Konfigurationsstrings in Dateien
+    CALLMONITOR_CFG in controller
 
 require umschreiben, so dass in einem Pfad gesucht wird: praktisch zum Testen
 neuer Funktionen

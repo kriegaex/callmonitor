@@ -187,7 +187,6 @@ case $1 in
     get|exists|remove) expect=2 ;;
     init|tidy) expect=1 ;;
     *) expect=0 ;;
-    ;;
 esac
 if [ $# -ne $expect ]; then
     _usage >&2

@@ -2,7 +2,7 @@
 Demnächst anschauen
 ----------------------------------------------------------------------
 
-Timeout, Titel etc. in Aktionen parametrisierbar machen
+GPL-Hinweis in jede Quelldatei
 
 Meldungen von telefon beim Auflegen unterstützen: Ermöglicht auch Erkennung
 inkrementell eingegebener "Telefon-Codes" (allerdings keine Unterscheidung NT
@@ -45,6 +45,9 @@ http://cvs.tuxbox.org/tuxbox/apps/tuxbox/neutrino/daemons/nhttpd/api_doku.txt
 ----------------------------------------------------------------------
 Nicht so wichtig
 ----------------------------------------------------------------------
+
+Die (SOURCE, DEST)-Paare der letzten k Anrufe aufzeichnen und als Vorgabe bei
+Testanrufen verwenden.
 
 System zur Ersetzung von Konfigurationsstrings in Dateien
     CALLMONITOR_CFG in controller

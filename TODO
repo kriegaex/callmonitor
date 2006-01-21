@@ -2,21 +2,6 @@
 Demnächst anschauen
 ----------------------------------------------------------------------
 
-GPL-Hinweis in jede Quelldatei
-
-Meldungen von telefon beim Auflegen unterstützen: Ermöglicht auch Erkennung
-inkrementell eingegebener "Telefon-Codes" (allerdings keine Unterscheidung NT
-oder nicht)
-
-11.01.06 20:36     0s Slot: -1 ID: 0 CIP: 16             0567344 incoming                 123 ChargeU:    0
-11.01.06 20:37     0s Slot: -1 ID: 0 CIP: 16          0246234620 incoming                 123 ChargeU:    0
-11.01.06 20:38     0s Slot: -1 ID: 0 CIP: 16    04525255332***## incoming                 123 ChargeU:    0
-11.01.06 20:38     0s Slot: -1 ID: 0 CIP: 16                  ** incoming                 123 ChargeU:    0
-11.01.06 20:39     0s Slot: -1 ID: 0 CIP: 16                #96* incoming                 123 ChargeU:    0
-11.01.06 20:40     0s Slot: -1 ID: 0 CIP: 16                *22* incoming                 123 ChargeU:    0
-11.01.06 20:41     0s Slot: -1 ID: 0 CIP: 16                *22* incoming                 123 ChargeU:    0
-11.01.06 20:42     0s Slot: -1 ID: 0 CIP: 16                SIP0 incoming         01452356567 ChargeU:    0
-
 Rückwärtssuche 0201777989: Nur einer von zwei Einträgen kommt durch. Liegt es
 an dem speziellen Format des gewerblichen Eintrags?
 
@@ -25,7 +10,7 @@ Betrieb ohne Mod vorbereiten (zum Nachladen auf unveränderte Firmware)
     Weitere "Binary"-Abhängigkeiten?
     Systemabhängigkeiten wieder strenger separieren
 
-reload: modreg.sh
+    reload: modreg.sh
 
 ./usr/lib/callmonitor/bin/telefon: Link entfernen, sobald ds-0.2final da ist
 

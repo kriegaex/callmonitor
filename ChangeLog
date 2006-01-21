@@ -96,9 +96,16 @@
 
 	* shstrip: Kommentare beim Zusammenpacken für die Box entfernen
 
-	* callmonitor.sh: Auch IncomingCall-Zeilen mit Präfix erkennen
+	* callmonitor: Auch IncomingCall-Zeilen mit Präfix erkennen
 	(z.B. bei Fritz!Box 7170)
+
+2006-01-21
 
 	* messages.sh: dreammessage ist über die Umgebungsvariablen
 	DREAM_TIMEOUT, DREAM_CAPTION und DREAM_ICON weiter parametrisierbar
+
+	* callmonitor: "E:" als Präfix beim Quellmuster passt nur beim Ende
+	eines Anrufs; das ist nützlich für das Ausführen von Aktionen per
+	Telefoncode (auch wenn inkrementell gewählt!). Achtung: Keine Nummern
+	mit unerwünschten Nebenwirkungen verwenden.
 

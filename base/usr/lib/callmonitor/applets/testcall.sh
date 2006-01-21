@@ -4,19 +4,22 @@ usage() {
 Usage: $APPLET [OPTION]... SOURCE [DEST]
 Options:
     -n	    generate call "from NT"
+    -e      generate end-of-call line
     -s	    output to stdout instead of callmonitor's fifo
     --help  show this help
 #>
 EOF
 }
-TEMP="$(getopt -o 'ns' -l 'help' -n "$APPLET" -- "$@")" || exit 1
+TEMP="$(getopt -o 'nes' -l 'help' -n "$APPLET" -- "$@")" || exit 1
 eval "set -- $TEMP"
 
 NT=false
+END=false
 STDOUT=false
 while true; do
     case $1 in
 	-n) NT=true ;;
+	-e) END=true ;;
 	-s) STDOUT=true ;;
 	--help) usage >&2; exit 1 ;;
 	--) shift; break ;;
@@ -46,13 +49,19 @@ fi
 
 ## IncomingCall from NT: ID 0, caller: "0927340284" called: "234972"
 ## IncomingCall: ID 0, caller: "02938423742" called: "SIP0"
-if $NT; then
-    PATTERN='\nIncomingCall from NT: ID 0, caller: "%s" called: "%s"\n'
+if $END; then
+    PATTERN='11.01.06 20:36     0s Slot: -1 ID: 0 CIP: 16 %19s incoming %13s ChargeU:    0\n'
+    printf "$PATTERN" "$DEST" "$SOURCE"
 else
-    PATTERN='\nIncomingCall: ID 0, caller: "%s" called: "%s"\n'
-fi
-if $STDOUT; then
+    if $NT; then
+	PATTERN='\nIncomingCall from NT: ID 0, caller: "%s" called: "%s"\n'
+    else
+	PATTERN='\nIncomingCall: ID 0, caller: "%s" called: "%s"\n'
+    fi
     printf "$PATTERN" "$SOURCE" "$DEST"
+fi |
+if $STDOUT; then
+    cat
 else
-    printf "$PATTERN" "$SOURCE" "$DEST" > "$FIFO"
+    cat > "$FIFO"
 fi

@@ -23,7 +23,7 @@
 ## Syntax of rules in file $CALLMONITOR_LISTENERS (not compatible
 ## with versions in mod-0.57 and earlier):
 ## 
-## [NT:|*:][!]<source-regexp> [!]<dest-regexp> <command line (rest)>
+## [NT:|*:|E:][!]<source-regexp> [!]<dest-regexp> <command line (rest)>
 ## 
 ## A command line is executed whenever an incoming call is detected that
 ## matches both (egrep) regexps (source and dest). The prefix "NT:" to
@@ -31,6 +31,9 @@
 ## the S0 bus ("Incoming from NT"); no prefix ignores these calls (the
 ## default); "*:" matches both. !-prefixed regexps must NOT match for the
 ## rule to succeed.
+##
+## The prefix "E:" matches ends of calls. It is not possible to distuingish
+## between NT and not NT in this case.
 ## 
 ## Lines starting with "#" are ignored, as are empty lines.
 

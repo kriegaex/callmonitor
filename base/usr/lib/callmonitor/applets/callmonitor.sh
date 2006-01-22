@@ -20,8 +20,8 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 usage() {
-    cat <<EOF
 #<
+    cat <<EOF
 Usage:	$APPLET [OPTION]...
 Options:
     -f		run in foreground
@@ -29,8 +29,8 @@ Options:
     --debug     log rule matching/executed commands to syslog
 		(and to stderr with -f)
     --help	show this help
-#>
 EOF
+#>
 }
 
 require callmonitor
@@ -63,17 +63,15 @@ fi
 ## set up logging
 __log_setup() {
     if $FOREGROUND; then
-	if $DEBUG; then
-	    __debug() { logger -s -t "$APPLET" -p daemon.debug "$*"; }
-	fi
-	__info() { logger -s -t "$APPLET" -p daemon.info "$*"; }
+	__logger() { logger -t "$APPLET" -s "$@"; }
 	incoming_call() { __incoming_call "$@"; }
     else
-	if $DEBUG; then
-	    __debug() { logger -t "$APPLET" -p daemon.debug "$*"; }
-	fi
-	__info() { logger -t "$APPLET" -p daemon.info "$*"; }
+	__logger() { logger -t "$APPLET" "$@"; }
 	incoming_call() { __incoming_call "$@" > /dev/null 2>&1; }
+    fi
+    __info() { __logger -p daemon.info "$*"; }
+    if $DEBUG; then
+	__debug() { __logger -p daemon.debug "$*"; }
     fi
     __debug "entering DEBUG mode"
 }

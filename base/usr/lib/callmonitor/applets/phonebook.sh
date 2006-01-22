@@ -20,8 +20,8 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 _usage() {
-    cat <<END
 #<
+    cat <<END
 Usage:	phonebook [option]... command [argument]...
 	phonebook {get|exists|remove} 053712931
 	phonebook put 0357937829 "John Smith"
@@ -31,8 +31,8 @@ Options:
     --local  suppress reverse lookup
     --debug  enable extra debugging output
     --help   show this help and exit
-#>
 END
+#>
 }
 
 require phonebook

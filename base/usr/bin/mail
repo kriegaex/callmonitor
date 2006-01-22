@@ -26,12 +26,12 @@ readonly MAILER="/sbin/mailer"
 readonly TMP="/var/tmp/$PROGRAM"
 
 usage() {
-    cat <<EOF
 #<
+    cat <<EOF
 Usage: $PROGRAM {send|sendonce|enqueue} [MAILER_OPTION]...
        $PROGRAM {process|config|list}
-#>
 EOF
+#>
     echo
     "$MAILER" -?
 }

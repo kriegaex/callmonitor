@@ -20,16 +20,16 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 usage() {
-    cat <<EOF
 #<
+    cat <<EOF
 Usage: $APPLET [OPTION]... SOURCE [DEST]
 Options:
     -n	    generate call "from NT"
     -e      generate end-of-call line
     -s	    output to stdout instead of callmonitor's fifo
     --help  show this help
-#>
 EOF
+#>
 }
 TEMP="$(getopt -o 'nes' -l 'help' -n "$APPLET" -- "$@")" || exit 1
 eval "set -- $TEMP"

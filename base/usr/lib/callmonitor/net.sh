@@ -67,8 +67,8 @@ else
 fi
 
 __getmsg_usage() {
-    cat <<\EOH
 #<
+    cat <<\EOH
 Usage:	getmsg [OPTION]... <HOST> <url-template> [<message>]...
 	getmsg [OPTION]... -t <url-template> <host> [<message>]...
 Send a message in a simple HTTP GET request.
@@ -83,8 +83,8 @@ Send a message in a simple HTTP GET request.
   -U, --user=USER	 user for basic authorization
   -P, --password=PASS	 password for basic authorization
       --help		 show this help
-#>
 EOH
+#>
 }
 getmsg() {
     local - IP= URL= TEMPLATE= VIRTUAL= USERNAME= PASSWORD= AUTH= TEMP=
@@ -133,8 +133,8 @@ getmsg() {
 }
 
 __rawmsg_usage() {
-    cat <<\EOH
 #<
+    cat <<\EOH
 Usage: rawmsg [OPTION]... <HOST> <template> [<param>]...
        rawmsg [OPTION]... -t <template> <host> [<param>]...
 Send a message over a plain TCP connection.
@@ -145,8 +145,8 @@ Send a message over a plain TCP connection.
   -p, --port=PORT	 use a special target port (default 80)
   -w, --timeout=SECONDS  set connect timeout (default 3)
       --help		 show this help
-#>
 EOH
+#>
 }
 rawmsg() {
     local - IP= TEMPLATE= TEMP= PORT=80 TIMEOUT=3 DEFAULT=default_raw

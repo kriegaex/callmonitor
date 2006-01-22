@@ -79,11 +79,11 @@ __incoming_call_line() {
     incoming_call
 }
 
-## process an "incoming" summary line at end of call
-__end_incoming_line() {
+## process an "outgoing" summary line at end of call
+__end_outgoing_line() {
     local line="$1"
-    local SOURCE="${line% ChargeU*}"; SOURCE="${SOURCE##* }" 
-    local DEST="${line% incoming*}"; DEST="${DEST##* }"
+    local SOURCE="${line% outgoing*}"; SOURCE="${SOURCE##* }"
+    local DEST="${line% ChargeU*}"; DEST="${DEST##* }" 
 
     ## NT cannot be detected; let's simply assume local outbound call
     local SOURCE_NAME="" DEST_NAME="" NT=true END=true
@@ -245,8 +245,8 @@ __read() {
 	case $line in
 	    *"IncomingCall"*"caller: "*"called: "*)
 		__incoming_call_line "$line" & ;;
-	    *Slot:*ID:*CIP:*incoming*)
-		__end_incoming_line "$line" & ;;
+	    *Slot:*ID:*CIP:*outgoing*)
+		__end_outgoing_line "$line" & ;;
 	esac
     done
 }

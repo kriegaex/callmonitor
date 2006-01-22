@@ -221,6 +221,6 @@ case $1 in
     put) _put_local "$2" "$3" ;;
     init) _init ;;
     tidy) _tidy ;;
-    *) exit 1 ;;
+    *) _usage >&2; exit 1 ;;
 esac
 exit $?

@@ -96,8 +96,8 @@
 
 	* shstrip: Kommentare beim Zusammenpacken für die Box entfernen
 
-	* callmonitor: Auch IncomingCall-Zeilen mit Präfix erkennen
-	(z.B. bei Fritz!Box 7170)
+	* callmonitor: Auch IncomingCall-Zeilen mit Präfix erkennen; z.B. bei
+	Fritz!Box 7170 (Dank an SatBandit)
 
 2006-01-21
 
@@ -107,5 +107,9 @@
 	* callmonitor: "E:" als Präfix beim Quellmuster passt nur beim Ende
 	eines Anrufs; das ist nützlich für das Ausführen von Aktionen per
 	Telefoncode (auch wenn inkrementell gewählt!). Achtung: Keine Nummern
-	mit unerwünschten Nebenwirkungen verwenden.
+	mit unerwünschten Nebenwirkungen verwenden. (Unterscheidung NT/nicht
+	NT ist nicht möglich.)
 
+2006-01-22
+	
+	callmonitor-0.6 veröffentlicht

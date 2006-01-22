@@ -24,7 +24,7 @@
 
 require() {
     local lib="$1"
-    local file="${CALLMONITOR_LIBDIR}/$lib.sh"
+    local file="${CALLMONITOR_LIBDIR}/modules/$lib.sh"
     if [ ! -e "$file" ]; then
 	echo "require $lib: '$file' does not exist" >&2
 	exit 2
@@ -37,4 +37,3 @@ require() {
 	eval "CALLMONITOR_LOADED_$lib="
     fi
 }
-CALLMONITOR_LOADED_system=

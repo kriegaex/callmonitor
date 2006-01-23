@@ -113,3 +113,12 @@
 2006-01-22
 	
 	callmonitor-0.6 veröffentlicht
+
+2006-01-23
+	
+	* phonebook: Fehlgeschlagene Rückwärtssuche trug ein Semikolon in die
+	Callers ein.
+
+	* callmonitor: Ausgeführte Aktionen in Syslog eintragen
+
+

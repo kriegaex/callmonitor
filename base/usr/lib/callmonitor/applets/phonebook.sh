@@ -162,7 +162,7 @@ _put_or_remove() {
 }
 ## a value must always be a single line (we normalize whitespace as we go)
 _norm_value() {
-    echo $(echo "$@" | sed -e 's/$/;/')
+    echo $(echo "$@" | sed -e '$!s/[[:space:]]*$/;/')
 }
 
 _init() {

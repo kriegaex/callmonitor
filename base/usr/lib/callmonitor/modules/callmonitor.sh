@@ -101,8 +101,8 @@ __incoming_call() {
 	DEST_NAME="$(phonebook $PHONEBOOK_OPTIONS $DEST_OPTIONS \
 	    get "$DEST")"
     fi
-    __info "SOURCE='$SOURCE' DEST='$DEST' SOURCE_NAME='$SOURCE_NAME'" \
-	"DEST_NAME='$DEST_NAME' NT=$NT END=$END" 
+    __info "CALL (SOURCE='$SOURCE' DEST='$DEST' SOURCE_NAME='$SOURCE_NAME'" \
+	"DEST_NAME='$DEST_NAME' NT=$NT END=$END)" 
 
     if [ ! -r "$CALLMONITOR_LISTENERS" ]; then
 	__debug "$CALLMONITOR_LISTENERS is missing"
@@ -183,7 +183,8 @@ __process_rule() {
     __match DEST "$DEST" "$dest_pattern" || return 1
 
     ## execute listener
-    __debug_rule "SUCCEEDED: executing '$listener'"
+    __debug_rule "SUCCEEDED"
+    __info_rule "ACTION ($source_pattern $dest_pattern $listener)"
     set --
     eval "$listener"
     local status=$?
@@ -195,6 +196,9 @@ __process_rule() {
 }
 __debug_rule() {
     __debug "[$RULE]" "$@"
+}
+__info_rule() {
+    __info "[$RULE]" "$@"
 }
 
 ## match a single pattern from a rule

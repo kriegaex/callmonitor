@@ -125,8 +125,6 @@ __incoming_call() {
     ## perform phone book look-up during rule matching
     local DETAILS="$CALLMONITOR_VAR/notify/$$-$INSTANCE"
     local DETAILS_MONITOR="$DETAILS.m"
-    trap "notifyall_fifo $DETAILS_MONITOR; rm -f $DETAILS" EXIT
-    trap 'exit 2' HUP INT QUIT TERM
     mkfifo "$DETAILS_MONITOR"
     {
 	__lookup
@@ -161,7 +159,10 @@ __incoming_call() {
 
 	let RULE++
     done < "$CALLMONITOR_LISTENERS"
+
+    wait_fifo "$DETAILS_MONITOR"
     wait
+    rm -f "$DETAILS"
 }
 
 # rule processing: condition part

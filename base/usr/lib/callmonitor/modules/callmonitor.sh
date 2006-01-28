@@ -37,6 +37,8 @@
 ## 
 ## Lines starting with "#" are ignored, as are empty lines.
 
+require notify
+
 ## these stubs/defaults can be overridden (the configuration from system.cfg
 ## is needed, too; it must be included separately)
 __debug() { true; }
@@ -56,6 +58,9 @@ __configure() {
 	    fi
 	done
     done
+    if [ ! -d "$CALLMONITOR_VAR/notify" ]; then
+	mkdir -p "$CALLMONITOR_VAR/notify"
+    fi
 }
 
 ## process an "IncomingCall" line
@@ -107,6 +112,7 @@ __lookup() {
 
 ## process a call
 __incoming_call() {
+    trap - CHLD
     __info "CALL (SOURCE='$SOURCE' DEST='$DEST' NT=$NT END=$END)" 
 
     if [ ! -r "$CALLMONITOR_LISTENERS" ]; then
@@ -115,14 +121,26 @@ __incoming_call() {
     else
 	__debug "processing rules from $CALLMONITOR_LISTENERS"
     fi
+    
+    ## perform phone book look-up during rule matching
+    local DETAILS="$CALLMONITOR_VAR/notify/$$-$INSTANCE"
+    local DETAILS_MONITOR="$DETAILS.m"
+    trap "notifyall_fifo $DETAILS_MONITOR; rm -f $DETAILS" EXIT
+    trap 'exit 2' HUP INT QUIT TERM
+    mkfifo "$DETAILS_MONITOR"
+    {
+	__lookup
+	{ echo "$SOURCE_NAME"; echo "$DEST_NAME"; } > "$DETAILS"
+	notifyall_fifo "$DETAILS_MONITOR"
+    } &
 
     ## make call information available to listeners
-    export SOURCE DEST SOURCE_NAME DEST_NAME NT END
+    export SOURCE DEST NT END
 
     ## deprecated interface
     export MSISDN="$SOURCE" CALLER="$SOURCE_NAME" CALLED="$DEST"
 
-    local source_pattern dest_pattern listener lazy_prepared=false
+    local source_pattern dest_pattern listener
     export RULE=0
     while read -r source_pattern dest_pattern listener
     do
@@ -131,19 +149,15 @@ __incoming_call() {
 	__debug_rule "processing rule" \
 	    "'$source_pattern' '$dest_pattern' '$listener'"
 
-	## defer preparations until first match
-	if ! $lazy_prepared; then
-	    if __match_rule "$source_pattern" "$dest_pattern" "$listener"; then
-		__lookup
-		lazy_prepared=true
-		__execute_rule "$source_pattern" "$dest_pattern" "$listener" &
-	    fi
-	else
-	    ## process remaining rules asynchronously
-	    if __match_rule "$source_pattern" "$dest_pattern" "$listener"; then
-		__execute_rule "$source_pattern" "$dest_pattern" "$listener"
-	    fi &
-	fi
+	## process rules asynchronously
+	if __match_rule "$source_pattern" "$dest_pattern" "$listener"; then
+	    
+	    ## get detailed call information
+	    wait_fifo "$DETAILS_MONITOR"
+	    { read SOURCE_NAME; read DEST_NAME; } < "$DETAILS"
+	    export SOURCE_NAME DEST_NAME
+	    __execute_rule "$source_pattern" "$dest_pattern" "$listener"
+	fi &
 
 	let RULE++
     done < "$CALLMONITOR_LISTENERS"
@@ -263,17 +277,24 @@ __match() {
     return $RESULT
 }
 
+export INSTANCE=0
+
 ## copy stdin to stdout while looking for incoming calls
 __read() {
+    trap '' CHLD
     local line
     while IFS= read -r line
     do
 	echo "$line"
 	case $line in
 	    *"IncomingCall"*"caller: "*"called: "*)
-		__incoming_call_line "$line" & ;;
+		__incoming_call_line "$line" &
+		let INSTANCE++
+	    ;;
 	    *Slot:*ID:*CIP:*outgoing*)
-		__end_outgoing_line "$line" & ;;
+		__end_outgoing_line "$line" &
+		let INSTANCE++
+	    ;;
 	esac
     done
 }

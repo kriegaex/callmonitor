@@ -26,5 +26,5 @@ readonly APPLET="${0##*/}"
 ## $CALLMONITOR_CFG. This is the only variable to be customized here.
 
 . "$CALLMONITOR_CFG"
-. "$CALLMONITOR_LIBDIR/config.sh"
+. "$CALLMONITOR_ROOT/usr/lib/callmonitor/config.sh"
 . "$CALLMONITOR_LIBDIR/applets/$APPLET.sh"

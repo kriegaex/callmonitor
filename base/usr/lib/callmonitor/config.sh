@@ -19,6 +19,15 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
+: ${CALLMONITOR_LIBDIR="$CALLMONITOR_ROOT/usr/lib/callmonitor"}
+: ${CALLMONITOR_FIFO="$CALLMONITOR_VAR/fifo"}
+: ${CALLMONITOR_TRANSIENT="$CALLMONITOR_TMP/callers"}
+: ${CALLMONITOR_PERSISTENT=''}
+: ${CALLMONITOR_PREFIX=''}
+: ${CALLMONITOR_PREFIX_RE=''}
+: ${CALLMONITOR_SEPARATOR='	'}
+: ${CALLMONITOR_SEPARATOR_RE='[[:space:]]\+'}
+
 if [ -r "$CALLMONITOR_USERCFG" ]; then
     . "$CALLMONITOR_USERCFG"
 fi

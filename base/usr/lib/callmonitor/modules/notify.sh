@@ -1,5 +1,5 @@
 ## fifo-based notification
-waitfifo() {
+wait_fifo() {
     local fifo=$1
     [ ! -p "$fifo" ] && return
     exec 3>&2 2>/dev/null
@@ -7,7 +7,7 @@ waitfifo() {
     exec 2>&3 3>&-
 }
 
-notifyfifo() {
+notifyall_fifo() {
     local fifo=$1
     [ ! -p "$fifo" ] && return
     rm -f "$fifo" 3> "$fifo"

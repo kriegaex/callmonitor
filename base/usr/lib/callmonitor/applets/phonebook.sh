@@ -141,7 +141,7 @@ _put_or_remove() {
 
     ## beware of concurrent updates
     if lock "$PHONEBOOK"; then
-	local TMPFILE="$CALLMONITOR_TMPDIR/.callmonitor.tmp"
+	local TMPFILE="$CALLMONITOR_TMP/.callmonitor.tmp"
 	{ 
 	    if [ -e "$PHONEBOOK" ]; then
 		sed -e "/^${PRE_RE}${NUMBER_RE}${SEP_RE}/d" "$PHONEBOOK"
@@ -179,7 +179,7 @@ _tidy() {
     echo -n "Tidying up $book: " >&2
     if lock "$book"; then
 	echo -n "sorting and cleansing, " >&2
-	local TMPFILE="$CALLMONITOR_TMPDIR/.callmonitor.tmp"
+	local TMPFILE="$CALLMONITOR_TMP/.callmonitor.tmp"
 	sort -u "$book" | 
 	sed -e '
 	    /^[[:space:]]*$/d

@@ -1,9 +1,0 @@
---- rc.voip.org	2005-11-01 14:01:46.000000000 +0100
-+++ rc.voip	2005-11-01 14:03:24.000000000 +0100
-@@ -1,5 +1,6 @@
- #! /bin/sh
- PATH=/bin:/usr/bin:/sbin:/usr/sbin
-+PATH=/usr/lib/callmonitor/bin:$PATH
- case "$1" in
-  "" | start ) 
-  if [ "`pidof telefon`" = "" ] ; then

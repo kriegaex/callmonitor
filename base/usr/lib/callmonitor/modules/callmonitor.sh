@@ -63,40 +63,6 @@ __configure() {
     fi
 }
 
-## process an "IncomingCall" line
-__incoming_call_line() {
-    local line="$1"
-    local SOURCE="${line##*caller: \"}"; SOURCE="${SOURCE%%\"*}"
-    local DEST="${line##*called: \"}"; DEST="${DEST%%\"*}"
-    local SOURCE_NAME="" DEST_NAME="" NT=false END=false
-    local SOURCE_OPTIONS= DEST_OPTIONS=
-    __debug "detected '$line'"
-    case "$line" in
-	*"IncomingCall from NT:"*) NT=true ;; 
-    esac
-
-    ## only one reverse lookup; it is expensive
-    if $NT; then
-	SOURCE_OPTIONS="--local"
-    else
-	DEST_OPTIONS="--local"
-    fi
-    incoming_call
-}
-
-## process an "outgoing" summary line at end of call
-__end_outgoing_line() {
-    local line="$1"
-    local SOURCE="${line% outgoing*}"; SOURCE="${SOURCE##* }"
-    local DEST="${line% ChargeU*}"; DEST="${DEST##* }" 
-
-    ## NT cannot be detected; let's simply assume local outbound call
-    local SOURCE_NAME="" DEST_NAME="" NT=true END=true
-    local SOURCE_OPTIONS="--local" DEST_OPTIONS="--local"
-    __debug "detected '$line'"
-    incoming_call
-}
-
 ## phone book look-up
 __lookup() {
     if [ ! -z "$SOURCE" ]; then
@@ -279,23 +245,3 @@ __match() {
 }
 
 export INSTANCE=0
-
-## copy stdin to stdout while looking for incoming calls
-__read() {
-    trap '' CHLD
-    local line
-    while IFS= read -r line
-    do
-	echo "$line"
-	case $line in
-	    *"IncomingCall"*"caller: "*"called: "*)
-		__incoming_call_line "$line" &
-		let INSTANCE++
-	    ;;
-	    *Slot:*ID:*CIP:*outgoing*)
-		__end_outgoing_line "$line" &
-		let INSTANCE++
-	    ;;
-	esac
-    done
-}

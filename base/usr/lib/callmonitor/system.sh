@@ -25,6 +25,12 @@
 require() {
     local lib="$1"
     local file="${CALLMONITOR_LIBDIR}/modules/$lib.sh"
+    case $lib in
+	*/*)
+	    echo "require $lib: invalid name" >&2
+	    exit 2
+	;;
+    esac
     if [ ! -e "$file" ]; then
 	echo "require $lib: '$file' does not exist" >&2
 	exit 2

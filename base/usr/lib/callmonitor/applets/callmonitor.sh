@@ -34,6 +34,7 @@ EOF
 }
 
 require callmonitor
+require if_fifo
 
 ## parse options
 TEMP="$(getopt -o 'fs' -l debug,help -n "$APPLET" -- "$@")" || exit 1
@@ -88,12 +89,11 @@ __work() {
 
     ## enter main loop
     while true; do
-	__read < "$FIFO"
+	__read_from_iface
     done
 }
 
-PIDFILE="/var/run/callmonitor.pid"
-FIFO="$CALLMONITOR_FIFO"
+PIDFILE="$CALLMONITOR_VAR/pid"
 
 if $STOP; then
     if [ ! -e "$PIDFILE" ]; then
@@ -105,11 +105,7 @@ if $STOP; then
 	exit $?
     fi
 else
-    mkdir -p "$(dirname "$FIFO")"
-
-    if [ ! -p "$FIFO" ]; then
-	mknod "$FIFO" p
-    fi
+    __init_iface
 
     if $FOREGROUND; then
 	echo $$ > "$PIDFILE"

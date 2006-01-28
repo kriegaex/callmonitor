@@ -76,14 +76,16 @@ start() {
 	exit 0
     fi
     start_daemon || exitval=$?
-    if [ $exitval -eq 0 ]; then
+    if [ $exitval -eq 0 -a "$CALLMONITOR_INTERFACE" = "fifo" ]; then
 	telfifo enable "$FIFO"
     fi
     return $exitval
 }
 stop() {
     local exitval=0
-    telfifo disable "$FIFO"
+    if telfifo list | grep -q -F "$FIFO"; then
+	telfifo disable "$FIFO"
+    fi
     stop_daemon || exitval=$?
     return $exitval
 }

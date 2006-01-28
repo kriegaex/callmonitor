@@ -34,7 +34,7 @@ EOF
 }
 
 require callmonitor
-require if_fifo
+require "if_$CALLMONITOR_INTERFACE"
 
 ## parse options
 TEMP="$(getopt -o 'fs' -l debug,help -n "$APPLET" -- "$@")" || exit 1

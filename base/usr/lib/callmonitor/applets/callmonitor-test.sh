@@ -25,7 +25,7 @@
 ## on stdout
 
 require callmonitor
-require if_fifo
+require "if_$CALLMONITOR_INTERFACE"
 
 __debug() { echo "$*"; }
 __info() { echo "$*"; }

@@ -47,6 +47,12 @@ case "$CALLMONITOR_REVERSE_CACHE" in
     persistent) pers_chk=$CHECKED ;;
 esac
 
+fifo_chk='' jfritz_chk=''
+case "$CALLMONITOR_INTERFACE" in
+    fifo) fifo_chk=$CHECKED ;;
+    jfritz) jfritz_chk=$CHECKED ;;
+esac
+
 SYSLOG='System-Log'
 if has_package syslogd; then
     SYSLOG="<a href='pkgconf.cgi?pkg=syslogd'>$SYSLOG</a>"
@@ -89,6 +95,11 @@ cat << EOF
 	auflösen">Rückwärtssuche durchführen</label>
     (bei <a href="http://www.dasoertliche.de/">DasÖrtliche</a>)
 </p>
+<p>
+    <label for="okz">Vorwahl für lokale Rufnummern:</label>
+    <input type="text" name="okz" value="$(httpd -e "$CALLMONITOR_OKZ")"
+	size="5" id="okz">
+</p>
 <h2>Suchergebnis zwischenspeichern?</h2>
 <p>
     <input type="radio" name="reverse_cache" value="no"$no_chk id="r1">
@@ -103,12 +114,19 @@ cat << EOF
 	gespeichert">Dauerhaft</label>
     (<a href="/cgi-bin/file.cgi?id=callers">Callers bearbeiten</a>)
 </p>
-<h2>Für lokale Rufnummern diese Vorwahl verwenden:</h2>
-<p>
-    <label for="okz">Vorwahl:</label>
-    <input type="text" name="okz" value="$(httpd -e "$CALLMONITOR_OKZ")"
-	size="5" id="okz">
-</p>
 EOF
 
+sec_end
+sec_begin 'Schnittstelle'
+
+cat << EOF
+<h2>Technik zum Abruf der Anrufinformationen vom telefon-Daemon</h2>
+<p>
+    <input type="radio" name="interface" value="jfritz"$jfritz_chk id="i1">
+    <label for="i1">TCP: Aktivierbar per <code>#96*5*</code> am Telefon
+    (empfohlen)</label><br>
+    <input type="radio" name="interface" value="fifo"$fifo_chk id="i2">
+    <label for="i2">Pipe (Debug-Ausgabe)</label>
+</p>
+EOF
 sec_end

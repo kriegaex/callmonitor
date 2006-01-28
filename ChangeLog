@@ -121,4 +121,6 @@
 
 	* callmonitor: Ausgeführte Aktionen in Syslog eintragen
 
+2006-01-28
 
+	* callmonitor: Verzögerte Rückwärtssuche; nur wenn nötig

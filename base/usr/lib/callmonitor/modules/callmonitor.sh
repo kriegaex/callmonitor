@@ -92,7 +92,8 @@ __end_outgoing_line() {
     incoming_call
 }
 
-__incoming_call() {
+## phone book look-up
+__lookup() {
     if [ ! -z "$SOURCE" ]; then
 	SOURCE_NAME="$(phonebook $PHONEBOOK_OPTIONS $SOURCE_OPTIONS \
 	    get "$SOURCE")"
@@ -101,11 +102,15 @@ __incoming_call() {
 	DEST_NAME="$(phonebook $PHONEBOOK_OPTIONS $DEST_OPTIONS \
 	    get "$DEST")"
     fi
-    __info "CALL (SOURCE='$SOURCE' DEST='$DEST' SOURCE_NAME='$SOURCE_NAME'" \
-	"DEST_NAME='$DEST_NAME' NT=$NT END=$END)" 
+    __info "LOOKUP (SOURCE_NAME='$SOURCE_NAME' DEST_NAME='$DEST_NAME')"
+}
+
+## process a call
+__incoming_call() {
+    __info "CALL (SOURCE='$SOURCE' DEST='$DEST' NT=$NT END=$END)" 
 
     if [ ! -r "$CALLMONITOR_LISTENERS" ]; then
-	__debug "$CALLMONITOR_LISTENERS is missing"
+	__info "$CALLMONITOR_LISTENERS is missing"
 	return
     else
 	__debug "processing rules from $CALLMONITOR_LISTENERS"
@@ -117,24 +122,37 @@ __incoming_call() {
     ## deprecated interface
     export MSISDN="$SOURCE" CALLER="$SOURCE_NAME" CALLED="$DEST"
 
-    local source_pattern dest_pattern listener rule=0
+    local source_pattern dest_pattern listener lazy_prepared=false
+    export RULE=0
     while read -r source_pattern dest_pattern listener
     do
 	## comment or empty line
 	case $source_pattern in \#*|"") continue ;; esac
+	__debug_rule "processing rule" \
+	    "'$source_pattern' '$dest_pattern' '$listener'"
 
-	## process rule asynchronously
-	RULE=$rule \
-	__process_rule "$source_pattern" "$dest_pattern" "$listener" &
-	let rule="$rule + 1"
+	## defer preparations until first match
+	if ! $lazy_prepared; then
+	    if __match_rule "$source_pattern" "$dest_pattern" "$listener"; then
+		__lookup
+		lazy_prepared=true
+		__execute_rule "$source_pattern" "$dest_pattern" "$listener" &
+	    fi
+	else
+	    ## process remaining rules asynchronously
+	    if __match_rule "$source_pattern" "$dest_pattern" "$listener"; then
+		__execute_rule "$source_pattern" "$dest_pattern" "$listener"
+	    fi &
+	fi
+
+	let RULE="$RULE + 1"
     done < "$CALLMONITOR_LISTENERS"
     wait
 }
 
-## process a single rule
-__process_rule() {
+# rule processing: condition part
+__match_rule() {
     local source_pattern="$1" dest_pattern="$2" listener="$3"
-    __debug_rule "processing rule '$source_pattern' '$dest_pattern' '$listener'"
 
     ## match NT/E prefix
     case $source_pattern in
@@ -182,8 +200,13 @@ __process_rule() {
     __match SOURCE "$SOURCE" "$source_pattern" || return 1
     __match DEST "$DEST" "$dest_pattern" || return 1
 
-    ## execute listener
     __debug_rule "SUCCEEDED"
+    return 0
+}
+
+# rule processing: action part
+__execute_rule() {
+    local source_pattern="$1" dest_pattern="$2" listener="$3"
     __info_rule "ACTION ($source_pattern $dest_pattern $listener)"
     set --
     eval "$listener"

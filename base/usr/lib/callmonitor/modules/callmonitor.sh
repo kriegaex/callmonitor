@@ -145,7 +145,7 @@ __incoming_call() {
 	    fi &
 	fi
 
-	let RULE="$RULE + 1"
+	let RULE++
     done < "$CALLMONITOR_LISTENERS"
     wait
 }
@@ -251,7 +251,7 @@ __match() {
 	    ;;
     esac
     case $PATTERN in
-	!*) let RESULT="!$RESULT" ;;
+	!*) let RESULT=!RESULT ;;
     esac
     if [ $RESULT -eq 0 ]; then
 	__debug_rule "parameter $PARAM='$VALUE' matches pattern '$PATTERN'"

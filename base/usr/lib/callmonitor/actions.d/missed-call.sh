@@ -82,7 +82,7 @@ mail_missed_call() {
 	echo "did not understand time and date in '$CALL'" >&2
 	return 1
     fi
-    let diff="$time - $start"
+    let "diff = time - start"
     diff="${diff#-}" # abs()
     if [ "$diff" -gt 90 ]; then # +- 1.5 minutes
 	echo "call '$CALL': time did not match (diff $diff)" >&2

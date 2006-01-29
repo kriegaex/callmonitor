@@ -32,13 +32,14 @@ reverse_lookup() {
     getmsg -w 5 www.dasoertliche.de "$NUMBER" \
     -t '/DB4Web/es/oetb2suche/home.htm?main=Antwort&s=2&SKN=2&kw_invers=%s' |
     sed -e '
-	/<a class="blb" href="home.htm/!d
+	/^[[:space:]]*<td[^>]*><a class="\(blb\|bigblunderrd\)".*<\/td>[[:space:]]*$/!d
 	s#<br>#, #g
 	s#<[^>]*># #g
 	s#[[:space:]]\+# #g
 	s#^ ##
 	s# $##
-	s# ,#,#
+	s# ,#,#g
+	q # first entry only
     '
 }
 

@@ -52,53 +52,54 @@ __j_transition() {
     case $state in
 	""|disconnected)
 	    case $event in
-		CALL)	    state=calling	output=out:request ;;
-		RING)	    state=ringing	output=in:request ;;
+		CALL)	    state=calling	output=out-request ;;
+		RING)	    state=ringing	output=in-request ;;
 		*)	    state=disconnected  output=error ;;
 	    esac
 	;;
 	calling)
 	    case $event in
-		CONNECT)    state=connected:out	output=out:begin
+		CONNECT)    state=connected:out	output=out-start
 			    dest=$remote
 		;;
-		DISCONNECT) state=disconnected	output=out:cancel ;;
+		DISCONNECT) state=disconnected	output=out-cancel ;;
 		*)	    state=disconnected  output=error ;;
 	    esac
 	;;
 	ringing)
 	    case $event in
-		CALL)	    state=accepted:in	output=in:accept ;;
-		CONNECT)    state=connected:in	output=in:begin
+		CALL)	    state=accepted:in	output=in-accept ;;
+		CONNECT)    state=connected:in	output=in-begin
 			    source=$remote
 		;;
-		DISCONNECT) state=disconnected	output=in:cancel ;;
+		DISCONNECT) state=disconnected	output=in-cancel ;;
 		*)	    state=disconnected  output=error ;;
 	    esac
 	;;
 	accepted:in)
 	    case $event in
-		CONNECT)    state=connected:in	output=in:begin
+		CONNECT)    state=connected:in	output=in-start
 			    source=$remote
 		;;
-		DISCONNECT) state=disconnected	output=in:cancel ;;
+		DISCONNECT) state=disconnected	output=in-cancel ;;
 		*)	    state=disconnected  output=error ;;
 	    esac
 	;;
 	connected:in)
 	    case $event in
-		DISCONNECT) state=disconnected	output=in:end ;;
+		DISCONNECT) state=disconnected	output=in-end ;;
 		*)	    state=disconnected  output=error ;;
 	    esac
 	;;
 	connected:out)
 	    case $event in
-		DISCONNECT) state=disconnected	output=out:end ;;
+		DISCONNECT) state=disconnected	output=out-end ;;
 		*)	    state=disconnected  output=error ;;
 	    esac
 	;;
     esac
-    __j_output "$output"
+    let INSTANCE++
+    __j_output "$output" &
 }
 
 __j_parse() {
@@ -162,40 +163,8 @@ __init_iface() {
     :
 }
 
-## process an "IncomingCall" line
-#__incoming_call_line() {
-#    local line="$1"
-#    local SOURCE="${line##*caller: \"}"; SOURCE="${SOURCE%%\"*}"
-#    local DEST="${line##*called: \"}"; DEST="${DEST%%\"*}"
-#    local SOURCE_NAME="" DEST_NAME="" NT=false END=false
-#    local SOURCE_OPTIONS= DEST_OPTIONS=
-#    __debug "detected '$line'"
-#    case "$line" in
-#	*"IncomingCall from NT:"*) NT=true ;; 
-#    esac
-#
-#    ## only one reverse lookup; it is expensive
-#    if $NT; then
-#	SOURCE_OPTIONS="--local"
-#    else
-#	DEST_OPTIONS="--local"
-#    fi
-#    incoming_call
-#}
-
-## process an "outgoing" summary line at end of call
-#__end_outgoing_line() {
-#    local line="$1"
-#    local SOURCE="${line% outgoing*}"; SOURCE="${SOURCE##* }"
-#    local DEST="${line% ChargeU*}"; DEST="${DEST##* }" 
-#
-#    ## NT cannot be detected; let's simply assume local outbound call
-#    local SOURCE_NAME="" DEST_NAME="" NT=true END=true
-#    local SOURCE_OPTIONS="--local" DEST_OPTIONS="--local"
-#    __debug "detected '$line'"
-#    incoming_call
-#}
 __j_output() {
+    local output="$1"
     __debug '>>>' "$@"
     __debug '   ' ID=$id
     __debug '   ' TIMESTAMP=$timestamp
@@ -204,11 +173,24 @@ __j_output() {
     __debug '   ' EXT=$ext
     __debug '   ' DURATION=$duration
     __debug '>>>'
-}
 
-#	    *"IncomingCall"*"caller: "*"called: "*)
-#		__incoming_call_line "$line" &
-#		let INSTANCE++
+    local ID=$id SOURCE=$source DEST=$dest EXT=$ext DURATION=$duration
+    local TIMESTAMP=$timestamp EVENT= SOURCE_OPTIONS= DEST_OPTIONS=
+    export EVENT ID SOURCE DEST EXT DURATION TIMESTAMP
+    case $output in
+	in-request|in-cancel|in-start|in-end)
+	    EVENT=$output
+	    DEST_OPTIONS="--local"
+	;;
+	out-request|out-cancel|out-start|out-end)
+	    EVENT=$output
+	    SOURCE_OPTIONS="--local"
+	;;
+    esac
+    if [ -n "$output" ]; then
+	incoming_call
+    fi
+}
 
 ## store attributes per connection id
 __j_store() {

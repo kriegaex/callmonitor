@@ -57,7 +57,7 @@ __incoming_call_line() {
     local line="$1"
     local SOURCE="${line##*caller: \"}"; SOURCE="${SOURCE%%\"*}"
     local DEST="${line##*called: \"}"; DEST="${DEST%%\"*}"
-    local SOURCE_NAME="" DEST_NAME="" NT=false END=false
+    local SOURCE_NAME="" DEST_NAME="" NT=false END=false EVENT=out:request
     local SOURCE_OPTIONS= DEST_OPTIONS=
     __debug "detected '$line'"
     case "$line" in
@@ -80,7 +80,7 @@ __end_outgoing_line() {
     local DEST="${line% ChargeU*}"; DEST="${DEST##* }" 
 
     ## NT cannot be detected; let's simply assume local outbound call
-    local SOURCE_NAME="" DEST_NAME="" NT=true END=true
+    local SOURCE_NAME="" DEST_NAME="" NT=true END=true EVENT=end
     local SOURCE_OPTIONS="--local" DEST_OPTIONS="--local"
     __debug "detected '$line'"
     incoming_call

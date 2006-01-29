@@ -79,7 +79,7 @@ __lookup() {
 ## process a call
 __incoming_call() {
     trap - CHLD
-    __info "CALL (SOURCE='$SOURCE' DEST='$DEST' NT=$NT END=$END)" 
+    __info "CALL (EVENT='$EVENT' SOURCE='$SOURCE' DEST='$DEST')" 
 
     if [ ! -r "$CALLMONITOR_LISTENERS" ]; then
 	__info "$CALLMONITOR_LISTENERS is missing"
@@ -99,10 +99,14 @@ __incoming_call() {
     } &
 
     ## make call information available to listeners
-    export SOURCE DEST NT END
+    local NT=false END=false
+    export EVENT SOURCE DEST NT END
 
     ## deprecated interface
-    export MSISDN="$SOURCE" CALLER="$SOURCE_NAME" CALLED="$DEST"
+    case $EVENT in
+	out-request) NT=true ;;
+	end) END=true ;;
+    esac
 
     local source_pattern dest_pattern listener
     export RULE=0

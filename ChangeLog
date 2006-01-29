@@ -124,3 +124,6 @@
 2006-01-28
 
 	* callmonitor: Verzögerte Rückwärtssuche; nur wenn nötig
+
+	* callmonitor: Alte Listener-Schnittstelle (MSISDN, CALLER, CALLED)
+	entfernt.

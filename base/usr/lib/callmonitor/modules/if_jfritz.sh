@@ -22,7 +22,6 @@
 
 ## analyze call information
 __read() {
-    trap '' CHLD
     local timestamp event id ext source dest remote duration
     while __j_parse; do
 
@@ -34,8 +33,7 @@ __read() {
 
 	local state output
 	__j_load state
-	output=$(__j_transition)
-	__j_output $output
+	__j_transition
 	
 	if [ "$state" = "disconnected" ]; then
 	    __j_remove state source dest ext
@@ -51,7 +49,6 @@ __read() {
 
 ## separate state maschine for each connection id
 __j_transition() {
-    local output=
     case $state in
 	""|disconnected)
 	    case $event in
@@ -101,47 +98,64 @@ __j_transition() {
 	    esac
 	;;
     esac
-    echo "$output"
+    __j_output "$output"
 }
 
 __j_parse() {
     local _1 _2 _3 _4 empty
-    IFS=';' read -r timestamp event _1 _2 _3 _4 empty
+    IFS=';' read -r timestamp event _1 _2 _3 _4 empty || return 1
     id=$_1
-    __debug "timestamp: $timestamp"
-    __debug "event: $event"
-    __debug "id: $id"
+    __debug '<<<'
+    __debug '   ' "timestamp: $timestamp"
+    __debug '   ' "event: $event"
+    __debug '   ' "id: $id"
     unset ext source dest remote duration
     case $event in
 	CALL)
 	    ext=$_2
 	    source=$_3
 	    dest=$_4
-	    __debug "ext: $ext"
-	    __debug "source: $source"
-	    __debug "dest: $dest"
+	    __debug '   ' "ext: $ext"
+	    __debug '   ' "source: $source"
+	    __debug '   ' "dest: $dest"
 	;;
 	RING)
 	    source=$_2
 	    dest=$_3
-	    __debug "source: $source"
-	    __debug "dest: $dest"
+	    __debug '   ' "source: $source"
+	    __debug '   ' "dest: $dest"
 	;;
 	CONNECT)
 	    ext=$_2
 	    remote=$_3
-	    __debug "ext: $ext"
-	    __debug "remote: $remote"
+	    __debug '   ' "ext: $ext"
+	    __debug '   ' "remote: $remote"
 	;;
 	DISCONNECT)
 	    duration=$_2
-	    __debug "duration: $duration"
+	    __debug '   ' "duration: $duration"
+	;;
+	*)
+	    return 1
 	;;
     esac
+    __debug '<<<'
+    return 0
 }
 
 __read_from_iface() {
-    nc 127.0.0.1 1012 | __read
+    let "__J_SLEEP = (__J_SLEEP < 1) ? 1 : __J_SLEEP"
+    if ! nc 127.0.0.1 1012 < /dev/null > /dev/null 2>&1; then
+	__info "Please use #96*5* to enable telefon's interface."
+        __info "Trying again in $__J_SLEEP seconds ..."
+
+	sleep "$__J_SLEEP"
+	let "__J_SLEEP *= 2"
+	let "__J_SLEEP = (__J_SLEEP > 600) ? 600 : __J_SLEEP"
+    else
+	__J_SLEEP=
+	nc 127.0.0.1 1012 | __read
+    fi
 }
 
 __init_iface() {
@@ -189,7 +203,7 @@ __j_output() {
     __debug '   ' DEST=$dest
     __debug '   ' EXT=$ext
     __debug '   ' DURATION=$duration
-    __debug '<<<'
+    __debug '>>>'
 }
 
 #	    *"IncomingCall"*"caller: "*"called: "*)

@@ -89,6 +89,7 @@ __work() {
 
     ## enter main loop
     while true; do
+	__debug "beginning to read from interface $CALLMONITOR_INTERFACE"
 	__read_from_iface
     done
 }

@@ -22,6 +22,7 @@
 require cgi
 
 CHECKED=' checked'
+DISABLED=' disabled'
 
 auto_chk='' man_chk=''
 if [ "$CALLMONITOR_ENABLED" = "yes" ]; then
@@ -52,6 +53,13 @@ case "$CALLMONITOR_INTERFACE" in
     fifo) fifo_chk=$CHECKED ;;
     jfritz) jfritz_chk=$CHECKED ;;
 esac
+
+jfritz_disabled=''
+jfritz_hint='Zum Deaktivieren <code>#96*4*</code> wählen'
+if ! nc 127.0.0.1 1012 < /dev/null > /dev/null 2>&1; then
+    jfritz_disabled=$DISABLED
+    jfritz_hint='Zum Aktivieren <code>#96*5*</code> wählen'
+fi
 
 SYSLOG='System-Log'
 if has_package syslogd; then
@@ -122,9 +130,9 @@ sec_begin 'Schnittstelle'
 cat << EOF
 <h2>Technik zum Abruf der Anrufinformationen vom telefon-Daemon</h2>
 <p>
-    <input type="radio" name="interface" value="jfritz"$jfritz_chk id="i1">
-    <label for="i1">TCP: Aktivierbar per <code>#96*5*</code> am Telefon
-    (empfohlen)</label><br>
+    <input type="radio" name="interface" value="jfritz"$jfritz_chk
+	$jfritz_disabled id="i1">
+    <label for="i1">TCP (empfohlen): $jfritz_hint</label><br>
     <input type="radio" name="interface" value="fifo"$fifo_chk id="i2">
     <label for="i2">Pipe (Debug-Ausgabe)</label>
 </p>

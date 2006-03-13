@@ -35,7 +35,7 @@ FIFO_DIR="${FIFO%/*}"
 if [ ! -d "$FIFO_DIR" ]; then
     mkdir -p "$FIFO_DIR"
 fi
-PIDFILE="/var/run/$DAEMON.pid"
+PIDFILE="$CALLMONITOR_VAR/pid"
 
 case "$1" in
     ""|load|start|restart)

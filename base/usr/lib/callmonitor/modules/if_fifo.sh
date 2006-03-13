@@ -22,7 +22,6 @@
 
 ## copy stdin to stdout while looking for incoming calls
 __read() {
-    trap '' CHLD
     local line
     while IFS= read -r line
     do

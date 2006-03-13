@@ -31,21 +31,7 @@
 ##  DEST_NAME	destination name
 
 require net
-
-## convert latin1 to utf8
-latin1_utf8() {
-    hexdump -v -e '100/1 " %02x" "\n"' |
-    sed -e '
-	s/ \([89ab]\)/c2\1/g
-	s/ c/c38/g
-	s/ d/c39/g
-	s/ e/c3a/g
-	s/ f/c3b/g
-	s/ //g
-	s/\(..\)/\\x\1/g
-    ' |
-    while IFS= read -r line; do echo -ne "$line"; done
-}
+require util
 
 ## get matching IPs from multid.leases and execute a command for each of them
 ## example: for_leases 192.168.10. dboxpopup "Ring!"

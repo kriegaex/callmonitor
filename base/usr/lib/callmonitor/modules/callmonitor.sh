@@ -78,7 +78,6 @@ __lookup() {
 
 ## process a call
 __incoming_call() {
-    trap - CHLD
     __info "CALL (EVENT='$EVENT' SOURCE='$SOURCE' DEST='$DEST')" 
 
     if [ ! -r "$CALLMONITOR_LISTENERS" ]; then

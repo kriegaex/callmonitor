@@ -107,9 +107,9 @@ if $STOP; then
 else
     mkdir -p "$(dirname "$FIFO")"
 
-    if [ ! -p "$FIFO" ]; then
+##    if [ ! -p "$FIFO" ]; then
 	mknod "$FIFO" p
-    fi
+##    fi
 
     if $FOREGROUND; then
 	echo $$ > "$PIDFILE"

@@ -24,21 +24,28 @@ require cgi
 CHECKED=' checked'
 
 auto_chk='' man_chk=''
-if [ "$CALLMONITOR_ENABLED" = "yes" ]; then
+##if [ "$CALLMONITOR_ENABLED" = "yes" ]; then
+case $CALLMONITOR_ENABLED in yes)
     auto_chk=$CHECKED
-else
+##else
+;; *)
     man_chk=$CHECKED
-fi
+##fi
+esac
 
 debug_chk=''
-if [ "$CALLMONITOR_DEBUG" = "yes" ]; then
+##if [ "$CALLMONITOR_DEBUG" = "yes" ]; then
+case $CALLMONITOR_DEBUG in yes)
     debug_chk=$CHECKED
-fi
+##fi
+;; esac
 
 reverse_chk=''
-if [ "$CALLMONITOR_REVERSE" = "yes" ]; then
+##if [ "$CALLMONITOR_REVERSE" = "yes" ]; then
+case $CALLMONITOR_REVERSE in yes)
     reverse_chk=$CHECKED
-fi
+##fi
+;; esac
 
 no_chk='' trans_chk='' pers_chk=''
 case "$CALLMONITOR_REVERSE_CACHE" in

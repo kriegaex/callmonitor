@@ -48,7 +48,8 @@ while true; do
     esac
     shift
 done
-if [ $# -lt 1 ]; then
+##if [ $# -lt 1 ]; then
+if let "$# < 1"; then
     usage >&2; exit
 fi
 SOURCE="$1"
@@ -62,10 +63,12 @@ if ! $STDOUT; then
 	exit 1
     fi
     status="$("$CALLMONITOR_ROOT/etc/init.d/rc.callmonitor" status)"
-    if [ "$status" != "running" ]; then
+##    if [ "$status" != "running" ]; then
+    case $status in "running") ;; *)
 	echo "callmonitor seems not to be running" >&2
 	exit 1
-    fi
+##    fi
+    ;; esac
 fi
 
 ## IncomingCall from NT: ID 0, caller: "0927340284" called: "234972"

@@ -113,3 +113,17 @@
 2006-01-22
 	
 	callmonitor-0.6 veröffentlicht
+
+2006-03-18
+
+	* phonebook: Einträge im Telefonbuch endeten fälschlicherweise immer
+	mit einem Semikolon; die Rückwärtssuche ist an die Änderungen bei
+	dasoertliche.de angepasst (Dank an meimi039); die Adresse bei der
+	Rückwärtssuche steht jetzt in Klammern
+
+	Performance-Optimierungen (leider zu Lasten der Lesbarkeit des Codes):
+	vom erkanntem Anruf bis zur Regelausführung (getestet bei einer
+	einfachen Regel und ohne Rückwärtssuche) nun in ca. einer statt vorher
+	in 5 Sekunden (Dank fürs Drängeln an xenon80 :-))
+
+	callmonitor-0.7 veröffentlicht

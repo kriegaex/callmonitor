@@ -32,9 +32,9 @@ require modreg
 
 FIFO="$CALLMONITOR_FIFO"
 FIFO_DIR="${FIFO%/*}"
-if [ ! -d "$FIFO_DIR" ]; then
+##if [ ! -d "$FIFO_DIR" ]; then
     mkdir -p "$FIFO_DIR"
-fi
+##fi
 PIDFILE="/var/run/$DAEMON.pid"
 
 case "$1" in
@@ -48,11 +48,14 @@ esac
 
 start_daemon() {
     echo -n "Starting $DAEMON..."
-    if [ "$CALLMONITOR_DEBUG" = "yes" ]; then
+##    if [ "$CALLMONITOR_DEBUG" = "yes" ]; then
+    case $CALLMONITOR_DEBUG in yes)
 	"$DAEMON" --debug > /dev/null 2>&1
-    else 
+##    else 
+    ;; *)
 	"$DAEMON" > /dev/null 2>&1
-    fi
+##    fi
+    esac
     check_status
 }
 stop_daemon() {
@@ -62,10 +65,12 @@ stop_daemon() {
 }
 
 try_start() {
-    if [ "$CALLMONITOR_ENABLED" != "yes" ]; then
+##    if [ "$CALLMONITOR_ENABLED" != "yes" ]; then
+    case $CALLMONITOR_ENABLED in yes);; *)
 	echo "$DAEMON is disabled" >&2
-	exit 1;
-    fi
+	exit 1
+##    fi
+    ;; esac
 
     start
 }
@@ -76,7 +81,8 @@ start() {
 	exit 0
     fi
     start_daemon || exitval=$?
-    if [ $exitval -eq 0 ]; then
+##    if [ $exitval -eq 0 ]; then
+    if let "exitval == 0"; then
 	telfifo enable "$FIFO"
     fi
     return $exitval

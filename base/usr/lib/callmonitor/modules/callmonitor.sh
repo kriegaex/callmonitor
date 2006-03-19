@@ -93,23 +93,25 @@ __end_outgoing_line() {
 }
 
 __incoming_call() {
-    if [ ! -z "$SOURCE" ]; then
+##    if [ ! -z "$SOURCE" ]; then
+    if let "${SOURCE:+1}"; then
 	SOURCE_NAME="$(phonebook $PHONEBOOK_OPTIONS $SOURCE_OPTIONS \
 	    get "$SOURCE")"
     fi
-    if [ ! -z "$DEST" ]; then
+##    if [ ! -z "$DEST" ]; then
+    if let "${DEST:+1}"; then
 	DEST_NAME="$(phonebook $PHONEBOOK_OPTIONS $DEST_OPTIONS \
 	    get "$DEST")"
     fi
     __info "SOURCE='$SOURCE' DEST='$DEST' SOURCE_NAME='$SOURCE_NAME'" \
 	"DEST_NAME='$DEST_NAME' NT=$NT END=$END" 
 
-    if [ ! -r "$CALLMONITOR_LISTENERS" ]; then
-	__debug "$CALLMONITOR_LISTENERS is missing"
-	return
-    else
-	__debug "processing rules from $CALLMONITOR_LISTENERS"
-    fi
+##    if [ ! -r "$CALLMONITOR_LISTENERS" ]; then
+##	__debug "$CALLMONITOR_LISTENERS is missing"
+##	return
+##    else
+##	__debug "processing rules from $CALLMONITOR_LISTENERS"
+##    fi
 
     ## make call information available to listeners
     export SOURCE DEST SOURCE_NAME DEST_NAME NT END
@@ -187,7 +189,8 @@ __process_rule() {
     set --
     eval "$listener"
     local status=$?
-    if [ $status -ne 0 ]; then
+##    if [ $status -ne 0 ]; then
+    if let "status != 0"; then
 	__debug_rule "listener failed with an exit status of $status"
     fi
 
@@ -226,7 +229,8 @@ __match() {
     case $PATTERN in
 	!*) let RESULT="!$RESULT" ;;
     esac
-    if [ $RESULT -eq 0 ]; then
+##    if [ $RESULT -eq 0 ]; then
+    if let "RESULT == 0"; then
 	__debug_rule "parameter $PARAM='$VALUE' matches pattern '$PATTERN'"
     else
 	__debug_rule "parameter $PARAM='$VALUE' does NOT match" \
@@ -241,12 +245,13 @@ __read() {
     local line
     while IFS= read -r line
     do
-	echo "$line"
+##	echo "$line"
 	case $line in
+	    ## double fork to avoid zombies
 	    *"IncomingCall"*"caller: "*"called: "*)
-		__incoming_call_line "$line" & ;;
+		{ __incoming_call_line "$line" & } & wait $! ;;
 	    *Slot:*ID:*CIP:*outgoing*)
-		__end_outgoing_line "$line" & ;;
+		{ __end_outgoing_line "$line" & } & wait $! ;;
 	esac
     done
 }

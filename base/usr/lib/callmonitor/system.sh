@@ -25,15 +25,17 @@
 require() {
     local lib="$1"
     local file="${CALLMONITOR_LIBDIR}/modules/$lib.sh"
-    if [ ! -e "$file" ]; then
-	echo "require $lib: '$file' does not exist" >&2
-	exit 2
-    fi
-    if eval "[ \"\${CALLMONITOR_LOADED_$lib+set}\" ]"; then
+##    if [ ! -e "$file" ]; then
+##	echo "require $lib: '$file' does not exist" >&2
+##	exit 2
+##    fi
+##    if eval "[ \"\${CALLMONITOR_LOADED_$lib+set}\" ]"; then
+    if let "CALLMONITOR_LOADED_$lib == 1"; then
 	## already loaded
 	return
     else
 	. "$file"
-	eval "CALLMONITOR_LOADED_$lib="
+##	eval "CALLMONITOR_LOADED_$lib="
+	let "CALLMONITOR_LOADED_$lib = 1"
     fi
 }

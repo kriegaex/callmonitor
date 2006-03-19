@@ -36,9 +36,9 @@ EOF
     "$MAILER" -?
 }
 
-if [ ! -e "$SPOOL" ]; then
+##if [ ! -e "$SPOOL" ]; then
     mkdir -p "$SPOOL"
-fi
+##fi
 
 ## apply a function to each item in a comma-separated list
 foreach() {
@@ -123,12 +123,15 @@ prepare_mail() {
     save_attachment() {
 	local file="$1" realpath
 	local basename="$(basename "$file")"
-	if [ "$file" = "-" ]; then
+##	if [ "$file" = "-" ]; then
+	case $file in "-")
 	    basename="stdin.txt"
 	    realpath="-"
-	else
+##	else
+	;; *)
 	    realpath="$(realpath "$file")"
-	fi
+##	fi
+	;; esac
 	local subdir="$COUNT"
 	local target="$dir/$subdir/$basename"
 	mkdir "$dir/$subdir"
@@ -139,12 +142,14 @@ prepare_mail() {
 	add TEMP "$subdir/$basename"
 	let COUNT="$COUNT + 1"
     }
-    if [ "${ATTACHMENTS+set}" ]; then
+##    if [ "${ATTACHMENTS+set}" ]; then
+    if let "${ATTACHMENTS+1}"; then
 	unset TEMP
 	foreach "$ATTACHMENTS" save_attachment
 	ATTACHMENTS="$TEMP"
     fi
-    if [ "${INLINES+set}" ]; then
+##    if [ "${INLINES+set}" ]; then
+    if let "${INLINES+1}"; then
 	unset TEMP
 	foreach "$INLINES" save_attachment
 	INLINES="$TEMP"
@@ -205,7 +210,7 @@ case "$1" in
 
 	## parse command line options
 	TEMP="$(getopt -o 'M:p:s:f:t:m:a:w:d:i:D:' -n "$PROGRAM" -- "$@")"
-	if [ $? != 0 ]; then 
+	if let "$? != 0"; then 
 	    usage >&2
 	    exit 1
 	fi

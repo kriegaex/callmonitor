@@ -88,17 +88,24 @@ fi
 
 _get() {
     local NUMBER="$1" NUMBER_NORM NAME exitval
-    NAME="$(_get_local "$NUMBER")"
+##    NAME="$(_get_local "$NUMBER")"
+    _get_local "$NUMBER"
     exitval=$?
-    if [ $exitval -ne 0 ]; then
+##    if [ $exitval -ne 0 ]; then
+    if let "exitval != 0"; then
 	NUMBER_NORM="$(normalize_address "$NUMBER")"
-	if [ "$NUMBER_NORM" != "$NUMBER" ]; then
-	    NAME="$(_get_local "$NUMBER_NORM")"
+	case $NUMBER_NORM in "$NUMBER") ;; *)
+##	if [ "$NUMBER_NORM" != "$NUMBER" ]; then
+##	    NAME="$(_get_local "$NUMBER_NORM")"
+	    _get_local "$NUMBER_NORM"
 	    exitval=$?
-	fi
-	if [ $exitval -ne 0 ] && $REVERSE; then
+##	fi
+	;; esac
+##	if [ $exitval -ne 0 ] && $REVERSE; then
+	if let "exitval != 0" && $REVERSE; then
 	    NAME="$(reverse_lookup "$NUMBER_NORM")"
-	    if [ $? -eq 0 ] && $CACHE; then
+##	    if [ $? -eq 0 ] && $CACHE; then
+	    if let "$? == 0" && $CACHE; then
 		_put_local "$NUMBER_NORM" "$NAME" >&2 &
 		exitval=0
 	    fi
@@ -108,16 +115,19 @@ _get() {
     return $exitval
 }
 
+## for performance, _get_local returns its result in $NAME
 _get_local() {
-    local NUMBER="$1" NAME NUMBER_RE
+##    local NUMBER="$1" NAME NUMBER_RE
+    local NUMBER="$1" NUMBER_RE
     NUMBER_RE="$(echo "$NUMBER" | sed_re_escape)"
     NAME="$(sed -ne "/^${PRE_RE}${NUMBER_RE}${SEP_RE}/{
 	s/^${PRE_RE}${NUMBER}${SEP_RE}/:/p;q}" \
 	"$CALLMONITOR_TRANSIENT" "$CALLMONITOR_PERSISTENT" 2> /dev/null)"
-    if [ ! -z "$NAME" ]; then
+##    if [ ! -z "$NAME" ]; then
+    if let "${NAME:+1}"; then
 	NAME="${NAME#:}"
 	__debug "phone book contains {$NUMBER -> $NAME}"
-	echo "$NAME"
+##	echo "$NAME"
 	return 0
     fi
     return 1
@@ -132,23 +142,28 @@ _put_local() {
 _put_or_remove() {
     local NUMBER="$1" NAME="$2" NUMBER_RE
     NUMBER_RE="$(echo "$NUMBER" | sed_re_escape)"
-    if [ "$MODE" = "remove" ]; then
+##    if [ "$MODE" = "remove" ]; then
+    case $MODE in remove)
 	__debug "removing $NUMBER from phone book $PHONEBOOK"
-    else
+##    else
+    ;; *)
 	NAME="$(_norm_value "$NAME")"
 	__debug "putting {$NUMBER -> $NAME} into phone book $PHONEBOOK"
-    fi
+##    fi
+    esac
 
     ## beware of concurrent updates
     if lock "$PHONEBOOK"; then
 	local TMPFILE="$CALLMONITOR_TMPDIR/.callmonitor.tmp"
 	{ 
-	    if [ -e "$PHONEBOOK" ]; then
-		sed -e "/^${PRE_RE}${NUMBER_RE}${SEP_RE}/d" "$PHONEBOOK"
-	    fi
-	    if [ "$MODE" = "put" ]; then
+##	    if [ -e "$PHONEBOOK" ]; then
+		sed -e "/^${PRE_RE}${NUMBER_RE}${SEP_RE}/d" "$PHONEBOOK" 2> /dev/null
+##	    fi
+##	    if [ "$MODE" = "put" ]; then
+	    case $MODE in put)
 		echo "${PRE}${NUMBER}${SEP}${NAME}"
-	    fi
+##	    fi
+	    ;; esac
 	} > "$TMPFILE"
 	cat "$TMPFILE" > "$PHONEBOOK"
 	rm "$TMPFILE"
@@ -167,9 +182,9 @@ _norm_value() {
 
 _init() {
     RUN="/var/run/phonebook"
-    if [ ! -d "$RUN" ]; then
+##    if [ ! -d "$RUN" ]; then
 	mkdir -p "$RUN"
-    fi
+##    fi
     "$CALLMONITOR_LIBDIR/sipnames" > "$RUN"/sip
 }
 
@@ -190,10 +205,12 @@ _tidy() {
 	rm "$TMPFILE"
 	unlock "$book"
     fi
-    if [ $exitval -eq 0 ] && $PERSISTENT; then
+##    if [ $exitval -eq 0 ] && $PERSISTENT; then
+    if let "exitval == 0" && $PERSISTENT; then
 	callmonitor_store
     fi
-    if [ $exitval -eq 0 ]; then
+##    if [ $exitval -eq 0 ]; then
+    if let "exitval == 0"; then
 	echo "done." >&2
     else
 	echo "failed." >&2
@@ -209,7 +226,8 @@ case $1 in
     init|tidy) expect=1 ;;
     *) expect=0 ;;
 esac
-if [ $# -ne $expect ]; then
+##if [ $# -ne $expect ]; then
+if let "$# != expect"; then
     _usage >&2
     exit 1
 fi

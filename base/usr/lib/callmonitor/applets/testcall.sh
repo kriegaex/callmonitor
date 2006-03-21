@@ -49,7 +49,7 @@ while true; do
     shift
 done
 ##if [ $# -lt 1 ]; then
-if let "$# < 1"; then
+if ? "$# < 1"; then
     usage >&2; exit
 fi
 SOURCE="$1"

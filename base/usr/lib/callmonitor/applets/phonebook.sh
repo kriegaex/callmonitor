@@ -92,7 +92,7 @@ _get() {
     _get_local "$NUMBER"
     exitval=$?
 ##    if [ $exitval -ne 0 ]; then
-    if let "exitval != 0"; then
+    if ? exitval != 0; then
 	NUMBER_NORM="$(normalize_address "$NUMBER")"
 	case $NUMBER_NORM in "$NUMBER") ;; *)
 ##	if [ "$NUMBER_NORM" != "$NUMBER" ]; then
@@ -102,10 +102,10 @@ _get() {
 ##	fi
 	;; esac
 ##	if [ $exitval -ne 0 ] && $REVERSE; then
-	if let "exitval != 0" && $REVERSE; then
+	if ? exitval != 0 && $REVERSE; then
 	    NAME="$(reverse_lookup "$NUMBER_NORM")"
 ##	    if [ $? -eq 0 ] && $CACHE; then
-	    if let "$? == 0" && $CACHE; then
+	    if ? $? == 0 && $CACHE; then
 		_put_local "$NUMBER_NORM" "$NAME" >&2 &
 		exitval=0
 	    fi
@@ -124,7 +124,7 @@ _get_local() {
 	s/^${PRE_RE}${NUMBER}${SEP_RE}/:/p;q}" \
 	"$CALLMONITOR_TRANSIENT" "$CALLMONITOR_PERSISTENT" 2> /dev/null)"
 ##    if [ ! -z "$NAME" ]; then
-    if let "${NAME:+1}"; then
+    if ! empty "$NAME"; then
 	NAME="${NAME#:}"
 	__debug "phone book contains {$NUMBER -> $NAME}"
 ##	echo "$NAME"
@@ -206,11 +206,11 @@ _tidy() {
 	unlock "$book"
     fi
 ##    if [ $exitval -eq 0 ] && $PERSISTENT; then
-    if let "exitval == 0" && $PERSISTENT; then
+    if ? exitval == 0 && $PERSISTENT; then
 	callmonitor_store
     fi
 ##    if [ $exitval -eq 0 ]; then
-    if let "exitval == 0"; then
+    if ? exitval == 0; then
 	echo "done." >&2
     else
 	echo "failed." >&2
@@ -227,7 +227,7 @@ case $1 in
     *) expect=0 ;;
 esac
 ##if [ $# -ne $expect ]; then
-if let "$# != expect"; then
+if ? $# != expect; then
     _usage >&2
     exit 1
 fi

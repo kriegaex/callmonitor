@@ -82,7 +82,7 @@ start() {
     fi
     start_daemon || exitval=$?
 ##    if [ $exitval -eq 0 ]; then
-    if let "exitval == 0"; then
+    if ? exitval == 0; then
 	telfifo enable "$FIFO"
     fi
     return $exitval

@@ -22,7 +22,7 @@
 check_status() {
     local exitval="${1:-$?}"
 ##    if [ "$exitval" -eq 0 ]; then
-    if let "exitval == 0"; then
+    if ? exitval == 0; then
 	echo "done."
     else
 	echo "failed."

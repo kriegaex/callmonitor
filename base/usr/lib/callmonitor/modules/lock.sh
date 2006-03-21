@@ -30,7 +30,7 @@ lock() {
     file="$(lock_filename "$file")"
     local lock="$file.lock"
 ##    if [ "$$" = "$(read_lock_pid "$lock")" ]; then
-    if let "$$ == $(read_lock_pid "$lock")+0"; then
+    if ? $$ == $(read_lock_pid "$lock")+0; then
 	## process already has lock
 	return 0
     fi
@@ -47,7 +47,7 @@ lock() {
 unlock() {
     local file="$(lock_filename "$1")"
     local lock="$file.lock"
-    if let "$$ == $(read_lock_pid "$lock")+0"; then
+    if ? $$ == $(read_lock_pid "$lock")+0; then
 	rm "$lock"
     fi
 }

@@ -20,8 +20,17 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 
-## utilities for managing "libraries"
+## efficient boolean expressions with 'let': some syntactic sugar
+__is_true() {
+    let "$@"
+}
+alias \?=__is_true
 
+empty() {
+    ! let "${*:+1}"
+}
+
+## utilities for managing "libraries"
 require() {
     local lib="$1"
     local file="${CALLMONITOR_LIBDIR}/modules/$lib.sh"
@@ -30,7 +39,7 @@ require() {
 ##	exit 2
 ##    fi
 ##    if eval "[ \"\${CALLMONITOR_LOADED_$lib+set}\" ]"; then
-    if let "CALLMONITOR_LOADED_$lib == 1"; then
+    if ? "CALLMONITOR_LOADED_$lib == 1"; then
 	## already loaded
 	return
     else

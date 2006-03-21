@@ -60,7 +60,7 @@ normalize_tel() {
     case $NUMBER in
 	0049*) NUMBER="0${NUMBER#0049}" ;;
 ##	49*) if [ ${#NUMBER} -gt 10 ]; then NUMBER="0${NUMBER#49}"; fi ;;
-	49*) if let "${#NUMBER} > 10"; then NUMBER="0${NUMBER#49}"; fi ;;
+	49*) if ? "${#NUMBER} > 10"; then NUMBER="0${NUMBER#49}"; fi ;;
     esac
     case $NUMBER in
 	[1-9]*) NUMBER="${CALLMONITOR_OKZ}${NUMBER}" ;; 

@@ -45,20 +45,20 @@ basic_auth() {
 ## default message
 default_message() {
 ##    if [ "${DEST_NAME:+set}" ]; then
-    if let "${DEST_NAME:+1}"; then
+    if ! empty "$DEST_NAME"; then
 	echo "Anruf an $DEST_NAME"
 ##    elif [ "${DEST:+set}" ]; then
-    elif let "${DEST:+1}"; then
+    elif ! empty "$DEST"; then
 	echo "Anruf an $DEST"
     else
 	echo "Anruf"
     fi
 ##    if [ "${SOURCE:+set}" ]; then
-    if let "${SOURCE:+1}"; then
+    if ! empty "$SOURCE"; then
 	echo "von $SOURCE"
     fi
 ##    if [ "${SOURCE_NAME:+set}" ]; then
-    if let "${SOURCE_NAME:+1}"; then
+    if ! empty "$SOURCE_NAME"; then
 	echo "$SOURCE_NAME"
     fi
 }
@@ -96,7 +96,7 @@ getmsg() {
     TEMP="$(getopt -n getmsg -o U:P:v:t:w:p:d: \
 	-l user:,password:,virtual:,port:,template:,timeout:,default:,help -- "$@")"
 ##    if [ $? -ne 0 ]; then return 1; fi
-    if let "$? != 0"; then return 1; fi
+    if ? $? != 0; then return 1; fi
     set -f; eval "set -- $TEMP"; set +f
     while true; do
 	case $1 in
@@ -114,19 +114,19 @@ getmsg() {
 	shift
     done
 ##    if [ $# -eq 0 ]; then echo "Missing hostname or IP" >&2; return 1; fi
-    if let "$# == 0"; then echo "Missing hostname or IP" >&2; return 1; fi
+    if ? $# == 0; then echo "Missing hostname or IP" >&2; return 1; fi
     IP="$1"; shift
 ##    if [ -z "$TEMPLATE" ]; then
-    if ! let "${TEMPLATE:+1}"; then
+    if empty "$TEMPLATE"; then
 ##	if [ $# -eq 0 ]; then echo "Missing template" >&2; return 1; fi
-	if let "$# == 0"; then echo "Missing template" >&2; return 1; fi
+	if ? $# == 0; then echo "Missing template" >&2; return 1; fi
 	TEMPLATE="$1"; shift
     fi
 ##    if [ $# -eq 0 ]; then set -- "$(eval "$DEFAULT")"; fi
-    if let "$# == 0"; then set -- "$(eval "$DEFAULT")"; fi
+    if ? $# == 0; then set -- "$(eval "$DEFAULT")"; fi
     VIRTUAL="${VIRTUAL:-$IP}"
 ##    if [ -n "$USERNAME" -o -n "$PASSWORD" ]; then
-    if let "${USERNAME:+1}" || let "${PASSWORD:+1}"; then
+    if ! empty "$USERNAME" || ! empty "$PASSWORD"; then
 	AUTH="$(basic_auth "$USERNAME" "$PASSWORD")"
     fi
     ## If $1 is empty, it disappears completely in the output of "$@", which
@@ -138,7 +138,7 @@ getmsg() {
 	echo "GET $URL HTTP/1.0$CR"
 	echo "Host: $VIRTUAL$CR"
 ##	[ -n "$AUTH" ] && echo "$AUTH"
-	let "${AUTH:+1}" && echo "$AUTH"
+	! empty "$AUTH" && echo "$AUTH"
 	echo "$CR"
     } | __nc "$TIMEOUT" "$IP" "$PORT"
 }
@@ -164,7 +164,7 @@ rawmsg() {
     TEMP="$(getopt -n rawmsg -o t:w:p:d: \
 	-l port:,template:,timeout:,default:,help -- "$@")"
 ##    if [ $? -ne 0 ]; then return 1; fi
-    if let "$? != 0"; then return 1; fi
+    if ? $? != 0; then return 1; fi
     set -f; eval "set -- $TEMP"; set +f
     while true; do
 	case $1 in
@@ -179,16 +179,16 @@ rawmsg() {
 	shift
     done
 ##    if [ $# -eq 0 ]; then echo "Missing hostname or IP" >&2; return 1; fi
-    if let "$# == 0"; then echo "Missing hostname or IP" >&2; return 1; fi
+    if ? $# == 0; then echo "Missing hostname or IP" >&2; return 1; fi
     IP="$1"; shift
 ##    if [ -z "$TEMPLATE" ]; then
-    if ! let "${TEMPLATE:+1}"; then
+    if empty "$TEMPLATE"; then
 ##	if [ $# -eq 0 ]; then echo "Missing template" >&2; return 1; fi
-	if let "$# == 0"; then echo "Missing template" >&2; return 1; fi
+	if ? $# == 0; then echo "Missing template" >&2; return 1; fi
 	TEMPLATE="$1"; shift
     fi
 ##    if [ $# -eq 0 ]; then set -- "$(eval "$DEFAULT")"; fi
-    if let "$# == 0"; then set -- "$(eval "$DEFAULT")"; fi
+    if ? $# == 0; then set -- "$(eval "$DEFAULT")"; fi
     ## If $1 is empty, it disappears completely in the output of "$@", which
     ## shifts all messages to the left. This seems to be a bug in the busybox
     ## version of ash (?). Other empty arguments work as expected.

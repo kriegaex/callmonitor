@@ -94,12 +94,12 @@ __end_outgoing_line() {
 
 __incoming_call() {
 ##    if [ ! -z "$SOURCE" ]; then
-    if let "${SOURCE:+1}"; then
+    if ! empty "$SOURCE"; then
 	SOURCE_NAME="$(phonebook $PHONEBOOK_OPTIONS $SOURCE_OPTIONS \
 	    get "$SOURCE")"
     fi
 ##    if [ ! -z "$DEST" ]; then
-    if let "${DEST:+1}"; then
+    if ! empty "$DEST"; then
 	DEST_NAME="$(phonebook $PHONEBOOK_OPTIONS $DEST_OPTIONS \
 	    get "$DEST")"
     fi
@@ -128,7 +128,7 @@ __incoming_call() {
 	## process rule asynchronously
 	RULE=$rule \
 	__process_rule "$source_pattern" "$dest_pattern" "$listener" &
-	let rule="$rule + 1"
+	let rule++
     done < "$CALLMONITOR_LISTENERS"
     wait
 }
@@ -190,7 +190,7 @@ __process_rule() {
     eval "$listener"
     local status=$?
 ##    if [ $status -ne 0 ]; then
-    if let "status != 0"; then
+    if ? status != 0; then
 	__debug_rule "listener failed with an exit status of $status"
     fi
 
@@ -230,7 +230,7 @@ __match() {
 	!*) let RESULT="!$RESULT" ;;
     esac
 ##    if [ $RESULT -eq 0 ]; then
-    if let "RESULT == 0"; then
+    if ? RESULT == 0; then
 	__debug_rule "parameter $PARAM='$VALUE' matches pattern '$PATTERN'"
     else
 	__debug_rule "parameter $PARAM='$VALUE' does NOT match" \

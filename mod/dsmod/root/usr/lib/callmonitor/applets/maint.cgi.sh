@@ -27,7 +27,7 @@ TITLE='Callmonitor-Wartung'
 cmd_button() {
     local cmd="$1" label="$2" method="post"
 ##    if [ -z "$cmd" ]; then
-    if let "!0${cmd:+1}"; then
+    if empty "$cmd"; then
 	method="get"
     fi
     cat << EOF
@@ -43,7 +43,7 @@ EOF
 eval "$(modcgi cmd maint)"
 
 ##if [ -n "$MAINT_CMD" ]; then
-if let "${MAINT_CMD:+1}"; then
+if ! empty "$MAINT_CMD"; then
     cgi_begin "$TITLE ..."
     case "$MAINT_CMD" in
 	phonebook_tidy)

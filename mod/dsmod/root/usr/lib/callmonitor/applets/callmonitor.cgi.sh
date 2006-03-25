@@ -1,23 +1,43 @@
+##
+## Callmonitor for Fritz!Box (callmonitor)
+## 
+## Copyright (C) 2005--2006  Andreas Bühmann <buehmann@users.berlios.de>
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+## 
+## http://developer.berlios.de/projects/callmonitor/
+##
 require cgi
 
 CHECKED=' checked'
 
 auto_chk='' man_chk=''
-if [ "$CALLMONITOR_ENABLED" = "yes" ]; then
-    auto_chk=$CHECKED
-else
-    man_chk=$CHECKED
-fi
+case $CALLMONITOR_ENABLED in
+    yes) auto_chk=$CHECKED ;;
+    *) man_chk=$CHECKED ;;
+esac
 
 debug_chk=''
-if [ "$CALLMONITOR_DEBUG" = "yes" ]; then
-    debug_chk=$CHECKED
-fi
+case $CALLMONITOR_DEBUG in
+    yes) debug_chk=$CHECKED ;;
+esac
 
 reverse_chk=''
-if [ "$CALLMONITOR_REVERSE" = "yes" ]; then
-    reverse_chk=$CHECKED
-fi
+case $CALLMONITOR_REVERSE in
+    yes) reverse_chk=$CHECKED
+esac
 
 no_chk='' trans_chk='' pers_chk=''
 case "$CALLMONITOR_REVERSE_CACHE" in
@@ -64,19 +84,22 @@ cat << EOF
 <p>
     <input type="hidden" name="reverse" value="no">
     <input type="checkbox" name="reverse" value="yes"$reverse_chk id="r4">
-    <label for="r4">Rückwärtssuche durchführen</label>
+    <label for="r4" title="Rufnummern wenn möglich in Namen
+	auflösen">Rückwärtssuche durchführen</label>
     (bei <a href="http://www.dasoertliche.de/">DasÖrtliche</a>)
 </p>
 <h2>Suchergebnis zwischenspeichern?</h2>
 <p>
     <input type="radio" name="reverse_cache" value="no"$no_chk id="r1">
-    <label for="r1">Nein</label>
+    <label for="r1" title="Keine Speicherung der Namen">Nein</label>
     <input type="radio" name="reverse_cache" value="transient"$trans_chk
 	id="r2">
-    <label for="r2">Flüchtig</label>
+    <label for="r2" title="Namen gehen bei nächstem Neustart
+	verloren">Flüchtig</label>
     <input type="radio" name="reverse_cache" value="persistent"$pers_chk
 	id="r3">
-    <label for="r3">Dauerhaft</label>
+    <label for="r3" title="Namen werden im Telefonbuch im Flash
+	gespeichert">Dauerhaft</label>
     (<a href="/cgi-bin/file.cgi?id=callers">Callers bearbeiten</a>)
 </p>
 <h2>Für lokale Rufnummern diese Vorwahl verwenden:</h2>

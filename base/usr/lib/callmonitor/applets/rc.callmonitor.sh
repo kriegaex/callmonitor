@@ -1,3 +1,24 @@
+##
+## Callmonitor for Fritz!Box (callmonitor)
+## 
+## Copyright (C) 2005--2006  Andreas Bühmann <buehmann@users.berlios.de>
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+## 
+## http://developer.berlios.de/projects/callmonitor/
+##
 DAEMON=callmonitor
 
 ## we need the telefon package
@@ -11,9 +32,7 @@ require modreg
 
 FIFO="$CALLMONITOR_FIFO"
 FIFO_DIR="${FIFO%/*}"
-if [ ! -d "$FIFO_DIR" ]; then
-    mkdir -p "$FIFO_DIR"
-fi
+mkdir -p "$FIFO_DIR"
 PIDFILE="/var/run/$DAEMON.pid"
 
 case "$1" in
@@ -27,11 +46,10 @@ esac
 
 start_daemon() {
     echo -n "Starting $DAEMON..."
-    if [ "$CALLMONITOR_DEBUG" = "yes" ]; then
-	"$DAEMON" --debug > /dev/null 2>&1
-    else 
-	"$DAEMON" > /dev/null 2>&1
-    fi
+    case $CALLMONITOR_DEBUG in
+	yes) "$DAEMON" --debug > /dev/null 2>&1 ;; 
+	*) "$DAEMON" > /dev/null 2>&1 ;;
+    esac
     check_status
 }
 stop_daemon() {
@@ -41,10 +59,10 @@ stop_daemon() {
 }
 
 try_start() {
-    if [ "$CALLMONITOR_ENABLED" != "yes" ]; then
+    case $CALLMONITOR_ENABLED in yes) ;; *)
 	echo "$DAEMON is disabled" >&2
-	exit 1;
-    fi
+	exit 1
+    ;; esac
 
     start
 }
@@ -55,7 +73,7 @@ start() {
 	exit 0
     fi
     start_daemon || exitval=$?
-    if [ $exitval -eq 0 ]; then
+    if ? exitval == 0; then
 	telfifo enable "$FIFO"
     fi
     return $exitval

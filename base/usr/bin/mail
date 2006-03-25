@@ -1,23 +1,42 @@
 #! /usr/bin/env ash
+##
+## Callmonitor for Fritz!Box (callmonitor)
+## 
+## Copyright (C) 2005--2006  Andreas Bühmann <buehmann@users.berlios.de>
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+## 
+## http://developer.berlios.de/projects/callmonitor/
+##
 readonly PROGRAM="mail"
 readonly SPOOL="/var/spool/mail"
 readonly MAILER="/sbin/mailer"
 readonly TMP="/var/tmp/$PROGRAM"
 
 usage() {
-    cat <<EOF
 #<
+    cat <<EOF
 Usage: $PROGRAM {send|sendonce|enqueue} [MAILER_OPTION]...
        $PROGRAM {process|config|list}
-#>
 EOF
+#>
     echo
     "$MAILER" -?
 }
 
-if [ ! -e "$SPOOL" ]; then
-    mkdir -p "$SPOOL"
-fi
+mkdir -p "$SPOOL"
 
 ## apply a function to each item in a comma-separated list
 foreach() {
@@ -102,12 +121,13 @@ prepare_mail() {
     save_attachment() {
 	local file="$1" realpath
 	local basename="$(basename "$file")"
-	if [ "$file" = "-" ]; then
-	    basename="stdin.txt"
-	    realpath="-"
-	else
-	    realpath="$(realpath "$file")"
-	fi
+	case $file in 
+	    "-")
+		basename="stdin.txt"
+		realpath="-"
+	    ;; 
+	    *) realpath="$(realpath "$file")" ;;
+	esac
 	local subdir="$COUNT"
 	local target="$dir/$subdir/$basename"
 	mkdir "$dir/$subdir"
@@ -118,12 +138,12 @@ prepare_mail() {
 	add TEMP "$subdir/$basename"
 	let COUNT="$COUNT + 1"
     }
-    if [ "${ATTACHMENTS+set}" ]; then
+    if let "${ATTACHMENTS+1}"; then
 	unset TEMP
 	foreach "$ATTACHMENTS" save_attachment
 	ATTACHMENTS="$TEMP"
     fi
-    if [ "${INLINES+set}" ]; then
+    if let "${INLINES+1}"; then
 	unset TEMP
 	foreach "$INLINES" save_attachment
 	INLINES="$TEMP"
@@ -184,7 +204,7 @@ case "$1" in
 
 	## parse command line options
 	TEMP="$(getopt -o 'M:p:s:f:t:m:a:w:d:i:D:' -n "$PROGRAM" -- "$@")"
-	if [ $? != 0 ]; then 
+	if let "$? != 0"; then 
 	    usage >&2
 	    exit 1
 	fi

@@ -1,6 +1,29 @@
+##
+## Callmonitor for Fritz!Box (callmonitor)
+## 
+## Copyright (C) 2005--2006  Andreas Bühmann <buehmann@users.berlios.de>
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+## 
+## http://developer.berlios.de/projects/callmonitor/
+##
+
 ## Basic networking utilities
 
-CR=$(printf '\015')
+## carriage return
+CR=""
 
 ## URL encoding
 urlencode() {
@@ -22,31 +45,24 @@ basic_auth() {
 
 ## default message
 default_message() {
-    if [ "${DEST_NAME:+set}" ]; then
+    if ! empty "$DEST_NAME"; then
 	echo "Anruf an $DEST_NAME"
-    elif [ "${DEST:+set}" ]; then
+    elif ! empty "$DEST"; then
 	echo "Anruf an $DEST"
     else
 	echo "Anruf"
     fi
-    if [ "${SOURCE:+set}" ]; then
+    if ! empty "$SOURCE"; then
 	echo "von $SOURCE"
     fi
-    if [ "${SOURCE_NAME:+set}" ]; then
+    if ! empty "$SOURCE_NAME"; then
 	echo "$SOURCE_NAME"
     fi
 }
 
-## check if nc has the timeout option -w
-if nc --help 2>&1 | grep -q -- "-w"; then
-    __nc() { nc -w "$@"; }
-else
-    __nc() { shift; nc "$@"; }
-fi
-
 __getmsg_usage() {
-    cat <<\EOH
 #<
+    cat <<\EOH
 Usage:	getmsg [OPTION]... <HOST> <url-template> [<message>]...
 	getmsg [OPTION]... -t <url-template> <host> [<message>]...
 Send a message in a simple HTTP GET request.
@@ -61,15 +77,15 @@ Send a message in a simple HTTP GET request.
   -U, --user=USER	 user for basic authorization
   -P, --password=PASS	 password for basic authorization
       --help		 show this help
-#>
 EOH
+#>
 }
 getmsg() {
     local - IP= URL= TEMPLATE= VIRTUAL= USERNAME= PASSWORD= AUTH= TEMP=
     local DEFAULT=default_message PORT=80 TIMEOUT=3
     TEMP="$(getopt -n getmsg -o U:P:v:t:w:p:d: \
 	-l user:,password:,virtual:,port:,template:,timeout:,default:,help -- "$@")"
-    if [ $? -ne 0 ]; then return 1; fi
+    if ? "$? != 0"; then return 1; fi
     set -f; eval "set -- $TEMP"; set +f
     while true; do
 	case $1 in
@@ -86,15 +102,15 @@ getmsg() {
 	esac
 	shift
     done
-    if [ $# -eq 0 ]; then echo "Missing hostname or IP" >&2; return 1; fi
+    if ? $# == 0; then echo "Missing hostname or IP" >&2; return 1; fi
     IP="$1"; shift
-    if [ -z "$TEMPLATE" ]; then
-	if [ $# -eq 0 ]; then echo "Missing template" >&2; return 1; fi
+    if empty "$TEMPLATE"; then
+	if ? $# == 0; then echo "Missing template" >&2; return 1; fi
 	TEMPLATE="$1"; shift
     fi
-    if [ $# -eq 0 ]; then set -- "$(eval "$DEFAULT")"; fi
+    if ? $# == 0; then set -- "$(eval "$DEFAULT")"; fi
     VIRTUAL="${VIRTUAL:-$IP}"
-    if [ -n "$USERNAME" -o -n "$PASSWORD" ]; then
+    if ! empty "$USERNAME" || ! empty "$PASSWORD"; then
 	AUTH="$(basic_auth "$USERNAME" "$PASSWORD")"
     fi
     ## If $1 is empty, it disappears completely in the output of "$@", which
@@ -105,14 +121,14 @@ getmsg() {
     {
 	echo "GET $URL HTTP/1.0$CR"
 	echo "Host: $VIRTUAL$CR"
-	[ -n "$AUTH" ] && echo "$AUTH"
+	! empty "$AUTH" && echo "$AUTH"
 	echo "$CR"
     } | __nc "$TIMEOUT" "$IP" "$PORT"
 }
 
 __rawmsg_usage() {
-    cat <<\EOH
 #<
+    cat <<\EOH
 Usage: rawmsg [OPTION]... <HOST> <template> [<param>]...
        rawmsg [OPTION]... -t <template> <host> [<param>]...
 Send a message over a plain TCP connection.
@@ -123,14 +139,14 @@ Send a message over a plain TCP connection.
   -p, --port=PORT	 use a special target port (default 80)
   -w, --timeout=SECONDS  set connect timeout (default 3)
       --help		 show this help
-#>
 EOH
+#>
 }
 rawmsg() {
     local - IP= TEMPLATE= TEMP= PORT=80 TIMEOUT=3 DEFAULT=default_raw
     TEMP="$(getopt -n rawmsg -o t:w:p:d: \
 	-l port:,template:,timeout:,default:,help -- "$@")"
-    if [ $? -ne 0 ]; then return 1; fi
+    if ? "$? != 0"; then return 1; fi
     set -f; eval "set -- $TEMP"; set +f
     while true; do
 	case $1 in
@@ -144,13 +160,13 @@ rawmsg() {
 	esac
 	shift
     done
-    if [ $# -eq 0 ]; then echo "Missing hostname or IP" >&2; return 1; fi
+    if ? $# == 0; then echo "Missing hostname or IP" >&2; return 1; fi
     IP="$1"; shift
-    if [ -z "$TEMPLATE" ]; then
-	if [ $# -eq 0 ]; then echo "Missing template" >&2; return 1; fi
+    if empty "$TEMPLATE"; then
+	if ? $# == 0; then echo "Missing template" >&2; return 1; fi
 	TEMPLATE="$1"; shift
     fi
-    if [ $# -eq 0 ]; then set -- "$(eval "$DEFAULT")"; fi
+    if ? $# == 0; then set -- "$(eval "$DEFAULT")"; fi
     ## If $1 is empty, it disappears completely in the output of "$@", which
     ## shifts all messages to the left. This seems to be a bug in the busybox
     ## version of ash (?). Other empty arguments work as expected.

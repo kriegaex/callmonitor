@@ -1,7 +1,29 @@
+##
+## Callmonitor for Fritz!Box (callmonitor)
+## 
+## Copyright (C) 2005--2006  Andreas Bühmann <buehmann@users.berlios.de>
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+## 
+## http://developer.berlios.de/projects/callmonitor/
+##
+
 ## Syntax of rules in file $CALLMONITOR_LISTENERS (not compatible
 ## with versions in mod-0.57 and earlier):
 ## 
-## [NT:|*:][!]<source-regexp> [!]<dest-regexp> <command line (rest)>
+## [NT:|*:|E:][!]<source-regexp> [!]<dest-regexp> <command line (rest)>
 ## 
 ## A command line is executed whenever an incoming call is detected that
 ## matches both (egrep) regexps (source and dest). The prefix "NT:" to
@@ -9,6 +31,9 @@
 ## the S0 bus ("Incoming from NT"); no prefix ignores these calls (the
 ## default); "*:" matches both. !-prefixed regexps must NOT match for the
 ## rule to succeed.
+##
+## The prefix "E:" matches ends of calls. It is not possible to distuingish
+## between NT and not NT in this case.
 ## 
 ## Lines starting with "#" are ignored, as are empty lines.
 
@@ -34,11 +59,11 @@ __configure() {
 }
 
 ## process an "IncomingCall" line
-__incoming_call() {
+__incoming_call_line() {
     local line="$1"
     local SOURCE="${line##*caller: \"}"; SOURCE="${SOURCE%%\"*}"
     local DEST="${line##*called: \"}"; DEST="${DEST%%\"*}"
-    local SOURCE_NAME="" DEST_NAME="" NT=false
+    local SOURCE_NAME="" DEST_NAME="" NT=false END=false
     local SOURCE_OPTIONS= DEST_OPTIONS=
     __debug "detected '$line'"
     case "$line" in
@@ -51,26 +76,36 @@ __incoming_call() {
     else
 	DEST_OPTIONS="--local"
     fi
-    if [ ! -z "$SOURCE" ]; then
+    incoming_call
+}
+
+## process an "outgoing" summary line at end of call
+__end_outgoing_line() {
+    local line="$1"
+    local SOURCE="${line% outgoing*}"; SOURCE="${SOURCE##* }"
+    local DEST="${line% ChargeU*}"; DEST="${DEST##* }" 
+
+    ## NT cannot be detected; let's simply assume local outbound call
+    local SOURCE_NAME="" DEST_NAME="" NT=true END=true
+    local SOURCE_OPTIONS="--local" DEST_OPTIONS="--local"
+    __debug "detected '$line'"
+    incoming_call
+}
+
+__incoming_call() {
+    if ! empty "$SOURCE"; then
 	SOURCE_NAME="$(phonebook $PHONEBOOK_OPTIONS $SOURCE_OPTIONS \
 	    get "$SOURCE")"
     fi
-    if [ ! -z "$DEST" ]; then
+    if ! empty "$DEST"; then
 	DEST_NAME="$(phonebook $PHONEBOOK_OPTIONS $DEST_OPTIONS \
 	    get "$DEST")"
     fi
     __info "SOURCE='$SOURCE' DEST='$DEST' SOURCE_NAME='$SOURCE_NAME'" \
-	"DEST_NAME='$DEST_NAME' NT=$NT" 
-
-    if [ ! -r "$CALLMONITOR_LISTENERS" ]; then
-	__debug "$CALLMONITOR_LISTENERS is missing"
-	return
-    else
-	__debug "processing rules from $CALLMONITOR_LISTENERS"
-    fi
+	"DEST_NAME='$DEST_NAME' NT=$NT END=$END" 
 
     ## make call information available to listeners
-    export SOURCE DEST SOURCE_NAME DEST_NAME NT
+    export SOURCE DEST SOURCE_NAME DEST_NAME NT END
 
     ## deprecated interface
     export MSISDN="$SOURCE" CALLER="$SOURCE_NAME" CALLED="$DEST"
@@ -84,7 +119,7 @@ __incoming_call() {
 	## process rule asynchronously
 	RULE=$rule \
 	__process_rule "$source_pattern" "$dest_pattern" "$listener" &
-	let rule="$rule + 1"
+	let rule++
     done < "$CALLMONITOR_LISTENERS"
     wait
 }
@@ -94,18 +129,33 @@ __process_rule() {
     local source_pattern="$1" dest_pattern="$2" listener="$3"
     __debug_rule "processing rule '$source_pattern' '$dest_pattern' '$listener'"
 
-    ## match and strip NT/* prefix
+    ## match NT/E prefix
     case $source_pattern in
+	E:*)
+	    if ! $END; then
+		__debug_rule "is NOT END of call"
+		__debug_rule "FAILED"
+		return 1
+	    fi
+	    ;;
+	*) 
+	    if $END; then
+		__debug_rule "is END of call"
+		__debug_rule "FAILED"
+		return 1
+	    fi
+	    ;;
+    esac
+    case $source_pattern in
+	E:*|\*:*)
+	    ## NT does not matter here
+	    ;;
 	NT:*)
 	    if ! $NT; then 
 		__debug_rule "call is NOT from NT"
 		__debug_rule "FAILED"
 		return 1
 	    fi
-	    source_pattern=${source_pattern#NT:}
-	    ;;
-	\*:*)
-	    source_pattern=${source_pattern#\*:}
 	    ;;
 	*)
 	    if $NT; then 
@@ -114,6 +164,11 @@ __process_rule() {
 		return 1
 	    fi
 	    ;;
+    esac
+
+    ## strip NT/*/E prefix
+    case $source_pattern in
+	NT:*|E:*|\*:*) source_pattern=${source_pattern#*:} ;;
     esac
 
     ## match
@@ -125,7 +180,7 @@ __process_rule() {
     set --
     eval "$listener"
     local status=$?
-    if [ $status -ne 0 ]; then
+    if ? "status != 0"; then
 	__debug_rule "listener failed with an exit status of $status"
     fi
 
@@ -164,7 +219,7 @@ __match() {
     case $PATTERN in
 	!*) let RESULT="!$RESULT" ;;
     esac
-    if [ $RESULT -eq 0 ]; then
+    if ? RESULT == 0; then
 	__debug_rule "parameter $PARAM='$VALUE' matches pattern '$PATTERN'"
     else
 	__debug_rule "parameter $PARAM='$VALUE' does NOT match" \
@@ -179,10 +234,12 @@ __read() {
     local line
     while IFS= read -r line
     do
-	echo "$line"
 	case $line in
+	    ## double fork to avoid zombies
 	    *"IncomingCall"*"caller: "*"called: "*)
-		incoming_call "$line" & ;;
+		{ __incoming_call_line "$line" & } & wait $! ;;
+	    *Slot:*ID:*CIP:*outgoing*)
+		{ __end_outgoing_line "$line" & } & wait $! ;;
 	esac
     done
 }

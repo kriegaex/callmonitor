@@ -1,3 +1,24 @@
+##
+## Callmonitor for Fritz!Box (callmonitor)
+## 
+## Copyright (C) 2005--2006  Andreas Bühmann <buehmann@users.berlios.de>
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+## 
+## http://developer.berlios.de/projects/callmonitor/
+##
 require webui
 require net
 
@@ -32,7 +53,7 @@ mail_call_subject() {
 mail_call_body() {
     {
 	default_mail
-	if [ "${CALL:+set}" ]; then
+	if ! empty "$CALL"; then
 	    echo
 	    echo "$CALL"
 	fi
@@ -52,27 +73,27 @@ mail_missed_call() {
     ## get call from log and check timestamp approximately (if the call has been
     ## accepted and has not finished yet, we might find old calls in the log)
     export CALL="$(latest_call "$SOURCE")"
-    if [ -z "$CALL" ]; then 
+    if empty "$CALL"; then 
 	echo "could not find call from '$SOURCE' in log" >&2
 	return 1
     fi
     time="$(date +%s -d "$(call_date "$CALL")")"
-    if [ -z "$time" ]; then
+    if empty "$time"; then
 	echo "did not understand time and date in '$CALL'" >&2
 	return 1
     fi
-    let diff="$time - $start"
+    let diff="time - start"
     diff="${diff#-}" # abs()
-    if [ "$diff" -gt 90 ]; then # +- 1.5 minutes
+    if ? "diff > 90"; then # +- 1.5 minutes
 	echo "call '$CALL': time did not match (diff $diff)" >&2
 	return 1
     fi
     
     export STATUS="$(call_status "$CALL")"
     echo "call status: $STATUS" >&2
-    if [ "$STATUS" = missed ] ; then
-	mail_call_body | mail send -i - -s "$(mail_call_subject)" "$@"
-    fi
+    case $STATUS in missed)
+	mail_call_body | mail send -i - -s "$(mail_call_subject)" "$@" ;;
+    esac
 }
 ## put a call to 'mail process' into your crontab in order to process mails
 ## that could not yet be delivered

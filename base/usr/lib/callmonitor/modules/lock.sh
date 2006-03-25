@@ -20,28 +20,40 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 
-## start or stop ssh daemon
-RC_DROPBEAR="/mod/etc/init.d/rc.dropbear"
-droptoggle() {
-    if [ -x "$RC_DROPBEAR" ]; then
-	if [ "$("$RC_DROPBEAR" status)" = "running" ]; then
-	    "$RC_DROPBEAR" stop
-	else
-	    "$RC_DROPBEAR" start
+## lock $file by creating a symlink $file.lock -> PID;
+lock() {
+    local file="$1" interval="${2:-1000000}" first=true
+    ## race conditions between touch and realpath still possible
+    if [ ! -e "$1" ] && ! touch "$1"; then
+	return 1
+    fi
+    file="$(lock_filename "$file")"
+    local lock="$file.lock"
+    if ? $$ == $(read_lock_pid "$lock")+0; then
+	## process already has lock
+	return 0
+    fi
+    while ! ln -s $$ "$lock" 2> /dev/null; do
+	if $first; then 
+	    first=false
+	    echo "Waiting for exclusive lock on $file" >&2
 	fi
+	usleep $interval
+    done
+    return 0
+}
+
+unlock() {
+    local file="$(lock_filename "$1")"
+    local lock="$file.lock"
+    if ? $$ == $(read_lock_pid "$lock")+0; then
+	rm "$lock"
     fi
 }
 
-## start ssh daemon
-dropon() {
-    if [ -x "$RC_DROPBEAR" ]; then
-	"$RC_DROPBEAR" start
-    fi
-}
-
-## stop ssh daemon
-dropoff() {
-    if [ -x "$RC_DROPBEAR" ]; then
-	"$RC_DROPBEAR" stop
-    fi
+read_lock_pid() {
+    local lock="$1" pid=
+    if [ ! -L "$lock" ]; then return 1; fi
+    pid="$(/bin/ls -l "$lock")"
+    echo ${pid#*-> }
 }

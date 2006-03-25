@@ -19,29 +19,41 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
+require net
 
-## start or stop ssh daemon
-RC_DROPBEAR="/mod/etc/init.d/rc.dropbear"
-droptoggle() {
-    if [ -x "$RC_DROPBEAR" ]; then
-	if [ "$("$RC_DROPBEAR" status)" = "running" ]; then
-	    "$RC_DROPBEAR" stop
-	else
-	    "$RC_DROPBEAR" start
-	fi
-    fi
+WEBCM_DIR="/usr/www/html/cgi-bin"
+WEBCM="$WEBCM_DIR/webcm"
+
+webui_post_form() (
+    cd "$WEBCM_DIR"
+    local POST_DATA="$1"
+    echo -n "$POST_DATA" |
+    REQUEST_METHOD="POST" \
+    REMOTE_ADDR="127.0.0.1" \
+    CONTENT_TYPE="application/x-www-form-urlencoded" \
+    CONTENT_LENGTH=${#POST_DATA} \
+    $WEBCM
+)
+webui_get() (
+    cd "$WEBCM_DIR"
+    REQUEST_METHOD="GET" \
+    REMOTE_ADDR="127.0.0.1" \
+    QUERY_STRING="$1" \
+    $WEBCM
+)
+webui_login() {
+    webui_post_form "login:command/password=$(urlencode "$(webui_password)")" \
+    > /dev/null
 }
 
-## start ssh daemon
-dropon() {
-    if [ -x "$RC_DROPBEAR" ]; then
-	"$RC_DROPBEAR" start
-    fi
+webui_config() {
+    allcfgconv -C ar7 -c -o - | 
+    sed -ne '/^webui[[:space:]]*{/,/^}/{
+	/=/{s/[[:space:]]*=[[:space:]]*/=/;s/^[[:space:]]*//;p}
+    }'
 }
-
-## stop ssh daemon
-dropoff() {
-    if [ -x "$RC_DROPBEAR" ]; then
-	"$RC_DROPBEAR" stop
-    fi
+webui_password() {
+    local password=
+    eval "$(webui_config | grep '^password=')"
+    echo "$password"
 }

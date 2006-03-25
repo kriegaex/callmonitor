@@ -19,29 +19,29 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-
-## start or stop ssh daemon
-RC_DROPBEAR="/mod/etc/init.d/rc.dropbear"
-droptoggle() {
-    if [ -x "$RC_DROPBEAR" ]; then
-	if [ "$("$RC_DROPBEAR" status)" = "running" ]; then
-	    "$RC_DROPBEAR" stop
-	else
-	    "$RC_DROPBEAR" start
-	fi
+mod_register() {
+    local DAEMON=callmonitor deffile= flash="/tmp/flash/$DAEMON"
+    mkdir -p "$flash"
+    modreg cgi $DAEMON 'Callmonitor'
+    modreg extra $DAEMON 'Testanruf' 1 'testcall'
+    modreg extra $DAEMON 'Wartung' 1 'maint'
+    if [ -r "$flash/listeners.def" ]; then 
+	deffile="$flash/listeners.def"
+    else 
+	deffile="/etc/default.$DAEMON/listeners.def"
     fi
+    modreg file 'listeners' 'Listeners' 0 "$deffile"
+    if [ -r "$flash/callers.def" ]; then 
+	deffile="$flash/callers.def"
+    else 
+	deffile="/etc/default.$DAEMON/callers.def"
+    fi
+    modreg file 'callers' 'Callers' 1 "$deffile"
 }
-
-## start ssh daemon
-dropon() {
-    if [ -x "$RC_DROPBEAR" ]; then
-	"$RC_DROPBEAR" start
-    fi
-}
-
-## stop ssh daemon
-dropoff() {
-    if [ -x "$RC_DROPBEAR" ]; then
-	"$RC_DROPBEAR" stop
-    fi
+mod_unregister() {
+    modunreg file 'callers'
+    modunreg file 'listeners'
+    modunreg extra $DAEMON 'testcall'
+    modunreg extra $DAEMON 'maint'
+    modunreg cgi $DAEMON
 }

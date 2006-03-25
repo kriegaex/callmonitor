@@ -19,29 +19,14 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
+. /usr/lib/libmodcgi.sh
 
-## start or stop ssh daemon
-RC_DROPBEAR="/mod/etc/init.d/rc.dropbear"
-droptoggle() {
-    if [ -x "$RC_DROPBEAR" ]; then
-	if [ "$("$RC_DROPBEAR" status)" = "running" ]; then
-	    "$RC_DROPBEAR" stop
-	else
-	    "$RC_DROPBEAR" start
-	fi
-    fi
+html_encode() {
+    sed -e 's/&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'
 }
 
-## start ssh daemon
-dropon() {
-    if [ -x "$RC_DROPBEAR" ]; then
-	"$RC_DROPBEAR" start
-    fi
-}
-
-## stop ssh daemon
-dropoff() {
-    if [ -x "$RC_DROPBEAR" ]; then
-	"$RC_DROPBEAR" stop
-    fi
+pre() {
+    echo -n "<pre>"
+    html_encode # stdin
+    echo "</pre>"
 }

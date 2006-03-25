@@ -63,15 +63,17 @@ fi
 ## set up logging
 __log_setup() {
     if $FOREGROUND; then
-	__logger() { logger -t "$APPLET" -s "$@"; }
+	__logger() { exec logger -t "$APPLET" -s "$@"; }
 	incoming_call() { __incoming_call "$@"; }
     else
-	__logger() { logger -t "$APPLET" "$@"; }
+	__logger() { exec logger -t "$APPLET" "$@"; }
 	incoming_call() { __incoming_call "$@" > /dev/null 2>&1; }
     fi
-    __info() { __logger -p daemon.info "$*"; }
+    __info() { echo "$*" >&3; }
+    __logger -p daemon.info < "$INFO_FIFO" & exec 3>"$INFO_FIFO"
     if $DEBUG; then
-	__debug() { __logger -p daemon.debug "$*"; }
+	__debug() { echo "$*" >&4; }
+	__logger -p daemon.debug < "$DEBUG_FIFO" 3>&- & exec 4>"$DEBUG_FIFO"
     fi
     __debug "entering DEBUG mode"
 }
@@ -94,6 +96,8 @@ __work() {
 
 PIDFILE="/var/run/callmonitor.pid"
 FIFO="$CALLMONITOR_FIFO"
+DEBUG_FIFO="$CALLMONITOR_FIFO.debug"
+INFO_FIFO="$CALLMONITOR_FIFO.info"
 
 if $STOP; then
     if [ ! -e "$PIDFILE" ]; then
@@ -107,7 +111,9 @@ if $STOP; then
 else
     mkdir -p "$(dirname "$FIFO")"
 
-    mknod "$FIFO" p
+    for fifo in "$FIFO" "$DEBUG_FIFO" "$INFO_FIFO"; do
+	mknod "$fifo" p 2>/dev/null
+    done
 
     if $FOREGROUND; then
 	echo $$ > "$PIDFILE"

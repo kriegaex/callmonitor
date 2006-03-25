@@ -59,7 +59,6 @@ normalize_tel() {
     local NUMBER="$1"
     case $NUMBER in
 	0049*) NUMBER="0${NUMBER#0049}" ;;
-##	49*) if [ ${#NUMBER} -gt 10 ]; then NUMBER="0${NUMBER#49}"; fi ;;
 	49*) if ? "${#NUMBER} > 10"; then NUMBER="0${NUMBER#49}"; fi ;;
     esac
     case $NUMBER in
@@ -81,7 +80,6 @@ normalize_sip() {
     echo "$NUMBER"
 }
 ## read SIP[0-9] to address mapping
-##if [ -r /var/run/phonebook/sip ]; then
 if < /var/run/phonebook/sip; then
     . /var/run/phonebook/sip
 fi

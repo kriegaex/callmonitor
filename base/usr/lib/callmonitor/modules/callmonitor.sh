@@ -93,25 +93,16 @@ __end_outgoing_line() {
 }
 
 __incoming_call() {
-##    if [ ! -z "$SOURCE" ]; then
     if ! empty "$SOURCE"; then
 	SOURCE_NAME="$(phonebook $PHONEBOOK_OPTIONS $SOURCE_OPTIONS \
 	    get "$SOURCE")"
     fi
-##    if [ ! -z "$DEST" ]; then
     if ! empty "$DEST"; then
 	DEST_NAME="$(phonebook $PHONEBOOK_OPTIONS $DEST_OPTIONS \
 	    get "$DEST")"
     fi
     __info "SOURCE='$SOURCE' DEST='$DEST' SOURCE_NAME='$SOURCE_NAME'" \
 	"DEST_NAME='$DEST_NAME' NT=$NT END=$END" 
-
-##    if [ ! -r "$CALLMONITOR_LISTENERS" ]; then
-##	__debug "$CALLMONITOR_LISTENERS is missing"
-##	return
-##    else
-##	__debug "processing rules from $CALLMONITOR_LISTENERS"
-##    fi
 
     ## make call information available to listeners
     export SOURCE DEST SOURCE_NAME DEST_NAME NT END
@@ -189,8 +180,7 @@ __process_rule() {
     set --
     eval "$listener"
     local status=$?
-##    if [ $status -ne 0 ]; then
-    if ? status != 0; then
+    if ? "status != 0"; then
 	__debug_rule "listener failed with an exit status of $status"
     fi
 
@@ -229,7 +219,6 @@ __match() {
     case $PATTERN in
 	!*) let RESULT="!$RESULT" ;;
     esac
-##    if [ $RESULT -eq 0 ]; then
     if ? RESULT == 0; then
 	__debug_rule "parameter $PARAM='$VALUE' matches pattern '$PATTERN'"
     else
@@ -245,7 +234,6 @@ __read() {
     local line
     while IFS= read -r line
     do
-##	echo "$line"
 	case $line in
 	    ## double fork to avoid zombies
 	    *"IncomingCall"*"caller: "*"called: "*)

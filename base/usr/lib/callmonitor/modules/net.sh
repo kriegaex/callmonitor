@@ -22,7 +22,8 @@
 
 ## Basic networking utilities
 
-CR=$(printf '\015')
+## carriage return
+CR=""
 
 ## URL encoding
 urlencode() {
@@ -44,31 +45,20 @@ basic_auth() {
 
 ## default message
 default_message() {
-##    if [ "${DEST_NAME:+set}" ]; then
     if ! empty "$DEST_NAME"; then
 	echo "Anruf an $DEST_NAME"
-##    elif [ "${DEST:+set}" ]; then
     elif ! empty "$DEST"; then
 	echo "Anruf an $DEST"
     else
 	echo "Anruf"
     fi
-##    if [ "${SOURCE:+set}" ]; then
     if ! empty "$SOURCE"; then
 	echo "von $SOURCE"
     fi
-##    if [ "${SOURCE_NAME:+set}" ]; then
     if ! empty "$SOURCE_NAME"; then
 	echo "$SOURCE_NAME"
     fi
 }
-
-## check if nc has the timeout option -w
-if nc --help 2>&1 | grep -q -- "-w"; then
-    __nc() { nc -w "$@"; }
-else
-    __nc() { shift; nc "$@"; }
-fi
 
 __getmsg_usage() {
 #<
@@ -95,8 +85,7 @@ getmsg() {
     local DEFAULT=default_message PORT=80 TIMEOUT=3
     TEMP="$(getopt -n getmsg -o U:P:v:t:w:p:d: \
 	-l user:,password:,virtual:,port:,template:,timeout:,default:,help -- "$@")"
-##    if [ $? -ne 0 ]; then return 1; fi
-    if ? $? != 0; then return 1; fi
+    if ? "$? != 0"; then return 1; fi
     set -f; eval "set -- $TEMP"; set +f
     while true; do
 	case $1 in
@@ -113,19 +102,14 @@ getmsg() {
 	esac
 	shift
     done
-##    if [ $# -eq 0 ]; then echo "Missing hostname or IP" >&2; return 1; fi
     if ? $# == 0; then echo "Missing hostname or IP" >&2; return 1; fi
     IP="$1"; shift
-##    if [ -z "$TEMPLATE" ]; then
     if empty "$TEMPLATE"; then
-##	if [ $# -eq 0 ]; then echo "Missing template" >&2; return 1; fi
 	if ? $# == 0; then echo "Missing template" >&2; return 1; fi
 	TEMPLATE="$1"; shift
     fi
-##    if [ $# -eq 0 ]; then set -- "$(eval "$DEFAULT")"; fi
     if ? $# == 0; then set -- "$(eval "$DEFAULT")"; fi
     VIRTUAL="${VIRTUAL:-$IP}"
-##    if [ -n "$USERNAME" -o -n "$PASSWORD" ]; then
     if ! empty "$USERNAME" || ! empty "$PASSWORD"; then
 	AUTH="$(basic_auth "$USERNAME" "$PASSWORD")"
     fi
@@ -137,7 +121,6 @@ getmsg() {
     {
 	echo "GET $URL HTTP/1.0$CR"
 	echo "Host: $VIRTUAL$CR"
-##	[ -n "$AUTH" ] && echo "$AUTH"
 	! empty "$AUTH" && echo "$AUTH"
 	echo "$CR"
     } | __nc "$TIMEOUT" "$IP" "$PORT"
@@ -163,8 +146,7 @@ rawmsg() {
     local - IP= TEMPLATE= TEMP= PORT=80 TIMEOUT=3 DEFAULT=default_raw
     TEMP="$(getopt -n rawmsg -o t:w:p:d: \
 	-l port:,template:,timeout:,default:,help -- "$@")"
-##    if [ $? -ne 0 ]; then return 1; fi
-    if ? $? != 0; then return 1; fi
+    if ? "$? != 0"; then return 1; fi
     set -f; eval "set -- $TEMP"; set +f
     while true; do
 	case $1 in
@@ -178,16 +160,12 @@ rawmsg() {
 	esac
 	shift
     done
-##    if [ $# -eq 0 ]; then echo "Missing hostname or IP" >&2; return 1; fi
     if ? $# == 0; then echo "Missing hostname or IP" >&2; return 1; fi
     IP="$1"; shift
-##    if [ -z "$TEMPLATE" ]; then
     if empty "$TEMPLATE"; then
-##	if [ $# -eq 0 ]; then echo "Missing template" >&2; return 1; fi
 	if ? $# == 0; then echo "Missing template" >&2; return 1; fi
 	TEMPLATE="$1"; shift
     fi
-##    if [ $# -eq 0 ]; then set -- "$(eval "$DEFAULT")"; fi
     if ? $# == 0; then set -- "$(eval "$DEFAULT")"; fi
     ## If $1 is empty, it disappears completely in the output of "$@", which
     ## shifts all messages to the left. This seems to be a bug in the busybox

@@ -19,7 +19,6 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-##if [ -r "$CALLMONITOR_USERCFG" ]; then
 if < "$CALLMONITOR_USERCFG"; then
     . "$CALLMONITOR_USERCFG"
 fi

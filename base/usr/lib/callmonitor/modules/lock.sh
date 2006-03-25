@@ -29,7 +29,6 @@ lock() {
     fi
     file="$(lock_filename "$file")"
     local lock="$file.lock"
-##    if [ "$$" = "$(read_lock_pid "$lock")" ]; then
     if ? $$ == $(read_lock_pid "$lock")+0; then
 	## process already has lock
 	return 0

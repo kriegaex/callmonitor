@@ -26,7 +26,6 @@ TITLE='Callmonitor-Wartung'
 
 cmd_button() {
     local cmd="$1" label="$2" method="post"
-##    if [ -z "$cmd" ]; then
     if empty "$cmd"; then
 	method="get"
     fi
@@ -42,7 +41,6 @@ EOF
 
 eval "$(modcgi cmd maint)"
 
-##if [ -n "$MAINT_CMD" ]; then
 if ! empty "$MAINT_CMD"; then
     cgi_begin "$TITLE ..."
     case "$MAINT_CMD" in

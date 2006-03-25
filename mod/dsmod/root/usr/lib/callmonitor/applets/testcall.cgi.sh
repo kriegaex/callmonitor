@@ -86,7 +86,6 @@ EOF
 }
 
 cgi_main() {
-##    if [ "${TESTCALL_SOURCE+set}" ]; then
     if let "${TESTCALL_SOURCE+1}"; then
 	cgi_begin "$TITLE ..."
 	show_testcall_results

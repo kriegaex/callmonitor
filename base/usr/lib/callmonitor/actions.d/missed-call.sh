@@ -53,8 +53,7 @@ mail_call_subject() {
 mail_call_body() {
     {
 	default_mail
-##	if [ "${CALL:+set}" ]; then
-	if ? ${CALL+1}; then
+	if ! empty "$CALL"; then
 	    echo
 	    echo "$CALL"
 	fi
@@ -74,20 +73,17 @@ mail_missed_call() {
     ## get call from log and check timestamp approximately (if the call has been
     ## accepted and has not finished yet, we might find old calls in the log)
     export CALL="$(latest_call "$SOURCE")"
-##    if [ -z "$CALL" ]; then 
     if empty "$CALL"; then 
 	echo "could not find call from '$SOURCE' in log" >&2
 	return 1
     fi
     time="$(date +%s -d "$(call_date "$CALL")")"
-##    if [ -z "$time" ]; then
     if empty "$time"; then
 	echo "did not understand time and date in '$CALL'" >&2
 	return 1
     fi
     let diff="time - start"
     diff="${diff#-}" # abs()
-##    if [ "$diff" -gt 90 ]; then # +- 1.5 minutes
     if ? "diff > 90"; then # +- 1.5 minutes
 	echo "call '$CALL': time did not match (diff $diff)" >&2
 	return 1
@@ -95,11 +91,9 @@ mail_missed_call() {
     
     export STATUS="$(call_status "$CALL")"
     echo "call status: $STATUS" >&2
-##    if [ "$STATUS" = missed ] ; then
     case $STATUS in missed)
-	mail_call_body | mail send -i - -s "$(mail_call_subject)" "$@"
-##    fi
-    ;; esac
+	mail_call_body | mail send -i - -s "$(mail_call_subject)" "$@" ;;
+    esac
 }
 ## put a call to 'mail process' into your crontab in order to process mails
 ## that could not yet be delivered

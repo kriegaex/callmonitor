@@ -127,3 +127,10 @@
 	in 5 Sekunden (Dank fürs Drängeln an xenon80 :-))
 
 	callmonitor-0.7 veröffentlicht
+
+2006-03-25
+
+	* callmonitor: Effizienteres Logging
+
+	* telefon: Alten Kompatibilitätslink /usr/lib/callmonitor/bin/telefon
+	entfernt.

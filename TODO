@@ -2,20 +2,6 @@
 Demnächst anschauen
 ----------------------------------------------------------------------
 
-Rückwärtssuche 0201777989: Nur einer von zwei Einträgen kommt durch. Liegt es
-an dem speziellen Format des gewerblichen Eintrags?
-
-Betrieb ohne Mod vorbereiten (zum Nachladen auf unveränderte Firmware)
-    Mod-Busybox nachladen
-    Weitere "Binary"-Abhängigkeiten?
-    Systemabhängigkeiten wieder strenger separieren
-
-    reload: modreg.sh
-
-./usr/lib/callmonitor/bin/telefon: Link entfernen, sobald ds-0.2final da ist
-
-----------------------------------------------------------------------
-
 Funktioniert LCD-Ansteuerung von DBox?
 
 http://dbox/control/lcd?lock=1&clear=1&xpos=20&ypos=27&size=22&font=2&text=Anruftext-hierhin&update=1
@@ -30,6 +16,15 @@ http://cvs.tuxbox.org/tuxbox/apps/tuxbox/neutrino/daemons/nhttpd/api_doku.txt
 ----------------------------------------------------------------------
 Nicht so wichtig
 ----------------------------------------------------------------------
+
+phonebook als Bibliothek: In Callmonitor direkt laden
+
+Betrieb ohne Mod vorbereiten (zum Nachladen auf unveränderte Firmware)
+    Mod-Busybox nachladen
+    Weitere "Binary"-Abhängigkeiten?
+    Systemabhängigkeiten wieder strenger separieren
+
+    reload: modreg.sh
 
 Die (SOURCE, DEST)-Paare der letzten k Anrufe aufzeichnen und als Vorgabe bei
 Testanrufen verwenden.
@@ -52,5 +47,3 @@ Telefonummer, ...
 title bei d.*popup/message (?) parametrisierbar machen
 
 ar7cfgconv-"Parser" separieren
-
-(Install-Skript und Patches für m4.* schreiben?)

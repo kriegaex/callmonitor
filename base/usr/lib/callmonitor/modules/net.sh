@@ -22,8 +22,10 @@
 
 ## Basic networking utilities
 
-## carriage return
+## carriage return & line feed
 CR=""
+LF="
+"
 
 ## URL encoding
 urlencode() {
@@ -41,6 +43,21 @@ basic_auth() {
     local user="$1" password="$2"
     echo -n "$user:$password" | uuencode -m - |
     sed -e '1d;2s/^/Authorization: Basic /;3,$s/^/ /;s/$/'$CR'/;$d'
+}
+
+## convert latin1 to utf8
+latin1_utf8() {
+    hexdump -v -e '100/1 " %02x" "\n"' |
+    sed -e '
+	s/ \([89ab]\)/c2\1/g
+	s/ c/c38/g
+	s/ d/c39/g
+	s/ e/c3a/g
+	s/ f/c3b/g
+	s/ //g
+	s/\(..\)/\\x\1/g
+    ' |
+    while IFS= read -r line; do echo -ne "$line"; done
 }
 
 ## default message
@@ -81,8 +98,12 @@ EOH
 #>
 }
 getmsg() {
-    local - IP= URL= TEMPLATE= VIRTUAL= USERNAME= PASSWORD= AUTH= TEMP=
+    __getmsg __getmsg_simple "$@"
+}
+__getmsg() {
+    local - IP= URL= TEMPLATE= VIRTUAL= USERNAME= PASSWORD= AUTH= TEMP= SEND=
     local DEFAULT=default_message PORT=80 TIMEOUT=3
+    SEND="$1"; shift
     TEMP="$(getopt -n getmsg -o U:P:v:t:w:p:d: \
 	-l user:,password:,virtual:,port:,template:,timeout:,default:,help -- "$@")"
     if ? "$? != 0"; then return 1; fi
@@ -113,9 +134,12 @@ getmsg() {
     if ! empty "$USERNAME" || ! empty "$PASSWORD"; then
 	AUTH="$(basic_auth "$USERNAME" "$PASSWORD")"
     fi
+    $SEND "$@"
+}
+__getmsg_simple() {
     ## If $1 is empty, it disappears completely in the output of "$@", which
     ## shifts all messages to the left. This seems to be a bug in the busybox
-    ## version of ash (?). Other empty arguments work as expected.
+    ## version of ash (prior to v1.1.0). Other empty arguments work as expected.
     URL="$(set -f; IFS=/; printf "$TEMPLATE" \
     $(for arg in "$@"; do echo -n $(urlencode "$arg")/; done))"
     {
@@ -169,7 +193,7 @@ rawmsg() {
     if ? $# == 0; then set -- "$(eval "$DEFAULT")"; fi
     ## If $1 is empty, it disappears completely in the output of "$@", which
     ## shifts all messages to the left. This seems to be a bug in the busybox
-    ## version of ash (?). Other empty arguments work as expected.
+    ## version of ash (prior to v1.1.0). Other empty arguments work as expected.
     printf "$TEMPLATE" "$@" | __nc "$TIMEOUT" "$IP" "$PORT"
 }
 default_raw() {

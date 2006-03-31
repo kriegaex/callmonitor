@@ -134,3 +134,15 @@
 
 	* telefon: Alten Kompatibilitätslink /usr/lib/callmonitor/bin/telefon
 	entfernt.
+
+2006-03-29
+
+	* dboxlcd.sh: dboxlcd(): Meldungen auf dem LCD der Dbox anzeigen;
+	DBOX_TIMEOUT standardmäßig 10 Sekunden
+
+2006-03-31
+
+	* messages.sh: xboxmessage(): Zweizeilige Meldung (+ Titel) auf der
+	X-Box; Titel anpassbar durch XBOX_CAPTION
+	
+	* phonebook: als Bibliothek in den Callmonitor laden

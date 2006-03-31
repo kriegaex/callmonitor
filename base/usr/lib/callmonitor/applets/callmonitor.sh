@@ -54,12 +54,6 @@ while true; do
     shift
 done
 
-## pass options to phonebook
-PHONEBOOK_OPTIONS=""
-if $DEBUG; then
-    PHONEBOOK_OPTIONS="$PHONEBOOK_OPTIONS --debug"
-fi
-
 ## set up logging
 __log_setup() {
     if $FOREGROUND; then

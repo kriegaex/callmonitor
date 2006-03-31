@@ -3,6 +3,9 @@ Testen
 ----------------------------------------------------------------------
 
 dboxlcd()
+xboxmessage()
+phonebook
+testcall
 
 ----------------------------------------------------------------------
 Demnächst anschauen
@@ -11,8 +14,6 @@ Demnächst anschauen
 ----------------------------------------------------------------------
 Nicht so wichtig
 ----------------------------------------------------------------------
-
-phonebook als Bibliothek: In Callmonitor direkt laden
 
 Betrieb ohne Mod vorbereiten (zum Nachladen auf unveränderte Firmware)
     Mod-Busybox nachladen

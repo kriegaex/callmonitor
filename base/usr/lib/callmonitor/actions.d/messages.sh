@@ -77,3 +77,24 @@ vdr() {
 default_vdr() {
     echo "Anruf${SOURCE:+" $SOURCE"}${SOURCE_NAME:+" - $SOURCE_NAME"}"
 }
+
+xboxmessage() {
+    getmsg -t "/xbmcCmds/xbmcHttp?command=ExecBuiltIn&parameter=Notification(${XBOX_CAPTION:-Telefonanruf},%s)" -d default_xboxmessage "$@"
+}
+__xboxmessage() {
+    default_xboxmessage | tr "," ";"
+}
+default_xboxmessage() {
+    if ! empty "$DEST_NAME"; then
+	echo "Anruf an $DEST_NAME"
+    elif ! empty "$DEST"; then
+	echo "Anruf an $DEST"
+    else
+	echo "Anruf"
+    fi
+    if ! empty "$SOURCE_NAME"; then
+	echo "von $SOURCE_NAME"
+    elif ! empty "$SOURCE"; then
+	echo "von $SOURCE"
+    fi
+}

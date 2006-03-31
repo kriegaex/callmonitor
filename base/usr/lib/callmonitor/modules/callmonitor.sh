@@ -42,7 +42,6 @@
 __debug() { true; }
 __info() { true; }
 incoming_call() { __incoming_call "$@"; }
-PHONEBOOK_OPTIONS=""
 
 __configure() {
     ## import action functions
@@ -94,12 +93,10 @@ __end_outgoing_line() {
 
 __incoming_call() {
     if ! empty "$SOURCE"; then
-	SOURCE_NAME="$(phonebook $PHONEBOOK_OPTIONS $SOURCE_OPTIONS \
-	    get "$SOURCE")"
+	SOURCE_NAME="$(_pb_main $SOURCE_OPTIONS -- get "$SOURCE")"
     fi
     if ! empty "$DEST"; then
-	DEST_NAME="$(phonebook $PHONEBOOK_OPTIONS $DEST_OPTIONS \
-	    get "$DEST")"
+	DEST_NAME="$(_pb_main $DEST_OPTIONS -- get "$DEST")"
     fi
     __info "SOURCE='$SOURCE' DEST='$DEST' SOURCE_NAME='$SOURCE_NAME'" \
 	"DEST_NAME='$DEST_NAME' NT=$NT END=$END" 

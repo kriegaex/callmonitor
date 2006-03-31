@@ -43,6 +43,8 @@ __debug() { true; }
 __info() { true; }
 incoming_call() { __incoming_call "$@"; }
 
+require phonebook
+
 __configure() {
     ## import action functions
     local ACTIONSDIR ACTIONS

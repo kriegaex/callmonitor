@@ -57,8 +57,8 @@ done
 
 ## set up logging
 if $_pb_DEBUG; then
-    __debug() { echo "phonebook: $*" >&2; }
-    __debug "entering DEBUG mode"
+    _pb_debug() { echo "phonebook: $*" >&2; }
+    _pb_debug "entering DEBUG mode"
 fi
 
 ## check syntax:

@@ -94,7 +94,7 @@ case "$CALLMONITOR_REVERSE" in
 esac
 
 ## Required functions
-__debug() { true; }
+_pb_debug() { true; }
 
 ## Constant options set from config file
 _pb_CACHE=true _pb_PERSISTENT=false 
@@ -141,7 +141,7 @@ _pb_get_local() {
 	"$CALLMONITOR_TRANSIENT" "$CALLMONITOR_PERSISTENT" 2> /dev/null)"
     if ! empty "$NAME"; then
 	NAME="${NAME#:}"
-	__debug "phone book contains {$NUMBER -> $NAME}"
+	_pb_debug "phone book contains {$NUMBER -> $NAME}"
 	__=$NAME
 	return 0
     fi
@@ -160,10 +160,10 @@ _pb_put_or_remove() {
     NUMBER_RE="$(echo "$NUMBER" | sed_re_escape)"
     case $MODE in 
 	remove)
-	    __debug "removing $NUMBER from phone book $_pb_PHONEBOOK" ;;
+	    _pb_debug "removing $NUMBER from phone book $_pb_PHONEBOOK" ;;
 	*)
 	    _pb_norm_value "$NAME"; NAME=$__
-	    __debug "putting {$NUMBER -> $NAME} into phone book $_pb_PHONEBOOK"
+	    _pb_debug "putting {$NUMBER -> $NAME} into phone book $_pb_PHONEBOOK"
 	;;
     esac
 
@@ -180,7 +180,7 @@ _pb_put_or_remove() {
 	rm "$TMPFILE"
 	unlock "$_pb_PHONEBOOK"
     else
-	__debug "locking $_pb_PHONEBOOK failed"
+	_pb_debug "locking $_pb_PHONEBOOK failed"
     fi
     if $_pb_PERSISTENT; then
 	callmonitor_store

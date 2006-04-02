@@ -84,22 +84,22 @@ cat << EOF
 <p>
     <input type="hidden" name="reverse" value="no">
     <input type="checkbox" name="reverse" value="yes"$reverse_chk id="r4">
-    <label for="r4" title="Rufnummern wenn möglich in Namen
-	auflösen">Rückwärtssuche durchführen</label>
+    <label title="Rufnummern wenn möglich in Namen auflösen"
+	for="r4">Rückwärtssuche durchführen</label>
     (bei <a href="http://www.dasoertliche.de/">DasÖrtliche</a>)
 </p>
 <h2>Suchergebnis zwischenspeichern?</h2>
 <p>
     <input type="radio" name="reverse_cache" value="no"$no_chk id="r1">
-    <label for="r1" title="Keine Speicherung der Namen">Nein</label>
+    <label title="Keine Speicherung der Namen" for="r1">Nein</label>
     <input type="radio" name="reverse_cache" value="transient"$trans_chk
 	id="r2">
-    <label for="r2" title="Namen gehen bei nächstem Neustart
-	verloren">Flüchtig</label>
+    <label title="Namen gehen bei nächstem Neustart verloren"
+	for="r2">Flüchtig</label>
     <input type="radio" name="reverse_cache" value="persistent"$pers_chk
 	id="r3">
-    <label for="r3" title="Namen werden im Telefonbuch im Flash
-	gespeichert">Dauerhaft</label>
+    <label title="Namen werden im Telefonbuch im Flash gespeichert"
+	for="r3">Dauerhaft</label>
     (<a href="/cgi-bin/file.cgi?id=callers">Callers bearbeiten</a>)
 </p>
 <h2>Für lokale Rufnummern diese Vorwahl verwenden:</h2>

@@ -2,8 +2,6 @@
 Testen
 ----------------------------------------------------------------------
 
-testcall
-
 ----------------------------------------------------------------------
 Demnächst anschauen
 ----------------------------------------------------------------------
@@ -36,7 +34,5 @@ Sobald Daniel das Framework fertig hat:
 Informationen aus Reverse Lookup besser zerlegen: Name, Adresse, formatierte
 Telefonummer, ...
     -> braucht ein flexibleres Telefonbuch
-
-title bei d.*popup/message (?) parametrisierbar machen
 
 ar7cfgconv-"Parser" separieren

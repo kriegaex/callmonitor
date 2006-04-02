@@ -19,8 +19,6 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-. /etc/default.callmonitor/system.cfg
-. $CALLMONITOR_LIBDIR/config.sh
 
 ## analyze call information
 __read() {
@@ -172,7 +170,7 @@ _j_output() {
 	    SOURCE_OPTIONS="--local"
 	;;
     esac
-    if let "${EVENT:+1}"; then
+    if ! empty "$EVENT"; then
 	incoming_call
     fi
 }
@@ -187,12 +185,3 @@ _j_load() {
 _j_remove() {
     for var; do eval "unset ${var} _j__${var}_${id}"; done
 }
-
-__debug() {
-    echo "$*" >&2
-}
-incoming_call() {
-    :
-}
-
-__read_from_iface

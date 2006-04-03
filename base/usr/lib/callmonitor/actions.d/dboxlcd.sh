@@ -65,5 +65,24 @@ __getmsg_dboxlcd() {
     TEMPLATE="$lcd?lock=0" __getmsg_simple
 }
 default_dboxlcd() {
-    default_message | latin1_utf8
+    {
+	if ! empty "$DEST_NAME"; then
+	    echo "Anruf an $DEST_NAME"
+	elif ! empty "$DEST"; then
+	    echo "Anruf an $DEST"
+	else
+	    echo "Anruf"
+	fi
+	if ! empty "$SOURCE"; then
+	    echo "von $SOURCE"
+	fi
+	if ! empty "$SOURCE_NAME"; then
+	    if ? "$#SOURCE_NAME <= 17"; then
+		echo "$SOURCE_NAME"
+	    else
+		expr substr "$SOURCE_NAME" 1 17
+		expr substr "$SOURCE_NAME" 18 17
+	    fi
+	fi
+    } | latin1_utf8
 }

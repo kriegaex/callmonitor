@@ -79,7 +79,7 @@ default_vdr() {
 }
 
 xboxmessage() {
-    getmsg -t "/xbmcCmds/xbmcHttp?command=ExecBuiltIn&parameter=Notification(${XBOX_CAPTION:-Telefonanruf},%s)" -d default_xboxmessage "$@"
+    getmsg -t "/xbmcCmds/xbmcHttp?command=ExecBuiltIn&parameter=XBMC.Notification(${XBOX_CAPTION:-Telefonanruf},%s)" -d default_xboxmessage "$@"
 }
 __xboxmessage() {
     default_xboxmessage | tr "," ";"

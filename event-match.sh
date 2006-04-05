@@ -1,5 +1,6 @@
 match() {
-    local event=$1 spec=$2 dir= type= IFS=,
+    local event=$1 spec=$2 dir= type= IFS=, -
+    set -f
     for pattern in $spec; do
 	case $pattern in
 	    ""|*:*:*)

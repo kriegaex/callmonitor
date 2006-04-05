@@ -99,7 +99,7 @@ _j_transition() {
 	;;
     esac
     let INSTANCE++
-    _j_output "$output" &
+    { _j_output "$output" & } & wait $!
 }
 
 _j_parse() {

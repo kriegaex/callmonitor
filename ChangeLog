@@ -150,3 +150,9 @@
 2006-04-02
 
 	callmonitor-0.8 veröffentlicht
+
+	Vorbereitungen für die Umstellung auf das JFritz-Interface
+
+2006-04-05
+
+	* callmonitor: Veraltetes Action-Interface entfernt: MSISDN, CALLER, CALLED

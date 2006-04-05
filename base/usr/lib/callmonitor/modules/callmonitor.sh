@@ -44,6 +44,7 @@ __info() { true; }
 incoming_call() { __incoming_call "$@"; }
 
 require phonebook
+require if_jfritz
 
 __configure() {
     ## import action functions
@@ -107,17 +108,17 @@ __incoming_call() {
     export SOURCE DEST SOURCE_NAME DEST_NAME NT END
 
     ## deprecated interface
-    export MSISDN="$SOURCE" CALLER="$SOURCE_NAME" CALLED="$DEST"
+    ## export MSISDN="$SOURCE" CALLER="$SOURCE_NAME" CALLED="$DEST"
 
-    local source_pattern dest_pattern listener rule=0
-    while read -r source_pattern dest_pattern listener
+    local event_spec source_pattern dest_pattern listener rule=0
+    while read -r event_spec source_pattern dest_pattern listener
     do
 	## comment or empty line
-	case $source_pattern in \#*|"") continue ;; esac
+	case $event_spec in \#*|"") continue ;; esac
 
 	## process rule asynchronously
 	RULE=$rule \
-	__process_rule "$source_pattern" "$dest_pattern" "$listener" &
+	__process_rule "$event_spec" "$source_pattern" "$dest_pattern" "$listener" &
 	let rule++
     done < "$CALLMONITOR_LISTENERS"
     wait
@@ -125,52 +126,53 @@ __incoming_call() {
 
 ## process a single rule
 __process_rule() {
-    local source_pattern="$1" dest_pattern="$2" listener="$3"
-    __debug_rule "processing rule '$source_pattern' '$dest_pattern' '$listener'"
+    local event_spec="$1" source_pattern="$2" dest_pattern="$3" listener="$4"
+    __debug_rule "processing rule '$event_spec' '$source_pattern' '$dest_pattern' '$listener'"
 
     ## match NT/E prefix
-    case $source_pattern in
-	E:*)
-	    if ! $END; then
-		__debug_rule "is NOT END of call"
-		__debug_rule "FAILED"
-		return 1
-	    fi
-	    ;;
-	*) 
-	    if $END; then
-		__debug_rule "is END of call"
-		__debug_rule "FAILED"
-		return 1
-	    fi
-	    ;;
-    esac
-    case $source_pattern in
-	E:*|\*:*)
-	    ## NT does not matter here
-	    ;;
-	NT:*)
-	    if ! $NT; then 
-		__debug_rule "call is NOT from NT"
-		__debug_rule "FAILED"
-		return 1
-	    fi
-	    ;;
-	*)
-	    if $NT; then 
-		__debug_rule "call IS from NT"
-		__debug_rule "FAILED"
-		return 1
-	    fi
-	    ;;
-    esac
-
-    ## strip NT/*/E prefix
-    case $source_pattern in
-	NT:*|E:*|\*:*) source_pattern=${source_pattern#*:} ;;
-    esac
+##    case $source_pattern in
+##	E:*)
+##	    if ! $END; then
+##		__debug_rule "is NOT END of call"
+##		__debug_rule "FAILED"
+##		return 1
+##	    fi
+##	    ;;
+##	*) 
+##	    if $END; then
+##		__debug_rule "is END of call"
+##		__debug_rule "FAILED"
+##		return 1
+##	    fi
+##	    ;;
+##    esac
+##    case $source_pattern in
+##	E:*|\*:*)
+##	    ## NT does not matter here
+##	    ;;
+##	NT:*)
+##	    if ! $NT; then 
+##		__debug_rule "call is NOT from NT"
+##		__debug_rule "FAILED"
+##		return 1
+##	    fi
+##	    ;;
+##	*)
+##	    if $NT; then 
+##		__debug_rule "call IS from NT"
+##		__debug_rule "FAILED"
+##		return 1
+##	    fi
+##	    ;;
+##    esac
+##
+##    ## strip NT/*/E prefix
+##    case $source_pattern in
+##	NT:*|E:*|\*:*) source_pattern=${source_pattern#*:} ;;
+##    esac
 
     ## match
+    __match_event "$EVENT" "$event_spec" || return 1
     __match SOURCE "$SOURCE" "$source_pattern" || return 1
     __match DEST "$DEST" "$dest_pattern" || return 1
 
@@ -228,17 +230,38 @@ __match() {
     return $RESULT
 }
 
-## copy stdin to stdout while looking for incoming calls
-__read() {
-    local line
-    while IFS= read -r line
-    do
-	case $line in
-	    ## double fork to avoid zombies
-	    *"IncomingCall"*"caller: "*"called: "*)
-		{ __incoming_call_line "$line" & } & wait $! ;;
-	    *Slot:*ID:*CIP:*outgoing*)
-		{ __end_outgoing_line "$line" & } & wait $! ;;
+__match_event() {
+    local event=$1 spec=$2 dir= type= IFS=, -
+    set -f
+    for pattern in $spec; do
+	case $pattern in
+	    ""|*:*:*)
+		;;
+	    *:*) 
+		dir="${pattern%:*}"
+		type="${pattern#*:}"
+		case $event in $dir*:$type*) return 0;; esac
+		;;
+	    *) 
+		case $event in $pattern*:*) return 0;; esac
+		case $event in *:$pattern*) return 0;; esac
+		;;
 	esac
     done
+    return 1
 }
+
+## copy stdin to stdout while looking for incoming calls
+#__read() {
+#    local line
+#    while IFS= read -r line
+#    do
+#	case $line in
+#	    ## double fork to avoid zombies
+#	    *"IncomingCall"*"caller: "*"called: "*)
+#		{ __incoming_call_line "$line" & } & wait $! ;;
+#	    *Slot:*ID:*CIP:*outgoing*)
+#		{ __end_outgoing_line "$line" & } & wait $! ;;
+#	esac
+#    done
+#}

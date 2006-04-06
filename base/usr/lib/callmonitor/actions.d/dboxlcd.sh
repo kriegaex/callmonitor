@@ -50,11 +50,11 @@ dboxlcd() {
 }
 __getmsg_dboxlcd() {
     local lcd="/control/lcd"
-    local lcdtext="$lcd?xpos=2&size=18&font=2&text=%s" 
+    local lcdtext="$lcd?xpos=1&size=17&font=2&text=%s"
     local line= init="&lock=1&clear=1" ypos=0
     local IFS="$LF"
     echo "$*" |
-    for ypos in 15 30 45 60; do
+    for ypos in 12 24 36 48 60; do
 	read -r line
 	if ! empty "$line"; then
 	    TEMPLATE="$lcdtext&ypos=$ypos&update=1$init" __getmsg_simple "$line"
@@ -65,6 +65,7 @@ __getmsg_dboxlcd() {
     TEMPLATE="$lcd?lock=0" __getmsg_simple
 }
 default_dboxlcd() {
+    local len=${#SOURCE_NAME}
     {
 	if ! empty "$DEST_NAME"; then
 	    echo "Anruf an $DEST_NAME"
@@ -77,11 +78,14 @@ default_dboxlcd() {
 	    echo "von $SOURCE"
 	fi
 	if ! empty "$SOURCE_NAME"; then
-	    if ? "$#SOURCE_NAME <= 17"; then
+	    if ? "$len <= 19"; then
 		echo "$SOURCE_NAME"
 	    else
-		expr substr "$SOURCE_NAME" 1 17
-		expr substr "$SOURCE_NAME" 18 17
+		expr substr "$SOURCE_NAME" 1 19
+		expr substr "$SOURCE_NAME" 20 19
+		if ? "$len > 38"; then
+		    expr substr "$SOURCE_NAME" 39 19
+		fi
 	    fi
 	fi
     } | latin1_utf8

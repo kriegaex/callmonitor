@@ -21,8 +21,7 @@
 ##
 
 ## run callmonitor in test mode: do not run as a daemon, do not write
-## pid file, read from stdin only once, show trace of rule processing
-## on stdout
+## pid file, show trace of rule processing for simplified call on stdout
 
 require callmonitor
 
@@ -30,6 +29,13 @@ __debug() { echo "$*"; }
 __info() { echo "$*"; }
 
 __configure
-__read
+
+event=$1 source=$2 dest=$3
+
+## dummy values
+id=1 ext=4 duration=16 timestamp="07.04.06 19:39:50"
+
+_j_output "$event"
+
 wait
 exit 0

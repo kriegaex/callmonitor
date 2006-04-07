@@ -21,11 +21,7 @@
 ##
 DAEMON=callmonitor
 
-## we need the telefon package
-if ! has_package telefon; then
-    echo "Fatal error: Package 'telefon' is missing" >&2
-    exit 1
-fi
+## we no longer need the telefon package
 
 require rc
 require modreg
@@ -33,7 +29,7 @@ require modreg
 FIFO="$CALLMONITOR_FIFO"
 FIFO_DIR="${FIFO%/*}"
 mkdir -p "$FIFO_DIR"
-PIDFILE="/var/run/$DAEMON.pid"
+PIDFILE="/var/run/$DAEMON/pid/$DAEMON"
 
 case "$1" in
     ""|load|start|restart)
@@ -73,22 +69,12 @@ start() {
 	exit 0
     fi
     start_daemon || exitval=$?
-##    if ? exitval == 0; then
-##	telfifo enable "$FIFO"
-##    fi
     return $exitval
 }
 stop() {
     local exitval=0
-    ## telfifo disable "$FIFO"
     stop_daemon || exitval=$?
     return $exitval
-}
-fast_restart() {
-    ## keep pipe alive while callmonitor is restarted
-    cat "$FIFO" > /dev/null &
-    catpid=$!
-    stop_daemon && start_daemon && kill "$catpid" > /dev/null 2>&1
 }
 restart() {
     stop
@@ -99,8 +85,20 @@ is_running() {
     [ -e "$PIDFILE" ] && kill -0 $(cat "$PIDFILE") 2> /dev/null
 }
 
+## convert listeners from versions < 1.0
+convert() {
+    if [ ! -e "$CALLMONITOR_LISTENERS" -a -r "$CALLMONITOR_LISTENERS_OLD" ]
+    then
+	"$CALLMONITOR_LIBDIR/convert.sed" \
+	    < "$CALLMONITOR_LISTENERS_OLD" \
+	    > "$CALLMONITOR_LISTENERS"
+	callmonitor_store
+    fi
+}
+
 case "$1" in
     ""|load)
+	convert
 	mod_register
 	phonebook init 2> /dev/null
 	try_start
@@ -119,11 +117,7 @@ case "$1" in
 	stop
 	;;
     restart)
-	if is_running; then
-	    fast_restart
-	else
-	    restart
-	fi
+	restart
 	;;
     status)
 	if is_running; then

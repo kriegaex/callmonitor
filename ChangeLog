@@ -156,3 +156,7 @@
 2006-04-05
 
 	* callmonitor: Veraltetes Action-Interface entfernt: MSISDN, CALLER, CALLED
+
+2006-04-07
+
+	Umstellung auf das JFritz-Interface

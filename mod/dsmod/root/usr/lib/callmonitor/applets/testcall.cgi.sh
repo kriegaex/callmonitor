@@ -24,14 +24,24 @@ require cgi
 SELF=testcall
 TITLE="Testanruf"
 
-eval "$(modcgi source:dest:type testcall)"
+eval "$(modcgi source:dest:event:event_dir testcall)"
 
-normal_sel= nt_sel= end_sel=
-case $TESTCALL_TYPE in
-    nt) nt_sel=" selected"; TESTCALL_NT=1 ;;
-    end) end_sel=" selected" TESTCALL_END=1 ;;
-    normal|*) normal_sel=" selected" ;;
+SELECTED=" selected"
+
+in_sel= out_sel=
+case $TESTCALL_EVENT_DIR in
+    in) in_sel=$SELECTED ;;
+    out) out_sel=$SELECTED ;;
 esac
+
+request_sel= cancel_sel= connect_sel= disconnect_sel=
+case $TESTCALL_EVENT in
+    request) request_sel=$SELECTED ;;
+    cancel) cancel_sel=$SELECTED ;;
+    connect) connect_sel=$SELECTED ;;
+    disconnect) disconnect_sel=$SELECTED ;;
+esac
+
 source_val="$(httpd -e "$TESTCALL_SOURCE")"
 dest_val="$(httpd -e "$TESTCALL_DEST")"
 
@@ -39,15 +49,20 @@ new_testcall_form() {
     cat << EOF
 <form action="$SELF" method="post">
     <table><tr>
-	<td><label for="type">Typ:</label> </td>
+	<td><label for="event">Ereignis:</label> </td>
 	<td>
-	    <select name="type">
-		<option value="normal"$normal_sel
-		    title="Normaler von außen eingehender Anruf">Normal</option>
-		<option value="nt"$nt_sel
-		    title="Vom NT ausgehender Anruf">Vom NT</option>
-		<option value="end"$end_sel
-		    title="Ende eines Anrufs (experimentell)">Anruf-Ende</option>
+	    <select name="event_dir">
+		<option value="in"$in_sel title="Eingehender Anruf">in</option>
+		<option value="out"$out_sel title="Ausgehender Anruf">out</option>
+	    </select>:<select name="event">
+		<option value="request"$request_sel
+		    title="Verbindungsanfrage (Klingeln)">request</option>
+		<option value="cancel"$cancel_sel
+		    title="Verbindungsanfrage abgebrochen">cancel</option>
+		<option value="connect"$connect_sel
+		    title="Verbindung zustandegekommen">connect</option>
+		<option value="disconnect"$disconnect_sel
+		    title="Verbindung beendet">disconnect</option>
 	    </select>
 	</td>
     </tr><tr>
@@ -65,14 +80,12 @@ EOF
 }
 
 do_testcall() {
-    testcall -s ${TESTCALL_NT:+"-n"} ${TESTCALL_END:+"-e"} \
-	"$TESTCALL_SOURCE" "$TESTCALL_DEST" |
-	callmonitor-test
+    callmonitor-test "$TESTCALL_EVENT_DIR:$TESTCALL_EVENT" "$TESTCALL_SOURCE" "$TESTCALL_DEST" 2>&1
 }
 
 show_testcall_results() {
-    echo -n "<p>Testanruf von \"$source_val\"${TESTCALL_NT:+ (NT)}"
-    echo "${TESTCALL_DEST:+ an \"$dest_val\"}${TESTCALL_END:+ (Ende)}:</p>"
+    echo -n "<p>Testanruf von \"$source_val\""
+    echo "${TESTCALL_DEST:+ an \"$dest_val\"} [${TESTCALL_EVENT_DIR}:${TESTCALL_EVENT}]:</p>"
     do_testcall | pre
 }
 

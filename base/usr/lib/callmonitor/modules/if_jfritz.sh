@@ -99,7 +99,15 @@ _j_transition() {
 	;;
     esac
     let INSTANCE++
-    { _j_output "$output" & } & wait $!
+    export INSTANCE
+    case $output in
+	""|in:accept)
+	    ## not used yet
+	;;
+	*)
+	    { _j_output "$output" & } & wait $!
+	;;
+    esac
 }
 
 _j_parse() {
@@ -166,7 +174,6 @@ _j_output() {
 
     local ID=$id SOURCE=$source DEST=$dest EXT=$ext DURATION=$duration
     local TIMESTAMP=$timestamp EVENT= SOURCE_OPTIONS= DEST_OPTIONS=
-    export EVENT ID SOURCE DEST EXT DURATION TIMESTAMP
     case $output in
 	in:accept)
 	    ## not used yet

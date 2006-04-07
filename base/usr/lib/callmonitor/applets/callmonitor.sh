@@ -84,7 +84,6 @@ __work() {
 
     ## enter main loop
     while true; do
-	##__read < "$FIFO"
 	__read_from_iface
     done
 }

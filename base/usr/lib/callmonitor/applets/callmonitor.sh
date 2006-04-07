@@ -75,7 +75,7 @@ __log_setup() {
 __work() {
     ## a USR1 signal will cause the callmonitor to re-read its configuration
     trap __configure USR1
-    trap 'rm -f "$PIDFILE"' EXIT
+    trap '__shutdown' EXIT
     trap 'exit 2' HUP INT QUIT TERM
 
     ## initial configuration
@@ -88,8 +88,21 @@ __work() {
 	__read_from_iface
     done
 }
+__shutdown() {
+    __info "Exiting ..."
+    for file in "$PIDFILE" /var/run/callmonitor/pid/*; do
+	[ ! -f "$file" ] && continue
+	PID="$(cat "$file")"
+	if [ "$$" = "$PID" ]; then
+	    rm -f "$file"
+	    continue
+	fi
+	__debug "Killing $PID ($file) ..."
+	kill "$PID" 2> /dev/null && rm -f "$file"
+    done
+}
 
-PIDFILE="/var/run/callmonitor.pid"
+PIDFILE="/var/run/callmonitor/pid/callmonitor"
 FIFO="$CALLMONITOR_FIFO"
 DEBUG_FIFO="$CALLMONITOR_FIFO.debug"
 INFO_FIFO="$CALLMONITOR_FIFO.info"
@@ -99,12 +112,12 @@ if $STOP; then
 	echo "$APPLET: not running" 2>&1 
 	exit 1
     else
-	PID="$(cat "$PIDFILE")"
-	kill "$PID" && rm -f "$PIDFILE"
+	__shutdown
 	exit $?
     fi
 else
     mkdir -p "$(dirname "$FIFO")"
+    mkdir -p "$(dirname "$PIDFILE")"
 
     for fifo in "$FIFO" "$DEBUG_FIFO" "$INFO_FIFO"; do
 	mknod "$fifo" p 2>/dev/null

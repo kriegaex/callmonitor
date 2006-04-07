@@ -144,7 +144,14 @@ __read_from_iface() {
 	let "_j_SLEEP = (_j_SLEEP > 600) ? 600 : _j_SLEEP"
     else
 	_j_SLEEP=
-	nc 127.0.0.1 1012 | __read
+	## hack to provide "never"-ending but empty stdin: FIXME
+	mkdir -p /var/run/callmonitor/pid
+	{
+	    sleep 20000d &
+	    echo $! > /var/run/callmonitor/pid/sleep
+	    wait
+	    rm /var/run/callmonitor/pid/sleep
+	} | nc 127.0.0.1 1012 | __read
     fi
 }
 
@@ -161,6 +168,9 @@ _j_output() {
     local TIMESTAMP=$timestamp EVENT= SOURCE_OPTIONS= DEST_OPTIONS=
     export EVENT ID SOURCE DEST EXT DURATION TIMESTAMP
     case $output in
+	in:accept)
+	    ## not used yet
+	;;
 	in:*)
 	    EVENT=$output
 	    DEST_OPTIONS="--local"

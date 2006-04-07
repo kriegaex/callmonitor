@@ -73,14 +73,14 @@ start() {
 	exit 0
     fi
     start_daemon || exitval=$?
-    if ? exitval == 0; then
-	telfifo enable "$FIFO"
-    fi
+##    if ? exitval == 0; then
+##	telfifo enable "$FIFO"
+##    fi
     return $exitval
 }
 stop() {
     local exitval=0
-    telfifo disable "$FIFO"
+    ## telfifo disable "$FIFO"
     stop_daemon || exitval=$?
     return $exitval
 }

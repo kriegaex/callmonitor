@@ -172,9 +172,14 @@ __process_rule() {
 ##    esac
 
     ## match
-    __match_event "$EVENT" "$event_spec" || return 1
-    __match SOURCE "$SOURCE" "$source_pattern" || return 1
-    __match DEST "$DEST" "$dest_pattern" || return 1
+    if ! {
+	__match_event "$EVENT" "$event_spec" &&
+	__match SOURCE "$SOURCE" "$source_pattern" &&
+	__match DEST "$DEST" "$dest_pattern"
+    } then 
+	__debug_rule "FAILED"
+	return 1
+    fi
 
     ## execute listener
     __debug_rule "SUCCEEDED: executing '$listener'"
@@ -225,30 +230,37 @@ __match() {
     else
 	__debug_rule "parameter $PARAM='$VALUE' does NOT match" \
 	    "pattern '$PATTERN'"
-	__debug_rule "FAILED"
     fi
     return $RESULT
 }
 
 __match_event() {
-    local event=$1 spec=$2 dir= type= IFS=, -
+    local event=$1 spec=$2 dir= type= - RESULT=1
     set -f
+    IFS=,
     for pattern in $spec; do
+	IFS=" "
 	case $pattern in
 	    ""|*:*:*)
 		;;
 	    *:*) 
 		dir="${pattern%:*}"
 		type="${pattern#*:}"
-		case $event in $dir*:$type*) return 0;; esac
+		case $event in $dir*:$type*) RESULT=0;; esac
 		;;
 	    *) 
-		case $event in $pattern*:*) return 0;; esac
-		case $event in *:$pattern*) return 0;; esac
+		case $event in $pattern*:*|*:$pattern*) RESULT=0;; esac
 		;;
 	esac
+	if ? "RESULT == 0"; then
+	    __debug_rule "event '$event' matches pattern '$pattern'"
+	    break
+	fi
     done
-    return 1
+    if ? "RESULT == 1"; then
+	__debug_rule "event '$event' does NOT match spec '$spec'"
+    fi
+    return $RESULT
 }
 
 ## copy stdin to stdout while looking for incoming calls

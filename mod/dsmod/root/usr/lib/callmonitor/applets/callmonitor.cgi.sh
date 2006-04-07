@@ -20,6 +20,7 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 require cgi
+require if_jfritz_status
 
 CHECKED=' checked'
 
@@ -66,6 +67,26 @@ cat << EOF
     <label for="d1">mit Debug-Ausgaben</label> (ins $SYSLOG)
 </p>
 EOF
+
+sec_end
+sec_begin 'Status'
+
+if ! _j_is_up; then
+    cat << EOF
+<p>
+    <strong>Die Callmonitor-Schnittstelle (Port 1012) ist nicht
+    aktiviert.</strong> Sie wird zum Betrieb des Callmonitors benötigt und kann
+    durch Wählen von <code>#96*5*</code> eingeschaltet werden.
+</p>
+EOF
+else
+    cat << EOF
+<p>
+    Die Callmonitor-Schnittstelle (Port 1012) ist aktiviert. Sie kann durch
+    Wählen von <code>#96*4*</code> abgeschaltet werden.
+</p>
+EOF
+fi
 
 sec_end
 sec_begin 'Aktionen bei Anruf'

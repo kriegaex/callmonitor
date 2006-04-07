@@ -159,4 +159,8 @@
 
 2006-04-07
 
-	Umstellung auf das JFritz-Interface
+	Umstellung auf das JFritz-Interface: Das telefon-Paket wird nicht mehr
+	benötigt; das Format der "Listeners" hat sich geändert.
+
+	* mail.sh: mail_missed_call existiert nicht mehr; durch "in:cancel ...
+	mailmessage ..." ersetzt.

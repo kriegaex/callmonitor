@@ -20,6 +20,8 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 
+require if_jfritz_status
+
 ## analyze call information
 __read() {
     local timestamp event id ext source dest remote duration
@@ -143,7 +145,7 @@ _j_parse() {
 
 __read_from_iface() {
     let "_j_SLEEP = (_j_SLEEP < 1) ? 1 : _j_SLEEP"
-    if ! nc 127.0.0.1 1012 < /dev/null > /dev/null 2>&1; then
+    if ! _j_is_up; then
 	__info "Please use #96*5* to enable telefon's interface."
         __info "Trying again in $_j_SLEEP seconds ..."
 
@@ -175,9 +177,6 @@ _j_output() {
     local ID=$id SOURCE=$source DEST=$dest EXT=$ext DURATION=$duration
     local TIMESTAMP=$timestamp EVENT= SOURCE_OPTIONS= DEST_OPTIONS=
     case $output in
-	in:accept)
-	    ## not used yet
-	;;
 	in:*)
 	    EVENT=$output
 	    DEST_OPTIONS="--local"

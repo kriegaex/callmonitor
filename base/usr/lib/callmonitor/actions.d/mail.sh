@@ -20,22 +20,23 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 
-## run callmonitor in test mode: do not run as a daemon, do not write
-## pid file, show trace of rule processing for simplified call on stdout
-
-require callmonitor
-
-__debug() { echo "$*"; }
-__info() { echo "$*"; }
-
-__configure
-
-event=$1 source=$2 dest=$3
-
-## dummy values
-id=1 ext=4 duration=16 timestamp="$(date +"%d.%m.%y %H:%M")"
-
-_j_output "$event"
-
-wait
-exit 0
+mail_subject() {
+    case $EVENT in
+	in:cancel) echo "Verpasst: Anruf${SOURCE:+" von $SOURCE"}" ;;
+	*) echo "Anruf${SOURCE:+" von $SOURCE"}" ;;
+    esac
+}
+mail_body() {
+    default_mailmessage | sed -e "s/\$/$CR/"
+}
+default_mailmessage() { 
+    default_message
+    echo
+    echo "$TIMESTAMP [$EVENT]"
+}
+    
+mailmessage() {
+    mail_body | mail send -i - -s "$(mail_subject)" "$@"
+}
+## put a call to 'mail process' into your crontab in order to process mails
+## that could not yet be delivered

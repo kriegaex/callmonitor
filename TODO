@@ -2,15 +2,6 @@
 Testen
 ----------------------------------------------------------------------
 
-* futurama
-> beim "dboxlcd"; wenn die informationen von das Örtliche kommen, werden
-> die Name und die Anschrift als eine Variable erhalten. Wenn diese
-> Variablelänge grösser als 17 wird, zeigt es den Rest nicht an. Also da
-> sollte der script; zeile 1 -> Anruf an 1122334 | zeile 2 -> von
-> 09991122334 | zeile 3 "wenn länger als 17" -> (erhaltene
-> variable),(von 1 - bis 17) | zeile 4 -> (erhaltene variable),(von 18 -
-> bis rest) anzeigen.
-
 ----------------------------------------------------------------------
 Wichtig
 ----------------------------------------------------------------------

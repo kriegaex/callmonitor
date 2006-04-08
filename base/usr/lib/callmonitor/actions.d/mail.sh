@@ -22,9 +22,13 @@
 
 mail_subject() {
     case $EVENT in
-	in:cancel) echo "Verpasst: Anruf${SOURCE:+" von $SOURCE"}" ;;
-	*) echo "Anruf${SOURCE:+" von $SOURCE"}" ;;
+	in:cancel) echo -n "Verpasst: " ;;
     esac
+    case $EVENT in
+	in:*) echo -n "Anruf${SOURCE:+" von $SOURCE"}" ;;
+	out:*) echo -n "Anruf${DEST:+" an $DEST"}" ;;
+    esac
+    echo " [$EVENT]"
 }
 mail_body() {
     default_mailmessage | sed -e "s/\$/$CR/"
@@ -32,7 +36,7 @@ mail_body() {
 default_mailmessage() { 
     default_message
     echo
-    echo "$TIMESTAMP [$EVENT]"
+    echo "$TIMESTAMP"
 }
     
 mailmessage() {

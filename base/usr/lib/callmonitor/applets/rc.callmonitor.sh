@@ -131,7 +131,7 @@ case "$1" in
 	    echo "$DAEMON is not running" >&2
 	    exit 1
 	fi
-	kill -USR1 "$pid" > /dev/null 2>&1
+	kill -USR1 "$(cat "$PIDFILE")" > /dev/null 2>&1
 	;;
     *)
 	echo "Usage: $0 [load|unload|start|stop|restart|status|reload|try-start]" >&2

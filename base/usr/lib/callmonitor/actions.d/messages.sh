@@ -56,7 +56,8 @@ default_dbox() {
     default_message | latin1_utf8 | sed -e 's/,[[:space:]]\+/\n/g'
 }
 dreammessage() {
-    getmsg -t "/cgi-bin/xmessage?timeout=${DREAM_TIMEOUT:-10}&caption=${DREAM_CAPTION:-Telefonanruf}&charset=latin1&icon=${DREAM_ICON:-1}&body=%s" -d default_dreammessage "$@"
+    getmsg -t "/cgi-bin/xmessage?timeout=${DREAM_TIMEOUT:-10}&caption=${DREAM_CAPTION:-$(lang
+    de:"Telefonanruf" en:"Phone%20call")}&charset=latin1&icon=${DREAM_ICON:-1}&body=%s" -d default_dreammessage "$@"
 }
 default_dreammessage() { default_message; }
 
@@ -75,26 +76,26 @@ vdr() {
     rawmsg -p 2001 -t "MESG %s\nQUIT\n" -d default_vdr "$@"
 }
 default_vdr() {
-    echo "Anruf${SOURCE:+" $SOURCE"}${SOURCE_NAME:+" - $SOURCE_NAME"}"
+    echo "$(lang de:"Anruf" en:"Call")${SOURCE:+" $SOURCE"}${SOURCE_NAME:+" - $SOURCE_NAME"}"
 }
 
 xboxmessage() {
-    getmsg -t "/xbmcCmds/xbmcHttp?command=ExecBuiltIn&parameter=XBMC.Notification(${XBOX_CAPTION:-Telefonanruf},%s)" -d default_xboxmessage "$@"
+    getmsg -t "/xbmcCmds/xbmcHttp?command=ExecBuiltIn&parameter=XBMC.Notification(${XBOX_CAPTION:-$(lang de:"Telefonanruf" en:"Phone%20call")},%s)" -d default_xboxmessage "$@"
 }
 __xboxmessage() {
     default_xboxmessage | tr "," ";"
 }
 default_xboxmessage() {
     if ! empty "$DEST_NAME"; then
-	echo "Anruf an $DEST_NAME"
+	echo "$(lang de:"Anruf an" en:"Call to") $DEST_NAME"
     elif ! empty "$DEST"; then
-	echo "Anruf an $DEST"
+	echo "$(lang de:"Anruf an" en:"Call to") $DEST"
     else
-	echo "Anruf"
+	echo "$(lang de:"Anruf" en:"Call")"
     fi
     if ! empty "$SOURCE_NAME"; then
-	echo "von $SOURCE_NAME"
+	echo "$(lang de:"von" en:"from") $SOURCE_NAME"
     elif ! empty "$SOURCE"; then
-	echo "von $SOURCE"
+	echo "$(lang de:"von" en:"from") $SOURCE"
     fi
 }

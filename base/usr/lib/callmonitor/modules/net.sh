@@ -63,14 +63,14 @@ latin1_utf8() {
 ## default message
 default_message() {
     if ! empty "$DEST_NAME"; then
-	echo "Anruf an $DEST_NAME"
+	echo "$(lang de:"Anruf an" en:"Call to") $DEST_NAME"
     elif ! empty "$DEST"; then
-	echo "Anruf an $DEST"
+	echo "$(lang de:"Anruf an" en:"Call to") $DEST"
     else
-	echo "Anruf"
+	echo "$(lang de:"Anruf" en:"Call")"
     fi
     if ! empty "$SOURCE"; then
-	echo "von $SOURCE"
+	echo "$(lang de:"von" en:"from") $SOURCE"
     fi
     if ! empty "$SOURCE_NAME"; then
 	echo "$SOURCE_NAME"

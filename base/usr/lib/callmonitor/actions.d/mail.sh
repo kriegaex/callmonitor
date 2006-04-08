@@ -22,11 +22,13 @@
 
 mail_subject() {
     case $EVENT in
-	in:cancel) echo -n "Verpasst: " ;;
+	in:cancel) echo -n "$(lang de:"Verpasst" en:"Missed"): " ;;
     esac
     case $EVENT in
-	in:*) echo -n "Anruf${SOURCE:+" von $SOURCE"}" ;;
-	out:*) echo -n "Anruf${DEST:+" an $DEST"}" ;;
+	in:*) echo -n "$(lang de:"Anruf" en:"Call")${SOURCE:+" $(lang
+	    de:"von" en:"from") $SOURCE"}" ;;
+	out:*) echo -n "$(lang de:"Anruf" en:"Call")${DEST:+" $(lang
+	    de:"an" en:"to") $DEST"}" ;;
     esac
     echo " [$EVENT]"
 }

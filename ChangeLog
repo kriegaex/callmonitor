@@ -164,3 +164,5 @@
 
 	* mail.sh: mail_missed_call existiert nicht mehr; durch "in:cancel ...
 	mailmessage ..." ersetzt.
+
+	English translation (Web interface and messages)

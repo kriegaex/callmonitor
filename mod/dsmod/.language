@@ -1,0 +1,17 @@
+languages
+{ de en }
+default
+{ de }
+files
+{
+	usr/lib/callmonitor/applets/callmonitor.cgi.sh
+	usr/lib/callmonitor/applets/testcall.cgi.sh
+	usr/lib/callmonitor/applets/maint.cgi.sh
+	usr/lib/callmonitor/modules/modreg.sh
+	etc/default.callmonitor/callers.def
+	etc/default.callmonitor/listeners.def
+	usr/lib/callmonitor/modules/net.sh
+	usr/lib/callmonitor/actions.d/dboxlcd.sh
+	usr/lib/callmonitor/actions.d/mail.sh
+	usr/lib/callmonitor/actions.d/messages.sh
+}

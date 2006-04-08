@@ -1,0 +1,72 @@
+#!/bin/bash
+: ${DS_LANG_STRING:=en}
+
+modlangsubst()
+{
+	# modlangsubst <lang> <file>
+	#   Substitutes all $(lang de:"Deutscher Text" en:"English text" ...) occurrences
+	#   in <file> with <text> of the corresponding <lang>:"<text>" section.
+
+	val='\(\([^"\\]*\(\\.\)*\)*\)'
+	entry="\w\+:\"${val}\""
+	LC_CTYPE=C sed -i -e "
+	    :a
+	    s/\$(lang\(\s\+$entry\)*\s\+${1}:\"${val}\"\(\s\+$entry\)*\s*)/\$(lang:\"\5\")/g
+	    s/\$(lang\(\s\+$entry\)*\s*)/*** error: language[${1}] not available ***/g
+	    :n
+	    s/\$(lang:\"\(\([^\"\\]\+\)\|[\\]\(.\)\)${val}\")/\2\3\$(lang:\"\4\")/g
+	    tn
+	    s/\$(lang:\"\")//g
+	    /\$(lang\(\s\|\$\)/ {N; ba}
+	" "$2"
+}
+
+modlangconf()
+{
+	# modlangconf <key> <file>
+	#   Get <content> of a <key> { <content> } section in <file>
+
+	sed -n -e ":n;N;\$!bn;s/^.*${1}[\s\n]\+{[\s\n]*\([^}]*\)[\s\n]*}.*$/\1/p" "$2"
+}
+
+modlang()
+{
+	# modlang <conffile> <dir>
+
+	avail="$(modlangconf "languages" "$1")"
+	default="$DS_LANG_STRING $(modlangconf "default" "$1") en de $avail"
+	lang=""
+
+	for i in $default
+	do
+		for j in $avail
+		do
+			if [ "$i" == "$j" ]
+			then
+				lang="$j"
+				break 2
+			fi
+		done
+	done
+
+	if [ -z "$lang" ]
+	then
+		echo "ERROR: no language available" 1>&2
+		exit 1
+	fi
+
+	[ "$lang" == "$DS_LANG_STRING" ] || \
+		echo "NOTICE: language $DS_LANG_STRING not available; $lang chosen." 1>&2
+
+	for i in $(modlangconf "files" "$1")
+	do
+		if [ -e "${2}/${i}" ]
+		then
+			modlangsubst "$lang" "${2}/${i}"
+		else
+			echo "WARNING: ${2}/${i} not found" 1>&2
+		fi
+	done
+}
+
+modlang "build/dsmod/callmonitor-0.8.1/.language" "/home/buehmann/fritzbox/nfsroot/callmonitor-0.8.1/root"

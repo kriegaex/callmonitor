@@ -22,7 +22,7 @@
 require cgi
 
 SELF=maint
-TITLE='Callmonitor-Wartung'
+TITLE='$(lang de:"Callmonitor-Wartung" en:"Callmonitor maintenance")'
 
 cmd_button() {
     local cmd="$1" label="$2" method="post"
@@ -45,18 +45,21 @@ if ! empty "$MAINT_CMD"; then
     cgi_begin "$TITLE ..."
     case "$MAINT_CMD" in
 	phonebook_tidy)
-	    echo "<p>Räume Callers auf:</p>"
+	    echo "<p>$(lang de:"Räume Callers auf" en:"Tidying up Callers"):</p>"
 	    phonebook tidy 2>&1 | pre
 	    ;;
 	phonebook_init)
-	    echo "<p>SIP-Update wird durchgeführt.</p>"
+	    echo "<p>$(lang 
+		de:"Führe SIP-Update durch:"
+		en:"Performing SIP update:"
+	    )</p>"
 	    phonebook init 2>&1 | pre
 	    ;;
 	*)
-	    echo "<p>Unbekannter Befehl</p>"
+	    echo "<p>$(lang de:"Unbekannter Befehl" en:"Unknown command")</p>"
 	    ;;
     esac
-    cmd_button '' 'Zurück'
+    cmd_button '' '$(lang de:"Zurück" en:"Back")'
     cgi_end
     exit
 fi
@@ -67,23 +70,28 @@ sec_begin 'Callers'
 let LINES="$({ 
     grep '[[:print:]]' "$CALLMONITOR_PERSISTENT" | wc -l; } 2>/dev/null)+0"
 let BYTES="$(wc -c < "$CALLMONITOR_PERSISTENT" 2>/dev/null)+0"
-SIZE="$BYTES Bytes"
+SIZE="$BYTES $(lang de:"Bytes" en:"bytes")"
 
 cat << EOF
-<p>
-    $LINES Einträge (Größe: $SIZE)
-    <a href="/cgi-bin/file.cgi?id=callers">bearbeiten</a>
-</p>
-<p>
-    Beim Aufräumen werden die Einträge im Telefonbuch sortiert und Leerzeilen
-    entfernt.
-</p>
-<p>
-    SIP-Update erstellt Standardeinträge für neu angelegte
-    Internetrufnummern.
-</p>
+<p>$(lang
+    de:"$LINES Einträge (Größe: $SIZE)
+	<a href=\"/cgi-bin/file.cgi?id=callers\">bearbeiten</a>"
+    en:"<a href=\"/cgi-bin/file.cgi?id=callers\">Edit</a>
+	$LINES entries (size: $SIZE)"
+)</p>
+<p>$(lang
+    de:"Beim Aufräumen werden die Einträge im Telefonbuch sortiert und
+	Leerzeilen entfernt."
+    en:"Tidying up the phone book will remove empty lines and sort entries."
+)</p>
+<p>$(lang
+    de:"SIP-Update erstellt Standardeinträge für neu angelegte
+	Internetrufnummern."
+    en:"A SIP update creates default entries for newly installed Internet
+	numbers."
+)</p>
 EOF
-cmd_button phonebook_tidy 'Aufräumen'
-cmd_button phonebook_init 'SIP-Update'
+cmd_button phonebook_tidy '$(lang de:"Aufräumen" en:"Tidy up")'
+cmd_button phonebook_init '$(lang de:"SIP-Update durchführen" en:"Perform SIP update")'
 sec_end
 cgi_end

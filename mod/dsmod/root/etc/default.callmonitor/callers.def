@@ -24,4 +24,7 @@ CONFIG_SAVE='modsave flash'
 CONFIG_TYPE='text'
 
 CAPTION='Callers (Callmonitor)'
-DESCRIPTION="Syntax: &lt;number&gt; &lt;name&gt;"
+DESCRIPTION="$(lang
+    de:"Syntax: &lt;Nummer&gt; &lt;Name&gt;"
+    en:"Syntax: &lt;number&gt; &lt;name&gt;"
+)"

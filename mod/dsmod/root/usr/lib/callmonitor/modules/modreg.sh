@@ -23,8 +23,8 @@ mod_register() {
     local DAEMON=callmonitor deffile= flash="/tmp/flash/$DAEMON"
     mkdir -p "$flash"
     modreg cgi $DAEMON 'Callmonitor'
-    modreg extra $DAEMON 'Testanruf' 1 'testcall'
-    modreg extra $DAEMON 'Wartung' 1 'maint'
+    modreg extra $DAEMON '$(lang de:"Testanruf" en:"Test call")' 1 'testcall'
+    modreg extra $DAEMON '$(lang de:"Wartung" en:"Maintenance")' 1 'maint'
     if [ -r "$flash/listeners.def" ]; then 
 	deffile="$flash/listeners.def"
     else 

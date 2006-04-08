@@ -24,6 +24,17 @@ CONFIG_SAVE='modsave flash'
 CONFIG_TYPE='text'
 
 CAPTION='Listeners (Callmonitor)'
-DESCRIPTION=\
-"Syntax: &lt;EVENT&gt; &lt;SOURCE pattern&gt; &lt;DEST pattern&gt; &lt;action&gt;<br>
-(z.B.: in:request ^(0815|04711) ^SIP0$ dboxpopup 192.168.3.4)"
+DESCRIPTION="$(lang
+    de:"Syntax:
+	&lt;EVENT&gt;
+	&lt;SOURCE-Muster&gt; 
+	&lt;DEST-Muster&gt;
+	&lt;Aktion&gt;<br>
+	(z.B. <code>in:request ^(08|15) ^SIP0$ dboxpopup 192.168.3.4</code>)"
+    en:"Syntax:
+	&lt;EVENT&gt;
+	&lt;SOURCE pattern&gt; 
+	&lt;DEST pattern&gt;
+	&lt;action&gt;<br>
+	(e.g., <code>in:request ^(08|15) ^SIP0$ dboxpopup 192.168.3.4</code>)"
+)"

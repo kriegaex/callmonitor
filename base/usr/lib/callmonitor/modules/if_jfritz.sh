@@ -159,8 +159,11 @@ __read_from_iface() {
 	    sleep 20000d &
 	    echo $! > /var/run/callmonitor/pid/sleep
 	    wait
-	    rm /var/run/callmonitor/pid/sleep
-	} | nc 127.0.0.1 1012 | __read
+	    rm -f /var/run/callmonitor/pid/sleep
+	} | {
+	    nc 127.0.0.1 1012
+	    kill "$(cat /var/run/callmonitor/pid/sleep)" > /dev/null 2>&1
+	} | __read
     fi
 }
 

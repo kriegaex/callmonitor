@@ -155,7 +155,6 @@ __read_from_iface() {
     else
 	_j_SLEEP=
 	## hack to provide "never"-ending but empty stdin: FIXME
-	mkdir -p /var/run/callmonitor/pid
 	{
 	    sleep 20000d &
 	    echo $! > /var/run/callmonitor/pid/sleep

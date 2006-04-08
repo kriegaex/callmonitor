@@ -74,16 +74,16 @@ sec_begin 'Status'
 if ! _j_is_up; then
     cat << EOF
 <p>
-    <strong>Die Callmonitor-Schnittstelle (Port 1012) ist nicht
-    aktiviert.</strong> Sie wird zum Betrieb des Callmonitors benötigt und kann
-    durch Wählen von <code>#96*5*</code> eingeschaltet werden.
+    <strong>Die JFritz-Schnittstelle (Port 1012) ist nicht aktiviert.</strong>
+    Sie wird zum Betrieb des Callmonitors benötigt und kann durch Wählen von
+    <code>#96*5*</code> eingeschaltet werden.
 </p>
 EOF
 else
     cat << EOF
 <p>
-    Die Callmonitor-Schnittstelle (Port 1012) ist aktiviert. Sie kann durch
-    Wählen von <code>#96*4*</code> abgeschaltet werden.
+    Die JFritz-Schnittstelle (Port 1012) ist aktiviert. Sie kann durch Wählen
+    von <code>#96*4*</code> abgeschaltet werden.
 </p>
 EOF
 fi

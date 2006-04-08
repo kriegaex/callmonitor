@@ -177,7 +177,7 @@ __match_event() {
 	fi
     done
     if ? "RESULT == 1"; then
-	__debug_rule "event '$event' does NOT match spec '$spec'"
+	__debug_rule "event '$event' does NOT match pattern '$spec'"
     fi
     return $RESULT
 }

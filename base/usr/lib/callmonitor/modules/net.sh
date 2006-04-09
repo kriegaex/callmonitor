@@ -20,6 +20,8 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 
+require message
+
 ## Basic networking utilities
 
 ## carriage return & line feed
@@ -58,23 +60,6 @@ latin1_utf8() {
 	s/\(..\)/\\x\1/g
     ' |
     while IFS= read -r line; do echo -ne "$line"; done
-}
-
-## default message
-default_message() {
-    if ! empty "$DEST_NAME"; then
-	echo "$(lang de:"Anruf an" en:"Call to") $DEST_NAME"
-    elif ! empty "$DEST"; then
-	echo "$(lang de:"Anruf an" en:"Call to") $DEST"
-    else
-	echo "$(lang de:"Anruf" en:"Call")"
-    fi
-    if ! empty "$SOURCE"; then
-	echo "$(lang de:"von" en:"from") $SOURCE"
-    fi
-    if ! empty "$SOURCE_NAME"; then
-	echo "$SOURCE_NAME"
-    fi
 }
 
 __getmsg_usage() {

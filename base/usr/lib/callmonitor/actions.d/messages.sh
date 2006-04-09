@@ -25,12 +25,14 @@
 ## 
 ## These environment variables are set by callmonitor before calling
 ## calling a listener:
+##  EVENT	event {in,out}:{request,cancel,connect,disconnect}
 ##  SOURCE	source number
 ##  SOURCE_NAME source name
 ##  DEST	destination number
 ##  DEST_NAME	destination name
 
 require net
+require message
 
 ## get matching IPs from multid.leases and execute a command for each of them
 ## example: for_leases 192.168.10. dboxpopup "Ring!"
@@ -86,16 +88,5 @@ __xboxmessage() {
     default_xboxmessage | tr "," ";"
 }
 default_xboxmessage() {
-    if ! empty "$DEST_NAME"; then
-	echo "$(lang de:"Anruf an" en:"Call to") $DEST_NAME"
-    elif ! empty "$DEST"; then
-	echo "$(lang de:"Anruf an" en:"Call to") $DEST"
-    else
-	echo "$(lang de:"Anruf" en:"Call")"
-    fi
-    if ! empty "$SOURCE_NAME"; then
-	echo "$(lang de:"von" en:"from") $SOURCE_NAME"
-    elif ! empty "$SOURCE"; then
-	echo "$(lang de:"von" en:"from") $SOURCE"
-    fi
+    default_message "" 2
 }

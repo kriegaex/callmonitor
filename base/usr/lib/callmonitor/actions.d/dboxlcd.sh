@@ -44,6 +44,7 @@
 ## http://cvs.tuxbox.org/cgi-bin/viewcvs.cgi/tuxbox/apps/tuxbox/neutrino/daemons/nhttpd/api_doku.txt?view=markup
 
 require net
+require message
 
 dboxlcd() {
     __getmsg __getmsg_dboxlcd -d default_dboxlcd -t "-" "$@"
@@ -65,28 +66,5 @@ __getmsg_dboxlcd() {
     TEMPLATE="$lcd?lock=0" __getmsg_simple
 }
 default_dboxlcd() {
-    local len=${#SOURCE_NAME}
-    {
-	if ! empty "$DEST_NAME"; then
-	    echo "$(lang de:"Anruf an" en:"Call to") $DEST_NAME"
-	elif ! empty "$DEST"; then
-	    echo "$(lang de:"Anruf an" en:"Call to") $DEST"
-	else
-	    echo "$(lang de:"Anruf" en:"Call")"
-	fi
-	if ! empty "$SOURCE"; then
-	    echo "$(lang de:"von" en:"from") $SOURCE"
-	fi
-	if ! empty "$SOURCE_NAME"; then
-	    if ? "$len <= 19"; then
-		echo "$SOURCE_NAME"
-	    else
-		expr substr "$SOURCE_NAME" 1 19
-		expr substr "$SOURCE_NAME" 20 19
-		if ? "$len > 38"; then
-		    expr substr "$SOURCE_NAME" 39 19
-		fi
-	    fi
-	fi
-    } | latin1_utf8
+    default_message 19 | latin1_utf8
 }

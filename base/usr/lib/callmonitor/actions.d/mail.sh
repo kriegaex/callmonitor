@@ -20,6 +20,8 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 
+require message
+
 mail_subject() {
     case $EVENT in
 	in:cancel) echo -n "$(lang de:"Verpasst" en:"Missed"): " ;;

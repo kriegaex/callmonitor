@@ -76,8 +76,8 @@ sec_begin '$(lang de:"Status" en:"Status")'
 
 if ! _j_is_up; then
     cat << EOF
-<p>
-    <strong>$(lang 
+<ul>
+    <li><strong style="color: red">$(lang 
 	de:"Die JFritz-Schnittstelle (Port 1012) ist nicht aktiv."
 	en:"The JFritz interface (port 1012) is not active."
     )</strong>
@@ -86,19 +86,19 @@ if ! _j_is_up; then
 	    Wählen von <code>#96*5*</code> eingeschaltet werden."
 	en:"It is required for Callmonitor's operation and can be enabled
 	    by dialing <code>#96*5*</code>."
-    )
-</p>
+    )</li>
+</ul>
 EOF
 else
     cat << EOF
-<p>
-    $(lang
+<ul>
+    <li>$(lang
 	de:"Die JFritz-Schnittstelle (Port 1012) ist aktiviert. Sie kann durch
 	    Wählen von <code>#96*4*</code> abgeschaltet werden."
 	en:"The JFritz interface (port 1012) is active. It can be disabled by
 	    dialing <code>#96*4*</code>."
-    )
-</p>
+    )</li>
+</ul>
 EOF
 fi
 

@@ -1,7 +1,7 @@
 ##
 ## Callmonitor for Fritz!Box (callmonitor)
 ## 
-## Copyright (C) 2005--2006  Andreas BÃ¼hmann <buehmann@users.berlios.de>
+## Copyright (C) 2005--2006  Andreas Bühmann <buehmann@users.berlios.de>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -19,24 +19,28 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-. /usr/lib/libmodcgi.sh
+require cgi
+require if_jfritz_status
 
-html_encode() {
-    sed -e 's/&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'
-}
+eval "$(modcgi jfritz exec)"
+cgi_begin callmonitor
 
-pre() {
-    echo -n "<pre>"
-    html_encode # stdin
-    echo "</pre>"
-}
+case $EXEC_JFRITZ in
+    on)
+	_j_enable
+	echo "$(lang 
+	    de:"JFritz-Schnittstelle eingeschaltet."
+	    en:"JFritz interface enabled."
+	)"
+	;;
+    off)
+	_j_disable
+	echo "$(lang 
+	    de:"JFritz-Schnittstelle ausgeschaltet."
+	    en:"JFritz interface disabled."
+	)"
+	;;
+esac
 
-config_button() {
-    cat <<EOF
-<form class="btn" action="/cgi-bin/pkgconf.cgi" method="get">
-    <input type="hidden" name="pkg" value="callmonitor">
-    <div class="btn"><input type="submit" 
-	value="$(lang de:"Zur&uuml;ck" en:"Back")"></div>
-</form>
-EOF
-}
+config_button
+cgi_end

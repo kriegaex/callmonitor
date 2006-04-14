@@ -168,3 +168,10 @@
 	English translation (Web interface and messages)
 
 	callmonitor-1.0 veröffentlicht
+
+2006-04-14
+
+	* if_jfritz.sh: Abschließendes "#" bei gewählten Rufnummern entfernen.
+	* dial.sh: Wählhilfe: dial NUMBER [PORT]
+	* callmonitor.cgi.sh: JFritz ein- und ausschalten direkt über das
+	Webinterface

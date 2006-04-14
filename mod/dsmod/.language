@@ -13,4 +13,6 @@ files
 	usr/lib/callmonitor/modules/message.sh
 	usr/lib/callmonitor/actions.d/mail.sh
 	usr/lib/callmonitor/actions.d/messages.sh
+	usr/lib/callmonitor/applets/exec.cgi.sh
+	usr/lib/callmonitor/modules/cgi.sh
 }

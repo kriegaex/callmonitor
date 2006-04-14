@@ -173,11 +173,9 @@ __init_iface() {
 
 _j_output() {
     local output="$1"
-    __debug '>>>' "$* ID=$id TIMESTAMP=$timestamp SOURCE=$source DEST=$dest" \
-	"EXT=$ext DURATION=$duration"
-
     local ID=$id SOURCE=$source DEST=$dest EXT=$ext DURATION=$duration
     local TIMESTAMP=$timestamp EVENT= SOURCE_OPTIONS= DEST_OPTIONS=
+
     case $output in
 	in:*)
 	    EVENT=$output
@@ -186,8 +184,14 @@ _j_output() {
 	out:*)
 	    EVENT=$output
 	    SOURCE_OPTIONS="--local"
+
+	    ## strip end-of-number marker
+	    DEST=${DEST%#}
 	;;
     esac
+    __debug '>>>' "$* ID=$ID TIMESTAMP=$TIMESTAMP SOURCE=$SOURCE DEST=$DEST" \
+	"EXT=$EXT DURATION=$DURATION"
+
     if ! empty "$EVENT"; then
 	incoming_call
     fi

@@ -69,4 +69,4 @@ modlang()
 	done
 }
 
-modlang "build/dsmod/callmonitor-0.8.2/.language" "/home/buehmann/fritzbox/nfsroot/callmonitor-0.8.2/root"
+modlang "$@"

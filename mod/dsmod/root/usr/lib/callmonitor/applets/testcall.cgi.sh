@@ -104,16 +104,6 @@ show_testcall_results() {
     do_testcall | pre
 }
 
-config_button() {
-    cat <<EOF
-<form class="btn" action="/cgi-bin/pkgconf.cgi" method="get">
-    <input type="hidden" name="pkg" value="callmonitor">
-    <div class="btn"><input type="submit" 
-	value="$(lang de:"Zur&uuml;ck" en:"Back")"></div>
-</form>
-EOF
-}
-
 cgi_main() {
     if let "${TESTCALL_SOURCE+1}"; then
 	cgi_begin "$TITLE ..."

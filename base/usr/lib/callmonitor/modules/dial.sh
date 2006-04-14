@@ -19,24 +19,15 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-. /usr/lib/libmodcgi.sh
 
-html_encode() {
-    sed -e 's/&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'
-}
+require webui
+require net
 
-pre() {
-    echo -n "<pre>"
-    html_encode # stdin
-    echo "</pre>"
-}
-
-config_button() {
-    cat <<EOF
-<form class="btn" action="/cgi-bin/pkgconf.cgi" method="get">
-    <input type="hidden" name="pkg" value="callmonitor">
-    <div class="btn"><input type="submit" 
-	value="$(lang de:"Zur&uuml;ck" en:"Back")"></div>
-</form>
-EOF
+dial() {
+    local number=$1 port=$2
+    local data="telcfg:command/Dial=$(urlencode "$number")"
+    if ! empty "$port"; then
+	data="$data&telcfg:settings/DialPort=$(urlencode "$port")"
+    fi
+    { webui_login; webui_post_form "$data"; } > /dev/null 2>&1
 }

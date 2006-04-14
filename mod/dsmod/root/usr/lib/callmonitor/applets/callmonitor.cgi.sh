@@ -23,6 +23,7 @@ require cgi
 require if_jfritz_status
 
 CHECKED=' checked'
+SELECTED=' selected'
 
 auto_chk='' man_chk=''
 case $CALLMONITOR_ENABLED in
@@ -40,11 +41,11 @@ case $CALLMONITOR_REVERSE in
     yes) reverse_chk=$CHECKED
 esac
 
-no_chk='' trans_chk='' pers_chk=''
+no_sel='' trans_sel='' pers_sel=''
 case "$CALLMONITOR_REVERSE_CACHE" in
-    no) no_chk=$CHECKED ;;
-    transient) trans_chk=$CHECKED ;;
-    persistent) pers_chk=$CHECKED ;;
+    no) no_sel=$SELECTED ;;
+    transient) trans_sel=$SELECTED ;;
+    persistent) pers_sel=$SELECTED ;;
 esac
 
 SYSLOG='$(lang de:"System-Log" en:"system log")'
@@ -84,9 +85,9 @@ if ! _j_is_up; then
     $(lang
 	de:"Sie wird zum Betrieb des Callmonitors benötigt."
 	en:"It is required for Callmonitor's operation."
-    ) (<a href="extras.cgi/callmonitor/exec?jfritz=on">$(lang
+    ) [<a href="extras.cgi/callmonitor/exec?jfritz=on">$(lang
 	de:"Einschalten" en:"Enable"
-    )</a>)
+    )</a>]
     </li>
 </ul>
 EOF
@@ -96,9 +97,9 @@ else
     <li>$(lang
 	de:"Die JFritz-Schnittstelle (Port 1012) ist aktiviert."
 	en:"The JFritz interface (port 1012) is active."
-    ) (<a href="extras.cgi/callmonitor/exec?jfritz=off">$(lang
+    ) [<a href="extras.cgi/callmonitor/exec?jfritz=off">$(lang
 	de:"Ausschalten" en:"Disable"
-    )</a>)
+    )</a>]
 </ul>
 EOF
 fi
@@ -132,37 +133,35 @@ cat << EOF
     ($(lang de:"bei" en:"at")
     <a href="http://www.dasoertliche.de/">DasÖrtliche</a>)
 </p>
-<h2>$(lang
-    de:"Suchergebnis zwischenspeichern?"
-    en:"Cache query result?"
-)</h2>
 <p>
-    <input type="radio" name="reverse_cache" value="no"$no_chk id="r1">
-    <label title="$(lang
-	de:"Keine Speicherung der Namen"
-	en:"Names are not stored"
-    )" for="r1">$(lang de:"Nein" en:"No")</label>
-    <input type="radio" name="reverse_cache" value="transient"$trans_chk
-	id="r2">
-    <label title="$(lang
-	de:"Namen gehen bei nächstem Neustart verloren"
-	en:"Names will be lost at the next reboot"
-    )" for="r2">$(lang de:"Flüchtig" en:"Transient")</label>
-    <input type="radio" name="reverse_cache" value="persistent"$pers_chk
-	id="r3">
-    <label title="$(lang 
-	de:"Namen werden im Telefonbuch im Flash gespeichert"
-	en:"Names are stored in the flash memory phone book"
-    )" for="r3">$(lang de:"Dauerhaft" en:"Persistent")</label>
-    (<a href="/cgi-bin/file.cgi?id=callers">$(lang 
-	de:"Callers bearbeiten" en:"Edit Callers")</a>)
+    <label for="cache">$(lang
+	de:"Suchergebnisse zwischenspeichern?"
+	en:"Cache query results?"
+    )</label>
+    <select name="reverse_cache" id="cache">
+	<option title="$(lang
+	    de:"Keine Speicherung der Namen"
+	    en:"Names are not stored"
+	)" value="no"$no_sel>$(lang de:"Nein" en:"No")</option>
+	<option title="$(lang
+	    de:"Namen gehen bei nächstem Neustart verloren"
+	    en:"Names will be lost at the next reboot"
+	)" value="transient"$trans_sel>$(lang
+	    de:"Flüchtig" en:"Transiently")</option>
+	<option title="$(lang 
+	    de:"Namen werden im Telefonbuch im Flash gespeichert"
+	    en:"Names are stored in the flash memory phone book"
+	)" value="persistent"$pers_sel>$(lang
+	    de:"Dauerhaft" en:"Persistently")</option>
+    </select>
+    [<a href="/cgi-bin/file.cgi?id=callers">$(lang 
+	de:"Callers bearbeiten" en:"Edit Callers")</a>]
 </p>
-<h2>$(lang
-    de:"Für lokale Rufnummern diese Vorwahl verwenden:"
-    en:"Use this area code for local numbers:"
-)</h2>
 <p>
-    <label for="okz">$(lang de:"Vorwahl" en:"Area code"):</label>
+    <label for="okz">$(lang
+	de:"Vorwahl für lokale Rufnummern"
+	en:"Area code for local numbers"
+    ):</label>
     <input type="text" name="okz" value="$(httpd -e "$CALLMONITOR_OKZ")"
 	size="5" id="okz">
 </p>

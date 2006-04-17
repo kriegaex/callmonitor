@@ -19,10 +19,18 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-
-## Execute a single action (such as dboxmessage or anything else that can
-## appear in the "Listeners")
-
-require callmonitor_config
-__configure
-"$@"
+__debug() { true; }
+__info() { true; }
+__configure() {
+    ## import action functions
+    local ACTIONSDIR ACTIONS
+    for ACTIONSDIR in "$CALLMONITOR_LIBDIR/actions.d" \
+	"$CALLMONITOR_LIBDIR/actions.local.d"; do
+	for ACTIONS in "$ACTIONSDIR"/*.sh; do
+	    if [ -r "$ACTIONS" ]; then
+		__debug "including $(realpath "$ACTIONS")"
+		. "$ACTIONS"
+	    fi
+	done
+    done
+}

@@ -33,28 +33,17 @@
 
 ## these stubs/defaults can be overridden (the configuration from system.cfg
 ## is needed, too; it must be included separately)
-__debug() { true; }
-__info() { true; }
+## 
+## moved to callmonitor_config:
+##   __debug() { true; }
+##   __info() { true; }
 incoming_call() { __incoming_call "$@"; }
 
-require phonebook
+require callmonitor_config
 require if_jfritz
+require phonebook
 
 export INSTANCE=0
-
-__configure() {
-    ## import action functions
-    local ACTIONSDIR ACTIONS
-    for ACTIONSDIR in "$CALLMONITOR_LIBDIR/actions.d" \
-	"$CALLMONITOR_LIBDIR/actions.local.d"; do
-	for ACTIONS in "$ACTIONSDIR"/*.sh; do
-	    if [ -r "$ACTIONS" ]; then
-		__debug "including $(realpath "$ACTIONS")"
-		. "$ACTIONS"
-	    fi
-	done
-    done
-}
 
 __incoming_call() {
     if ! empty "$SOURCE"; then

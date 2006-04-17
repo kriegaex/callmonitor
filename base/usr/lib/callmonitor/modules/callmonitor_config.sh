@@ -27,10 +27,9 @@ __configure() {
     for ACTIONSDIR in "$CALLMONITOR_LIBDIR/actions.d" \
 	"$CALLMONITOR_LIBDIR/actions.local.d"; do
 	for ACTIONS in "$ACTIONSDIR"/*.sh; do
-	    if [ -r "$ACTIONS" ]; then
-		__debug "including $(realpath "$ACTIONS")"
-		. "$ACTIONS"
-	    fi
+	    case $ACTIONS in *"/*.sh") continue ;; esac
+	    __debug "including $(realpath "$ACTIONS")"
+	    . "$ACTIONS"
 	done
     done
 }

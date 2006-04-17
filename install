@@ -1,0 +1,4 @@
+VER=$(cat .version)
+make MOD=dsmod
+tar xfvj callmonitor-$VER-dsmod.tar.bz2 -C /home/buehmann/fritzbox/nfsroot/
+DS_LANG_STRING=de ./lang "build/dsmod/callmonitor-$VER/.language" "/home/buehmann/fritzbox/nfsroot/callmonitor-$VER/root"

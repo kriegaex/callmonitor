@@ -6,9 +6,6 @@ Testen
 Wichtig
 ----------------------------------------------------------------------
 
-Aufruf von beliebigen Callmonitor-Aktionen (auch Shell-Funktion) von außen
-durch andere Prozesse.
-
 ----------------------------------------------------------------------
 Demnächst anschauen
 ----------------------------------------------------------------------
@@ -17,6 +14,23 @@ Demnächst anschauen
 Nicht so wichtig
 ----------------------------------------------------------------------
 
+Die (SOURCE, DEST)-Paare der letzten k Anrufe aufzeichnen und als Vorgabe bei
+Testanrufen verwenden.
+
+System zur Ersetzung von Konfigurationsstrings in Dateien
+    CALLMONITOR_CFG in controller
+
+Defaults/Interfaces in base-Zweig, überschreiben in conf.*
+
+Informationen aus Reverse Lookup besser zerlegen: Name, Adresse, formatierte
+Telefonummer, ...
+    -> braucht ein flexibleres Telefonbuch
+
+ar7cfgconv-"Parser" separieren
+
+Sobald Daniel das Framework fertig hat:
+- Schema für Listeners schreiben
+
 Betrieb ohne Mod vorbereiten (zum Nachladen auf unveränderte Firmware)
     Mod-Busybox nachladen
     Weitere "Binary"-Abhängigkeiten?
@@ -24,22 +38,3 @@ Betrieb ohne Mod vorbereiten (zum Nachladen auf unveränderte Firmware)
 
     reload: modreg.sh
 
-Die (SOURCE, DEST)-Paare der letzten k Anrufe aufzeichnen und als Vorgabe bei
-Testanrufen verwenden.
-
-System zur Ersetzung von Konfigurationsstrings in Dateien
-    CALLMONITOR_CFG in controller
-
-require umschreiben, so dass in einem Pfad gesucht wird: praktisch zum Testen
-neuer Funktionen
-
-Defaults/Interfaces in base-Zweig, überschreiben in conf.*
-
-Sobald Daniel das Framework fertig hat:
-- Schema für Listeners schreiben
-
-Informationen aus Reverse Lookup besser zerlegen: Name, Adresse, formatierte
-Telefonummer, ...
-    -> braucht ein flexibleres Telefonbuch
-
-ar7cfgconv-"Parser" separieren

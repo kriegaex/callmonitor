@@ -6,6 +6,9 @@ Testen
 Wichtig
 ----------------------------------------------------------------------
 
+Aufruf von beliebigen Callmonitor-Aktionen (auch Shell-Funktion) von außen
+durch andere Prozesse.
+
 ----------------------------------------------------------------------
 Demnächst anschauen
 ----------------------------------------------------------------------

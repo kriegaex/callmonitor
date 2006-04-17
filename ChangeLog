@@ -175,3 +175,8 @@
 	* dial.sh: Wählhilfe: dial NUMBER [PORT]
 	* callmonitor.cgi.sh: JFritz ein- und ausschalten direkt über das
 	Webinterface
+
+2006-04-17: Ostermontag
+
+	* callaction: Einfaches Skript, um Callmonitor-Aktionen von außerhalb
+	aufrufen zu können.

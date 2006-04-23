@@ -185,3 +185,5 @@
 
 	* if_jfritz.sh: EXT-Wert wurde nicht von out:request zu out:cancel
 	übernommen.
+
+	callmonitor-1.1 veröffentlicht

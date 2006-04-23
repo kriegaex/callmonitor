@@ -180,3 +180,8 @@
 
 	* callaction: Einfaches Skript, um Callmonitor-Aktionen von außerhalb
 	aufrufen zu können.
+
+2006-04-23:
+
+	* if_jfritz.sh: EXT-Wert wurde nicht von out:request zu out:cancel
+	übernommen.

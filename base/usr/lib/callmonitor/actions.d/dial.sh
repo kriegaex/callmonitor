@@ -19,22 +19,7 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-CONFIG_FILE='/tmp/flash/callmonitor/listeners-1'
-CONFIG_SAVE='/mod/pkg/callmonitor/usr/lib/callmonitor/check listeners < "$CONFIG_FILE" && modsave flash || echo "Please correct the errors."'
-CONFIG_TYPE='text'
 
-CAPTION='Listeners (Callmonitor)'
-DESCRIPTION="$(lang
-    de:"Syntax:
-	&lt;EVENT&gt;
-	&lt;SOURCE-Muster&gt; 
-	&lt;DEST-Muster&gt;
-	&lt;Aktion&gt;<br>
-	(z.B. <code>in:request ^(08|15) ^SIP0$ dboxpopup 192.168.3.4</code>)"
-    en:"Syntax:
-	&lt;EVENT&gt;
-	&lt;SOURCE pattern&gt; 
-	&lt;DEST pattern&gt;
-	&lt;action&gt;<br>
-	(e.g., <code>in:request ^(08|15) ^SIP0$ dboxpopup 192.168.3.4</code>)"
-)"
+require dial
+
+## possibly add shortcuts for useful 'dial' commands

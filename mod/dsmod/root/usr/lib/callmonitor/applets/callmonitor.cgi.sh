@@ -155,7 +155,7 @@ cat << EOF
 	    de:"Dauerhaft" en:"Persistently")</option>
     </select>
     [<a href="/cgi-bin/file.cgi?id=callers">$(lang 
-	de:"Callers bearbeiten" en:"Edit Callers")</a>]
+	de:"Callers&nbsp;bearbeiten" en:"Edit&nbsp;Callers")</a>]
 </p>
 <p>
     <label for="okz">$(lang

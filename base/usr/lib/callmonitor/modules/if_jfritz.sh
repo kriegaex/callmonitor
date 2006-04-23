@@ -43,8 +43,8 @@ __read() {
 		;;
 	    *)
 		case $event in
-		    CALL|RING) _j_store source dest ;;
-		    CONNECT)   _j_store source dest ext ;;
+		    RING) _j_store source dest ;;
+		    CALL|CONNECT)   _j_store source dest ext ;;
 		esac
 		_j_store state
 		;;

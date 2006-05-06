@@ -186,4 +186,11 @@
 	* if_jfritz.sh: EXT-Wert wurde nicht von out:request zu out:cancel
 	übernommen.
 
+	* check: Syntax-Check für die Listeners
+
 	callmonitor-1.1 veröffentlicht
+
+2006-05-06:
+
+	* dial: Port wurde erst beim zweiten Aufruf richtig benutzt
+	(Reihenfolge der POST-Parameter ist wichtig)

@@ -27,7 +27,7 @@ dial() {
     local number=$1 port=$2
     local data="telcfg:command/Dial=$(urlencode "$number")"
     if ! empty "$port"; then
-	data="$data&telcfg:settings/DialPort=$(urlencode "$port")"
+	data="telcfg:settings/DialPort=$(urlencode "$port")&$data"
     fi
     { webui_login; webui_post_form "$data"; } > /dev/null 2>&1
 }

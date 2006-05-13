@@ -21,6 +21,7 @@
 ##
 
 require message
+require url
 
 ## Basic networking utilities
 
@@ -28,16 +29,6 @@ require message
 CR=""
 LF="
 "
-
-## URL encoding
-urlencode() {
-    echo -e $(echo -n "$*" |
-    hexdump -v -e '/1 "!%02x"' |
-    sed '
-	s/!\(2[1ade]\|3[0-9]\|4[1-9a-f]\|5[0-9af]\|6[1-9a-f]\|7[0-9a]\)/\\x\1/g
-	s/!/%/g
-    ')
-}
 
 ## output an HTTP Authorization header (Basic)
 ## basic_auth <user> <password>
@@ -65,8 +56,9 @@ latin1_utf8() {
 __getmsg_usage() {
 #<
     cat <<\EOH
-Usage:	getmsg [OPTION]... <HOST> <url-template> [<message>]...
-	getmsg [OPTION]... -t <url-template> <host> [<message>]...
+Usage:	getmsg [OPTION]... <HOST> <part-url-template> [<message>]...
+	getmsg [OPTION]... -t <part-url-template> <host> [<message>]...
+	getmsg [OPTION]... <full-url-template> [<message>]...
 Send a message in a simple HTTP GET request.
 
   -t, --template=FORMAT  use this printf-style template to build the URL,
@@ -79,6 +71,9 @@ Send a message in a simple HTTP GET request.
   -U, --user=USER	 user for basic authorization
   -P, --password=PASS	 password for basic authorization
       --help		 show this help
+
+  <full-url-template>    http://[user[:password]@]host[:port]<partial-url-template>
+  <part-url-template>    e.g., /path/to/resource?query=string&message=%s
 EOH
 #>
 }
@@ -109,7 +104,7 @@ __getmsg() {
 	shift
     done
     if ? $# == 0; then echo "Missing hostname or IP" >&2; return 1; fi
-    IP="$1"; shift
+    __getmsg_parse "$1" || return 1; shift
     if empty "$TEMPLATE"; then
 	if ? $# == 0; then echo "Missing template" >&2; return 1; fi
 	TEMPLATE="$1"; shift
@@ -120,6 +115,31 @@ __getmsg() {
 	AUTH="$(basic_auth "$USERNAME" "$PASSWORD")"
     fi
     $SEND "$@"
+}
+## parse first argument: IP | full URL template
+__getmsg_parse() {
+    if url_parse "$1"; then
+	case $url_scheme in
+	    http) ;;
+	    *) echo "URL scheme '$url_scheme' is not supported" \
+		"(only 'http' is)" >&2; return 1 ;;
+	esac
+	if ! empty "$url_user"; then
+	    USERNAME=$(urldecode "$url_user")
+	fi
+	if ! empty "$url_auth"; then
+	    PASSWORD=$(urldecode "$url_auth")
+	fi
+	IP=$url_host
+	if ! empty "$url_port"; then
+	    PORT=$(urldecode "$url_port")
+	fi
+	TEMPLATE="${url_path:-/}${url_query:+?$url_query}"
+	return 0
+    else
+	IP="$1"
+	return 0
+    fi
 }
 __getmsg_simple() {
     ## If $1 is empty, it disappears completely in the output of "$@", which

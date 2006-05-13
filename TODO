@@ -10,6 +10,14 @@ Wichtig
 Demnächst anschauen
 ----------------------------------------------------------------------
 
+getmsg: Auch vereinfachten Aufruf mit vollständigen URLs erlauben (auch mit
+eingebettetem Username/Password)
+
+  http://foo.bar/baz?q=%s
+  http://foo.bar:port/baz?q=%s
+  http://user@foo.bar/baz?q=%s
+  http://user:pass@foo.bar/baz?q=%s
+
 Wizard/Oberfläche zur Erstellung einfacher Regeln (für Einsteiger)
 
 ----------------------------------------------------------------------

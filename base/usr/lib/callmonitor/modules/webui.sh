@@ -19,7 +19,7 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-require net
+require url
 
 WEBCM_DIR="/usr/www/html/cgi-bin"
 WEBCM="$WEBCM_DIR/webcm"

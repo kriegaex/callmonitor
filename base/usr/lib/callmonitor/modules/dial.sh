@@ -21,7 +21,7 @@
 ##
 
 require webui
-require net
+require url
 
 dial() {
     local number=$1 port=$2

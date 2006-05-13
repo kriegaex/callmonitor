@@ -194,3 +194,10 @@
 
 	* dial: Port wurde erst beim zweiten Aufruf richtig benutzt
 	(Reihenfolge der POST-Parameter ist wichtig)
+
+2006-05-13:
+
+	* getmsg: Versteht nun auch vollständige URLs:
+	getmsg [OPTION]... <full-url-template> [<message>]...
+	<full-url-template>    http://[user[:password]@]host[:port]<partial-url-template>
+	<part-url-template>    e.g., /path/to/resource?query=string&message=%s

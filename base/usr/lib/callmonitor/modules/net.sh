@@ -56,8 +56,8 @@ latin1_utf8() {
 __getmsg_usage() {
 #<
     cat <<\EOH
-Usage:	getmsg [OPTION]... <HOST> <part-url-template> [<message>]...
-	getmsg [OPTION]... -t <part-url-template> <host> [<message>]...
+Usage:	getmsg [OPTION]... <authority> <part-url-template> [<message>]...
+	getmsg [OPTION]... -t <part-url-template> <authority> [<message>]...
 	getmsg [OPTION]... <full-url-template> [<message>]...
 Send a message in a simple HTTP GET request.
 
@@ -72,8 +72,9 @@ Send a message in a simple HTTP GET request.
   -P, --password=PASS	 password for basic authorization
       --help		 show this help
 
-  <full-url-template>    http://[user[:password]@]host[:port]<partial-url-template>
+  <full-url-template>    http://<authority><partial-url-template>
   <part-url-template>    e.g., /path/to/resource?query=string&message=%s
+  <authority>            [user[:password]@]host[:port]
 EOH
 #>
 }
@@ -81,7 +82,7 @@ getmsg() {
     __getmsg __getmsg_simple "$@"
 }
 __getmsg() {
-    local - IP= URL= TEMPLATE= VIRTUAL= USERNAME= PASSWORD= AUTH= TEMP= SEND=
+    local - HOST= URL= TEMPLATE= VIRTUAL= USERNAME= PASSWORD= AUTH= TEMP= SEND=
     local DEFAULT=default_message PORT=80 TIMEOUT=3
     SEND="$1"; shift
     TEMP="$(getopt -n getmsg -o U:P:v:t:w:p:d: \
@@ -110,35 +111,40 @@ __getmsg() {
 	TEMPLATE="$1"; shift
     fi
     if ? $# == 0; then set -- "$(eval "$DEFAULT")"; fi
-    VIRTUAL="${VIRTUAL:-$IP}"
+    VIRTUAL="${VIRTUAL:-$HOST}"
     if ! empty "$USERNAME" || ! empty "$PASSWORD"; then
 	AUTH="$(basic_auth "$USERNAME" "$PASSWORD")"
     fi
     $SEND "$@"
 }
-## parse first argument: IP | full URL template
+## parse first argument: HOST | full URL template
 __getmsg_parse() {
     if url_parse "$1"; then
 	case $url_scheme in
-	    http) ;;
-	    *) echo "URL scheme '$url_scheme' is not supported" \
-		"(only 'http' is)" >&2; return 1 ;;
+	    http)
+		TEMPLATE="${url_path:-/}${url_query:+?$url_query}"
+		__msg_set_authority
+		return 0
+	    ;;
 	esac
-	if ! empty "$url_user"; then
-	    USERNAME=$(urldecode "$url_user")
-	fi
-	if ! empty "$url_auth"; then
-	    PASSWORD=$(urldecode "$url_auth")
-	fi
-	IP=$url_host
-	if ! empty "$url_port"; then
-	    PORT=$(urldecode "$url_port")
-	fi
-	TEMPLATE="${url_path:-/}${url_query:+?$url_query}"
+    fi
+    if url_parse_authority "$1"; then
+	__msg_set_authority
 	return 0
-    else
-	IP="$1"
-	return 0
+    fi
+    echo "Did not recognize URL or authority '$1'" >&2
+    return 1
+}
+__msg_set_authority() {
+    if ! empty "$url_user"; then
+	USERNAME=$(urldecode "$url_user")
+    fi
+    if ! empty "$url_auth"; then
+	PASSWORD=$(urldecode "$url_auth")
+    fi
+    HOST=$url_host
+    if ! empty "$url_port"; then
+	PORT=$(urldecode "$url_port")
     fi
 }
 __getmsg_simple() {
@@ -152,14 +158,14 @@ __getmsg_simple() {
 	echo "Host: $VIRTUAL$CR"
 	! empty "$AUTH" && echo "$AUTH"
 	echo "$CR"
-    } | __nc "$TIMEOUT" "$IP" "$PORT"
+    } | __nc "$TIMEOUT" "$HOST" "$PORT"
 }
 
 __rawmsg_usage() {
 #<
     cat <<\EOH
-Usage: rawmsg [OPTION]... <HOST> <template> [<param>]...
-       rawmsg [OPTION]... -t <template> <host> [<param>]...
+Usage: rawmsg [OPTION]... <host[:port]> <template> [<param>]...
+       rawmsg [OPTION]... -t <template> <host[:port]> [<param>]...
 Send a message over a plain TCP connection.
 
   -t, --template=FORMAT  use this printf-style template to build the message,
@@ -172,7 +178,7 @@ EOH
 #>
 }
 rawmsg() {
-    local - IP= TEMPLATE= TEMP= PORT=80 TIMEOUT=3 DEFAULT=default_raw
+    local - HOST= TEMPLATE= TEMP= PORT=80 TIMEOUT=3 DEFAULT=default_raw
     TEMP="$(getopt -n rawmsg -o t:w:p:d: \
 	-l port:,template:,timeout:,default:,help -- "$@")"
     if ? "$? != 0"; then return 1; fi
@@ -190,16 +196,18 @@ rawmsg() {
 	shift
     done
     if ? $# == 0; then echo "Missing hostname or IP" >&2; return 1; fi
-    IP="$1"; shift
+    if url_parse_authority "$1"; then
+	shift
+	__msg_set_authority
+    else
+	return 1
+    fi
     if empty "$TEMPLATE"; then
 	if ? $# == 0; then echo "Missing template" >&2; return 1; fi
 	TEMPLATE="$1"; shift
     fi
     if ? $# == 0; then set -- "$(eval "$DEFAULT")"; fi
-    ## If $1 is empty, it disappears completely in the output of "$@", which
-    ## shifts all messages to the left. This seems to be a bug in the busybox
-    ## version of ash (prior to v1.1.0). Other empty arguments work as expected.
-    printf "$TEMPLATE" "$@" | __nc "$TIMEOUT" "$IP" "$PORT"
+    printf "$TEMPLATE" "$@" | __nc "$TIMEOUT" "$HOST" "$PORT"
 }
 default_raw() {
     default_message

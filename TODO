@@ -10,13 +10,12 @@ Wichtig
 Demnächst anschauen
 ----------------------------------------------------------------------
 
-getmsg: Auch vereinfachten Aufruf mit vollständigen URLs erlauben (auch mit
-eingebettetem Username/Password)
+getmsg: Erweiterung des Host-Arguments auf URL-authority-Teil?
 
-  http://foo.bar/baz?q=%s
-  http://foo.bar:port/baz?q=%s
-  http://user@foo.bar/baz?q=%s
-  http://user:pass@foo.bar/baz?q=%s
+  foo.bar
+  foo.bar:port
+  user@foo.bar
+  user:pass@foo.bar
 
 Wizard/Oberfläche zur Erstellung einfacher Regeln (für Einsteiger)
 

@@ -198,6 +198,15 @@
 2006-05-13:
 
 	* getmsg: Versteht nun auch vollständige URLs:
-	getmsg [OPTION]... <full-url-template> [<message>]...
-	<full-url-template>    http://[user[:password]@]host[:port]<partial-url-template>
-	<part-url-template>    e.g., /path/to/resource?query=string&message=%s
+
+	    getmsg [OPTION]... <full-url-template> [<message>]...
+	    <full-url-template>    http://<authority><partial-url-template>
+	    <part-url-template>    e.g., /path/to/resource?query=string&message=%s
+	    <authority>            [user[:password]@]host[:port]
+
+	Bei der herkömmlichen Aufrufart können in ähnlicher Weise Port,
+	Benutzer und Passwort in einem Argument angegeben werden. Diese
+	Angaben überschreiben eventuell vorhandene Optionen (--port etc.).
+
+	    getmsg [OPTION]... <authority> <part-url-template> [<message>]...
+	    getmsg [OPTION]... -t <part-url-template> <authority> [<message>]...

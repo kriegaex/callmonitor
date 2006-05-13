@@ -43,8 +43,7 @@ url_parse() {
     local rest hier_part authority_path authority userinfo host_port
 
     ## output variables
-    unset url_scheme url_user url_auth url_host url_port
-    unset url_path url_query url_fragment
+    unset url_scheme url_path url_query url_fragment
     case $1 in
 	*:*)
 	    url_scheme=${1%%:*} rest=${1#*:}
@@ -55,6 +54,7 @@ url_parse() {
 		*\?*) url_query=${rest#*\?} rest=${rest%%\?*} ;;
 	    esac
 	    hier_part=$rest
+	    authority=
 	    case $hier_part in
 		//*)
 		    authority_path=${hier_part#//}
@@ -66,31 +66,37 @@ url_parse() {
 		;;
 		*) url_path=$hier_part ;;
 	    esac
-	    case $authority in
-		*@*) userinfo=${authority%%@*} ;;
-	    esac
-	    host_port=${authority#*@}
-	    case $host_port in
-		*:*) url_host=${host_port%%:*} url_port=${host_port#*:} ;;
-		*) url_host=${host_port} url_port= ;;
-	    esac
-	    case $userinfo in
-		"") ;;
-		*:*) url_user=${userinfo%%:*} url_auth=${userinfo#*:} ;;
-		*) url_user=${userinfo%%:*} ;;
-	    esac
+	    url_parse_authority "$authority" || return 1
 	    
 ##	    echo url_scheme=$url_scheme
-##	    echo url_user=$url_user
-##	    echo url_auth=$url_auth
-##	    echo url_host=$url_host
-##	    echo url_port=$url_port
 ##	    echo url_path=$url_path
 ##	    echo url_query=$url_query
 ##	    echo url_fragment=$url_fragment
-
 	    return 0
 	;;
 	*) return 1 ;;
     esac
+}
+url_parse_authority() {
+    local authority=$1 userinfo host_port
+    unset url_user url_auth url_host url_port
+    case $authority in
+	*@*) userinfo=${authority%%@*} ;;
+    esac
+    host_port=${authority#*@}
+    case $host_port in
+	*:*) url_host=${host_port%%:*} url_port=${host_port#*:} ;;
+	*) url_host=${host_port} url_port= ;;
+    esac
+    case $userinfo in
+	"") ;;
+	*:*) url_user=${userinfo%%:*} url_auth=${userinfo#*:} ;;
+	*) url_user=${userinfo%%:*} ;;
+    esac
+
+##    echo url_user=$url_user
+##    echo url_auth=$url_auth
+##    echo url_host=$url_host
+##    echo url_port=$url_port
+    return 0
 }

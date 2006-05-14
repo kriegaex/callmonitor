@@ -10,13 +10,6 @@ Wichtig
 Demnächst anschauen
 ----------------------------------------------------------------------
 
-getmsg: Erweiterung des Host-Arguments auf URL-authority-Teil?
-
-  foo.bar
-  foo.bar:port
-  user@foo.bar
-  user:pass@foo.bar
-
 Wizard/Oberfläche zur Erstellung einfacher Regeln (für Einsteiger)
 
 ----------------------------------------------------------------------
@@ -46,4 +39,3 @@ Betrieb ohne Mod vorbereiten (zum Nachladen auf unveränderte Firmware)
     Systemabhängigkeiten wieder strenger separieren
 
     reload: modreg.sh
-

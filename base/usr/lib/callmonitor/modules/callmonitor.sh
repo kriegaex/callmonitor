@@ -90,7 +90,8 @@ __process_rule() {
     fi
 
     ## execute listener
-    __debug_rule "SUCCEEDED: executing '$listener'"
+    __debug_rule "SUCCEEDED"
+    __info_rule "ACTION: '$listener'"
     set --
     eval "$listener"
     local status=$?
@@ -102,6 +103,9 @@ __process_rule() {
 }
 __debug_rule() {
     __debug "[$INSTANCE:$RULE]" "$@"
+}
+__info_rule() {
+    __info "[$INSTANCE:$RULE]" "$@"
 }
 
 ## match a single pattern from a rule

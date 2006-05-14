@@ -210,3 +210,7 @@
 
 	    getmsg [OPTION]... <authority> <part-url-template> [<message>]...
 	    getmsg [OPTION]... -t <part-url-template> <authority> [<message>]...
+
+2006-05-14:
+
+	callmonitor-1.2 veröffentlicht

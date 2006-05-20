@@ -53,6 +53,15 @@ if has_package syslogd; then
     SYSLOG="<a href='pkgconf.cgi?pkg=syslogd'>$SYSLOG</a>"
 fi
 
+CALLMONITOR_VERSION="$(cat /mod/etc/default.callmonitor/.version)"
+
+## cat << EOF
+## <p style="text-align: right;">
+## <a href="$CALLMONITOR_FORUM_URL">Forum</a>, 
+## <a href="$CALLMONITOR_DOC_URL">$(lang de:"Hilfe" en:"Help")</a>
+## </p>
+## EOF
+
 sec_begin '$(lang de:"Starttyp" en:"Startup type")'
 
 cat << EOF
@@ -75,9 +84,12 @@ EOF
 sec_end
 sec_begin '$(lang de:"Status" en:"Status")'
 
+cat << EOF
+<ul>
+    <li>Version: $CALLMONITOR_VERSION</li>
+EOF
 if ! _j_is_up; then
     cat << EOF
-<ul>
     <li><strong style="color: red">$(lang 
 	de:"Die JFritz-Schnittstelle (Port 1012) ist nicht aktiv."
 	en:"The JFritz interface (port 1012) is not active."
@@ -89,20 +101,20 @@ if ! _j_is_up; then
 	de:"Einschalten" en:"Enable"
     )</a>]
     </li>
-</ul>
 EOF
 else
     cat << EOF
-<ul>
     <li>$(lang
 	de:"Die JFritz-Schnittstelle (Port 1012) ist aktiviert."
 	en:"The JFritz interface (port 1012) is active."
     ) [<a href="extras.cgi/callmonitor/exec?jfritz=off">$(lang
 	de:"Ausschalten" en:"Disable"
     )</a>]
-</ul>
 EOF
 fi
+cat << EOF
+</ul>
+EOF
 
 sec_end
 sec_begin '$(lang de:"Aktionen bei Anruf" en:"Actions upon calls")'

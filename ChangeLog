@@ -214,3 +214,8 @@
 2006-05-14:
 
 	callmonitor-1.2 veröffentlicht
+
+2006-05-25:
+
+	* messages.sh: XBOX_CAPTION und DREAM_CAPTION vernünftig kodieren (URL
+	+ printf)

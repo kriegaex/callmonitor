@@ -29,6 +29,15 @@ urlencode() {
 	s/!/%/g
     ')
 }
+## URL encoding + printf encoding ("%" -> "%%")
+urlprintfencode() {
+    echo -e $(echo -n "$*" |
+    hexdump -v -e '/1 "!%02x"' |
+    sed '
+	s/!\(2[1ade]\|3[0-9]\|4[1-9a-f]\|5[0-9af]\|6[1-9a-f]\|7[0-9a]\)/\\x\1/g
+	s/!/%%/g
+    ')
+}
 
 ## URL decoding
 urldecode() {

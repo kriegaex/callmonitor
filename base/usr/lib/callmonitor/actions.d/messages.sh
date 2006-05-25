@@ -58,8 +58,8 @@ default_dbox() {
     default_message | latin1_utf8 | sed -e 's/,[[:space:]]\+/\n/g'
 }
 dreammessage() {
-    getmsg -t "/cgi-bin/xmessage?timeout=${DREAM_TIMEOUT:-10}&caption=${DREAM_CAPTION:-$(lang
-    de:"Telefonanruf" en:"Phone%20call")}&charset=latin1&icon=${DREAM_ICON:-1}&body=%s" -d default_dreammessage "$@"
+    getmsg -t "/cgi-bin/xmessage?timeout=${DREAM_TIMEOUT:-10}&caption=$(urlprintfencode "${DREAM_CAPTION:-$(lang
+    de:"Telefonanruf" en:"Phone call")}")&charset=latin1&icon=${DREAM_ICON:-1}&body=%s" -d default_dreammessage "$@"
 }
 default_dreammessage() { default_message; }
 
@@ -82,7 +82,7 @@ default_vdr() {
 }
 
 xboxmessage() {
-    getmsg -t "/xbmcCmds/xbmcHttp?command=ExecBuiltIn&parameter=XBMC.Notification(${XBOX_CAPTION:-$(lang de:"Telefonanruf" en:"Phone%20call")},%s)" -d default_xboxmessage "$@"
+    getmsg -t "/xbmcCmds/xbmcHttp?command=ExecBuiltIn&parameter=XBMC.Notification($(urlprintfencode "${XBOX_CAPTION:-$(lang de:"Telefonanruf" en:"Phone call")}"),%s)" -d default_xboxmessage "$@"
 }
 __xboxmessage() {
     default_xboxmessage | tr "," ";"

@@ -147,11 +147,11 @@ __match() {
 }
 
 __match_event() {
-    local event=$1 spec=$2 dir= type= - RESULT=1
+    local event=$1 spec=$2 dir= type= - RESULT=1 ifs="$IFS" IFS
     set -f
     IFS=,
     for pattern in $spec; do
-	IFS=" "
+	IFS=$ifs
 	case $pattern in
 	    ""|*:*:*)
 		;;

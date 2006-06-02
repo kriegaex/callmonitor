@@ -219,3 +219,8 @@
 
 	* messages.sh: XBOX_CAPTION und DREAM_CAPTION vernünftig kodieren (URL
 	+ printf)
+
+2006-06-02:
+
+	* callmonitor.sh: for_leases funktionierte nicht, weil IFS einen
+	falschen Wert hatte (Dank an SeeDyX)

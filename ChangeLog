@@ -224,3 +224,7 @@
 
 	* callmonitor.sh: for_leases funktionierte nicht, weil IFS einen
 	falschen Wert hatte (Dank an SeeDyX)
+
+2006-06-03:
+
+	callmonitor-1.3 veröffentlicht

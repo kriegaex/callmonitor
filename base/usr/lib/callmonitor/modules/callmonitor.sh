@@ -54,11 +54,12 @@ __incoming_call() {
     fi
     __info "[$INSTANCE] EVENT=$EVENT SOURCE='$SOURCE' DEST='$DEST'" \
 	"SOURCE_NAME='$SOURCE_NAME' DEST_NAME='$DEST_NAME'" \
-	"ID=$ID EXT=$EXT DURATION=$DURATION TIMESTAMP='$TIMESTAMP'" 
+	"ID=$ID EXT=$EXT DURATION=$DURATION TIMESTAMP='$TIMESTAMP'" \
+	"PROVIDER=$PROVIDER"
 
     ## make call information available to listeners
     export SOURCE DEST SOURCE_NAME DEST_NAME
-    export EVENT ID EXT DURATION TIMESTAMP
+    export EVENT ID EXT DURATION TIMESTAMP PROVIDER
 
     local event_spec source_pattern dest_pattern listener rule=0
     while read -r event_spec source_pattern dest_pattern listener

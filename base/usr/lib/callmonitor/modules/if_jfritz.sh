@@ -24,13 +24,13 @@ require if_jfritz_status
 
 ## analyze call information
 __read() {
-    local timestamp event id ext source dest remote duration
+    local timestamp event id ext source dest remote duration provider
     while _j_parse; do
 
 	## complete information
 	case $event in
-	    CONNECT)	_j_load source dest ;;
-	    DISCONNECT)	_j_load source dest ext ;;
+	    CONNECT)	_j_load source dest provider ;;
+	    DISCONNECT)	_j_load source dest provider ext ;;
 	esac
 
 	local state output
@@ -39,12 +39,12 @@ __read() {
 	
 	case $state in
 	    disconnected)
-		_j_remove state source dest ext
+		_j_remove state source dest provider ext
 		;;
 	    *)
 		case $event in
-		    RING) _j_store source dest ;;
-		    CALL|CONNECT)   _j_store source dest ext ;;
+		    RING) _j_store source dest provider ;;
+		    CALL|CONNECT)   _j_store source dest provider ext ;;
 		esac
 		_j_store state
 		;;
@@ -114,18 +114,18 @@ _j_transition() {
 
 _j_parse() {
     local _1 _2 _3 _4 empty DEBUG
-    IFS=';' read -r timestamp event _1 _2 _3 _4 empty || return 1
+    IFS=";" read -r timestamp event _1 _2 _3 _4 _5 empty || return 1
     id=$_1
     DEBUG="timestamp=$timestamp event=$event id=$id"
-    unset ext source dest remote duration
+    unset ext source dest remote duration provider
     case $event in
 	CALL)
-	    ext=$_2 source=$_3 dest=$_4
-	    DEBUG="$DEBUG ext=$ext source=$source dest=$dest"
+	    ext=$_2 source=$_3 dest=$_4 provider=$_5
+	    DEBUG="$DEBUG ext=$ext source=$source dest=$dest provider=$provider"
 	;;
 	RING)
-	    source=$_2 dest=$_3
-	    DEBUG="$DEBUG source=$source dest=$dest"
+	    source=$_2 dest=$_3 provider=$_4
+	    DEBUG="$DEBUG source=$source dest=$dest provider=$provider"
 	;;
 	CONNECT)
 	    ext=$_2 remote=$_3
@@ -175,6 +175,7 @@ _j_output() {
     local output="$1"
     local ID=$id SOURCE=$source DEST=$dest EXT=$ext DURATION=$duration
     local TIMESTAMP=$timestamp EVENT= SOURCE_OPTIONS= DEST_OPTIONS=
+    local PROVIDER=$provider
 
     case $output in
 	in:*)
@@ -190,7 +191,7 @@ _j_output() {
 	;;
     esac
     __debug '>>>' "$* ID=$ID TIMESTAMP=$TIMESTAMP SOURCE=$SOURCE DEST=$DEST" \
-	"EXT=$EXT DURATION=$DURATION"
+	"EXT=$EXT DURATION=$DURATION PROVIDER=$PROVIDER"
 
     if ! empty "$EVENT"; then
 	incoming_call

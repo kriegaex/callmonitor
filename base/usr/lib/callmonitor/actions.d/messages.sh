@@ -37,12 +37,11 @@ require message
 ## get matching IPs from multid.leases and execute a command for each of them
 ## example: for_leases 192.168.10. dboxpopup "Ring!"
 for_leases() {
-    local IPS="$(fgrep -i "$1" /var/flash/multid.leases | awk '{ print $3 }')"
-    local COMMAND="$2" IP=
+    local pattern=$1 command=$2 lease mac ip rest
     shift 2
-    for IP in $IPS; do
-	"$COMMAND" "$IP" "$@" &
-    done
+    while read -r lease mac ip rest; do
+	case $ip in *$pattern*) "$command" "$ip" "$@" & ;; esac
+    done < /var/flash/multid.leases
 }
 
 ## simple *box listeners

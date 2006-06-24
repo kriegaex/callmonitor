@@ -228,3 +228,10 @@
 2006-06-03:
 
 	callmonitor-1.3 veröffentlicht
+
+2006-06-24:
+
+	* reverse.sh: Rückwärtssuche alternativ bei wer-ist-dran.de (auf
+	Konfigurationsseite auswählbar)
+	* reverse.sh: Bei Verbindungsproblemen wurde fälschlicherweise das
+	leere Ergebnis gecachet (Dank an jesus.christ)

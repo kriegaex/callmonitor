@@ -29,15 +29,15 @@ case $EXEC_JFRITZ in
     on)
 	_j_enable
 	echo "$(lang 
-	    de:"JFritz-Schnittstelle eingeschaltet."
-	    en:"JFritz interface enabled."
+	    de:"CallMonitor-Schnittstelle eingeschaltet."
+	    en:"CallMonitor interface enabled."
 	)"
 	;;
     off)
 	_j_disable
 	echo "$(lang 
-	    de:"JFritz-Schnittstelle ausgeschaltet."
-	    en:"JFritz interface disabled."
+	    de:"CallMonitor-Schnittstelle ausgeschaltet."
+	    en:"CallMonitor interface disabled."
 	)"
 	;;
 esac

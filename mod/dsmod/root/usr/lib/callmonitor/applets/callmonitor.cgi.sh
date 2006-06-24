@@ -48,6 +48,12 @@ case "$CALLMONITOR_REVERSE_CACHE" in
     persistent) pers_sel=$SELECTED ;;
 esac
 
+oert_sel='' werdran_sel=''
+case "$CALLMONITOR_REVERSE_PROVIDER" in
+    dasoertliche) oert_sel=$SELECTED ;;
+    weristdran) werdran_sel=$SELECTED ;;
+esac
+
 SYSLOG='$(lang de:"System-Log" en:"system log")'
 if has_package syslogd; then
     SYSLOG="<a href='pkgconf.cgi?pkg=syslogd'>$SYSLOG</a>"
@@ -91,8 +97,8 @@ EOF
 if ! _j_is_up; then
     cat << EOF
     <li><strong style="color: red">$(lang 
-	de:"Die JFritz-Schnittstelle (Port 1012) ist nicht aktiv."
-	en:"The JFritz interface (port 1012) is not active."
+	de:"Die CallMonitor-Schnittstelle (Port 1012) ist nicht aktiv."
+	en:"The CallMonitor interface (port 1012) is not active."
     )</strong>
     $(lang
 	de:"Sie wird zum Betrieb des Callmonitors benötigt."
@@ -105,8 +111,8 @@ EOF
 else
     cat << EOF
     <li>$(lang
-	de:"Die JFritz-Schnittstelle (Port 1012) ist aktiviert."
-	en:"The JFritz interface (port 1012) is active."
+	de:"Die CallMonitor-Schnittstelle (Port 1012) ist aktiviert."
+	en:"The CallMonitor interface (port 1012) is active."
     ) [<a href="extras.cgi/callmonitor/exec?jfritz=off">$(lang
 	de:"Ausschalten" en:"Disable"
     )</a>]
@@ -142,8 +148,13 @@ cat << EOF
 	de:"Rückwärtssuche durchführen"
 	en:"Perform reverse lookup"
     )</label>
-    ($(lang de:"bei" en:"at")
-    <a href="http://www.dasoertliche.de/">DasÖrtliche</a>)
+    <label for="provider">$(lang de:"bei" en:"at")</label>
+    <select name="reverse_provider" id="provider">
+	<option title="www.dasoertliche.de"
+	    value="dasoertliche"$oert_sel>DasÖrtliche</option>
+	<option title="wer-ist-dran.de"
+	    value="weristdran"$werdran_sel>Wer ist dran? (ABIS)</option>
+    </select>
 </p>
 <p>
     <label for="cache">$(lang

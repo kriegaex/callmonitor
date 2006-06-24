@@ -22,31 +22,7 @@
 require net
 require lock
 require util
-
-## resolve numbers to names and addresses (www.dasoertliche.de); the number is
-## used as given (should be normalized beforehand); returns 1 if no lookup
-## performed (no need to cache)
-reverse_lookup() {
-    local NUMBER="$1"
-    case "$NUMBER" in
-	00*|[^0]*|*[^0-9]*) return 1;
-    esac
-    getmsg -w 5 www.dasoertliche.de "$NUMBER" \
-    -t '/DB4Web/es/oetb2suche/home.htm?main=Antwort&s=2&SKN=2&kw_invers=%s' |
-    sed -e '
-	/^[[:space:]]*<td[^>]*><a[[:space:]]\+class="\(blb\|bigblunderrd\)".*<\/td>[[:space:]]*$/!d
-	\#<br># s#[[:space:]]*$#)#
-	s#<br># (#
-	s#<br>#, #g
-	s#<[^>]*># #g
-	s#[[:space:]]\+# #g
-	s#^ ##
-	s# \([,)]\)#\1#g
-	s#\([(]\) #\1#g
-	s# $##
-	q # first entry only
-    '
-}
+require reverse
 
 normalize_address() {
     local NUMBER="$1"

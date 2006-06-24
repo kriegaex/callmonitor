@@ -53,6 +53,30 @@ latin1_utf8() {
     while IFS= read -r line; do echo -ne "$line"; done
 }
 
+## convert latin1 to utf8
+utf8_latin1() {
+    hexdump -v -e '100/1 " %02x" "\n"' |
+    sed -e '
+	s/ c2 \([89ab]\)/\1/g
+	s/ c3 8/c/g
+	s/ c3 9/d/g
+	s/ c3 a/e/g
+	s/ c3 b/f/g
+	: multi
+	s/ [cd]. ../3f/g
+	s/ e. .. ../3f/g
+	s/ f\([0-7].\|[89ab]. ..\|[cd]. .. ..\) .. .. ../3f/g
+	/ [c-f]/ {
+	    N
+	    s/\n//
+	    b multi
+	}
+	s/ //g
+	s/\(..\)/\\x\1/g
+    ' |
+    while IFS= read -r line; do echo -ne "$line"; done
+}
+
 __getmsg_usage() {
 #<
     cat <<\EOH

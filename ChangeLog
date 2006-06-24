@@ -231,7 +231,11 @@
 
 2006-06-24:
 
-	* reverse.sh: Rückwärtssuche alternativ bei wer-ist-dran.de (auf
-	Konfigurationsseite auswählbar)
+	* reverse.sh: Rückwärtssuche alternativ bei wer-ist-dran.de oder
+	inverssuche.de (auf Konfigurationsseite auswählbar); bitte testen, ob
+	es bei irgendwelchen Nummern Fehler bei der Auflösung oder in der
+	Darstellung gibt!
 	* reverse.sh: Bei Verbindungsproblemen wurde fälschlicherweise das
 	leere Ergebnis gecachet (Dank an jesus.christ)
+
+	callmonitor-1.4 veröffentlicht

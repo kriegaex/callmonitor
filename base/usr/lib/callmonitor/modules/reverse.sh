@@ -31,6 +31,7 @@ reverse_lookup() {
     esac
     case $CALLMONITOR_REVERSE_PROVIDER in
 	weristdran) _reverse_weristdran "$NUMBER" ;;
+	inverssuche) _reverse_inverssuche "$NUMBER" ;;
 	dasoertliche|*) _reverse_dasoertliche "$NUMBER" ;;
     esac
 }
@@ -83,6 +84,40 @@ EOF
 		    p
 		    q
 		}
+	    }
+	'
+    } 4>&1 >&9)
+    return $(( exit == 141 ? 0 : exit ))
+} 9>&1
+
+_reverse_inverssuche() {
+    local number=$1 exit=0
+    local data="__EVENTTARGET=cmdSearch&txtNumber=$number"
+    eval $({
+	{
+	    nc www.inverssuche.de 80 <<EOF
+POST /teleauskunft/results_inverse.aspx HTTP/1.0
+Host: www.inverssuche.de$CR
+Content-Type: application/x-www-form-urlencoded$CR
+Content-Length: ${#data}$CR
+$CR
+$data
+EOF
+	    echo exit=$? >&4
+	} | sed -n -e '
+	    \#<div class="eintrag_name"#{
+		: again
+		N
+		s/\n[^\n]*javascript:toggle[^\n]*$//
+		\#</div>[[:space:]]*</div>[[:space:]]*$#!b again
+		s/&nbsp;/ /g
+		s/[[:space:]]*<div[^>]*>[[:space:]]*/, /g
+		s/[[:space:]]*<[^>]*>[[:space:]]*/ /g
+		s/[[:space:]]*,\([[:space:]]*,\)*[[:space:]]*/, /g
+		s/^[[:space:]]*,[[:space:]]*//
+		s/[[:space:]]*,[[:space:]]*$//
+		p
+		q
 	    }
 	'
     } 4>&1 >&9)

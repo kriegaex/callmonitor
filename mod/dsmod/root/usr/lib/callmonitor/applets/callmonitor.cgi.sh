@@ -48,10 +48,11 @@ case "$CALLMONITOR_REVERSE_CACHE" in
     persistent) pers_sel=$SELECTED ;;
 esac
 
-oert_sel='' werdran_sel=''
+oert_sel='' werdran_sel='' invers_sel=''
 case "$CALLMONITOR_REVERSE_PROVIDER" in
     dasoertliche) oert_sel=$SELECTED ;;
     weristdran) werdran_sel=$SELECTED ;;
+    inverssuche) invers_sel=$SELECTED ;;
 esac
 
 SYSLOG='$(lang de:"System-Log" en:"system log")'
@@ -154,6 +155,8 @@ cat << EOF
 	    value="dasoertliche"$oert_sel>Das÷rtliche</option>
 	<option title="wer-ist-dran.de"
 	    value="weristdran"$werdran_sel>Wer ist dran? (ABIS)</option>
+	<option title="www.inverssuche.de"
+	    value="inverssuche"$invers_sel>inverssuche.de</option>
     </select>
 </p>
 <p>

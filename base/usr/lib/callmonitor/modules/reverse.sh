@@ -120,7 +120,7 @@ EOF
 		p
 		q
 	    }
-	'
+	' | utf8_latin1
     } 4>&1 >&9)
     return $(( exit == 141 ? 0 : exit ))
 } 9>&1

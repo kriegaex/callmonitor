@@ -106,6 +106,7 @@ EOF
 	    echo exit=$? >&4
 	} | sed -n -e '
 	    \#<div class="eintrag_name"#{
+		/\([Zz]u viele\|keine\).*gefunden/q
 		: again
 		N
 		s/\n[^\n]*javascript:toggle[^\n]*$//

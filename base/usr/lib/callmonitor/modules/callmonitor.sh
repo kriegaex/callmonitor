@@ -47,9 +47,23 @@ export INSTANCE=0
 
 __incoming_call() {
     if ! empty "$SOURCE"; then
+#	case $EVENT in out:*)
+#	    case $PROVIDER in SIP*)
+#		SOURCE_NAME="$(_pb_main $SOURCE_OPTIONS -- get "$PROVIDER")" ;;
+#		*) false ;;
+#	    esac ;;
+#	    *) false ;;
+#	esac ||
 	SOURCE_NAME="$(_pb_main $SOURCE_OPTIONS -- get "$SOURCE")"
     fi
     if ! empty "$DEST"; then
+#	case $EVENT in in:*)
+#	    case $PROVIDER in SIP*)
+#		DEST_NAME="$(_pb_main $DEST_OPTIONS -- get "$PROVIDER")" ;;
+#		*) false ;;
+#	    esac ;;
+#	    *) false ;;
+#	esac ||
 	DEST_NAME="$(_pb_main $DEST_OPTIONS -- get "$DEST")"
     fi
     __info "[$INSTANCE] EVENT=$EVENT SOURCE='$SOURCE' DEST='$DEST'" \

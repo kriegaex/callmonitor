@@ -111,7 +111,7 @@ _pb_get() {
 ## for performance, _pb_get_local returns its result in $__
 _pb_get_local() {
     local NUMBER="$1" NUMBER_RE
-    NUMBER_RE="$(echo "$NUMBER" | sed_re_escape)"
+    NUMBER_RE="$(sed_re_escape "$NUMBER")"
     NAME="$(sed -ne "/^${CALLMONITOR_PREFIX_RE}${NUMBER_RE}${CALLMONITOR_SEPARATOR_RE}/{
 	s/^${CALLMONITOR_PREFIX_RE}${NUMBER}${CALLMONITOR_SEPARATOR_RE}/:/p;q}" \
 	"$CALLMONITOR_TRANSIENT" "$CALLMONITOR_PERSISTENT" 2> /dev/null)"

@@ -85,6 +85,7 @@ if $_pb_PERSISTENT; then
 else
     _pb_PHONEBOOK="$CALLMONITOR_TRANSIENT"
 fi
+touch "$CALLMONITOR_TRANSIENT"
 
 _pb_get() {
     local NUMBER="$1" NUMBER_NORM NAME exitval
@@ -110,13 +111,18 @@ _pb_get() {
 
 ## for performance, _pb_get_local returns its result in $__
 _pb_get_local() {
-    local NUMBER="$1" NUMBER_RE
-    NUMBER_RE="$(sed_re_escape "$NUMBER")"
-    NAME="$(sed -ne "/^${CALLMONITOR_PREFIX_RE}${NUMBER_RE}${CALLMONITOR_SEPARATOR_RE}/{
-	s/^${CALLMONITOR_PREFIX_RE}${NUMBER}${CALLMONITOR_SEPARATOR_RE}/:/p;q}" \
-	"$CALLMONITOR_TRANSIENT" "$CALLMONITOR_PERSISTENT" 2> /dev/null)"
-    if ! empty "$NAME"; then
-	NAME="${NAME#:}"
+    local NUMBER="$1" NUMBER_RE NAME num nam
+    unset NAME
+    while read -r num nam; do
+	case $num in "$NUMBER") NAME=$nam; break ;; esac
+    done < "$CALLMONITOR_TRANSIENT"
+    if ! ? "${NAME+1}"; then
+	while read -r num nam; do
+	    case $num in "$NUMBER") NAME=$nam; break ;; esac
+	done < "$CALLMONITOR_PERSISTENT"
+    fi
+    if ? "${NAME+1}"; then
+	#NAME="${NAME#:}"
 	_pb_debug "phone book contains {$NUMBER -> $NAME}"
 	__=$NAME
 	return 0
@@ -147,13 +153,12 @@ _pb_put_or_remove() {
     if lock "$_pb_PHONEBOOK"; then
 	local TMPFILE="$CALLMONITOR_TMPDIR/.callmonitor.tmp"
 	{ 
-	    sed -e "/^${CALLMONITOR_PREFIX_RE}${NUMBER_RE}${CALLMONITOR_SEPARATOR_RE}/d" "$_pb_PHONEBOOK" 2> /dev/null
+	    sed -e "/^${NUMBER_RE}[[:space:]]/d" "$_pb_PHONEBOOK" 2> /dev/null
 	    case $MODE in put)
-		echo "${CALLMONITOR_PREFIX}${NUMBER}${CALLMONITOR_SEPARATOR}${NAME}" ;;
+		echo "${NUMBER}	${NAME}" ;;
 	    esac
 	} > "$TMPFILE"
-	cat "$TMPFILE" > "$_pb_PHONEBOOK"
-	rm "$TMPFILE"
+	mv "$TMPFILE" "$_pb_PHONEBOOK"
 	unlock "$_pb_PHONEBOOK"
     else
 	_pb_debug "locking $_pb_PHONEBOOK failed"

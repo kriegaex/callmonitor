@@ -37,7 +37,7 @@ END
 
 require phonebook
 
-## format of phone book: ${CALLMONITOR_PREFIX}${NUMBER}${CALLMONITOR_SEPARATOR}${NAME}
+## format of phone book: ${NUMBER}<whitespace>${NAME}
 
 ## parse options
 _pb_DEBUG=false

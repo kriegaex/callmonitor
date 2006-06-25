@@ -29,85 +29,85 @@ reverse_lookup() {
     case "$NUMBER" in
 	00*|[^0]*|*[^0-9]*) return 1;
     esac
+    local prov
     case $CALLMONITOR_REVERSE_PROVIDER in
-	weristdran) _reverse_weristdran "$NUMBER" ;;
-	inverssuche) _reverse_inverssuche "$NUMBER" ;;
-	dasoertliche|*) _reverse_dasoertliche "$NUMBER" ;;
+	weristdran|inverssuche|dasoertliche) prov=$CALLMONITOR_REVERSE_PROVIDER ;;
+	*) prov=dasoertliche ;;
     esac
+    _reverse_lookup $prov "$NUMBER"
 }
 
-_reverse_dasoertliche() {
-    local number=$1 exit=0
+_reverse_lookup() {
+    local prov=$1 number=$2 exit=0
     eval $({
 	{ 
-	    getmsg -w 5 www.dasoertliche.de "$number" \
-	    -t '/DB4Web/es/oetb2suche/home.htm?main=Antwort&s=2&SKN=2&kw_invers=%s'
+	    _reverse_${prov}_request "$number"
 	    echo exit=$? >&4
-	} | sed -e '
-	    /^[[:space:]]*<td[^>]*><a[[:space:]]\+class="\(blb\|bigblunderrd\)".*<\/td>[[:space:]]*$/!d
-	    \#<br># s#[[:space:]]*$#)#
-	    s#<br># (#
-	    s#<br>#, #g
-	    s#<[^>]*># #g
-	    s#[[:space:]]\+# #g
-	    s#^ ##
-	    s# \([,)]\)#\1#g
-	    s#\([(]\) #\1#g
-	    s# $##
-	    q # first entry only
-	'
+	} | _reverse_${prov}_extract
     } 4>&1 >&9)
 ## 141: Broken pipe
     return $(( exit == 141 ? 0 : exit ))
 } 9>&1
 
-_reverse_weristdran() {
-    local number=$1 exit=0
-    local data="telnr=$number"
-    eval $({
-	{
-	    post_form "http://wer-ist-dran.de/index.php?g=a" "$data"
-	    echo exit=$? >&4
-	} | sed -n -e '
-	    \#Kein Eintrag gefunden#q
-	    \#<td class="a"#,\#</td>#{
-		/Tel\./{
-		    s/,\?[[:space:]]*Tel.[[:digit:][:space:]]*<.*$//
-		    s/^[[:space:]]*//
-		    p
-		    q
-		}
-	    }
-	'
-    } 4>&1 >&9)
-    return $(( exit == 141 ? 0 : exit ))
-} 9>&1
+_reverse_dasoertliche_request() {
+    getmsg -w 5 www.dasoertliche.de "$1" \
+	-t '/DB4Web/es/oetb2suche/home.htm?main=Antwort&s=2&SKN=2&kw_invers=%s'
+}
+_reverse_dasoertliche_extract() {
+    sed -e '
+	/^[[:space:]]*<td[^>]*><a[[:space:]]\+class="\(blb\|bigblunderrd\)".*<\/td>[[:space:]]*$/!d
+	\#<br># s#[[:space:]]*$#)#
+	s#<br># (#
+	s#<br>#, #g
+	s#<[^>]*># #g
+	s#[[:space:]]\+# #g
+	s#^ ##
+	s# \([,)]\)#\1#g
+	s#\([(]\) #\1#g
+	s# $##
+	q # first entry only
+    '
+}
 
-_reverse_inverssuche() {
-    local number=$1 exit=0
-    local data="__EVENTTARGET=cmdSearch&txtNumber=$number"
-    eval $({
-	{
-	    post_form http://www.inverssuche.de/teleauskunft/results_inverse.aspx \
-		"$data"
-	    echo exit=$? >&4
-	} | sed -n -e '
-	    \#<div class="eintrag_name"#{
-		/\([Zz]u viele\|keine\).*gefunden/q
-		: again
-		N
-		s/\n[^\n]*javascript:toggle[^\n]*$//
-		\#</div>[[:space:]]*</div>[[:space:]]*$#!b again
-		s/&nbsp;/ /g
-		s/[[:space:]]*<div[^>]*>[[:space:]]*/, /g
-		s/[[:space:]]*<[^>]*>[[:space:]]*/ /g
-		s/[[:space:]]*,\([[:space:]]*,\)*[[:space:]]*/, /g
-		s/^[[:space:]]*,[[:space:]]*//
-		s/[[:space:]]*,[[:space:]]*$//
+_reverse_weristdran_request() {
+    local data="telnr=$1"
+    post_form "http://wer-ist-dran.de/index.php?g=a" "$data"
+}
+_reverse_weristdran_extract() {
+    sed -n -e '
+	\#Kein Eintrag gefunden#q
+	\#<td class="a"#,\#</td>#{
+	    /Tel\./{
+		s/,\?[[:space:]]*Tel.[[:digit:][:space:]]*<.*$//
+		s/^[[:space:]]*//
 		p
 		q
 	    }
-	' | utf8_latin1
-    } 4>&1 >&9)
-    return $(( exit == 141 ? 0 : exit ))
-} 9>&1
+	}
+    '
+}
+
+_reverse_inverssuche_request() {
+    local data="__EVENTTARGET=cmdSearch&txtNumber=$1"
+    post_form http://www.inverssuche.de/teleauskunft/results_inverse.aspx \
+	"$data"
+}
+_reverse_inverssuche_extract() {
+    sed -n -e '
+	\#<div class="eintrag_name"#{
+	    /\([Zz]u viele\|keine\).*gefunden/q
+	    : again
+	    N
+	    s/\n[^\n]*javascript:toggle[^\n]*$//
+	    \#</div>[[:space:]]*</div>[[:space:]]*$#!b again
+	    s/&nbsp;/ /g
+	    s/[[:space:]]*<div[^>]*>[[:space:]]*/, /g
+	    s/[[:space:]]*<[^>]*>[[:space:]]*/ /g
+	    s/[[:space:]]*,\([[:space:]]*,\)*[[:space:]]*/, /g
+	    s/^[[:space:]]*,[[:space:]]*//
+	    s/[[:space:]]*,[[:space:]]*$//
+	    p
+	    q
+	}
+    ' | utf8_latin1
+}

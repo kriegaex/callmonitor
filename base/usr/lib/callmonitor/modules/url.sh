@@ -30,9 +30,14 @@ urlprintfencode() {
 }
 
 _urlencode() {
-    local replacement=$1
-    shift
-    echo -e $(echo -n "$*" |
+    local replacement=$1; shift
+    local txt="$*"
+    ## shortcut if there aren't any unsafe characters
+    case $txt in
+	*[!0-9A-Z_a-z!*.-]*) ;;
+	*) echo -n "$txt"; return ;;
+    esac
+    echo -e $(echo -n "$txt" |
     hexdump -v -e '/1 "!%02x"' |
     sed '
 	s/!\(2[1ade]\|3[0-9]\|4[1-9a-f]\|5[0-9af]\|6[1-9a-f]\|7[0-9a]\)/\\x\1/g

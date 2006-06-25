@@ -91,7 +91,8 @@ __shutdown() {
     __info "Exiting ..."
     for file in "$PIDFILE" /var/run/callmonitor/pid/*; do
 	[ ! -f "$file" ] && continue
-	PID="$(cat "$file")"
+	PID=
+	read PID < "$file"
 	if [ "$$" = "$PID" ]; then
 	    rm -f "$file"
 	    continue

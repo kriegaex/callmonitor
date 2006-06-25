@@ -162,7 +162,8 @@ __read_from_iface() {
 	    rm -f /var/run/callmonitor/pid/sleep
 	} | {
 	    nc 127.0.0.1 1012
-	    kill "$(cat /var/run/callmonitor/pid/sleep)" > /dev/null 2>&1
+	    read pid < /var/run/callmonitor/pid/sleep &&
+		kill "$pid" > /dev/null 2>&1
 	} | __read
     fi
 }

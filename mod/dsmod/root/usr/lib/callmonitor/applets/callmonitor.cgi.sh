@@ -60,7 +60,7 @@ if has_package syslogd; then
     SYSLOG="<a href='pkgconf.cgi?pkg=syslogd'>$SYSLOG</a>"
 fi
 
-CALLMONITOR_VERSION="$(cat /mod/etc/default.callmonitor/.version)"
+read CALLMONITOR_VERSION < /mod/etc/default.callmonitor/.version
 
 ## cat << EOF
 ## <p style="text-align: right;">

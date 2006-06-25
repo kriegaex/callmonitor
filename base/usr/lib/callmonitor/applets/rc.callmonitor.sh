@@ -82,7 +82,9 @@ restart() {
 }
 
 is_running() {
-    [ -e "$PIDFILE" ] && kill -0 $(cat "$PIDFILE") 2> /dev/null
+    local pid
+    [ -e "$PIDFILE" ] && read pid < "$PIDFILE" && 
+	kill -0 "$pid" 2> /dev/null
 }
 
 ## convert listeners from versions < 1.0
@@ -131,7 +133,8 @@ case "$1" in
 	    echo "$DAEMON is not running" >&2
 	    exit 1
 	fi
-	kill -USR1 "$(cat "$PIDFILE")" > /dev/null 2>&1
+	read pid < "$PIDFILE" &&
+	    kill -USR1 "$pid" > /dev/null 2>&1
 	;;
     *)
 	echo "Usage: $0 [load|unload|start|stop|restart|status|reload|try-start]" >&2

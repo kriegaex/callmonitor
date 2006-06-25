@@ -26,18 +26,6 @@ System zur Ersetzung von Konfigurationsstrings in Dateien
 
 Defaults/Interfaces in base-Zweig, überschreiben in conf.*
 
-Informationen aus Reverse Lookup besser zerlegen: Name, Adresse, formatierte
-Telefonummer, ...
-    -> braucht ein flexibleres Telefonbuch
-
 ar7cfgconv-"Parser" separieren
 
-Sobald Daniel das Framework fertig hat:
-- Schema für Listeners schreiben
-
 Betrieb ohne Mod vorbereiten (zum Nachladen auf unveränderte Firmware)
-    Mod-Busybox nachladen
-    Weitere "Binary"-Abhängigkeiten?
-    Systemabhängigkeiten wieder strenger separieren
-
-    reload: modreg.sh

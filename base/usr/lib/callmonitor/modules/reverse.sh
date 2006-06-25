@@ -23,7 +23,10 @@ require net
 
 ## resolve numbers to names and addresses; the number is
 ## used as given (should be normalized beforehand); returns 1 if no lookup
-## performed (no need to cache)
+## performed or if there were errors (no need to cache)
+##
+## The resulting name and address should be returned in Latin-1 encoding
+
 reverse_lookup() {
     local NUMBER="$1"
     case "$NUMBER" in
@@ -40,12 +43,10 @@ reverse_lookup() {
 _reverse_lookup() {
     local prov=$1 number=$2 exit=0
     eval $({
-	{ 
-	    _reverse_${prov}_request "$number"
-	    echo exit=$? >&4
-	} | _reverse_${prov}_extract
+	{ _reverse_${prov}_request "$number"; echo exit=$? >&4; } |
+	_reverse_${prov}_extract
     } 4>&1 >&9)
-## 141: Broken pipe
+## 141: nc: Broken pipe
     return $(( exit == 141 ? 0 : exit ))
 } 9>&1
 

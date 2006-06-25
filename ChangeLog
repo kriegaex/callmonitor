@@ -239,3 +239,12 @@
 	leere Ergebnis gecachet (Dank an jesus.christ)
 
 	callmonitor-1.4 veröffentlicht
+
+2006-06-25:
+
+	* callmonitor: Neues Feld PROVIDER (SIP0 etc. oder leer) wird
+	ausgewertet; wird zur Ermittlung eines passenden Namens für das lokale
+	Ende einer Verbindung benutzt. Gematcht wird (in den Listeners)
+	weiterhin die MSN des Accounts, nicht SIP0 etc. (Namen werden
+	gecachet; nach Änderungen der Einträge "username@registrar" im
+	Telefonbuch muss der Callmonitor neugestartet werden.

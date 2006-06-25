@@ -139,7 +139,7 @@ _pb_put_local() {
 }
 _pb_put_or_remove() {
     local NUMBER="$1" NAME="$2" NUMBER_RE
-    NUMBER_RE="$(echo "$NUMBER" | sed_re_escape)"
+    NUMBER_RE="$(sed_re_escape "$NUMBER")"
     case $MODE in 
 	remove)
 	    _pb_debug "removing $NUMBER from phone book $_pb_PHONEBOOK" ;;
@@ -169,7 +169,7 @@ _pb_put_or_remove() {
 }
 ## a value must always be a single line (we normalize whitespace as we go)
 _pb_norm_value() {
-    __=$(echo "$@" | sed -e '$!s/$/;/')
+    __=$(echo $(echo "$@" | sed -e '$!s/$/;/'))
 }
 
 _pb_init() {

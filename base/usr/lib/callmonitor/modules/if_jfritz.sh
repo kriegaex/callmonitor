@@ -21,6 +21,7 @@
 ##
 
 require if_jfritz_status
+require hash
 
 ## analyze call information
 __read() {
@@ -200,12 +201,13 @@ _j_output() {
 }
 
 ## store attributes per connection id
+new_hash _j_
 _j_store() {
-    for var; do eval "_j__${var}_${id}=\"\$${var}\""; done
+    for var; do eval "_j__put ${var}_${id} \"\$$var\""; done
 }
 _j_load() {
-    for var; do eval "${var}=\"\$_j__${var}_${id}\""; done
+    for var; do _j__get ${var}_${id} "$var"; done
 }
 _j_remove() {
-    for var; do eval "unset ${var} _j__${var}_${id}"; done
+    for var; do unset $var; _j__remove ${var}_${id}; done
 }

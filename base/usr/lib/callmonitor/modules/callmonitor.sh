@@ -42,28 +42,35 @@ incoming_call() { __incoming_call "$@"; }
 require callmonitor_config
 require if_jfritz
 require phonebook
+require hash
 
 export INSTANCE=0
 
+## provider cache
+new_hash _provider
+_provider_name() {
+    local provider=$1 name=
+    _provider_get "$provider" name
+    if empty "$name"; then
+	name="$(_pb_main --local -- get "$provider") "
+	_provider_put "$provider" "$name"
+    fi
+    echo "${name% }"
+}
+
 __incoming_call() {
     if ! empty "$SOURCE"; then
-#	case $EVENT in out:*)
-#	    case $PROVIDER in SIP*)
-#		SOURCE_NAME="$(_pb_main $SOURCE_OPTIONS -- get "$PROVIDER")" ;;
-#		*) false ;;
-#	    esac ;;
-#	    *) false ;;
-#	esac ||
+	case "$EVENT,$PROVIDER" in
+	    out:*,SIP*) SOURCE_NAME="$(_provider_name "$PROVIDER")" ;;
+	    *) false ;;
+	esac ||
 	SOURCE_NAME="$(_pb_main $SOURCE_OPTIONS -- get "$SOURCE")"
     fi
     if ! empty "$DEST"; then
-#	case $EVENT in in:*)
-#	    case $PROVIDER in SIP*)
-#		DEST_NAME="$(_pb_main $DEST_OPTIONS -- get "$PROVIDER")" ;;
-#		*) false ;;
-#	    esac ;;
-#	    *) false ;;
-#	esac ||
+	case "$EVENT,$PROVIDER" in 
+	    in:*,SIP*) DEST_NAME="$(_provider_name "$PROVIDER")" ;;
+	    *) false ;;
+	esac ||
 	DEST_NAME="$(_pb_main $DEST_OPTIONS -- get "$DEST")"
     fi
     __info "[$INSTANCE] EVENT=$EVENT SOURCE='$SOURCE' DEST='$DEST'" \

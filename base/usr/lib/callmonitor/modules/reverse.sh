@@ -66,14 +66,7 @@ _reverse_weristdran() {
     local data="telnr=$number"
     eval $({
 	{
-	    nc wer-ist-dran.de 80 <<EOF
-POST /index.php?g=a HTTP/1.0
-Host: wer-ist-dran.de$CR
-Content-Type: application/x-www-form-urlencoded$CR
-Content-Length: ${#data}$CR
-$CR
-$data
-EOF
+	    post_form "http://wer-ist-dran.de/index.php?g=a" "$data"
 	    echo exit=$? >&4
 	} | sed -n -e '
 	    \#Kein Eintrag gefunden#q
@@ -95,14 +88,8 @@ _reverse_inverssuche() {
     local data="__EVENTTARGET=cmdSearch&txtNumber=$number"
     eval $({
 	{
-	    nc www.inverssuche.de 80 <<EOF
-POST /teleauskunft/results_inverse.aspx HTTP/1.0
-Host: www.inverssuche.de$CR
-Content-Type: application/x-www-form-urlencoded$CR
-Content-Length: ${#data}$CR
-$CR
-$data
-EOF
+	    post_form http://www.inverssuche.de/teleauskunft/results_inverse.aspx \
+		"$data"
 	    echo exit=$? >&4
 	} | sed -n -e '
 	    \#<div class="eintrag_name"#{

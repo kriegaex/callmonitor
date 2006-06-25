@@ -236,3 +236,29 @@ rawmsg() {
 default_raw() {
     default_message
 }
+
+## no authentication support yet
+post_form() {
+    local url=$1 data=$2 
+    local url_scheme url_path url_query url_fragment
+    local url_user url_auth url_host url_port
+    if url_parse "$url"; then
+	case $url_scheme in
+	    http)
+		## good
+		;;
+	    *) echo "Only HTTP is supported" >&2; return 1 ;;
+	esac
+    else
+	echo "Could not parse URL '$url'" >&2
+	return 1
+    fi
+    local path="${url_path:-/}${url_query:+?$url_query}"
+    local content_type=application/x-www-form-urlencoded
+    echo "POST $path HTTP/1.0$CR
+Host: $url_host$CR
+Content-Type: $content_type$CR
+Content-Length: ${#data}$CR
+$CR
+$data" | nc "$url_host" "${url_port:-80}"
+}

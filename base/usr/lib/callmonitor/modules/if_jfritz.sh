@@ -147,7 +147,8 @@ _j_parse() {
 __read_from_iface() {
     let "_j_SLEEP = (_j_SLEEP < 1) ? 1 : _j_SLEEP"
     if ! _j_is_up; then
-	__info "Please use #96*5* to enable telefon's interface."
+	__info "Auto-dialing #96*5* to enable telefon's interface ..."
+	_j_enable
         __info "Trying again in $_j_SLEEP seconds ..."
 
 	sleep "$_j_SLEEP"

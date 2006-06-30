@@ -20,6 +20,7 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 require cgi
+require if_jfritz_status
 
 SELF=maint
 TITLE='$(lang de:"Callmonitor-Wartung" en:"Callmonitor maintenance")'
@@ -94,4 +95,32 @@ EOF
 cmd_button phonebook_tidy '$(lang de:"Aufräumen" en:"Tidy up")'
 cmd_button phonebook_init '$(lang de:"SIP-Update durchführen" en:"Perform SIP update")'
 sec_end
+
+sec_begin "$(lang de:"Schnittstellen" en:"Interfaces")"
+echo "<ul>"
+if ! _j_is_up; then
+    cat << EOF
+    <li><strong style="color: red">$(lang 
+	de:"Die CallMonitor-Schnittstelle (Port 1012) ist nicht aktiv."
+	en:"The CallMonitor interface (port 1012) is not active."
+    )</strong>
+    $(lang
+	de:"Sie wird zum Betrieb des Callmonitors benötigt und normalerweise
+	    automatisch aktiviert."
+	en:"It is required for Callmonitor's operation and is normally enabled
+	    automatically."
+    ) [<a href="exec?jfritz=on">$(lang de:"Einschalten" en:"Enable")</a>]
+    </li>
+EOF
+else
+    cat << EOF
+    <li>$(lang
+	de:"Die CallMonitor-Schnittstelle (Port 1012) ist aktiviert."
+	en:"The CallMonitor interface (port 1012) is active."
+    ) [<a href="exec?jfritz=off">$(lang de:"Ausschalten" en:"Disable")</a>]
+EOF
+fi
+echo "</ul>"
+sec_end
+
 cgi_end

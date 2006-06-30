@@ -257,3 +257,6 @@
 	Interface); Anzeigedauer über RELOOK_TIMEOUT. Es wird leider nur eine
 	kurze Zeile ohne Umlaute unterstützt. Vielen Dank an bolle fürs
 	Testen.
+
+	* if_jfritz.sh: CallMonitor-Schnittstelle wird nun automatisch
+	aktiviert.

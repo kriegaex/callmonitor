@@ -62,16 +62,11 @@ fi
 
 read CALLMONITOR_VERSION < /mod/etc/default.callmonitor/.version
 
-## cat << EOF
-## <p style="text-align: right;">
-## <a href="$CALLMONITOR_FORUM_URL">Forum</a>, 
-## <a href="$CALLMONITOR_DOC_URL">$(lang de:"Hilfe" en:"Help")</a>
-## </p>
-## EOF
-
 sec_begin '$(lang de:"Starttyp" en:"Startup type")'
 
 cat << EOF
+<div style="float: right;"><a href="$CALLMONITOR_FORUM_URL">Version
+    $CALLMONITOR_VERSION</a></div>
 <p>
     <input type="radio" name="enabled" value="yes"$auto_chk id="e1">
     <label for="e1">$(lang de:"Automatisch" en:"Automatic")</label>
@@ -89,14 +84,11 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin '$(lang de:"Status" en:"Status")'
 
+if ! _j_is_up; then
+sec_begin '$(lang de:"Status" en:"Status")'
 cat << EOF
 <ul>
-    <li>Version: $CALLMONITOR_VERSION</li>
-EOF
-if ! _j_is_up; then
-    cat << EOF
     <li><strong style="color: red">$(lang 
 	de:"Die CallMonitor-Schnittstelle (Port 1012) ist nicht aktiv."
 	en:"The CallMonitor interface (port 1012) is not active."
@@ -108,22 +100,11 @@ if ! _j_is_up; then
 	de:"Einschalten" en:"Enable"
     )</a>]
     </li>
-EOF
-else
-    cat << EOF
-    <li>$(lang
-	de:"Die CallMonitor-Schnittstelle (Port 1012) ist aktiviert."
-	en:"The CallMonitor interface (port 1012) is active."
-    ) [<a href="extras.cgi/callmonitor/exec?jfritz=off">$(lang
-	de:"Ausschalten" en:"Disable"
-    )</a>]
-EOF
-fi
-cat << EOF
 </ul>
 EOF
-
 sec_end
+fi
+
 sec_begin '$(lang de:"Aktionen bei Anruf" en:"Actions upon calls")'
 
 cat << EOF

@@ -76,9 +76,7 @@ default_yac() {
 vdr() {
     rawmsg -p 2001 -t "MESG %s\nQUIT\n" -d default_vdr "$@"
 }
-default_vdr() {
-    echo "$(lang de:"Anruf" en:"Call")${SOURCE:+" $SOURCE"}${SOURCE_NAME:+" - $SOURCE_NAME"}"
-}
+default_vdr() { default_short_message; }
 
 xboxmessage() {
     getmsg -t "/xbmcCmds/xbmcHttp?command=ExecBuiltIn&parameter=XBMC.Notification($(urlprintfencode "${XBOX_CAPTION:-$(lang de:"Telefonanruf" en:"Phone call")}"),%s)" -d default_xboxmessage "$@"
@@ -89,3 +87,12 @@ __xboxmessage() {
 default_xboxmessage() {
     default_message "" 2
 }
+
+# DGStation Relook 400S (Geckow Web Interface)
+# (only one line with about 40 characters; "\r" and "\r\n" do not mark newlines;
+# Latin-1 and UTF-8 umlauts translate to question marks)
+relookmessage() {
+    getmsg -t "/cgi-bin/command?printmessage&${RELOOK_TIMEOUT:-10}%%20%s" \
+	-d default_relookmessage "$@"
+}
+default_relookmessage() { default_short_message; }

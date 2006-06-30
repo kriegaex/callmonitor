@@ -20,7 +20,7 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 
-## default message
+## default message (multi-line)
 default_message() {
     local cols=${1:-10000} lines=${2:-10000}
     
@@ -39,8 +39,10 @@ default_message() {
 	    ;;
     esac
     
-    if ! empty "$here"; then
+    if ! empty "$here" && ? "lines > 1"; then
 	echo "$call $here_dir ${here_name:-$here}"
+    elif ? "lines == 1"; then
+	echo -n "$call "
     else
 	echo "$call"
     fi
@@ -53,6 +55,12 @@ default_message() {
 	fi
     fi
 }
+
+# one-liner
+default_short_message() {
+    default_message 50 1
+}
+
 
 ## wrap text (line length <= max)
 wrap() {

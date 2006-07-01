@@ -6,8 +6,6 @@ Testen
 Wichtig
 ----------------------------------------------------------------------
 
-Seltsame Aufhänger von callaction beheben (Ininterruptible sleep!)
-
 ----------------------------------------------------------------------
 Demnächst anschauen
 ----------------------------------------------------------------------
@@ -17,6 +15,8 @@ Wizard/Oberfläche zur Erstellung einfacher Regeln (für Einsteiger)
 ----------------------------------------------------------------------
 Nicht so wichtig
 ----------------------------------------------------------------------
+
+Seltsame Aufhänger von callaction beheben (Ininterruptible sleep!)
 
 Die (SOURCE, DEST)-Paare der letzten k Anrufe aufzeichnen und als Vorgabe bei
 Testanrufen verwenden.

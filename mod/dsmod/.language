@@ -15,4 +15,5 @@ files
 	usr/lib/callmonitor/actions.d/messages.sh
 	usr/lib/callmonitor/applets/exec.cgi.sh
 	usr/lib/callmonitor/modules/cgi.sh
+	usr/lib/callmonitor/modules/if_jfritz_cgi.sh
 }

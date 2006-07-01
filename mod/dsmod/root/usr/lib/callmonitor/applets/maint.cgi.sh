@@ -21,6 +21,7 @@
 ##
 require cgi
 require if_jfritz_status
+require if_jfritz_cgi
 
 SELF=maint
 TITLE='$(lang de:"Callmonitor-Wartung" en:"Callmonitor maintenance")'
@@ -98,27 +99,10 @@ sec_end
 
 sec_begin "$(lang de:"Schnittstellen" en:"Interfaces")"
 echo "<ul>"
-if ! _j_is_up; then
-    cat << EOF
-    <li><strong style="color: red">$(lang 
-	de:"Die CallMonitor-Schnittstelle (Port 1012) ist nicht aktiv."
-	en:"The CallMonitor interface (port 1012) is not active."
-    )</strong>
-    $(lang
-	de:"Sie wird zum Betrieb des Callmonitors benötigt und normalerweise
-	    automatisch aktiviert."
-	en:"It is required for Callmonitor's operation and is normally enabled
-	    automatically."
-    ) [<a href="exec?jfritz=on">$(lang de:"Einschalten" en:"Enable")</a>]
-    </li>
-EOF
+if _j_is_up; then
+    _j_cgi_is_up
 else
-    cat << EOF
-    <li>$(lang
-	de:"Die CallMonitor-Schnittstelle (Port 1012) ist aktiviert."
-	en:"The CallMonitor interface (port 1012) is active."
-    ) [<a href="exec?jfritz=off">$(lang de:"Ausschalten" en:"Disable")</a>]
-EOF
+    _j_cgi_is_down
 fi
 echo "</ul>"
 sec_end

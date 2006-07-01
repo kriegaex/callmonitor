@@ -21,6 +21,7 @@
 ##
 require cgi
 require if_jfritz_status
+require if_jfritz_cgi
 
 CHECKED=' checked'
 SELECTED=' selected'
@@ -86,23 +87,15 @@ EOF
 sec_end
 
 if ! _j_is_up; then
-sec_begin '$(lang de:"Status" en:"Status")'
-cat << EOF
-<ul>
-    <li><strong style="color: red">$(lang 
-	de:"Die CallMonitor-Schnittstelle (Port 1012) ist nicht aktiv."
-	en:"The CallMonitor interface (port 1012) is not active."
-    )</strong>
-    $(lang
-	de:"Sie wird zum Betrieb des Callmonitors benötigt."
-	en:"It is required for Callmonitor's operation."
-    ) [<a href="extras.cgi/callmonitor/exec?jfritz=on">$(lang
-	de:"Einschalten" en:"Enable"
-    )</a>]
-    </li>
-</ul>
+    sec_begin '$(lang de:"Status" en:"Status")'
+    cat << EOF
+    <ul>
 EOF
-sec_end
+    _j_cgi_is_down
+    cat << EOF
+    </ul>
+EOF
+    sec_end
 fi
 
 sec_begin '$(lang de:"Aktionen bei Anruf" en:"Actions upon calls")'

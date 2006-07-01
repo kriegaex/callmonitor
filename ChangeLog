@@ -263,3 +263,5 @@
 
 	* dial.sh: hangup-Funktion hinzugefügt (zum Abbrechen von
 	Anwahlversuchen)
+
+	* phonebook.sh: Call-by-Call-Vorwahlen (010...) erkennen und entfernen

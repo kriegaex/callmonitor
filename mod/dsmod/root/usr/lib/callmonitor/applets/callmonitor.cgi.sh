@@ -88,13 +88,9 @@ sec_end
 
 if ! _j_is_up; then
     sec_begin '$(lang de:"Status" en:"Status")'
-    cat << EOF
-    <ul>
-EOF
+    echo '<ul>'
     _j_cgi_is_down
-    cat << EOF
-    </ul>
-EOF
+    echo '</ul>'
     sec_end
 fi
 

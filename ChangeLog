@@ -260,3 +260,6 @@
 
 	* if_jfritz.sh: CallMonitor-Schnittstelle wird nun automatisch
 	aktiviert.
+
+	* dial.sh: hangup-Funktion hinzugefügt (zum Abbrechen von
+	Anwahlversuchen)

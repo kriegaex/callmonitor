@@ -190,9 +190,9 @@ _pb_tidy() {
 	    /^[[:space:]]*$/d
 	    s/^[[:space:]]*//
 	    s/[[:space:]]\+/	/
-	' > "$TMPFILE" && cat "$TMPFILE" > "$book"
+	' > "$TMPFILE" && mv "$TMPFILE" "$book"
 	exitval=$?
-	rm "$TMPFILE"
+	rm -f "$TMPFILE"
 	unlock "$book"
     fi
     if ? exitval == 0 && $_pb_PERSISTENT; then

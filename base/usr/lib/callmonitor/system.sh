@@ -34,11 +34,8 @@ empty() {
 require() {
     local lib="$1"
     local file="${CALLMONITOR_LIBDIR}/modules/$lib.sh"
-    if ? "CALLMONITOR_LOADED_$lib == 1"; then
-	## already loaded
-	return
-    else
+    if ? "_LIB_$lib != 1"; then
 	. "$file"
-	let "CALLMONITOR_LOADED_$lib = 1"
+	let "_LIB_$lib = 1"
     fi
 }

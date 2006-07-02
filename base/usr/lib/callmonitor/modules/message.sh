@@ -51,7 +51,7 @@ default_message() {
 	    echo "$there_dir $there"
 	    wrap "$cols" "$there_name"
 	else
-	    echo "$there_dir ${there_name:-$there}"
+	    echo "$there_dir ${there_name:-$there}" | cut -c "1-$cols"
 	fi
     fi
 }

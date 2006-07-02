@@ -212,6 +212,13 @@ _pb_tidy() {
     fi
 }
 
+_pb_list() {
+    case $1 in
+	all) cat "$CALLMONITOR_PERSISTENT" "$CALLMONITOR_TRANSIENT" 2>/dev/null ;;
+	*)   cat "$CALLMONITOR_PERSISTENT" 2>/dev/null ;;
+    esac
+}
+
 _pb_main() {
     local _pb_REVERSE
     for arg; do
@@ -227,6 +234,7 @@ _pb_main() {
 	put) _pb_put_local "$2" "$3" ;;
 	init) _pb_init ;;
 	tidy) _pb_tidy ;;
+	list) _pb_list "$2" ;;
 	*) _usage >&2; exit 1 ;;
     esac
     return $?

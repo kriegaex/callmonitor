@@ -25,6 +25,7 @@ _usage() {
 Usage:	phonebook [option]... command [argument]...
 	phonebook {get|exists|remove} 053712931
 	phonebook put 0357937829 "John Smith"
+	phonebook list [all]
 	phonebook init # prepare SIP to name mapping
 	phonebook tidy # tidy up phonebook (sort)
 Options:
@@ -61,16 +62,16 @@ if $_pb_DEBUG; then
     _pb_debug "entering DEBUG mode"
 fi
 
-## check syntax:
-## number of arguments (to phonebook) expected
-expect=0
+## check syntax: number of arguments (to phonebook) expected
+check=1
 case $1 in
-    put) expect=3 ;;
-    get|exists|remove) expect=2 ;;
-    init|tidy) expect=1 ;;
-    *) expect=0 ;;
+    put) check="$# == 3" ;;
+    get|exists|remove) check="$# == 2" ;;
+    init|tidy) check="$# == 1" ;;
+    list) check="$# >= 1 && $# <= 2" ;;
+    *) check= ;;
 esac
-if ? "$# != expect"; then
+if ! ? "$check"; then
     _usage >&2
     exit 1
 fi

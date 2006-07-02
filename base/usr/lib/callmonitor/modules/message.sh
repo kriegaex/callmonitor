@@ -58,7 +58,7 @@ default_message() {
 
 # one-liner
 default_short_message() {
-    default_message 50 1
+    default_message ${1:-50} 1
 }
 
 

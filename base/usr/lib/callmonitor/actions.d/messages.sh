@@ -95,4 +95,4 @@ relookmessage() {
     getmsg -t "/cgi-bin/command?printmessage&${RELOOK_TIMEOUT:-10}%%20%s" \
 	-d default_relookmessage "$@"
 }
-default_relookmessage() { default_short_message; }
+default_relookmessage() { default_short_message 40; }

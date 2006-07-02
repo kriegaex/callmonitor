@@ -77,9 +77,31 @@ utf8_latin1() {
     while IFS= read -r line; do echo -ne "$line"; done
 }
 
+## option parsing
+_getopt() {
+    local - TEMP ERROR=0 name=$1
+    shift
+    TEMP="$(_getopt_$name "$@")" || return 1
+    set -f; eval "set -- $TEMP"; set +f
+    while true; do
+	_opt_$name "$@"; consumed=$?
+	if ? "ERROR > 0"; then
+	    return $ERROR
+	fi
+	if ? "consumed > 0"; then
+	    shift $consumed
+	else
+	    case $1 in
+		--) shift; break ;;
+		*) echo "$name: unrecognized option \`$1'"; return 1 ;;
+	    esac
+	fi
+    done
+    _body_$name "$@"
+}
 __getmsg_usage() {
 #<
-    cat <<\EOH
+    cat <<'EOH'
 Usage:	getmsg [OPTION]... <authority> <part-url-template> [<message>]...
 	getmsg [OPTION]... -t <part-url-template> <authority> [<message>]...
 	getmsg [OPTION]... <full-url-template> [<message>]...
@@ -105,29 +127,48 @@ EOH
 getmsg() {
     __getmsg __getmsg_simple "$@"
 }
+
+# return value: number of consumed arguments
+_opt_net() {
+    case $1 in
+	-t|--template)
+	    TEMPLATE="$2"; return 2 ;;
+	-w|--timeout)
+	    TIMEOUT="$2"; return 2 ;;
+	-p|--port)
+	    PORT="$2"; return 2 ;;
+	-d|--default)
+	    DEFAULT="$2"; return 2 ;;
+    esac
+    return 0
+}
+
+_getopt_getmsg() {
+    getopt -n getmsg -o U:P:v:t:w:p:d: \
+	-l user:,password:,virtual:,port:,template:,timeout:,default:,help -- "$@"
+}
+_opt_getmsg() {
+    _opt_net "$@" || return $?
+    case $1 in
+	-U|--user)
+	    USERNAME="$2"; return 2 ;;
+	-P|--password)
+	    PASSWORD="$2"; return 2 ;;
+	-v|--virtual)
+	    VIRTUAL="$2"; return 2 ;;
+	--help)
+	    __getmsg_usage >&2; ERROR=1 ;;
+    esac
+    return 0
+}
+
 __getmsg() {
-    local - HOST= URL= TEMPLATE= VIRTUAL= USERNAME= PASSWORD= AUTH= TEMP= SEND=
-    local DEFAULT=default_message PORT=80 TIMEOUT=3
+    local - HOST= URL= TEMPLATE= VIRTUAL= USERNAME= PASSWORD= AUTH= SEND=
+    local DEFAULT=default_message PORT=80 TIMEOUT=3 consumed
     SEND="$1"; shift
-    TEMP="$(getopt -n getmsg -o U:P:v:t:w:p:d: \
-	-l user:,password:,virtual:,port:,template:,timeout:,default:,help -- "$@")"
-    if ? "$? != 0"; then return 1; fi
-    set -f; eval "set -- $TEMP"; set +f
-    while true; do
-	case $1 in
-	    -U|--user) USERNAME="$2"; shift ;;
-	    -P|--password) PASSWORD="$2"; shift ;;
-	    -v|--virtual) VIRTUAL="$2"; shift ;;
-	    -t|--template) TEMPLATE="$2"; shift ;;
-	    -w|--timeout) TIMEOUT="$2"; shift ;;
-	    -p|--port) PORT="$2"; shift ;;
-	    -d|--default) DEFAULT="$2"; shift ;;
-	    --help) __getmsg_usage >&2; return 1 ;;
-	    --) shift; break ;;
-	    *) ;; # should never happen
-	esac
-	shift
-    done
+    _getopt getmsg "$@"
+}
+_body_getmsg() {
     if ? $# == 0; then echo "Missing hostname or IP" >&2; return 1; fi
     __getmsg_parse "$1" || return 1; shift
     if empty "$TEMPLATE"; then
@@ -141,6 +182,7 @@ __getmsg() {
     fi
     $SEND "$@"
 }
+
 ## parse first argument: HOST | full URL template
 __getmsg_parse() {
     if url_parse "$1"; then
@@ -187,7 +229,7 @@ __getmsg_simple() {
 
 __rawmsg_usage() {
 #<
-    cat <<\EOH
+    cat <<'EOH'
 Usage: rawmsg [OPTION]... <host[:port]> <template> [<param>]...
        rawmsg [OPTION]... -t <template> <host[:port]> [<param>]...
 Send a message over a plain TCP connection.
@@ -201,24 +243,25 @@ Send a message over a plain TCP connection.
 EOH
 #>
 }
+
+_getopt_rawmsg() {
+    getopt -n rawmsg -o t:w:p:d: \
+	-l port:,template:,timeout:,default:,help -- "$@"
+}
+_opt_rawmsg() {
+    _opt_net "$@" || return $?
+    case $1 in
+	--help)
+	    __rawmsg_usage >&2; ERROR=1 ;;
+    esac
+    return 0
+}
+
 rawmsg() {
-    local - HOST= TEMPLATE= TEMP= PORT=80 TIMEOUT=3 DEFAULT=default_raw
-    TEMP="$(getopt -n rawmsg -o t:w:p:d: \
-	-l port:,template:,timeout:,default:,help -- "$@")"
-    if ? "$? != 0"; then return 1; fi
-    set -f; eval "set -- $TEMP"; set +f
-    while true; do
-	case $1 in
-	    -t|--template) TEMPLATE="$2"; shift ;;
-	    -w|--timeout) TIMEOUT="$2"; shift ;;
-	    -p|--port) PORT="$2"; shift ;;
-	    -d|--default) DEFAULT="$2"; shift ;;
-	    --help) __rawmsg_usage >&2; return 1 ;;
-	    --) shift; break ;;
-	    *) ;; # should never happen
-	esac
-	shift
-    done
+    local - HOST= TEMPLATE= PORT=80 TIMEOUT=3 DEFAULT=default_raw consumed
+    _getopt rawmsg "$@"
+}
+_body_rawmsg() {
     if ? $# == 0; then echo "Missing hostname or IP" >&2; return 1; fi
     if url_parse_authority "$1"; then
 	shift

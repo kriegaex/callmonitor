@@ -110,7 +110,7 @@ Send a message in a simple HTTP GET request.
   -t, --template=FORMAT  use this printf-style template to build the URL,
 			 all following messages are URL-encoded and filled
 			 into this template
-  -d, --default=CODE	 default for first parameter (eval'ed later)
+  -T TYPE                type of message (use default_TYPE, encode_TYPE, etc.)
   -p, --port=PORT	 use a special target port (default 80)
   -w, --timeout=SECONDS  set connect timeout (default 3)
   -v, --virtual=VIRT	 use a different virtual host (default HOST)
@@ -137,15 +137,15 @@ _opt_net() {
 	    TIMEOUT="$2"; return 2 ;;
 	-p|--port)
 	    PORT="$2"; return 2 ;;
-	-d|--default)
-	    DEFAULT="$2"; return 2 ;;
+	-T)
+	    TYPE="$2"; return 2 ;;
     esac
     return 0
 }
 
 _getopt_getmsg() {
-    getopt -n getmsg -o U:P:v:t:w:p:d: \
-	-l user:,password:,virtual:,port:,template:,timeout:,default:,help -- "$@"
+    getopt -n getmsg -o T:U:P:v:t:w:p: \
+	-l user:,password:,virtual:,port:,template:,timeout:,help -- "$@"
 }
 _opt_getmsg() {
     _opt_net "$@" || return $?
@@ -164,7 +164,7 @@ _opt_getmsg() {
 
 __getmsg() {
     local - HOST= URL= TEMPLATE= VIRTUAL= USERNAME= PASSWORD= AUTH= SEND=
-    local DEFAULT=default_message PORT=80 TIMEOUT=3 consumed
+    local TYPE=message PORT=80 TIMEOUT=3 consumed
     SEND="$1"; shift
     _getopt getmsg "$@"
 }
@@ -175,9 +175,9 @@ _body_getmsg() {
 	if ? $# == 0; then echo "Missing template" >&2; return 1; fi
 	TEMPLATE="$1"; shift
     fi
-    if ? $# == 0; then set -- "$(eval "$DEFAULT")"; fi
+    if ? $# == 0; then set -- "$(default_$TYPE)"; fi
     VIRTUAL="${VIRTUAL:-$HOST}"
-    if ! empty "$USERNAME" || ! empty "$PASSWORD"; then
+    if ! empty "$USERNAME$PASSWORD"; then
 	AUTH="$(basic_auth "$USERNAME" "$PASSWORD")"
     fi
     $SEND "$@"
@@ -214,17 +214,27 @@ __msg_set_authority() {
     fi
 }
 __getmsg_simple() {
-    ## If $1 is empty, it disappears completely in the output of "$@", which
-    ## shifts all messages to the left. This seems to be a bug in the busybox
-    ## version of ash (prior to v1.1.0). Other empty arguments work as expected.
-    URL="$(set -f; IFS=/; printf "$TEMPLATE" \
-    $(for arg in "$@"; do echo -n $(urlencode "$arg")/; done))"
+    URL="$(
+	n=1
+	for arg in "$@"; do
+	    shift; set -- "$@" "$(__getmsg_encode "$arg" $n)"
+	    let n++
+	done
+	printf "$TEMPLATE" "$@"
+    )"
     {
 	echo "GET $URL HTTP/1.0$CR"
 	echo "Host: $VIRTUAL$CR"
 	! empty "$AUTH" && echo "$AUTH"
 	echo "$CR"
     } | __nc "$TIMEOUT" "$HOST" "$PORT"
+}
+__getmsg_encode() {
+    if type encode_$TYPE >/dev/null; then
+	urlencode "$(encode_$TYPE "$1" "$2")"
+    else
+	urlencode "$1"
+    fi
 }
 
 __rawmsg_usage() {
@@ -236,7 +246,7 @@ Send a message over a plain TCP connection.
 
   -t, --template=FORMAT  use this printf-style template to build the message,
 			 all following parameters are filled in
-  -d, --default=CODE	 default for first parameter (eval'ed later)
+  -T TYPE                type of message (use default_TYPE, etc.)
   -p, --port=PORT	 use a special target port (default 80)
   -w, --timeout=SECONDS  set connect timeout (default 3)
       --help		 show this help
@@ -245,8 +255,7 @@ EOH
 }
 
 _getopt_rawmsg() {
-    getopt -n rawmsg -o t:w:p:d: \
-	-l port:,template:,timeout:,default:,help -- "$@"
+    getopt -n rawmsg -o T:t:w:p: -l port:,template:,timeout:,help -- "$@"
 }
 _opt_rawmsg() {
     _opt_net "$@" || return $?
@@ -258,7 +267,7 @@ _opt_rawmsg() {
 }
 
 rawmsg() {
-    local - HOST= TEMPLATE= PORT=80 TIMEOUT=3 DEFAULT=default_raw consumed
+    local - HOST= TEMPLATE= PORT=80 TIMEOUT=3 TYPE=raw consumed
     _getopt rawmsg "$@"
 }
 _body_rawmsg() {
@@ -273,7 +282,7 @@ _body_rawmsg() {
 	if ? $# == 0; then echo "Missing template" >&2; return 1; fi
 	TEMPLATE="$1"; shift
     fi
-    if ? $# == 0; then set -- "$(eval "$DEFAULT")"; fi
+    if ? $# == 0; then set -- "$(default_$TYPE)"; fi
     printf "$TEMPLATE" "$@" | __nc "$TIMEOUT" "$HOST" "$PORT"
 }
 default_raw() {

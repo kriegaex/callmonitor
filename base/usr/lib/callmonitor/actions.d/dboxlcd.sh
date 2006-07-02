@@ -47,7 +47,7 @@ require net
 require message
 
 dboxlcd() {
-    __getmsg __getmsg_dboxlcd -d default_dboxlcd -t "-" "$@"
+    __getmsg __getmsg_dboxlcd -T dboxlcd -t "-" "$@"
 }
 __getmsg_dboxlcd() {
     local lcd="/control/lcd"
@@ -66,5 +66,8 @@ __getmsg_dboxlcd() {
     TEMPLATE="$lcd?lock=0" __getmsg_simple
 }
 default_dboxlcd() {
-    default_message 19 | latin1_utf8
+    default_message 19
+}
+encode_dboxlcd() {
+    echo "$1" | latin1_utf8
 }

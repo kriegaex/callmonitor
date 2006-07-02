@@ -46,26 +46,33 @@ for_leases() {
 
 ## simple *box listeners
 dboxpopup() {
-    getmsg -t "/control/message?popup=%s" -d default_dboxpopup "$@"
+    getmsg -T dboxpopup -t "/control/message?popup=%s" "$@"
 }
 dboxmessage() {
-    getmsg -t "/control/message?nmsg=%s" -d default_dboxmessage "$@"
+    getmsg -T dboxmessage -t "/control/message?nmsg=%s" "$@"
 }
 default_dboxpopup() { default_dbox; }
 default_dboxmessage() { default_dbox; }
 default_dbox() {
-    default_message | latin1_utf8 | sed -e 's/,[[:space:]]\+/\n/g'
+    default_message
 }
+encode_dboxpopup() { encode_dbox "$@"; }
+encode_dboxmessage() { encode_dbox "$@"; }
+encode_dbox() {
+    echo "$1" | latin1_utf8 | sed -e 's/,[[:space:]]\+/\n/g' 
+}
+
 dreammessage() {
-    getmsg -t "/cgi-bin/xmessage?timeout=${DREAM_TIMEOUT:-10}&caption=$(urlprintfencode "${DREAM_CAPTION:-$(lang
-    de:"Telefonanruf" en:"Phone call")}")&charset=latin1&icon=${DREAM_ICON:-1}&body=%s" -d default_dreammessage "$@"
+    getmsg -T dreammessage \
+	-t "/cgi-bin/xmessage?timeout=${DREAM_TIMEOUT:-10}&caption=$(urlprintfencode "${DREAM_CAPTION:-$(lang
+    de:"Telefonanruf" en:"Phone call")}")&charset=latin1&icon=${DREAM_ICON:-1}&body=%s" "$@"
 }
 default_dreammessage() { default_message; }
 
 ## Usage: yac [OPTION]... [MESSAGE]
 ## Send a message to a yac listener (Yet Another Caller ID Program)
 yac() {
-    rawmsg -p 10629 -t "%s\0" -d default_yac "$@"
+    rawmsg -T yac -p 10629 -t "%s\0" "$@"
 }
 default_yac() {
     echo "@CALL$SOURCE_NAME~$SOURCE"
@@ -74,25 +81,26 @@ default_yac() {
 ## Usage: vdr [OPTION]... [MESSAGE]
 ## Send a message to a VDR (Video Disk Recorder, http://www.cadsoft.de/vdr/)
 vdr() {
-    rawmsg -p 2001 -t "MESG %s\nQUIT\n" -d default_vdr "$@"
+    rawmsg -T vdr -p 2001 -t "MESG %s\nQUIT\n" "$@"
 }
 default_vdr() { default_short_message; }
 
 xboxmessage() {
-    getmsg -t "/xbmcCmds/xbmcHttp?command=ExecBuiltIn&parameter=XBMC.Notification($(urlprintfencode "${XBOX_CAPTION:-$(lang de:"Telefonanruf" en:"Phone call")}"),%s)" -d default_xboxmessage "$@"
-}
-__xboxmessage() {
-    default_xboxmessage | tr "," ";"
+    getmsg -T xboxmessage \
+	-t "/xbmcCmds/xbmcHttp?command=ExecBuiltIn&parameter=XBMC.Notification($(urlprintfencode "${XBOX_CAPTION:-$(lang de:"Telefonanruf" en:"Phone call")}"),%s)" "$@"
 }
 default_xboxmessage() {
     default_message "" 2
+}
+encode_xboxmessage() {
+    echo "$1" | tr "," ";"
 }
 
 # DGStation Relook 400S (Geckow Web Interface)
 # (only one line with about 40 characters; "\r" and "\r\n" do not mark newlines;
 # Latin-1 and UTF-8 umlauts translate to question marks)
 relookmessage() {
-    getmsg -t "/cgi-bin/command?printmessage&${RELOOK_TIMEOUT:-10}%%20%s" \
-	-d default_relookmessage "$@"
+    getmsg -T relookmessage \
+	-t "/cgi-bin/command?printmessage&${RELOOK_TIMEOUT:-10}%%20%s" "$@"
 }
 default_relookmessage() { default_short_message 40; }

@@ -96,6 +96,14 @@ convert() {
 	    > "$CALLMONITOR_LISTENERS"
 	callmonitor_store
     fi
+    # after two month, delete obsolete listeners
+    if [ -e "$CALLMONITOR_LISTENERS" -a -e "$CALLMONITOR_LISTENERS_OLD" ]
+    then
+	find "$(dirname "$CALLMONITOR_LISTENERS_OLD")" -type f \
+	    -name "$(basename "$CALLMONITOR_LISTENERS_OLD")" -mtime +60 \
+	    -exec rm {} \;
+	callmonitor_store
+    fi
 }
 
 case "$1" in

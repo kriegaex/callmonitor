@@ -122,11 +122,11 @@ _pb_get_local() {
     unset NAME
     while read -r num nam; do
 	case $num in "$NUMBER") NAME=$nam; break ;; esac
-    done < "$CALLMONITOR_TRANSIENT"
+    done < "$CALLMONITOR_PERSISTENT"
     if ! ? "${NAME+1}"; then
 	while read -r num nam; do
 	    case $num in "$NUMBER") NAME=$nam; break ;; esac
-	done < "$CALLMONITOR_PERSISTENT"
+	done < "$CALLMONITOR_TRANSIENT"
     fi
     if ? "${NAME+1}"; then
 	#NAME="${NAME#:}"

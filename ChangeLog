@@ -271,3 +271,9 @@
 	* net.sh: Ziemlich stark umgeschrieben, bitte testen. Die Umkodierung
 	von Nachrichten wird jetzt vom System übernommen. Die Nachrichten (auf
 	der Kommandozeile oder von default_*) werden in Latin-1 erwartet.
+
+2006-07-07:
+
+	* phonebook.sh: Suchreihenfolge geändert: Erst dauerhaftes, dann
+	flüchtiges Telefonbuch (fehlgeschlagene Rückwärtssuchen hatten
+	spätere Callers-Einträge verdeckt)

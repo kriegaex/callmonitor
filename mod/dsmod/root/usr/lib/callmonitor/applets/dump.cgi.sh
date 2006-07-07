@@ -37,16 +37,16 @@ ___() {
 #	echo "<table>"
 #	for var; do
 #	    echo "<tr><th>$var</th>"
-#	    eval 'echo "<td>$(httpd -e "$'"$var"'")</td>"'
+#	    eval 'echo "<td>$(html "$'"$var"'")</td>"'
 #	done
 #	echo "</table>"
 #   else
 #	echo -n "<a href='dump?show=$n'>"
-#	echo -n "[$(httpd -e "$EVENT")] $(httpd -e "$SOURCE") ~ $(httpd -e "$DEST")"
+#	echo -n "[$(html "$EVENT")] $(html "$SOURCE") ~ $(html "$DEST")"
 #	echo "</a>"
 	echo "<tr>"
 	for var in $cols; do
-	    eval 'echo "<td>$(httpd -e "$'"$var"'")</td>"'
+	    eval 'echo "<td>$(html "$'"$var"'")</td>"'
 	done
 	echo "</tr>"
 #   fi

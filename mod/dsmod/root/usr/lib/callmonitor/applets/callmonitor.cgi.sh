@@ -158,7 +158,7 @@ cat << EOF
 	de:"Vorwahl für lokale Rufnummern"
 	en:"Area code for local numbers"
     ):</label>
-    <input type="text" name="okz" value="$(httpd -e "$CALLMONITOR_OKZ")"
+    <input type="text" name="okz" value="$(html "$CALLMONITOR_OKZ")"
 	size="5" id="okz">
 </p>
 EOF

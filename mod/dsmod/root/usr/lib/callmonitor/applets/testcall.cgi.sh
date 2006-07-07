@@ -42,8 +42,8 @@ case $TESTCALL_EVENT in
     disconnect) disconnect_sel=$SELECTED ;;
 esac
 
-source_val="$(httpd -e "$TESTCALL_SOURCE")"
-dest_val="$(httpd -e "$TESTCALL_DEST")"
+source_val="$(html "$TESTCALL_SOURCE")"
+dest_val="$(html "$TESTCALL_DEST")"
 
 new_testcall_form() {
     cat << EOF

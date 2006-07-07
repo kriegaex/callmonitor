@@ -78,9 +78,14 @@ __incoming_call() {
 	"ID=$ID EXT=$EXT DURATION=$DURATION TIMESTAMP='$TIMESTAMP'" \
 	"PROVIDER=$PROVIDER"
 
+    local vars="SOURCE DEST SOURCE_NAME DEST_NAME EVENT ID EXT DURATION
+	TIMESTAMP PROVIDER"
+
     ## make call information available to listeners
-    export SOURCE DEST SOURCE_NAME DEST_NAME
-    export EVENT ID EXT DURATION TIMESTAMP PROVIDER
+    export $vars
+
+    ## dump information to file
+    __dump $vars
 
     local event_spec source_pattern dest_pattern listener rule=0
     while read -r event_spec source_pattern dest_pattern listener

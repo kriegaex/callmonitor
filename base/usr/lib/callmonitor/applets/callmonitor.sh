@@ -69,6 +69,22 @@ __log_setup() {
 	__debug() { echo "$*" >&4; }
 	__logger -p daemon.debug < "$DEBUG_FIFO" 3>&- & exec 4>"$DEBUG_FIFO"
     fi
+    case $CALLMONITOR_DUMP in
+	yes)
+	    __info "dumping event information to $CALLMONITOR_DUMPFILE"
+	    require dump
+	    require lock
+	    __dump() {
+		if lock "$CALLMONITOR_DUMPFILE"; then
+		    dump "$@" >> "$CALLMONITOR_DUMPFILE"
+		    unlock "$CALLMONITOR_DUMPFILE"
+		fi
+	    }
+	;;
+	*)
+	    rm -f "$CALLMONITOR_DUMPFILE"
+	;;
+    esac
     __debug "entering DEBUG mode"
 }
 

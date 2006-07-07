@@ -21,6 +21,7 @@
 ##
 __debug() { true; }
 __info() { true; }
+__dump() { true; }
 __configure() {
     ## import action functions
     local ACTIONSDIR ACTIONS

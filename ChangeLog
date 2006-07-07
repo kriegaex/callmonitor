@@ -265,3 +265,9 @@
 	Anwahlversuchen)
 
 	* phonebook.sh: Call-by-Call-Vorwahlen (010...) erkennen und entfernen
+
+2006-07-??:
+
+	* net.sh: Ziemlich stark umgeschrieben, bitte testen. Die Umkodierung
+	von Nachrichten wird jetzt vom System übernommen. Die Nachrichten (auf
+	der Kommandozeile oder von default_*) werden in Latin-1 erwartet.

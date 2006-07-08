@@ -23,7 +23,13 @@
 
 html() {
     if ? "$# == 0"; then
-	sed -e 's/&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g;s/'\''/\&apos;/g;s/"/&quot;/g'
+	sed -e '
+	    s/&/\&amp;/g
+	    s/</\&lt;/g
+	    s/>/\&gt;/g
+	    s/'\''/\&apos;/g
+	    s/"/&quot;/g
+	'
     else
 	case "$*" in
 	    *[\&\<\>\'\"]*) httpd -e "$*" ;;
@@ -47,3 +53,22 @@ config_button() {
 </form>
 EOF
 }
+
+_check() {
+    local input=$1
+    local alt key val found=false
+    shift
+    for alt; do
+	key="${alt%%:*}"
+	val="${alt#*:}"
+	: ${val:=$key}
+	if ! $found; then
+	    case $input in
+		$key) eval "${val}${suffix}=\$checked"; found=true; continue ;;
+	    esac
+	fi
+	eval "${val}_chk="
+    done
+}
+check()  suffix=_chk checked=" checked" _check "$@"
+select() suffix=_sel checked=" selected" _check "$@"

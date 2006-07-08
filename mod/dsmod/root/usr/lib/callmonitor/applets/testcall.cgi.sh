@@ -26,21 +26,8 @@ TITLE="$(lang de:"Testanruf" en:"Test call")"
 
 eval "$(modcgi source:dest:event:event_dir testcall)"
 
-SELECTED=" selected"
-
-in_sel= out_sel=
-case $TESTCALL_EVENT_DIR in
-    in) in_sel=$SELECTED ;;
-    out) out_sel=$SELECTED ;;
-esac
-
-request_sel= cancel_sel= connect_sel= disconnect_sel=
-case $TESTCALL_EVENT in
-    request) request_sel=$SELECTED ;;
-    cancel) cancel_sel=$SELECTED ;;
-    connect) connect_sel=$SELECTED ;;
-    disconnect) disconnect_sel=$SELECTED ;;
-esac
+select "$TESTCALL_EVENT_DIR" in out
+select "$TESTCALL_EVENT" request cancel connect disconnect
 
 source_val="$(html "$TESTCALL_SOURCE")"
 dest_val="$(html "$TESTCALL_DEST")"

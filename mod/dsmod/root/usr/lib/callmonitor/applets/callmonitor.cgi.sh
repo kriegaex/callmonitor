@@ -23,38 +23,12 @@ require cgi
 require if_jfritz_status
 require if_jfritz_cgi
 
-CHECKED=' checked'
-SELECTED=' selected'
-
-auto_chk='' man_chk=''
-case $CALLMONITOR_ENABLED in
-    yes) auto_chk=$CHECKED ;;
-    *) man_chk=$CHECKED ;;
-esac
-
-debug_chk=''
-case $CALLMONITOR_DEBUG in
-    yes) debug_chk=$CHECKED ;;
-esac
-
-reverse_chk=''
-case $CALLMONITOR_REVERSE in
-    yes) reverse_chk=$CHECKED
-esac
-
-no_sel='' trans_sel='' pers_sel=''
-case "$CALLMONITOR_REVERSE_CACHE" in
-    no) no_sel=$SELECTED ;;
-    transient) trans_sel=$SELECTED ;;
-    persistent) pers_sel=$SELECTED ;;
-esac
-
-oert_sel='' werdran_sel='' invers_sel=''
-case "$CALLMONITOR_REVERSE_PROVIDER" in
-    dasoertliche) oert_sel=$SELECTED ;;
-    weristdran) werdran_sel=$SELECTED ;;
-    inverssuche) invers_sel=$SELECTED ;;
-esac
+check "$CALLMONITOR_ENABLED" yes:auto *:man
+check "$CALLMONITOR_DEBUG" yes:debug
+check "$CALLMONITOR_REVERSE" yes:reverse
+select "$CALLMONITOR_REVERSE_CACHE" no transient:trans persistent:pers
+select "$CALLMONITOR_REVERSE_PROVIDER" dasoertliche:oert weristdran:werdran \
+    inverssuche:invers
 
 SYSLOG='$(lang de:"System-Log" en:"system log")'
 if has_package syslogd; then

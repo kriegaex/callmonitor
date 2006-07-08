@@ -10,21 +10,19 @@ Wichtig
 Demnächst anschauen
 ----------------------------------------------------------------------
 
-Wizard/Oberfläche zur Erstellung einfacher Regeln (für Einsteiger)
+Die (SOURCE, DEST)-Paare der letzten k Anrufe aufzeichnen und als Vorgabe bei
+Testanrufen verwenden.
 
 ----------------------------------------------------------------------
 Nicht so wichtig
 ----------------------------------------------------------------------
 
-Seltsame Aufhänger von callaction beheben (Ininterruptible sleep!)
+Wizard/Oberfläche zur Erstellung einfacher Regeln (für Einsteiger)
 
-Die (SOURCE, DEST)-Paare der letzten k Anrufe aufzeichnen und als Vorgabe bei
-Testanrufen verwenden.
+Seltsame Aufhänger von callaction beheben (Ininterruptible sleep!)
 
 System zur Ersetzung von Konfigurationsstrings in Dateien
     CALLMONITOR_CFG in controller
-
-Defaults/Interfaces in base-Zweig, überschreiben in conf.*
 
 ar7cfgconv-"Parser" separieren
 

@@ -34,7 +34,8 @@ reverse_lookup() {
     esac
     local prov
     case $CALLMONITOR_REVERSE_PROVIDER in
-	weristdran|inverssuche|dasoertliche) prov=$CALLMONITOR_REVERSE_PROVIDER ;;
+	weristdran|inverssuche|dasoertliche)
+	    prov=$CALLMONITOR_REVERSE_PROVIDER ;;
 	*) prov=dasoertliche ;;
     esac
     _reverse_lookup $prov "$NUMBER"
@@ -111,4 +112,21 @@ _reverse_inverssuche_extract() {
 	    q
 	}
     ' | utf8_latin1
+}
+
+_reverse_google_request() {
+    # anonymize (use only the first six digits)
+    local number="$(expr substr "$1" 1 6)0000000000"
+    getmsg -w 3 "http://www.google.de/search?num=0&q=%s" "$number"
+}
+_reverse_google_extract() {
+    sed -n -e '
+	/Call-by-Call-Vorwahlen/{
+		s#.*/images/euro_phone.gif[^>]*>\([[:space:]]*<[^>]*>\)*[[:space:]]*##
+		s#[[:space:]]*<.*##
+		s#^Deutschland,[[:space:]]*##
+		p
+		q
+	}
+    '
 }

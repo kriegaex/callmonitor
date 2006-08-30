@@ -28,7 +28,7 @@ html() {
 	    s/</\&lt;/g
 	    s/>/\&gt;/g
 	    s/'\''/\&apos;/g
-	    s/"/&quot;/g
+	    s/"/\&quot;/g
 	'
     else
 	case "$*" in

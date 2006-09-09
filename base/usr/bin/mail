@@ -153,8 +153,8 @@ prepare_mail() {
 	${FROM+        "-f" "$FROM"} \
 	${TO+	       "-t" "$TO"} \
 	${MAILSERVER+  "-m" "$MAILSERVER"} \
-	${AUTHNAME:+   "-a" "$AUTHNAME"} \
-	${PASSWORD:+   "-w" "$PASSWORD"} \
+	${AUTHNAME+    "-a" "$AUTHNAME"} \
+	${PASSWORD+    "-w" "$PASSWORD"} \
 	${ATTACHMENTS+ "-d" "$ATTACHMENTS"} \
 	${INLINES+     "-i" "$INLINES"}
     script="$dir/send"
@@ -166,7 +166,6 @@ prepare_mail() {
 	printf "\n"
     } > "$script"
     chmod +x "$script"
-    echo $id
 }
 
 pack() {
@@ -199,8 +198,12 @@ case "$1" in
 	FROM="$From"
 	TO="$To"
 	MAILSERVER="$SMTPServer"
-	AUTHNAME="$accountname"
-	PASSWORD="$passwd"
+	if let "${accountname:+1}"; then
+	    AUTHNAME="$accountname"
+	fi
+	if let "${passwd:+1}"; then
+	    PASSWORD="$passwd"
+	fi
 
 	## parse command line options
 	TEMP="$(getopt -o 'M:p:s:f:t:m:a:w:d:i:D:' -n "$PROGRAM" -- "$@")"

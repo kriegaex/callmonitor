@@ -27,7 +27,7 @@ check "$CALLMONITOR_ENABLED" yes:auto *:man
 check "$CALLMONITOR_DEBUG" yes:debug
 check "$CALLMONITOR_REVERSE" yes:reverse
 select "$CALLMONITOR_REVERSE_CACHE" no transient:trans persistent:pers
-select "$CALLMONITOR_REVERSE_PROVIDER" dasoertliche:oert weristdran:werdran \
+select "$CALLMONITOR_REVERSE_PROVIDER" dasoertliche:oert \
     inverssuche:invers
 
 SYSLOG='$(lang de:"System-Log" en:"system log")'
@@ -97,8 +97,6 @@ cat << EOF
     <select name="reverse_provider" id="provider">
 	<option title="www.dasoertliche.de"
 	    value="dasoertliche"$oert_sel>Das÷rtliche</option>
-	<option title="wer-ist-dran.de"
-	    value="weristdran"$werdran_sel>Wer ist dran? (ABIS)</option>
 	<option title="www.inverssuche.de"
 	    value="inverssuche"$invers_sel>inverssuche.de</option>
     </select>

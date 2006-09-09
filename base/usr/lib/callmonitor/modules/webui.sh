@@ -57,3 +57,12 @@ webui_password() {
     eval "$(webui_config | grep '^password=')"
     echo "$password"
 }
+
+webui_query() {
+    local query="getpage=..%2Fhtml%2Fquery.txt&var:cnt=$#" var= n=0
+    for var; do
+	query="$query&var%3An$n=$(urlencode "$var")"
+	let n++
+    done
+    webui_get "$query" | sed -e '1,/^$/d;$d'
+}

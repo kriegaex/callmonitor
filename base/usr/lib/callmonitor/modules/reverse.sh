@@ -34,7 +34,7 @@ reverse_lookup() {
     esac
     local prov
     case $CALLMONITOR_REVERSE_PROVIDER in
-	weristdran|inverssuche|dasoertliche)
+	inverssuche|dasoertliche)
 	    prov=$CALLMONITOR_REVERSE_PROVIDER ;;
 	*) prov=dasoertliche ;;
     esac
@@ -68,24 +68,6 @@ _reverse_dasoertliche_extract() {
 	s#\([(]\) #\1#g
 	s# $##
 	q # first entry only
-    '
-}
-
-_reverse_weristdran_request() {
-    local data="telnr=$1"
-    post_form "http://wer-ist-dran.de/index.php?g=a" "$data"
-}
-_reverse_weristdran_extract() {
-    sed -n -e '
-	\#Kein Eintrag gefunden#q
-	\#<td class="a"#,\#</td>#{
-	    /Tel\./{
-		s/,\?[[:space:]]*Tel.[[:digit:][:space:]]*<.*$//
-		s/^[[:space:]]*//
-		p
-		q
-	    }
-	}
     '
 }
 

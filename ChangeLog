@@ -281,3 +281,13 @@
 2006-07-08:
 
 	callmonitor-1.5 veröffentlicht
+
+2006-09-10:
+
+	* reverse.sh: weristdran.de hat den Rückwärtssuche-Service
+	eingestellt.
+
+	* mail: Bei leerem Benutzernamen oder Passwort die entsprechenden
+	Optionen weglassen (Fehler bei T-Online; Dank an dbox2freak)
+
+	callmonitor-1.5.1 veröffentlicht

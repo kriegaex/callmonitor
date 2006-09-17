@@ -32,10 +32,10 @@ empty() {
 
 ## utilities for managing "libraries"
 require() {
-    local lib="$1"
+    local lib="$1"; shift
     local file="${CALLMONITOR_LIBDIR}/modules/$lib.sh"
     if ? "_LIB_$lib != 1"; then
-	. "$file"
+	. "$file" "$@"
 	let "_LIB_$lib = 1"
     fi
 }

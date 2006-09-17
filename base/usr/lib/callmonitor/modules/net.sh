@@ -38,45 +38,6 @@ basic_auth() {
     sed -e '1d;2s/^/Authorization: Basic /;3,$s/^/ /;s/$/'$CR'/;$d'
 }
 
-## convert latin1 to utf8
-latin1_utf8() {
-    hexdump -v -e '100/1 " %02x" "\n"' |
-    sed -e '
-	s/ \([89ab]\)/c2\1/g
-	s/ c/c38/g
-	s/ d/c39/g
-	s/ e/c3a/g
-	s/ f/c3b/g
-	s/ //g
-	s/\(..\)/\\x\1/g
-    ' |
-    while IFS= read -r line; do echo -ne "$line"; done
-}
-
-## convert latin1 to utf8
-utf8_latin1() {
-    hexdump -v -e '100/1 " %02x" "\n"' |
-    sed -e '
-	s/ c2 \([89ab]\)/\1/g
-	s/ c3 8/c/g
-	s/ c3 9/d/g
-	s/ c3 a/e/g
-	s/ c3 b/f/g
-	: multi
-	s/ [cd]. ../3f/g
-	s/ e. .. ../3f/g
-	s/ f\([0-7].\|[89ab]. ..\|[cd]. .. ..\) .. .. ../3f/g
-	/ [c-f]/ {
-	    N
-	    s/\n//
-	    b multi
-	}
-	s/ //g
-	s/\(..\)/\\x\1/g
-    ' |
-    while IFS= read -r line; do echo -ne "$line"; done
-}
-
 ## connection; no arguments; needs TIMEOUT, HOST, and PORT
 _connect() {
     __nc "$TIMEOUT" "$HOST" "$PORT"
@@ -160,13 +121,20 @@ _getopt_getmsg() {
     getopt -n getmsg -o T:U:P:v:t:w:p: \
 	-l user:,password:,virtual:,port:,template:,timeout:,help -- "$@"
 }
-_opt_getmsg() {
-    _opt_net "$@" || return $?
+_opt_auth() {
     case $1 in
 	-U|--user)
 	    USERNAME="$2"; return 2 ;;
 	-P|--password)
 	    PASSWORD="$2"; return 2 ;;
+    esac
+    return 0
+}
+_var_auth="USERNAME= PASSWORD="
+_opt_getmsg() {
+    _opt_net "$@" || return $?
+    _opt_auth "$@" || return $?
+    case $1 in
 	-v|--virtual)
 	    VIRTUAL="$2"; return 2 ;;
 	--help)
@@ -174,7 +142,7 @@ _opt_getmsg() {
     esac
     return 0
 }
-_var_getmsg="$_var_net USERNAME= PASSWORD= VIRTUAL="
+_var_getmsg="$_var_net $_var_auth VIRTUAL="
 
 __getmsg() {
     local - $_var_getmsg HOST= HTTP_PATH= AUTH= SEND=

@@ -33,6 +33,7 @@
 
 require net
 require message
+require recode
 
 ## get matching IPs from multid.leases and execute a command for each of them
 ## example: for_leases 192.168.10. dboxpopup "Ring!"

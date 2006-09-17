@@ -20,6 +20,7 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 require net
+require recode
 
 ## resolve numbers to names and addresses; the number is
 ## used as given (should be normalized beforehand); returns 1 if no lookup

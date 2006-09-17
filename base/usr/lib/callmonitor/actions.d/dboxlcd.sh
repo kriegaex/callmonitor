@@ -45,6 +45,7 @@
 
 require net
 require message
+require recode
 
 dboxlcd() {
     __getmsg __getmsg_dboxlcd -T dboxlcd -t "-" "$@"

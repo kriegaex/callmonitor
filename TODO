@@ -2,15 +2,30 @@
 Testen
 ----------------------------------------------------------------------
 
+Callers und Listeners bei Initialisierung anlegen, falls nicht
+vorhanden
+
 ----------------------------------------------------------------------
 Wichtig
 ----------------------------------------------------------------------
+
+Funktion für Roku SoundBridge?
+
+    http://www.i-hacked.com/content/view/108/94/
+    http://www.rokulabs.com/community/developer.php
+
+    Functional Specification Roku Control Protocol
+	(Port 5555)
+    Shell-Interface
+	(Port 4444, einfache TCP-Verbindung)
+
 
 ----------------------------------------------------------------------
 Demnächst anschauen
 ----------------------------------------------------------------------
 
 Ergebnis der Rückwärtssuche im Fritzbox-Telefonbuch ablegen.
+    (zu langsam!!)
 
 Die (SOURCE, DEST)-Paare der letzten k Anrufe aufzeichnen und als Vorgabe bei
 Testanrufen verwenden.

@@ -77,6 +77,11 @@ utf8_latin1() {
     while IFS= read -r line; do echo -ne "$line"; done
 }
 
+## connection; no arguments; needs TIMEOUT, HOST, and PORT
+_connect() {
+    __nc "$TIMEOUT" "$HOST" "$PORT"
+}
+
 ## option parsing
 _getopt() {
     local - TEMP ERROR=0 name=$1
@@ -130,18 +135,26 @@ getmsg() {
 
 # return value: number of consumed arguments
 _opt_net() {
+    _opt_nc "$@" || return $?
     case $1 in
 	-t|--template)
 	    TEMPLATE="$2"; return 2 ;;
-	-w|--timeout)
-	    TIMEOUT="$2"; return 2 ;;
-	-p|--port)
-	    PORT="$2"; return 2 ;;
 	-T)
 	    TYPE="$2"; return 2 ;;
     esac
     return 0
 }
+_opt_nc() {
+    case $1 in
+	-w|--timeout)
+	    TIMEOUT="$2"; return 2 ;;
+	-p|--port)
+	    PORT="$2"; return 2 ;;
+    esac
+    return 0
+}
+_var_nc="TIMEOUT= PORT="
+_var_net="$_var_nc TEMPLATE= TYPE="
 
 _getopt_getmsg() {
     getopt -n getmsg -o T:U:P:v:t:w:p: \
@@ -161,9 +174,10 @@ _opt_getmsg() {
     esac
     return 0
 }
+_var_getmsg="$_var_net USERNAME= PASSWORD= VIRTUAL="
 
 __getmsg() {
-    local - HOST= URL= TEMPLATE= VIRTUAL= USERNAME= PASSWORD= AUTH= SEND=
+    local - $_var_getmsg HOST= HTTP_PATH= AUTH= SEND=
     local TYPE=message PORT=80 TIMEOUT=3 consumed
     SEND="$1"; shift
     _getopt getmsg "$@"
@@ -176,11 +190,28 @@ _body_getmsg() {
 	TEMPLATE="$1"; shift
     fi
     if ? $# == 0; then set -- "$(default_$TYPE)"; fi
-    VIRTUAL="${VIRTUAL:-$HOST}"
+    _http_prepare
+    $SEND "$@"
+}
+
+## HTTP utilities
+
+_http_init_request() {
+    local method=$1
+    echo "$method $HTTP_PATH HTTP/1.0$CR"
+    echo "Host: $VIRTUAL$CR"
+    ! empty "$AUTH" && echo "$AUTH"
+}
+_http_end_header() {
+    echo "$CR"
+}
+
+## prepare some HTTP headers
+_http_prepare() {
     if ! empty "$USERNAME$PASSWORD"; then
 	AUTH="$(basic_auth "$USERNAME" "$PASSWORD")"
     fi
-    $SEND "$@"
+    VIRTUAL="${VIRTUAL:-$HOST}"
 }
 
 ## parse first argument: HOST | full URL template
@@ -201,6 +232,8 @@ __getmsg_parse() {
     echo "Did not recognize URL or authority '$1'" >&2
     return 1
 }
+
+## set message variables from URL parsing result (authority only)
 __msg_set_authority() {
     if ! empty "$url_user"; then
 	USERNAME=$(urldecode "$url_user")
@@ -214,7 +247,7 @@ __msg_set_authority() {
     fi
 }
 __getmsg_simple() {
-    URL="$(
+    HTTP_PATH="$(
 	n=1
 	for arg in "$@"; do
 	    shift; set -- "$@" "$(__getmsg_encode "$arg" $n)"
@@ -223,11 +256,9 @@ __getmsg_simple() {
 	printf "$TEMPLATE" "$@"
     )"
     {
-	echo "GET $URL HTTP/1.0$CR"
-	echo "Host: $VIRTUAL$CR"
-	! empty "$AUTH" && echo "$AUTH"
-	echo "$CR"
-    } | __nc "$TIMEOUT" "$HOST" "$PORT"
+	_http_init_request GET
+	_http_end_header
+    } | _connect
 }
 __getmsg_encode() {
     if type encode_$TYPE >/dev/null; then
@@ -265,9 +296,11 @@ _opt_rawmsg() {
     esac
     return 0
 }
+_var_rawmsg="$_var_net"
 
 rawmsg() {
-    local - HOST= TEMPLATE= PORT=80 TIMEOUT=3 TYPE=raw consumed
+    local - HOST= $_var_rawmsg consumed
+    local PORT=80 TIMEOUT=3 TYPE=raw
     _getopt rawmsg "$@"
 }
 _body_rawmsg() {
@@ -283,15 +316,14 @@ _body_rawmsg() {
 	TEMPLATE="$1"; shift
     fi
     if ? $# == 0; then set -- "$(default_$TYPE)"; fi
-    printf "$TEMPLATE" "$@" | __nc "$TIMEOUT" "$HOST" "$PORT"
+    printf "$TEMPLATE" "$@" | _connect
 }
 default_raw() {
     default_message
 }
 
-## no authentication support yet
 post_form() {
-    local url=$1 data=$2 
+    local url=$1 data=$2 TIMEOUT= HOST= PORT=80 AUTH= VIRTUAL=
     local url_scheme url_path url_query url_fragment
     local url_user url_auth url_host url_port
     if url_parse "$url"; then
@@ -305,12 +337,15 @@ post_form() {
 	echo "Could not parse URL '$url'" >&2
 	return 1
     fi
-    local path="${url_path:-/}${url_query:+?$url_query}"
+    __msg_set_authority
+    _http_prepare
+    local HTTP_PATH="${url_path:-/}${url_query:+?$url_query}"
     local content_type=application/x-www-form-urlencoded
-    echo "POST $path HTTP/1.0$CR
-Host: $url_host$CR
-Content-Type: $content_type$CR
-Content-Length: ${#data}$CR
-$CR
-$data" | nc "$url_host" "${url_port:-80}"
+    {
+	_http_init_request POST
+	echo "Content-Type: $content_type$CR"
+	echo "Content-Length: ${#data}$CR"
+	_http_end_header
+	echo -n "$data" 
+    } | _connect
 }

@@ -23,6 +23,7 @@ require net
 require lock
 require util
 require reverse
+require file
 
 normalize_address() {
     local NUMBER="$1"
@@ -92,7 +93,7 @@ if $_pb_PERSISTENT; then
 else
     _pb_PHONEBOOK="$CALLMONITOR_TRANSIENT"
 fi
-touch "$CALLMONITOR_TRANSIENT"
+ensure_file "$CALLMONITOR_TRANSIENT" "$CALLMONITOR_PERSISTENT"
 
 _pb_get() {
     local NUMBER="$1" NUMBER_NORM NAME exitval

@@ -43,6 +43,9 @@ require callmonitor_config
 require if_jfritz
 require phonebook
 require hash
+require file
+
+ensure_file "$CALLMONITOR_LISTENERS"
 
 export INSTANCE=0
 

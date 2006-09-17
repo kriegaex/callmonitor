@@ -22,28 +22,16 @@
 
 require message
 require url
+require http
 
 ## Basic networking utilities
-
-## carriage return & line feed
-CR=""
-LF="
-"
-
-## output an HTTP Authorization header (Basic)
-## basic_auth <user> <password>
-basic_auth() {
-    local user="$1" password="$2"
-    echo -n "$user:$password" | uuencode -m - |
-    sed -e '1d;2s/^/Authorization: Basic /;3,$s/^/ /;s/$/'$CR'/;$d'
-}
 
 ## connection; no arguments; needs TIMEOUT, HOST, and PORT
 _connect() {
     __nc "$TIMEOUT" "$HOST" "$PORT"
 }
 
-## option parsing
+## generic option parsing
 _getopt() {
     local - TEMP ERROR=0 name=$1
     shift
@@ -114,8 +102,8 @@ _opt_nc() {
     esac
     return 0
 }
-_var_nc="TIMEOUT= PORT="
-_var_net="$_var_nc TEMPLATE= TYPE="
+readonly _var_nc="TIMEOUT PORT"
+readonly _var_net="$_var_nc TEMPLATE TYPE"
 
 _getopt_getmsg() {
     getopt -n getmsg -o T:U:P:v:t:w:p: \
@@ -130,22 +118,23 @@ _opt_auth() {
     esac
     return 0
 }
-_var_auth="USERNAME= PASSWORD="
+readonly _var_auth="USERNAME PASSWORD"
 _opt_getmsg() {
     _opt_net "$@" || return $?
     _opt_auth "$@" || return $?
     case $1 in
 	-v|--virtual)
-	    VIRTUAL="$2"; return 2 ;;
+	    HTTP_VIRTUAL="$2"; return 2 ;;
 	--help)
 	    __getmsg_usage >&2; ERROR=1 ;;
     esac
     return 0
 }
-_var_getmsg="$_var_net $_var_auth VIRTUAL="
+readonly _var_getmsg="$_var_net $_var_auth HTTP_VIRTUAL"
 
 __getmsg() {
-    local - $_var_getmsg HOST= HTTP_PATH= AUTH= SEND=
+    local $_VAR_http; unset $_VAR_http
+    local - $_var_getmsg HOST= SEND=; unset $_var_getmsg
     local TYPE=message PORT=80 TIMEOUT=3 consumed
     SEND="$1"; shift
     _getopt getmsg "$@"
@@ -160,26 +149,6 @@ _body_getmsg() {
     if ? $# == 0; then set -- "$(default_$TYPE)"; fi
     _http_prepare
     $SEND "$@"
-}
-
-## HTTP utilities
-
-_http_init_request() {
-    local method=$1
-    echo "$method $HTTP_PATH HTTP/1.0$CR"
-    echo "Host: $VIRTUAL$CR"
-    ! empty "$AUTH" && echo "$AUTH"
-}
-_http_end_header() {
-    echo "$CR"
-}
-
-## prepare some HTTP headers
-_http_prepare() {
-    if ! empty "$USERNAME$PASSWORD"; then
-	AUTH="$(basic_auth "$USERNAME" "$PASSWORD")"
-    fi
-    VIRTUAL="${VIRTUAL:-$HOST}"
 }
 
 ## parse first argument: HOST | full URL template
@@ -264,10 +233,10 @@ _opt_rawmsg() {
     esac
     return 0
 }
-_var_rawmsg="$_var_net"
+readonly _var_rawmsg="$_var_net"
 
 rawmsg() {
-    local - HOST= $_var_rawmsg consumed
+    local - HOST= $_var_rawmsg consumed; unset $_var_rawmsg
     local PORT=80 TIMEOUT=3 TYPE=raw
     _getopt rawmsg "$@"
 }
@@ -291,9 +260,9 @@ default_raw() {
 }
 
 post_form() {
-    local url=$1 data=$2 TIMEOUT= HOST= PORT=80 AUTH= VIRTUAL=
-    local url_scheme url_path url_query url_fragment
-    local url_user url_auth url_host url_port
+    local url=$1 data=$2 TIMEOUT= HOST= PORT=80
+    local $_VAR_http; unset $_VAR_http
+    local $_VAR_url
     if url_parse "$url"; then
 	case $url_scheme in
 	    http)

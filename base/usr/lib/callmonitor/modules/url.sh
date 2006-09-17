@@ -53,6 +53,8 @@ urldecode() {
     esac
 }
 
+readonly _VAR_url="url_scheme url_path url_query url_fragment url_user url_auth url_host url_port"
+
 ## simple generic URL parser (no error checking!)
 url_parse() {
     local rest hier_part authority_path authority userinfo host_port

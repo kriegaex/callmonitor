@@ -291,3 +291,10 @@
 	Optionen weglassen (Fehler bei T-Online; Dank an dbox2freak)
 
 	callmonitor-1.5.1 veröffentlicht
+
+2006-09-23:
+
+	* roku.sh: Funktionen für Roku SoundBridge: sbmessage zeigt eine Zeile
+	statischen Text an (mit SB_TIMEOUT kann die Dauer beeinflusst werden),
+	sbmarquee zeigt wiederholt einen Lauftext an (SB_TIMES bestimmt, wie
+	oft).

@@ -134,9 +134,9 @@ readonly _var_getmsg="$_var_net $_var_auth HTTP_VIRTUAL"
 
 __getmsg() {
     local $_VAR_http; unset $_VAR_http
-    local - $_var_getmsg HOST= SEND=; unset $_var_getmsg
+    local - $_var_getmsg HOST=; unset $_var_getmsg
     local TYPE=message PORT=80 TIMEOUT=3 consumed
-    SEND="$1"; shift
+    local SEND="$1"; shift
     _getopt getmsg "$@"
 }
 _body_getmsg() {
@@ -236,8 +236,13 @@ _opt_rawmsg() {
 readonly _var_rawmsg="$_var_net"
 
 rawmsg() {
+    __rawmsg __rawmsg_simple "$@"
+}
+
+__rawmsg() {
     local - HOST= $_var_rawmsg consumed; unset $_var_rawmsg
     local PORT=80 TIMEOUT=3 TYPE=raw
+    local SEND="$1"; shift
     _getopt rawmsg "$@"
 }
 _body_rawmsg() {
@@ -253,6 +258,9 @@ _body_rawmsg() {
 	TEMPLATE="$1"; shift
     fi
     if ? $# == 0; then set -- "$(default_$TYPE)"; fi
+    $SEND "$@"
+}
+__rawmsg_simple() {
     printf "$TEMPLATE" "$@" | _connect
 }
 default_raw() {

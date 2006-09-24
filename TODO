@@ -2,9 +2,6 @@
 Testen
 ----------------------------------------------------------------------
 
-Callers und Listeners bei Initialisierung anlegen, falls nicht
-vorhanden
-
 ----------------------------------------------------------------------
 Wichtig
 ----------------------------------------------------------------------
@@ -13,15 +10,15 @@ Wichtig
 Demnächst anschauen
 ----------------------------------------------------------------------
 
+----------------------------------------------------------------------
+Nicht so wichtig
+----------------------------------------------------------------------
+
 Ergebnis der Rückwärtssuche im Fritzbox-Telefonbuch ablegen.
     (zu langsam!!)
 
 Die (SOURCE, DEST)-Paare der letzten k Anrufe aufzeichnen und als Vorgabe bei
 Testanrufen verwenden.
-
-----------------------------------------------------------------------
-Nicht so wichtig
-----------------------------------------------------------------------
 
 Wizard/Oberfläche zur Erstellung einfacher Regeln (für Einsteiger)
 

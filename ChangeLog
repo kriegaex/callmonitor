@@ -298,3 +298,6 @@
 	statischen Text an (mit SB_TIMEOUT kann die Dauer beeinflusst werden),
 	sbmarquee zeigt wiederholt einen Lauftext an (SB_TIMES bestimmt, wie
 	oft).
+
+	* rc.callmonitor: Callers und Listeners bei Initialisierung anlegen,
+	falls nicht vorhanden

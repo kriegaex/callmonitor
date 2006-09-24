@@ -23,6 +23,7 @@
 require message
 require url
 require http
+require getopt
 
 ## Basic networking utilities
 
@@ -31,28 +32,6 @@ _connect() {
     __nc "$TIMEOUT" "$HOST" "$PORT"
 }
 
-## generic option parsing
-_getopt() {
-    local - TEMP ERROR=0 name=$1
-    shift
-    TEMP="$(_getopt_$name "$@")" || return 1
-    set -f; eval "set -- $TEMP"; set +f
-    while true; do
-	_opt_$name "$@"; consumed=$?
-	if ? "ERROR > 0"; then
-	    return $ERROR
-	fi
-	if ? "consumed > 0"; then
-	    shift $consumed
-	else
-	    case $1 in
-		--) shift; break ;;
-		*) echo "$name: unrecognized option \`$1'"; return 1 ;;
-	    esac
-	fi
-    done
-    _body_$name "$@"
-}
 __getmsg_usage() {
 #<
     cat <<'EOH'
@@ -77,9 +56,6 @@ Send a message in a simple HTTP GET request.
   <authority>            [user[:password]@]host[:port]
 EOH
 #>
-}
-getmsg() {
-    __getmsg __getmsg_simple "$@"
 }
 
 # return value: number of consumed arguments
@@ -135,8 +111,8 @@ readonly _var_getmsg="$_var_net $_var_auth HTTP_VIRTUAL"
 __getmsg() {
     local $_VAR_http; unset $_VAR_http
     local - $_var_getmsg HOST=; unset $_var_getmsg
-    local TYPE=message PORT=80 TIMEOUT=3 consumed
-    local SEND="$1"; shift
+    local TYPE=message PORT=80 TIMEOUT=3
+    local SEND="__getmsg_$1"; shift
     _getopt getmsg "$@"
 }
 _body_getmsg() {
@@ -149,6 +125,31 @@ _body_getmsg() {
     if ? $# == 0; then set -- "$(default_$TYPE)"; fi
     _http_prepare
     $SEND "$@"
+}
+
+getmsg() {
+    __getmsg simple "$@"
+}
+__getmsg_simple() {
+    HTTP_PATH="$(
+	n=1
+	for arg in "$@"; do
+	    shift; set -- "$@" "$(__getmsg_encode "$arg" $n)"
+	    let n++
+	done
+	printf "$TEMPLATE" "$@"
+    )"
+    {
+	_http_init_request GET
+	_http_end_header
+    } | _connect
+}
+__getmsg_encode() {
+    if type encode_$TYPE >/dev/null; then
+	urlencode "$(encode_$TYPE "$1" "$2")"
+    else
+	urlencode "$1"
+    fi
 }
 
 ## parse first argument: HOST | full URL template
@@ -183,27 +184,8 @@ __msg_set_authority() {
 	PORT=$(urldecode "$url_port")
     fi
 }
-__getmsg_simple() {
-    HTTP_PATH="$(
-	n=1
-	for arg in "$@"; do
-	    shift; set -- "$@" "$(__getmsg_encode "$arg" $n)"
-	    let n++
-	done
-	printf "$TEMPLATE" "$@"
-    )"
-    {
-	_http_init_request GET
-	_http_end_header
-    } | _connect
-}
-__getmsg_encode() {
-    if type encode_$TYPE >/dev/null; then
-	urlencode "$(encode_$TYPE "$1" "$2")"
-    else
-	urlencode "$1"
-    fi
-}
+
+## 'raw' TCP message
 
 __rawmsg_usage() {
 #<
@@ -235,14 +217,10 @@ _opt_rawmsg() {
 }
 readonly _var_rawmsg="$_var_net"
 
-rawmsg() {
-    __rawmsg __rawmsg_simple "$@"
-}
-
 __rawmsg() {
-    local - HOST= $_var_rawmsg consumed; unset $_var_rawmsg
+    local - HOST= $_var_rawmsg; unset $_var_rawmsg
     local PORT=80 TIMEOUT=3 TYPE=raw
-    local SEND="$1"; shift
+    local SEND="__rawmsg_$1"; shift
     _getopt rawmsg "$@"
 }
 _body_rawmsg() {
@@ -260,12 +238,18 @@ _body_rawmsg() {
     if ? $# == 0; then set -- "$(default_$TYPE)"; fi
     $SEND "$@"
 }
+
+rawmsg() {
+    __rawmsg simple "$@"
+}
 __rawmsg_simple() {
     printf "$TEMPLATE" "$@" | _connect
 }
 default_raw() {
     default_message
 }
+
+## post form data (application/x-www-form-urlencoded) via HTTP
 
 post_form() {
     local url=$1 data=$2 TIMEOUT= HOST= PORT=80

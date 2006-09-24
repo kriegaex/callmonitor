@@ -36,7 +36,7 @@ default_sbmessage() { default_short_message; }
 encode_sbmessage() { encode_sb "$@"; }
 
 sbmessage() {
-    __rawmsg __rawmsg_sbmessage --port=4444 -t dummy "$@"
+    __rawmsg sbmessage --port=4444 -t dummy "$@"
 }
     
 __rawmsg_sbmessage() {
@@ -55,7 +55,7 @@ default_sbmarquee() { default_message; }
 encode_sbmarquee() { encode_sb "$@"; }
 
 sbmarquee() {
-    __rawmsg __rawmsg_sbmarquee --port=4444 -t dummy "$@"
+    __rawmsg sbmarquee --port=4444 -t dummy "$@"
 }
 __rawmsg_sbmarquee() {
     {

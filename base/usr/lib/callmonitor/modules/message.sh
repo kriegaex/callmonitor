@@ -66,15 +66,15 @@ default_short_message() {
 wrap() {
     local max=${1:-10000} text=$2
     local len=${#text}
-    if ? "$len == 0"; then
+    if ? "len == 0"; then
 	return
-    elif ? "$len <= $max"; then
+    elif ? "len <= max"; then
 	echo "$text"
     else
 	local a=1
-	while ? "$a <= $len"; do
+	while ? "a <= len"; do
 	    expr substr "$text" $a $max
-	    let a+=$max
+	    let a+=max
 	done
     fi
 }

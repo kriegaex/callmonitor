@@ -136,7 +136,7 @@ prepare_mail() {
 	    *)	ln -s "$realpath" "$target" ;;
 	esac
 	add TEMP "$subdir/$basename"
-	let COUNT="$COUNT + 1"
+	let COUNT++
     }
     if let "${ATTACHMENTS+1}"; then
 	unset TEMP

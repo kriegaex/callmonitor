@@ -23,9 +23,11 @@
 require if_jfritz_status
 require hash
 
+readonly _var_jfritz="event id timestamp ext source dest remote duration provider state output"
+
 ## analyze call information
 __read() {
-    local timestamp event id ext source dest remote duration provider
+    local $_var_jfritz
     while _j_parse; do
 
 	## complete information
@@ -34,7 +36,6 @@ __read() {
 	    DISCONNECT)	_j_load source dest provider ext ;;
 	esac
 
-	local state output
 	_j_load state
 	_j_transition
 	
@@ -114,7 +115,7 @@ _j_transition() {
 }
 
 _j_parse() {
-    local _1 _2 _3 _4 empty DEBUG
+    local _1 _2 _3 _4 _5 empty DEBUG
     IFS=";" read -r timestamp event _1 _2 _3 _4 _5 empty || return 1
     id=$_1
     DEBUG="timestamp=$timestamp event=$event id=$id"
@@ -146,7 +147,7 @@ _j_parse() {
 
 __read_from_iface() {
     local pidfile='/var/run/callmonitor/pid/sleep'
-    let "_j_SLEEP = (_j_SLEEP < 1) ? 1 : _j_SLEEP"
+    local _j_SLEEP=$(((_j_SLEEP < 1) ? 1 : _j_SLEEP))
     if ! _j_is_up; then
 	__info "Auto-dialing #96*5* to enable telefon's interface ..."
 	_j_enable
@@ -197,6 +198,7 @@ _j_output() {
 	"EXT=$EXT DURATION=$DURATION PROVIDER=$PROVIDER"
 
     if ! empty "$EVENT"; then
+	unset $_var_jfritz
 	incoming_call
     fi
 }

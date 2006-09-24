@@ -81,14 +81,14 @@ __incoming_call() {
 	"ID=$ID EXT=$EXT DURATION=$DURATION TIMESTAMP='$TIMESTAMP'" \
 	"PROVIDER=$PROVIDER"
 
-    local vars="SOURCE DEST SOURCE_NAME DEST_NAME EVENT ID EXT DURATION
+    local _vars_cm="SOURCE DEST SOURCE_NAME DEST_NAME EVENT ID EXT DURATION
 	TIMESTAMP PROVIDER"
 
     ## make call information available to listeners
-    export $vars
+    export $_vars_cm
 
     ## dump information to file
-    __dump $vars
+    __dump $_vars_cm
 
     local event_spec source_pattern dest_pattern listener rule=0
     while read -r event_spec source_pattern dest_pattern listener
@@ -165,7 +165,7 @@ __match() {
 	    ;;
     esac
     case $PATTERN in
-	!*) let RESULT="!$RESULT" ;;
+	!*) let RESULT="!RESULT" ;;
     esac
     if ? RESULT == 0; then
 	__debug_rule "parameter $PARAM='$VALUE' matches pattern '$PATTERN'"

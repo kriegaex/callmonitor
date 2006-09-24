@@ -23,11 +23,11 @@
 require if_jfritz_status
 require hash
 
-readonly _var_jfritz="event id timestamp ext source dest remote duration provider state output"
+readonly var_jfritz="event id timestamp ext source dest remote duration provider state output"
 
 ## analyze call information
 __read() {
-    local $_var_jfritz
+    local $var_jfritz
     while _j_parse; do
 
 	## complete information
@@ -198,7 +198,7 @@ _j_output() {
 	"EXT=$EXT DURATION=$DURATION PROVIDER=$PROVIDER"
 
     if ! empty "$EVENT"; then
-	unset $_var_jfritz
+	unset $var_jfritz
 	incoming_call
     fi
 }
@@ -206,11 +206,14 @@ _j_output() {
 ## store attributes per connection id
 new_hash _j_
 _j_store() {
+    local var
     for var; do eval "_j__put ${var}_${id} \"\$$var\""; done
 }
 _j_load() {
+    local var
     for var; do _j__get ${var}_${id} "$var"; done
 }
 _j_remove() {
+    local var
     for var; do unset $var; _j__remove ${var}_${id}; done
 }

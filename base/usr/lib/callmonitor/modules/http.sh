@@ -35,7 +35,7 @@ _http_basic_auth() {
 
 ## HTTP utilities
 
-readonly _VAR_http="HTTP_PATH HTTP_VIRTUAL HTTP_AUTH"
+readonly VAR_http="HTTP_PATH HTTP_VIRTUAL HTTP_AUTH"
 _http_init_request() {
     local method=$1
     echo "$method $HTTP_PATH HTTP/1.0$CR"

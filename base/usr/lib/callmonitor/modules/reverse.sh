@@ -53,22 +53,36 @@ _reverse_lookup() {
 } 9>&1
 
 _reverse_dasoertliche_request() {
-    getmsg -w 5 www.dasoertliche.de "$1" \
-	-t '/DB4Web/es/oetb2suche/home.htm?main=Antwort&s=2&SKN=2&kw_invers=%s'
+    getmsg -w 5 www2.dasoertliche.de -t '/Controller?form_name=search_inv&ph=%s' "$1" 
 }
 _reverse_dasoertliche_extract() {
-    sed -e '
-	/^[[:space:]]*<td[^>]*><a[[:space:]]\+class="\(blb\|bigblunderrd\)".*<\/td>[[:space:]]*$/!d
-	\#<br># s#[[:space:]]*$#)#
-	s#<br># (#
-	s#<br>#, #g
-	s#<[^>]*># #g
-	s#[[:space:]]\+# #g
-	s#^ ##
-	s# \([,)]\)#\1#g
-	s#\([(]\) #\1#g
-	s# $##
-	q # first entry only
+   sed -n -e '
+	: main
+        \#Kein Teilnehmer gefunden:#q
+        \#<a[[:space:]].*[[:space:]]class="entry">#,\#<input[[:space:]]type="hidden"# {
+                s#^.*<a[[:space:]].*[[:space:]]class="entry">\([^<]*\)</a>.*$#\1#
+                t hold
+                \#<br/># H
+                \#<input[[:space:]]type="hidden"# b cleanup
+        }
+        b
+
+        : hold
+        h
+	b
+
+	: cleanup
+	g
+	s/\(<br\/>\)\?\n\|<br\/>/, /g
+	s/<[^>]*>/ /g
+	s/\&nbsp;/ /g
+	s/[[:space:]]\+/ /g
+	s/^ //
+	s/ \([,)]\)/\1/g
+	s/\([(]\) /\1/g
+	s/[[:space:],]*$//
+	p
+	q
     '
 }
 

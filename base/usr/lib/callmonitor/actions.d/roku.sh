@@ -111,7 +111,7 @@ _sb_timeout() {
     local overlap=${SB_OVERLAP:-10}
 
     ## how fast are the characters moving
-    local speed=${SB_SPEED:-7500} ## milli-chars per second :o)
+    local speed=${SB_SPEED:-7200} ## milli-chars per second :o)
     local time
     let "time = (len + visible - overlap) * 1000000 / speed" ## milliseconds
     echo $((time < 0 ? 0 : time))

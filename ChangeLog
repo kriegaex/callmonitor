@@ -301,3 +301,13 @@
 
 	* rc.callmonitor: Callers und Listeners bei Initialisierung anlegen,
 	falls nicht vorhanden
+
+2006-09-27:
+
+	* reverse.sh: dasoertliche.de hat seine Webseiten umgestellt;
+	Anpassung (Dienst momentan recht unzuverlässig; nur jeder 3. bis 5.
+	Aufruf erfolgreich (?))
+
+2006-09-29:
+
+	* reverse.sh: www.dastelefonbuch.de als neuer Rückwärtssuche-Provider

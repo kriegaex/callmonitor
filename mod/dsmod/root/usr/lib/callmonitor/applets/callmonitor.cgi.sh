@@ -28,7 +28,7 @@ check "$CALLMONITOR_DEBUG" yes:debug
 check "$CALLMONITOR_REVERSE" yes:reverse
 select "$CALLMONITOR_REVERSE_CACHE" no transient:trans persistent:pers
 select "$CALLMONITOR_REVERSE_PROVIDER" dasoertliche:oert \
-    inverssuche:invers
+    inverssuche:invers telefonbuch:telbu
 
 SYSLOG='$(lang de:"System-Log" en:"system log")'
 if has_package syslogd; then
@@ -95,6 +95,8 @@ cat << EOF
     )</label>
     <label for="provider">$(lang de:"bei" en:"at")</label>
     <select name="reverse_provider" id="provider">
+	<option title="www.dastelefonbuch.de"
+	    value="telefonbuch"$telbu_sel>DasTelefonbuch</option>
 	<option title="www.dasoertliche.de"
 	    value="dasoertliche"$oert_sel>Das÷rtliche</option>
 	<option title="www.inverssuche.de"

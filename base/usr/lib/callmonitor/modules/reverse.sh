@@ -35,9 +35,9 @@ reverse_lookup() {
     esac
     local prov
     case $CALLMONITOR_REVERSE_PROVIDER in
-	inverssuche|dasoertliche)
+	inverssuche|dasoertliche|telefonbuch)
 	    prov=$CALLMONITOR_REVERSE_PROVIDER ;;
-	*) prov=dasoertliche ;;
+	*) prov=telefonbuch ;;
     esac
     _reverse_lookup $prov "$NUMBER"
 }
@@ -53,17 +53,18 @@ _reverse_lookup() {
 } 9>&1
 
 _reverse_dasoertliche_request() {
-    getmsg -w 5 www2.dasoertliche.de -t '/Controller?form_name=search_inv&ph=%s' "$1" 
+    getmsg -w 5 'http://www.dasoertliche.de/Controller?form_name=search_inv&ph=%s' "$1" 
+    ## post_form http://www.dasoertliche.de/Controller "form_name=search_inv&la=de&ph=$(urlencode "$1")"
 }
 _reverse_dasoertliche_extract() {
    sed -n -e '
 	: main
         \#Kein Teilnehmer gefunden:#q
         \#<a[[:space:]].*[[:space:]]class="entry">#,\#<input[[:space:]]type="hidden"# {
-                s#^.*<a[[:space:]].*[[:space:]]class="entry">\([^<]*\)</a>.*$#\1#
-                t hold
-                \#<br/># H
-                \#<input[[:space:]]type="hidden"# b cleanup
+	    s#^.*<a[[:space:]].*[[:space:]]class="entry">\([^<]*\)</a>.*$#\1#
+	    t hold
+	    \#<br/># H
+	    \#<input[[:space:]]type="hidden"# b cleanup
         }
         b
 
@@ -83,6 +84,23 @@ _reverse_dasoertliche_extract() {
 	s/[[:space:],]*$//
 	p
 	q
+    '
+}
+
+_reverse_telefonbuch_request() {
+    getmsg -w 5 'http://www.dastelefonbuch.de/?la=de&kw=%s&cmd=search' "$1"
+}
+_reverse_telefonbuch_extract() {
+    sed -n -e '
+	/kein Teilnehmer gefunden/q
+	/<!-- \*\{2,\} Treffer Eintr.ge \*\{2,\} -->/,/<!-- \*\{2,\} Ende Treffer Eintr.ge \*\{2,\} -->/ {
+	    \#^[[:space:]]*$#! H
+	}
+	/<!-- \*\{2,\} Ende Treffer Eintr.ge \*\{2,\} -->/ {
+	    g
+	    s#^[^<]*\(<[^a][^<]*\)*<a[^>]*title="\([^"]*\)"[[:space:]]*>.*<td width="180">\([^<]*\)</td>.*<span title="\([^"]*\)".*$#\2, \3, \4# p
+	    q
+	}
     '
 }
 

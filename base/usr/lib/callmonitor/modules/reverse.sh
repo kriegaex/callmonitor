@@ -35,7 +35,7 @@ reverse_lookup() {
     esac
     local prov
     case $CALLMONITOR_REVERSE_PROVIDER in
-	inverssuche|dasoertliche|telefonbuch)
+	inverssuche|dasoertliche|telefonbuch|goyellow)
 	    prov=$CALLMONITOR_REVERSE_PROVIDER ;;
 	*) prov=telefonbuch ;;
     esac
@@ -53,8 +53,7 @@ _reverse_lookup() {
 } 9>&1
 
 _reverse_dasoertliche_request() {
-    getmsg -w 5 'http://www.dasoertliche.de/Controller?form_name=search_inv&ph=%s' "$1" 
-    ## post_form http://www.dasoertliche.de/Controller "form_name=search_inv&la=de&ph=$(urlencode "$1")"
+    wget "http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$(urlencode "$1")" -q -O -
 }
 _reverse_dasoertliche_extract() {
    sed -n -e '
@@ -98,9 +97,47 @@ _reverse_telefonbuch_extract() {
 	}
 	/<!-- \*\{2,\} Ende Treffer Eintr.ge \*\{2,\} -->/ {
 	    g
-	    s#^[^<]*\(<[^a][^<]*\)*<a[^>]*title="\([^"]*\)"[[:space:]]*>.*<td width="180">\([^<]*\)</td>.*<span title="\([^"]*\)".*$#\2, \3, \4# p
+	    s#^[^<]*\(<[^a][^<]*\)*<a[^>]*title="\([^"]*\)"[[:space:]]*>.*<td width="180">\([^<]*\)</td>.*<span title="\([^"]*\)".*$#\2, \3, \4#
+	    t cleanup
 	    q
 	}
+	b
+	: cleanup
+	s#,\([[:space:]]*,\)\+#,#
+	p
+	q
+    '
+}
+
+_reverse_goyellow_request() {
+    wget "http://www.goyellow.de/inverssuche/?TEL=$(urlencode "$1")" -q -O -
+}
+_reverse_goyellow_extract() {
+    sed -n -e '
+	\#Es wurden keine Eintr.ge gefunden.# q
+	\#<div[^>]*id="listing"#,\#<div[^>]*class="col contact# {
+	    /title="Detailinformationen/ b name
+	    \#<h3>.*</h3># b name
+	    /<p class="address/ b address
+	}
+	\#<div[^>]*class="col contact# {
+	    g
+	    s/\n/, /g
+	    s/[,[:space:]]*$//
+	    s/[ ]/ /g
+	    p
+	    q
+	}
+	b
+	: name
+	s#^[^<]*<\(a\|h3\)[^>]*>\([^<]*\)</\(a\|h3\)>.*#\2#
+	h
+	b
+	: address
+	s#^[^<]*<p[^>]*class="address">\(.*\)</p>#\1#
+	s#<br />#, #g
+	H
+	b
     '
 }
 

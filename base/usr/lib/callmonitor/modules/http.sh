@@ -40,6 +40,7 @@ _http_init_request() {
     local method=$1
     echo "$method $HTTP_PATH HTTP/1.0$CR"
     echo "Host: $HTTP_VIRTUAL$CR"
+    echo "User-Agent: callmonitor$CR"
     ! empty "$HTTP_AUTH" && echo "$HTTP_AUTH"
 }
 _http_end_header() {

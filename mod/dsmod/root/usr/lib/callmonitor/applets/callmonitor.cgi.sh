@@ -84,18 +84,19 @@ sec_end
 sec_begin '$(lang de:"Rückwärtssuche" en:"Reverse lookup")'
 
 cat << EOF
-<p>
-    <input type="hidden" name="reverse" value="no">
-    <input type="checkbox" name="reverse" value="yes"$reverse_chk id="r4">
-    <label title="$(lang
+<table>
+<tr>
+    <td><input type="hidden" name="reverse" value="no"><!--
+    --><input type="checkbox" name="reverse" value="yes"$reverse_chk id="r4"></td>
+    <td><label title="$(lang
 	de:"Rufnummern wenn möglich in Namen auflösen"
 	en:"Resolve numbers to names if possible"
     )" for="r4">$(lang
 	de:"Rückwärtssuche durchführen"
 	en:"Perform reverse lookup"
     )</label>
-    <label for="provider">$(lang de:"bei" en:"at")</label>
-    <select name="reverse_provider" id="provider">
+    <label for="provider">$(lang de:"bei" en:"at")</label></td>
+    <td><select name="reverse_provider" id="provider">
 	<option title="www.dastelefonbuch.de"
 	    value="telefonbuch"$telbu_sel>DasTelefonbuch</option>
 	<option title="www.dasoertliche.de"
@@ -104,27 +105,27 @@ cat << EOF
 	    value="inverssuche"$invers_sel>inverssuche.de</option>
 	<option title="www.goyellow.de"
 	    value="goyellow"$goye_sel>GoYellow</option>
-    </select>
-</p>
-<p>
-    <label for="area">$(lang 
+    </select></td>
+</tr>
+<tr><td />
+    <td><label for="area">$(lang 
 	de:"Ersatzweise Vorwahl nachschlagen bei"
-	en:"Alternatively lookup area code at")</label>
-    <select name="area_provider" id="area">
+	en:"Alternatively lookup area code at")</label></td>
+    <td><select name="area_provider" id="area">
 	<option title="Keine Auflösung von Vorwahlen"
 	    value=""$null_sel>$(lang de:"niemandem" en:"nowhere")</option>
 	<option title="callmonitor.berlios.de"
 	    value="callmonitor"$cm_sel>Callmonitor</option>
 	<option title="www.google.de"
 	    value="google"$google_sel>Google</option>
-    </select>
-</p>
-<p>
-    <label for="cache">$(lang
+    </select></td>
+</tr>
+<tr><td />
+    <td><label for="cache">$(lang
 	de:"Suchergebnisse zwischenspeichern?"
 	en:"Cache query results?"
-    )</label>
-    <select name="reverse_cache" id="cache">
+    )</label></td>
+    <td><select name="reverse_cache" id="cache">
 	<option title="$(lang
 	    de:"Keine Speicherung der Namen"
 	    en:"Names are not stored"
@@ -141,16 +142,17 @@ cat << EOF
 	    de:"Dauerhaft" en:"Persistently")</option>
     </select>
     [<a href="/cgi-bin/file.cgi?id=callers">$(lang 
-	de:"Callers&nbsp;bearbeiten" en:"Edit&nbsp;Callers")</a>]
-</p>
-<p>
-    <label for="okz">$(lang
+	de:"Callers&nbsp;bearbeiten" en:"Edit&nbsp;Callers")</a>]</td>
+</tr>
+<tr><td />
+    <td><label for="okz">$(lang
 	de:"Vorwahl für lokale Rufnummern"
 	en:"Area code for local numbers"
-    ):</label>
-    <input type="text" name="okz" value="$(html "$CALLMONITOR_OKZ")"
-	size="5" id="okz">
-</p>
+    ):</label></td>
+    <td><input type="text" name="okz" value="$(html "$CALLMONITOR_OKZ")"
+	size="5" id="okz"></td>
+</tr>
+</table>
 EOF
 
 sec_end

@@ -29,6 +29,7 @@ check "$CALLMONITOR_REVERSE" yes:reverse
 select "$CALLMONITOR_REVERSE_CACHE" no transient:trans persistent:pers
 select "$CALLMONITOR_REVERSE_PROVIDER" dasoertliche:oert \
     inverssuche:invers telefonbuch:telbu goyellow:goye
+select "$CALLMONITOR_AREA_PROVIDER" google callmonitor:cm :null
 
 SYSLOG='$(lang de:"System-Log" en:"system log")'
 if has_package syslogd; then
@@ -103,6 +104,19 @@ cat << EOF
 	    value="inverssuche"$invers_sel>inverssuche.de</option>
 	<option title="www.goyellow.de"
 	    value="goyellow"$goye_sel>GoYellow</option>
+    </select>
+</p>
+<p>
+    <label for="area">$(lang 
+	de:"Ersatzweise Vorwahl nachschlagen bei"
+	en:"Alternatively lookup area code at")</label>
+    <select name="area_provider" id="area">
+	<option title="Keine Auflösung von Vorwahlen"
+	    value=""$null_sel>$(lang de:"niemandem" en:"nowhere")</option>
+	<option title="callmonitor.berlios.de"
+	    value="callmonitor"$cm_sel>Callmonitor</option>
+	<option title="www.google.de"
+	    value="google"$google_sel>Google</option>
     </select>
 </p>
 <p>

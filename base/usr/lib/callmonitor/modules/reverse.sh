@@ -29,21 +29,44 @@ require recode
 ## The resulting name and address should be returned in Latin-1 encoding
 
 reverse_lookup() {
-    local NUMBER="$1"
+    local NUMBER="$1" prov area_prov child afile name
     case "$NUMBER" in
 	00*|[^0]*|*[^0-9]*) return 1;
     esac
-    local prov
     case $CALLMONITOR_REVERSE_PROVIDER in
 	inverssuche|dasoertliche|telefonbuch|goyellow)
 	    prov=$CALLMONITOR_REVERSE_PROVIDER ;;
 	*) prov=telefonbuch ;;
     esac
-    _reverse_lookup $prov "$NUMBER"
+    case $CALLMONITOR_AREA_PROVIDER in
+	google|callmonitor)
+	    area_prov=$CALLMONITOR_AREA_PROVIDER ;;
+	*) area_prov= ;;
+    esac
+
+    afile="/var/run/phonebook/lookup-$area_prov-$NUMBER"
+    _reverse_lookup $area_prov "$NUMBER" | _reverse_atomic "$afile" & child=$!
+    name="$(_reverse_lookup $prov "$NUMBER")"
+    if ! empty "$name"; then
+	echo "$name"
+    else
+	name="$(cat "$afile" 2>/dev/null)"
+	if ! empty "$name"; then
+	    echo "$NUMBER ($name)" ## $name is only city
+	fi
+    fi
+    { kill "$child" 2>/dev/null; rm -f "$afile"; } &
+}
+_reverse_atomic() {
+    local file=$1 tmp="$1.tmp"
+    cat > "$tmp" && mv "$tmp" "$file" || rm "$tmp"
 }
 
 _reverse_lookup() {
     local prov=$1 number=$2 exit=0
+    case $prov in
+	"") return 0 ;;
+    esac
     eval $({
 	{ _reverse_${prov}_request "$number"; echo exit=$? >&4; } |
 	_reverse_${prov}_extract
@@ -169,7 +192,7 @@ _reverse_inverssuche_extract() {
 _reverse_google_request() {
     # anonymize as far as possible (use only the first six digits)
     local number="$(expr substr "$1" 1 6)0000000000"
-    getmsg -w 3 "http://www.google.de/search?num=0&q=%s" "$number"
+    getmsg -w 4 "http://www.google.de/search?num=0&q=%s" "$number"
 }
 _reverse_google_extract() {
     sed -n -e '
@@ -186,7 +209,7 @@ _reverse_google_extract() {
 _reverse_callmonitor_request() {
     # anonymize (use only the first six digits)
     local number="$(expr substr "$1" 1 6)"
-    getmsg -w 3 'http://callmonitor.berlios.de/vorwahl.php?number=%s' "$number" | sed -e "1,/^$CR\?$/d"
+    getmsg -w 4 'http://callmonitor.berlios.de/vorwahl.php?number=%s' "$number" | sed -e "1,/^$CR\?$/d"
 }
 _reverse_callmonitor_extract() {
     local vorwahl ortsnetz

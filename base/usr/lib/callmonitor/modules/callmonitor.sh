@@ -68,6 +68,10 @@ __incoming_call() {
 	    *) false ;;
 	esac ||
 	SOURCE_NAME="$(_pb_main $SOURCE_OPTIONS -- get "$SOURCE")"
+    else ## empty "$SOURCE"
+	case $EVENT in
+	    out:*) SOURCE=$PROVIDER ;;
+	esac
     fi
     if ! empty "$DEST"; then
 	case "$EVENT,$PROVIDER" in 
@@ -75,6 +79,10 @@ __incoming_call() {
 	    *) false ;;
 	esac ||
 	DEST_NAME="$(_pb_main $DEST_OPTIONS -- get "$DEST")"
+    else ## empty "$DEST"
+	case $EVENT in
+	    in:*) DEST=$PROVIDER ;;
+	esac
     fi
     __info "[$INSTANCE] EVENT=$EVENT SOURCE='$SOURCE' DEST='$DEST'" \
 	"SOURCE_NAME='$SOURCE_NAME' DEST_NAME='$DEST_NAME'" \

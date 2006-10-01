@@ -31,7 +31,7 @@ FIFO_DIR=${FIFO%/*}
 mkdir -p "$FIFO_DIR"
 PIDFILE="/var/run/$DAEMON/pid/$DAEMON"
 
-case "$1" in
+case $1 in
     ""|load|start|restart)
 	if [ ! -r "$CALLMONITOR_USERCFG" ]; then
 	    echo "Error[$DAEMON]: not configured" >&2
@@ -106,7 +106,7 @@ convert() {
     fi
 }
 
-case "$1" in
+case $1 in
     ""|load)
 	convert
 	mod_register

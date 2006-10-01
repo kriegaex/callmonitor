@@ -31,7 +31,7 @@ html() {
 	    s/"/\&quot;/g
 	'
     else
-	case "$*" in
+	case $* in
 	    *[\&\<\>\'\"]*) httpd -e "$*" ;;
 	    *) echo "$*" ;;
 	esac

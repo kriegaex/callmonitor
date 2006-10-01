@@ -27,7 +27,7 @@ require file
 
 normalize_address() {
     local NUMBER=$1
-    case "$NUMBER" in
+    case $NUMBER in
 	SIP*) normalize_sip "$NUMBER" ;;
 	*)    normalize_tel "$NUMBER" ;;
     esac
@@ -56,7 +56,7 @@ normalize_tel() {
 ## transform SIP[0-9] into SIP addresses
 normalize_sip() {
     local NUMBER=$1
-    case "$NUMBER" in
+    case $NUMBER in
 	SIP[0-9])
 	    if eval "? \"\${${NUMBER}_address+1}\""; then
 		eval "NUMBER=\"\$${NUMBER}_address\""
@@ -72,7 +72,7 @@ fi
 
 ## Options to be overwritten before call of phonebook functions
 _pb_REVERSE=false
-case "$CALLMONITOR_REVERSE" in
+case $CALLMONITOR_REVERSE in
     yes) _pb_REVERSE=true ;;
     no)  _pb_REVERSE=false ;;
 esac
@@ -82,7 +82,7 @@ _pb_debug() { true; }
 
 ## Constant options set from config file
 _pb_CACHE=true _pb_PERSISTENT=false 
-case "$CALLMONITOR_REVERSE_CACHE" in
+case $CALLMONITOR_REVERSE_CACHE in
     no)  _pb_CACHE=false _pb_PERSISTENT=false ;;
     transient)	_pb_CACHE=true _pb_PERSISTENT=false ;;
     persistent) _pb_CACHE=true _pb_PERSISTENT=true ;;
@@ -101,7 +101,7 @@ _pb_get() {
     exitval=$?; NAME=$__
     if ? "exitval != 0"; then
 	normalize_address "$NUMBER"; NUMBER_NORM=$__
-	case $NUMBER_NORM in "$NUMBER") ;; *)
+	case $NUMBER_NORM in $NUMBER) ;; *)
 	    _pb_get_local "$NUMBER_NORM"
 	    exitval=$?; NAME=$__
 	;; esac
@@ -122,11 +122,11 @@ _pb_get_local() {
     local NUMBER=$1 NUMBER_RE NAME num nam
     unset NAME
     while read -r num nam; do
-	case $num in "$NUMBER") NAME=$nam; break ;; esac
+	case $num in $NUMBER) NAME=$nam; break ;; esac
     done < "$CALLMONITOR_PERSISTENT"
     if ! ? "${NAME+1}"; then
 	while read -r num nam; do
-	    case $num in "$NUMBER") NAME=$nam; break ;; esac
+	    case $num in $NUMBER) NAME=$nam; break ;; esac
 	done < "$CALLMONITOR_TRANSIENT"
     fi
     if ? "${NAME+1}"; then

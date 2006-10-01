@@ -30,7 +30,7 @@ require recode
 
 reverse_lookup() {
     local number=$1 prov area_prov child afile name
-    case "$number" in
+    case $number in
 	00*|[^0]*|*[^0-9]*) return 1;
     esac
     case $CALLMONITOR_REVERSE_PROVIDER in

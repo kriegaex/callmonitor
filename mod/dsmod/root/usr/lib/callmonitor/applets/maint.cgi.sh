@@ -45,7 +45,7 @@ eval "$(modcgi cmd maint)"
 
 if ! empty "$MAINT_CMD"; then
     cgi_begin "$TITLE ..."
-    case "$MAINT_CMD" in
+    case $MAINT_CMD in
 	phonebook_tidy)
 	    echo "<p>$(lang de:"Räume Callers auf" en:"Tidying up Callers"):</p>"
 	    phonebook tidy 2>&1 | pre

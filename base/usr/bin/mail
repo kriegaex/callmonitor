@@ -122,7 +122,7 @@ prepare_mail() {
 	local file=$1 realpath
 	local basename=$(basename "$file")
 	case $file in 
-	    "-")
+	    -)
 		basename="stdin.txt"
 		realpath="-"
 	    ;; 
@@ -131,7 +131,7 @@ prepare_mail() {
 	local subdir=$COUNT
 	local target=$dir/$subdir/$basename
 	mkdir "$dir/$subdir"
-	case "$realpath" in
+	case $realpath in
 	    /var/*|-) cat "$file" > "$target" ;;
 	    *)	ln -s "$realpath" "$target" ;;
 	esac
@@ -191,7 +191,7 @@ config() {
 }
 
 trap 'exit 2' HUP INT QUIT TERM
-case "$1" in
+case $1 in
     send|sendonce|enqueue) 
 	## use push service configuration per default
 	eval "$(config)"
@@ -215,7 +215,7 @@ case "$1" in
 
 	alias roll='set -- "$@" "$1"; shift'
 	while true; do
-	    case "$1" in
+	    case $1 in
 		-[MpD]) roll; roll ;;
 		-s) SUBJECT=$2; shift 2 ;;
 		-f) FROM=$2; shift 2 ;;
@@ -229,7 +229,7 @@ case "$1" in
 	    esac
 	done
 	id=$(date +%s)-$$
-	case "$1" in
+	case $1 in
 	    send|enqueue)
 		trap "spool $id" EXIT
 		;;
@@ -240,7 +240,7 @@ case "$1" in
 	prepare_mail $id
 	;;
 esac
-case "$1" in
+case $1 in
     send)
 	if send $id; then
 	    remove $id

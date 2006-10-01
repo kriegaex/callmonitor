@@ -63,7 +63,7 @@ _provider_name() {
 
 __incoming_call() {
     if ! empty "$SOURCE"; then
-	case "$EVENT,$PROVIDER" in
+	case $EVENT,$PROVIDER in
 	    out:*,SIP*) SOURCE_NAME=$(_provider_name "$PROVIDER") ;;
 	    *) false ;;
 	esac ||
@@ -74,7 +74,7 @@ __incoming_call() {
 	esac
     fi
     if ! empty "$DEST"; then
-	case "$EVENT,$PROVIDER" in 
+	case $EVENT,$PROVIDER in 
 	    in:*,SIP*) DEST_NAME=$(_provider_name "$PROVIDER") ;;
 	    *) false ;;
 	esac ||
@@ -152,22 +152,22 @@ __match() {
     local REGEXP=${PATTERN#!}
     local SHPAT=${REGEXP#^}
     SHPAT=${SHPAT%\$}
-    case "$SHPAT" in
+    case $SHPAT in
 	*[!A-Za-z_0-9-]*)
 	    if echo "$VALUE" | egrep -q "$REGEXP"; then
 		RESULT=0
 	    fi
 	    ;;
 	*) # match simple patterns on our own
-	    case "$REGEXP" in
+	    case $REGEXP in
 		^*) ;;
 		*) SHPAT="*$SHPAT" ;;
 	    esac
-	    case "$REGEXP" in
+	    case $REGEXP in
 		*\$) ;;
 		*) SHPAT="$SHPAT*" ;;
 	    esac
-	    case "$VALUE" in
+	    case $VALUE in
 		$SHPAT) RESULT=0 ;;
 	    esac
 	    ;;

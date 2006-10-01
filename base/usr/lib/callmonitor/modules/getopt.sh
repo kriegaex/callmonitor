@@ -24,7 +24,7 @@
 _getopt() {
     local - temp consumed name=$1 ERROR=0
     shift
-    temp="$(_getopt_$name "$@")" || return 1
+    temp=$(_getopt_$name "$@") || return 1
     set -f; eval "set -- $temp"; set +f
     while true; do
 	_opt_$name "$@"; consumed=$?

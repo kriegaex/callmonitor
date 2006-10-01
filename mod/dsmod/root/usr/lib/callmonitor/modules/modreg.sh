@@ -26,13 +26,13 @@ mod_register() {
     modreg extra $DAEMON '$(lang de:"Testanruf" en:"Test call")' 1 'testcall'
     modreg extra $DAEMON '$(lang de:"Wartung" en:"Maintenance")' 1 'maint'
     if [ -r "$flash/listeners.def" ]; then 
-	deffile="$flash/listeners.def"
+	deffile=$flash/listeners.def
     else 
 	deffile="/etc/default.$DAEMON/listeners.def"
     fi
     modreg file 'listeners' 'Listeners' 0 "$deffile"
     if [ -r "$flash/callers.def" ]; then 
-	deffile="$flash/callers.def"
+	deffile=$flash/callers.def
     else 
 	deffile="/etc/default.$DAEMON/callers.def"
     fi

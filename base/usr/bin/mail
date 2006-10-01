@@ -40,8 +40,8 @@ mkdir -p "$SPOOL"
 
 ## apply a function to each item in a comma-separated list
 foreach() {
-    local - list="$1" IFS=,
-    alias func="$2"
+    local - list=$1 IFS=,
+    alias func=$2
     set -f
     for item in $1; do
 	eval 'func "$item"'
@@ -51,7 +51,7 @@ foreach() {
 
 ## add an item to a comma-separated list
 add() {
-    local name="$1" item="$2"
+    local name=$1 item=$2
     eval "$name=\"\$$name\${$name:+,}\$item\""
 }
 
@@ -60,10 +60,10 @@ escape() {
 }
 
 process_mail() {
-    local id="$1"
+    local id=$1
     trap "spool $id" EXIT
-    local dir="$TMP/$id"
-    local tmparchive="$dir.tar.gz"
+    local dir=$TMP/$id
+    local tmparchive=$dir.tar.gz
     unspool $id || return 1
     if send $id; then
 	remove $id
@@ -75,8 +75,8 @@ process_mail() {
 
 ## try to send a mail that has been prepared
 send() (
-    local id="$1"
-    local dir="$TMP/$id"
+    local id=$1
+    local dir=$TMP/$id
     cd "$dir"
     ./send
     return $?
@@ -85,19 +85,19 @@ send() (
 ## remove a mail that should not be send again (it does not matter what state
 ## the mail is in)
 remove() {
-    local id="$1"
-    local dir="$TMP/$id"
-    local archive="$SPOOL/$id.tar.gz"
-    local tmparchive="$dir.tar.gz"
+    local id=$1
+    local dir=$TMP/$id
+    local archive=$SPOOL/$id.tar.gz
+    local tmparchive=$dir.tar.gz
     rm -f "$archive" "$tmparchive"
     rm -rf "$dir"
 }
 
 ## move mail to spool directory for later processing (and clean up)
 spool() {
-    local id="$1"
-    local dir="$TMP/$id"
-    local tmparchive="$TMP/$id.tar.gz"
+    local id=$1
+    local dir=$TMP/$id
+    local tmparchive=$TMP/$id.tar.gz
     if [ ! -e "$tmparchive" ]; then
 	pack $id
     fi
@@ -107,29 +107,29 @@ spool() {
     fi
 }
 unspool() {
-    local id="$1"
-    local archive="$SPOOL/$id.tar.gz"
+    local id=$1
+    local archive=$SPOOL/$id.tar.gz
     ln "$archive" "$TMP"/ && rm "$archive"
     unpack $id
 }
 
 prepare_mail() {
-    local id="$1" TEMP
-    local dir="$TMP/$id"
+    local id=$1 TEMP
+    local dir=$TMP/$id
     mkdir -p "$dir"
     COUNT=0
     save_attachment() {
-	local file="$1" realpath
-	local basename="$(basename "$file")"
+	local file=$1 realpath
+	local basename=$(basename "$file")
 	case $file in 
 	    "-")
 		basename="stdin.txt"
 		realpath="-"
 	    ;; 
-	    *) realpath="$(realpath "$file")" ;;
+	    *) realpath=$(realpath "$file") ;;
 	esac
-	local subdir="$COUNT"
-	local target="$dir/$subdir/$basename"
+	local subdir=$COUNT
+	local target=$dir/$subdir/$basename
 	mkdir "$dir/$subdir"
 	case "$realpath" in
 	    /var/*|-) cat "$file" > "$target" ;;
@@ -141,12 +141,12 @@ prepare_mail() {
     if let "${ATTACHMENTS+1}"; then
 	unset TEMP
 	foreach "$ATTACHMENTS" save_attachment
-	ATTACHMENTS="$TEMP"
+	ATTACHMENTS=$TEMP
     fi
     if let "${INLINES+1}"; then
 	unset TEMP
 	foreach "$INLINES" save_attachment
-	INLINES="$TEMP"
+	INLINES=$TEMP
     fi
     set -- "$MAILER" \
 	${SUBJECT+     "-s" "$SUBJECT"} \
@@ -157,7 +157,7 @@ prepare_mail() {
 	${PASSWORD+    "-w" "$PASSWORD"} \
 	${ATTACHMENTS+ "-d" "$ATTACHMENTS"} \
 	${INLINES+     "-i" "$INLINES"}
-    script="$dir/send"
+    script=$dir/send
     {
 	printf "#! /usr/bin/env ash\n"
 	for arg in "$@"; do
@@ -169,15 +169,15 @@ prepare_mail() {
 }
 
 pack() {
-    local id="$1"
-    local dir="$TMP/$id"
-    local archive="$dir.tar.gz"
+    local id=$1
+    local dir=$TMP/$id
+    local archive=$dir.tar.gz
     tar czf "$archive" -C "$TMP" $id && rm -r "$dir"
 }
 unpack() {
-    local id="$1"
-    local dir="$TMP/$id"
-    local archive="$dir.tar.gz"
+    local id=$1
+    local dir=$TMP/$id
+    local archive=$dir.tar.gz
     tar xzf "$archive" -C "$TMP"
 }
 
@@ -195,18 +195,18 @@ case "$1" in
     send|sendonce|enqueue) 
 	## use push service configuration per default
 	eval "$(config)"
-	FROM="$From"
-	TO="$To"
-	MAILSERVER="$SMTPServer"
+	FROM=$From
+	TO=$To
+	MAILSERVER=$SMTPServer
 	if let "${accountname:+1}"; then
-	    AUTHNAME="$accountname"
+	    AUTHNAME=$accountname
 	fi
 	if let "${passwd:+1}"; then
-	    PASSWORD="$passwd"
+	    PASSWORD=$passwd
 	fi
 
 	## parse command line options
-	TEMP="$(getopt -o 'M:p:s:f:t:m:a:w:d:i:D:' -n "$PROGRAM" -- "$@")"
+	TEMP=$(getopt -o 'M:p:s:f:t:m:a:w:d:i:D:' -n "$PROGRAM" -- "$@")
 	if let "$? != 0"; then 
 	    usage >&2
 	    exit 1
@@ -217,18 +217,18 @@ case "$1" in
 	while true; do
 	    case "$1" in
 		-[MpD]) roll; roll ;;
-		-s) SUBJECT="$2"; shift 2 ;;
-		-f) FROM="$2"; shift 2 ;;
-		-t) TO="$2"; shift 2 ;;
-		-m) MAILSERVER="$2"; shift 2 ;;
-		-a) AUTHNAME="$2"; shift 2 ;;
-		-w) PASSWORD="$2"; shift 2 ;;
-		-d) ATTACHMENTS="$2"; shift 2 ;;
-		-i) INLINES="$2"; shift 2 ;;
+		-s) SUBJECT=$2; shift 2 ;;
+		-f) FROM=$2; shift 2 ;;
+		-t) TO=$2; shift 2 ;;
+		-m) MAILSERVER=$2; shift 2 ;;
+		-a) AUTHNAME=$2; shift 2 ;;
+		-w) PASSWORD=$2; shift 2 ;;
+		-d) ATTACHMENTS=$2; shift 2 ;;
+		-i) INLINES=$2; shift 2 ;;
 		--) shift; break ;;
 	    esac
 	done
-	id="$(date +%s)-$$"
+	id=$(date +%s)-$$
 	case "$1" in
 	    send|enqueue)
 		trap "spool $id" EXIT
@@ -258,7 +258,7 @@ case "$1" in
     process)
 	for mail in "$SPOOL"/*; do
 	    if [ ! -e "$mail" ]; then continue; fi
-	    id="$(basename "$mail" .tar.gz)"
+	    id=$(basename "$mail" .tar.gz)
 	    process_mail $id
 	done
 	;;

@@ -41,7 +41,7 @@ sbmessage() {
     
 __rawmsg_sbmessage() {
     {
-	local msg="$(encode_sbmessage "$*")"
+	local msg=$(encode_sbmessage "$*")
 	_sb_init
 	echo "text c c \"$msg\""
 	sleep ${SB_TIMEOUT:-10}
@@ -59,7 +59,7 @@ sbmarquee() {
 }
 __rawmsg_sbmarquee() {
     {
-	local msg="$(encode_sbmessage "$*")"
+	local msg=$(encode_sbmessage "$*")
 	local n=${SB_TIMES:-3}
 	local timeout=$((1000 * $(_sb_timeout "$msg")))
 	local final_timeout=$((1000 * $(SB_OVERLAP=-5 _sb_timeout "$msg")))
@@ -101,7 +101,7 @@ __rawmsg_sbmarquee() {
 ## an.
 
 _sb_timeout() {
-    local msg="$1"
+    local msg=$1
     local len=${#msg}
 
     ## about how many chars fit into the display

@@ -52,7 +52,7 @@ sip_info() {
 	    account="SIP$(($num-1))"
 	    case " $SIP_LIST " in
 		*" $account "*) ;;
-		*) SIP_LIST="$SIP_LIST${SIP_LIST:+ }$account" ;;
+		*) SIP_LIST=$SIP_LIST${SIP_LIST:+ }$account ;;
 	    esac
 	    echo "$account$rest"
 	done
@@ -61,16 +61,16 @@ sip_info() {
 }
 
 shorten_registrar() {
-    local registrar="$1"
-    local short="$registrar"
-    short="${short%.*}"
-    short="${short%.??}"
-    short="${short##*.}"
+    local registrar=$1
+    local short=$registrar
+    short=${short%.*}
+    short=${short%.??}
+    short=${short##*.}
     echo "$short"
 }
 
 add_phonebook_default() {
-    local address="$1" name="$2"
+    local address=$1 name=$2
     if ! phonebook --local exists "$address"; then
 	phonebook put "$address" "$name"
     fi
@@ -80,10 +80,10 @@ eval "$(sip_info)"
 
 echo "Generating short names for all SIP accounts ..." >&2
 for sip in $SIP_LIST; do
-    eval 'username="$'$sip'_username"'
-    eval 'registrar="$'$sip'_registrar"'
-    address="$username@$registrar"
-    short="$(shorten_registrar "$registrar")"
+    eval 'username=$'$sip'_username'
+    eval 'registrar=$'$sip'_registrar'
+    address=$username@$registrar
+    short=$(shorten_registrar "$registrar")
 
     echo "$sip: $address -> $short" >&2
     add_phonebook_default "$address" "$short" > /dev/null 2>&1 &

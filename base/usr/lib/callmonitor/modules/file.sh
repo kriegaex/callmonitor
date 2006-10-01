@@ -23,7 +23,7 @@ ensure_file() {
     local file dir
     for file; do
 	if ! touch "$file"; then
-	    dir="$(dirname "$file")"
+	    dir=$(dirname "$file")
 	    mkdir -p "$dir" && touch "$file"
 	fi
     done

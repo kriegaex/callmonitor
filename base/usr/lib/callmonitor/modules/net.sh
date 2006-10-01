@@ -63,21 +63,22 @@ _opt_net() {
     _opt_nc "$@" || return $?
     case $1 in
 	-t|--template)
-	    TEMPLATE="$2"; return 2 ;;
+	    TEMPLATE=$2; return 2 ;;
 	-T)
-	    TYPE="$2"; return 2 ;;
+	    TYPE=$2; return 2 ;;
     esac
     return 0
 }
 _opt_nc() {
     case $1 in
 	-w|--timeout)
-	    TIMEOUT="$2"; return 2 ;;
+	    TIMEOUT=$2; return 2 ;;
 	-p|--port)
-	    PORT="$2"; return 2 ;;
+	    PORT=$2; return 2 ;;
     esac
     return 0
 }
+
 readonly var_nc="TIMEOUT PORT"
 readonly var_net="$var_nc TEMPLATE TYPE"
 
@@ -88,9 +89,9 @@ _getopt_getmsg() {
 _opt_auth() {
     case $1 in
 	-U|--user)
-	    USERNAME="$2"; return 2 ;;
+	    USERNAME=$2; return 2 ;;
 	-P|--password)
-	    PASSWORD="$2"; return 2 ;;
+	    PASSWORD=$2; return 2 ;;
     esac
     return 0
 }
@@ -100,7 +101,7 @@ _opt_getmsg() {
     _opt_auth "$@" || return $?
     case $1 in
 	-v|--virtual)
-	    HTTP_VIRTUAL="$2"; return 2 ;;
+	    HTTP_VIRTUAL=$2; return 2 ;;
 	--help)
 	    __getmsg_usage >&2; ERROR=1 ;;
     esac
@@ -120,7 +121,7 @@ _body_getmsg() {
     __getmsg_parse "$1" || return 1; shift
     if empty "$TEMPLATE"; then
 	if ? $# == 0; then echo "Missing template" >&2; return 1; fi
-	TEMPLATE="$1"; shift
+	TEMPLATE=$1; shift
     fi
     if ? $# == 0; then set -- "$(default_$TYPE)"; fi
     _http_prepare
@@ -131,14 +132,14 @@ getmsg() {
     __getmsg simple "$@"
 }
 __getmsg_simple() {
-    HTTP_PATH="$(
+    HTTP_PATH=$(
 	n=1
 	for arg in "$@"; do
 	    shift; set -- "$@" "$(__getmsg_encode "$arg" $n)"
 	    let n++
 	done
 	printf "$TEMPLATE" "$@"
-    )"
+    )
     {
 	_http_init_request GET
 	_http_end_header
@@ -157,7 +158,7 @@ __getmsg_parse() {
     if url_parse "$1"; then
 	case $url_scheme in
 	    http)
-		TEMPLATE="${url_path:-/}${url_query:+?$url_query}"
+		TEMPLATE=${url_path:-/}${url_query:+?$url_query}
 		__msg_set_authority
 		return 0
 	    ;;
@@ -215,7 +216,7 @@ _opt_rawmsg() {
     esac
     return 0
 }
-readonly var_rawmsg="$var_net"
+readonly var_rawmsg=$var_net
 
 __rawmsg() {
     local - HOST= $var_rawmsg; unset $var_rawmsg
@@ -233,7 +234,7 @@ _body_rawmsg() {
     fi
     if empty "$TEMPLATE"; then
 	if ? $# == 0; then echo "Missing template" >&2; return 1; fi
-	TEMPLATE="$1"; shift
+	TEMPLATE=$1; shift
     fi
     if ? $# == 0; then set -- "$(default_$TYPE)"; fi
     $SEND "$@"
@@ -268,7 +269,7 @@ post_form() {
     fi
     __msg_set_authority
     _http_prepare
-    local HTTP_PATH="${url_path:-/}${url_query:+?$url_query}"
+    local HTTP_PATH=${url_path:-/}${url_query:+?$url_query}
     local content_type=application/x-www-form-urlencoded
     {
 	_http_init_request POST

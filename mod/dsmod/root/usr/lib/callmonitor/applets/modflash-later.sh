@@ -29,12 +29,12 @@ LATER_NAME="modflash-later"
 NOW_NAME="modflash-now"
 DEFAULT_MAX="300"
 
-DIR="$(dirname "$0")"
-NAME="$(basename "$0")"
+DIR=$(dirname "$0")
+NAME=$(basename "$0")
 
 case "$NAME" in
     "$LATER_NAME")
-	MAX="${1:-$DEFAULT_MAX}"
+	MAX=${1:-$DEFAULT_MAX}
 	sleep "$MAX" &
 	trap "kill $! 2> /dev/null; exit" TERM
 	wait

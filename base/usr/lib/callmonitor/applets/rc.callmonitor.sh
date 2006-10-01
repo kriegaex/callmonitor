@@ -26,8 +26,8 @@ DAEMON=callmonitor
 require rc
 require modreg
 
-FIFO="$CALLMONITOR_FIFO"
-FIFO_DIR="${FIFO%/*}"
+FIFO=$CALLMONITOR_FIFO
+FIFO_DIR=${FIFO%/*}
 mkdir -p "$FIFO_DIR"
 PIDFILE="/var/run/$DAEMON/pid/$DAEMON"
 

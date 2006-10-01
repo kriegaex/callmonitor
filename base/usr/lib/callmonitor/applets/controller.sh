@@ -19,12 +19,13 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-check_status() {
-    local exitval=${1:-$?}
-    if ? exitval == 0; then
-	echo "done."
-    else
-	echo "failed."
-    fi
-    return $exitval
-}
+if ? "$# > 0"; then
+    SCRIPT=$1; shift
+    case $SCRIPT in
+	/*) ;;
+	*) SCRIPT=$PWD/$SCRIPT ;;
+    esac
+    . "$SCRIPT"
+else
+    echo "No script given" 2>&1
+fi

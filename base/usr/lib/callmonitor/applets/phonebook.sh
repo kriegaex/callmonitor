@@ -42,7 +42,7 @@ require phonebook
 
 ## parse options
 _pb_DEBUG=false
-TEMP="$(getopt -o '' -l debug,local,help -n "${0##*/}" -- "$@")" || exit 1
+TEMP=$(getopt -o '' -l debug,local,help -n "${0##*/}" -- "$@") || exit 1
 eval "set -- $TEMP"
 
 while true; do

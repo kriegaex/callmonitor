@@ -26,7 +26,7 @@ require reverse
 require file
 
 normalize_address() {
-    local NUMBER="$1"
+    local NUMBER=$1
     case "$NUMBER" in
 	SIP*) normalize_sip "$NUMBER" ;;
 	*)    normalize_tel "$NUMBER" ;;
@@ -35,11 +35,11 @@ normalize_address() {
 
 ## normalize phone numbers
 normalize_tel() {
-    local NUMBER="$1"
+    local NUMBER=$1
     # Call by call
     case $NUMBER in
-	010[1-9]?*) NUMBER="${NUMBER#010[1-9]?}" ;;
-	0100??*) NUMBER="${NUMBER#0100??}" ;;
+	010[1-9]?*) NUMBER=${NUMBER#010[1-9]?} ;;
+	0100??*) NUMBER=${NUMBER#0100??} ;;
     esac
     # Country prefix of Germany
     case $NUMBER in
@@ -48,14 +48,14 @@ normalize_tel() {
     esac
     # Local number
     case $NUMBER in
-	[1-9]*) NUMBER="${CALLMONITOR_OKZ}${NUMBER}" ;; 
+	[1-9]*) NUMBER=${CALLMONITOR_OKZ}${NUMBER} ;; 
     esac
-    __="$NUMBER"
+    __=$NUMBER
 }
 
 ## transform SIP[0-9] into SIP addresses
 normalize_sip() {
-    local NUMBER="$1"
+    local NUMBER=$1
     case "$NUMBER" in
 	SIP[0-9])
 	    if eval "? \"\${${NUMBER}_address+1}\""; then
@@ -63,7 +63,7 @@ normalize_sip() {
 	    fi
 	    ;;
     esac
-    __="$NUMBER"
+    __=$NUMBER
 }
 ## read SIP[0-9] to address mapping
 if < /var/run/phonebook/sip; then
@@ -89,14 +89,14 @@ case "$CALLMONITOR_REVERSE_CACHE" in
 esac
 ## where to put new number-name pairs
 if $_pb_PERSISTENT; then
-    _pb_PHONEBOOK="$CALLMONITOR_PERSISTENT"
+    _pb_PHONEBOOK=$CALLMONITOR_PERSISTENT
 else
-    _pb_PHONEBOOK="$CALLMONITOR_TRANSIENT"
+    _pb_PHONEBOOK=$CALLMONITOR_TRANSIENT
 fi
 ensure_file "$CALLMONITOR_TRANSIENT" "$CALLMONITOR_PERSISTENT"
 
 _pb_get() {
-    local NUMBER="$1" NUMBER_NORM NAME exitval
+    local NUMBER=$1 NUMBER_NORM NAME exitval
     _pb_get_local "$NUMBER"
     exitval=$?; NAME=$__
     if ? "exitval != 0"; then
@@ -106,7 +106,7 @@ _pb_get() {
 	    exitval=$?; NAME=$__
 	;; esac
 	if ? "exitval != 0" && $_pb_REVERSE; then
-	    NAME="$(reverse_lookup "$NUMBER_NORM")"
+	    NAME=$(reverse_lookup "$NUMBER_NORM")
 	    if ? $? == 0 && $_pb_CACHE; then
 		_pb_put_local "$NUMBER_NORM" "$NAME" >&2 &
 		exitval=0
@@ -119,7 +119,7 @@ _pb_get() {
 
 ## for performance, _pb_get_local returns its result in $__
 _pb_get_local() {
-    local NUMBER="$1" NUMBER_RE NAME num nam
+    local NUMBER=$1 NUMBER_RE NAME num nam
     unset NAME
     while read -r num nam; do
 	case $num in "$NUMBER") NAME=$nam; break ;; esac
@@ -130,12 +130,11 @@ _pb_get_local() {
 	done < "$CALLMONITOR_TRANSIENT"
     fi
     if ? "${NAME+1}"; then
-	#NAME="${NAME#:}"
 	_pb_debug "phone book contains {$NUMBER -> $NAME}"
 	__=$NAME
 	return 0
     fi
-    __=$NAME
+    __=$NAME ## ???? FIXME
     return 1
 }
 
@@ -146,8 +145,8 @@ _pb_put_local() {
     MODE=put _pb_put_or_remove "$@"
 }
 _pb_put_or_remove() {
-    local NUMBER="$1" NAME="$2" NUMBER_RE
-    NUMBER_RE="$(sed_re_escape "$NUMBER")"
+    local NUMBER=$1 NAME=$2 NUMBER_RE
+    NUMBER_RE=$(sed_re_escape "$NUMBER")
     case $MODE in 
 	remove)
 	    _pb_debug "removing $NUMBER from phone book $_pb_PHONEBOOK" ;;
@@ -159,7 +158,7 @@ _pb_put_or_remove() {
 
     ## beware of concurrent updates
     if lock "$_pb_PHONEBOOK"; then
-	local TMPFILE="$CALLMONITOR_TMPDIR/.callmonitor.tmp"
+	local TMPFILE=$CALLMONITOR_TMPDIR/.callmonitor.tmp
 	{ 
 	    sed -e "/^${NUMBER_RE}[[:space:]]/d" "$_pb_PHONEBOOK" 2> /dev/null
 	    case $MODE in put)
@@ -188,11 +187,11 @@ _pb_init() {
 
 _pb_tidy() {
     local exitval=1
-    local book="$CALLMONITOR_PERSISTENT"
+    local book=$CALLMONITOR_PERSISTENT
     echo -n "Tidying up $book: " >&2
     if lock "$book"; then
 	echo -n "sorting and cleansing, " >&2
-	local TMPFILE="$CALLMONITOR_TMPDIR/.callmonitor.tmp"
+	local TMPFILE=$CALLMONITOR_TMPDIR/.callmonitor.tmp
 	sort -u "$book" | 
 	sed -e '
 	    /^[[:space:]]*$/d

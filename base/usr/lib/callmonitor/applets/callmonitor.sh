@@ -36,7 +36,7 @@ EOF
 require callmonitor
 
 ## parse options
-TEMP="$(getopt -o 'fs' -l debug,help -n "$APPLET" -- "$@")" || exit 1
+TEMP=$(getopt -o 'fs' -l debug,help -n "$APPLET" -- "$@") || exit 1
 eval "set -- $TEMP"
 
 DEBUG=false
@@ -119,9 +119,9 @@ __shutdown() {
 }
 
 PIDFILE="/var/run/callmonitor/pid/callmonitor"
-FIFO="$CALLMONITOR_FIFO"
-DEBUG_FIFO="$CALLMONITOR_FIFO.debug"
-INFO_FIFO="$CALLMONITOR_FIFO.info"
+FIFO=$CALLMONITOR_FIFO
+DEBUG_FIFO=$CALLMONITOR_FIFO.debug
+INFO_FIFO=$CALLMONITOR_FIFO.info
 
 if $STOP; then
     if [ ! -e "$PIDFILE" ]; then

@@ -33,7 +33,7 @@ __configure
 event=$1 source=$2 dest=$3
 
 ## dummy values
-id=1 ext=4 duration=16 timestamp="$(date +"%d.%m.%y %H:%M")"
+id=1 ext=4 duration=16 timestamp=$(date +"%d.%m.%y %H:%M")
 
 _j_output "$event"
 

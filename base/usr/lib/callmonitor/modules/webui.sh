@@ -22,11 +22,11 @@
 require url
 
 WEBCM_DIR="/usr/www/html/cgi-bin"
-WEBCM="$WEBCM_DIR/webcm"
+WEBCM=$WEBCM_DIR/webcm
 
 webui_post_form() (
     cd "$WEBCM_DIR"
-    local POST_DATA="$1"
+    local POST_DATA=$1
     echo -n "$POST_DATA" |
     REQUEST_METHOD="POST" \
     REMOTE_ADDR="127.0.0.1" \
@@ -38,7 +38,7 @@ webui_get() (
     cd "$WEBCM_DIR"
     REQUEST_METHOD="GET" \
     REMOTE_ADDR="127.0.0.1" \
-    QUERY_STRING="$1" \
+    QUERY_STRING=$1 \
     $WEBCM
 )
 webui_login() {

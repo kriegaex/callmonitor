@@ -27,7 +27,7 @@ SELF=maint
 TITLE='$(lang de:"Callmonitor-Wartung" en:"Callmonitor maintenance")'
 
 cmd_button() {
-    local cmd="$1" label="$2" method="post"
+    local cmd=$1 label=$2 method=post
     if empty "$cmd"; then
 	method="get"
     fi

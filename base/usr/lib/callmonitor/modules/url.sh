@@ -31,7 +31,7 @@ urlprintfencode() {
 
 _urlencode() {
     local replacement=$1; shift
-    local txt="$*"
+    local txt=$*
     ## shortcut if there aren't any unsafe characters
     case $txt in
 	*[!0-9A-Z_a-z!*.-]*) ;;

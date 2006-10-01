@@ -20,7 +20,7 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-readonly APPLET="${0##*/}"
+readonly APPLET=${0##*/}
 
 ## Both callmonitor and phonebook are configured via variables in
 ## $CALLMONITOR_CFG. This is the only variable to be customized here.

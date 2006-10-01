@@ -59,8 +59,8 @@ _check() {
     local alt key val found=false
     shift
     for alt; do
-	key="${alt%%:*}"
-	val="${alt#*:}"
+	key=${alt%%:*}
+	val=${alt#*:}
 	: ${val:=$key}
 	if ! $found; then
 	    case $input in

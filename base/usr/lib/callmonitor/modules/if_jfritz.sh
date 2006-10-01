@@ -176,7 +176,7 @@ __init_iface() {
 }
 
 _j_output() {
-    local output="$1"
+    local output=$1
     local ID=$id SOURCE=$source DEST=$dest EXT=$ext DURATION=$duration
     local TIMESTAMP=$timestamp EVENT= SOURCE_OPTIONS= DEST_OPTIONS=
     local PROVIDER=$provider

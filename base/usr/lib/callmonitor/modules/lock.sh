@@ -22,13 +22,13 @@
 
 ## lock $file by creating a symlink $file.lock -> PID;
 lock() {
-    local file="$1" interval="${2:-1000000}" first=true
+    local file=$1 interval=${2:-1000000} first=true
     ## race conditions between touch and realpath still possible
     if [ ! -e "$1" ] && ! touch "$1"; then
 	return 1
     fi
-    file="$(lock_filename "$file")"
-    local lock="$file.lock"
+    file=$(lock_filename "$file")
+    local lock=$file.lock
     if ? $$ == $(read_lock_pid "$lock")+0; then
 	## process already has lock
 	return 0
@@ -44,16 +44,16 @@ lock() {
 }
 
 unlock() {
-    local file="$(lock_filename "$1")"
-    local lock="$file.lock"
+    local file=$(lock_filename "$1")
+    local lock=$file.lock
     if ? $$ == $(read_lock_pid "$lock")+0; then
 	rm "$lock"
     fi
 }
 
 read_lock_pid() {
-    local lock="$1" pid=
+    local lock=$1 pid=
     if [ ! -L "$lock" ]; then return 1; fi
-    pid="$(/bin/ls -l "$lock")"
+    pid=$(/bin/ls -l "$lock")
     echo ${pid#*-> }
 }

@@ -29,7 +29,7 @@ require recode
 ## The resulting name and address should be returned in Latin-1 encoding
 
 reverse_lookup() {
-    local number="$1" prov area_prov child afile name
+    local number=$1 prov area_prov child afile name
     case "$number" in
 	00*|[^0]*|*[^0-9]*) return 1;
     esac
@@ -46,11 +46,11 @@ reverse_lookup() {
 
     afile="/var/run/phonebook/lookup-$area_prov-$number"
     _reverse_lookup "$area_prov" "$number" | _reverse_atomic "$afile" & child=$!
-    name="$(_reverse_lookup "$prov" "$number")"
+    name=$(_reverse_lookup "$prov" "$number")
     if ! empty "$name"; then
 	echo "$name"
     else
-	name="$(cat "$afile" 2>/dev/null)"
+	name=$(cat "$afile" 2>/dev/null)
 	if ! empty "$name"; then
 	    echo "$number ($name)" ## $name is only city
 	fi
@@ -58,7 +58,7 @@ reverse_lookup() {
     { kill "$child" 2>/dev/null; rm -f "$afile"; } &
 }
 _reverse_atomic() {
-    local file=$1 tmp="$1.tmp"
+    local file=$1 tmp=$1.tmp
     cat > "$tmp" && mv "$tmp" "$file" || rm "$tmp"
 }
 
@@ -191,7 +191,7 @@ _reverse_inverssuche_extract() {
 
 _reverse_google_request() {
     # anonymize as far as possible (use only the first six digits)
-    local number="$(expr substr "$1" 1 6)0000000000"
+    local number=$(expr substr "$1" 1 6)0000000000
     getmsg -w 4 "http://www.google.de/search?num=0&q=%s" "$number"
 }
 _reverse_google_extract() {
@@ -208,7 +208,7 @@ _reverse_google_extract() {
 
 _reverse_callmonitor_request() {
     # anonymize (use only the first six digits)
-    local number="$(expr substr "$1" 1 6)"
+    local number=$(expr substr "$1" 1 6)
     getmsg -w 4 'http://callmonitor.berlios.de/vorwahl.php?number=%s' "$number" | sed -e "1,/^$CR\?$/d"
 }
 _reverse_callmonitor_extract() {

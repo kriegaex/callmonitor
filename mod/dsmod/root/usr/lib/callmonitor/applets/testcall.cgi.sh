@@ -29,8 +29,8 @@ eval "$(modcgi source:dest:event:event_dir testcall)"
 select "$TESTCALL_EVENT_DIR" in out
 select "$TESTCALL_EVENT" request cancel connect disconnect
 
-source_val="$(html "$TESTCALL_SOURCE")"
-dest_val="$(html "$TESTCALL_DEST")"
+source_val=$(html "$TESTCALL_SOURCE")
+dest_val=$(html "$TESTCALL_DEST")
 
 new_testcall_form() {
     cat << EOF

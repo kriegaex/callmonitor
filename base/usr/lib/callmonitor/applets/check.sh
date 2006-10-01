@@ -63,7 +63,7 @@ check_pattern() {
     esac
 
     ## use egrep to check regexp syntax
-    local error="$(echo | egrep -q "$p" 2>&1)"
+    local error=$(echo | egrep -q "$p" 2>&1)
     if ! empty "$error"; then
 	rule_error "${error#egrep: xregcomp: } in $name"
     fi

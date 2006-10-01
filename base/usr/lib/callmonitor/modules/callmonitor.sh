@@ -64,10 +64,10 @@ _provider_name() {
 __incoming_call() {
     if ! empty "$SOURCE"; then
 	case "$EVENT,$PROVIDER" in
-	    out:*,SIP*) SOURCE_NAME="$(_provider_name "$PROVIDER")" ;;
+	    out:*,SIP*) SOURCE_NAME=$(_provider_name "$PROVIDER") ;;
 	    *) false ;;
 	esac ||
-	SOURCE_NAME="$(_pb_main $SOURCE_OPTIONS -- get "$SOURCE")"
+	SOURCE_NAME=$(_pb_main $SOURCE_OPTIONS -- get "$SOURCE")
     else ## empty "$SOURCE"
 	case $EVENT in
 	    out:*) SOURCE=$PROVIDER ;;
@@ -75,10 +75,10 @@ __incoming_call() {
     fi
     if ! empty "$DEST"; then
 	case "$EVENT,$PROVIDER" in 
-	    in:*,SIP*) DEST_NAME="$(_provider_name "$PROVIDER")" ;;
+	    in:*,SIP*) DEST_NAME=$(_provider_name "$PROVIDER") ;;
 	    *) false ;;
 	esac ||
-	DEST_NAME="$(_pb_main $DEST_OPTIONS -- get "$DEST")"
+	DEST_NAME=$(_pb_main $DEST_OPTIONS -- get "$DEST")
     else ## empty "$DEST"
 	case $EVENT in
 	    in:*) DEST=$PROVIDER ;;
@@ -114,7 +114,7 @@ __incoming_call() {
 
 ## process a single rule
 __process_rule() {
-    local event_spec="$1" source_pattern="$2" dest_pattern="$3" listener="$4"
+    local event_spec=$1 source_pattern=$2 dest_pattern=$3 listener=$4
     __debug_rule "processing rule '$event_spec' '$source_pattern' '$dest_pattern' '$listener'"
 
     ## match
@@ -148,10 +148,10 @@ __info_rule() {
 
 ## match a single pattern from a rule
 __match() {
-    local PARAM="$1" VALUE="$2" PATTERN="$3" RESULT=1
-    local REGEXP="${PATTERN#!}"
-    local SHPAT="${REGEXP#^}"
-    SHPAT="${SHPAT%\$}"
+    local PARAM=$1 VALUE=$2 PATTERN=$3 RESULT=1
+    local REGEXP=${PATTERN#!}
+    local SHPAT=${REGEXP#^}
+    SHPAT=${SHPAT%\$}
     case "$SHPAT" in
 	*[!A-Za-z_0-9-]*)
 	    if echo "$VALUE" | egrep -q "$REGEXP"; then
@@ -185,17 +185,16 @@ __match() {
 }
 
 __match_event() {
-    local event=$1 spec=$2 dir= type= - RESULT=1 ifs="$IFS" IFS
+    local event=$1 spec=$2 dir= type= - RESULT=1 ifs=$IFS IFS=,
     set -f
-    IFS=,
     for pattern in $spec; do
 	IFS=$ifs
 	case $pattern in
 	    ""|*:*:*)
 		;;
 	    *:*) 
-		dir="${pattern%:*}"
-		type="${pattern#*:}"
+		dir=${pattern%:*}
+		type=${pattern#*:}
 		case $event in $dir*:$type*) RESULT=0;; esac
 		;;
 	    *) 

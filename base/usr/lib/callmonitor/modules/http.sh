@@ -29,7 +29,7 @@ readonly LF="
 ## output an HTTP Authorization header (Basic)
 ## _http_basic_auth <user> <password>
 _http_basic_auth() {
-    local user="$1" password="$2"
+    local user=$1 password=$2
     echo -n "$user:$password" | uuencode -m - |
     sed -e '1d;2s/^/Authorization: Basic /;3,$s/^/ /;s/$/'$CR'/;$d'
 }
@@ -51,7 +51,7 @@ _http_end_header() {
 ## prepare some HTTP headers
 _http_prepare() {
     if ! empty "$USERNAME$PASSWORD"; then
-	HTTP_AUTH="$(_http_basic_auth "$USERNAME" "$PASSWORD")"
+	HTTP_AUTH=$(_http_basic_auth "$USERNAME" "$PASSWORD")
     fi
-    HTTP_VIRTUAL="${HTTP_VIRTUAL:-$HOST}"
+    HTTP_VIRTUAL=${HTTP_VIRTUAL:-$HOST}
 }

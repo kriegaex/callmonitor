@@ -54,7 +54,7 @@ __getmsg_dboxlcd() {
     local lcd="/control/lcd"
     local lcdtext="$lcd?xpos=1&size=17&font=2&text=%s"
     local line= init="&lock=1&clear=1" ypos=0
-    local IFS="$LF"
+    local IFS=$LF
     echo "$*" |
     for ypos in 12 24 36 48 60; do
 	read -r line

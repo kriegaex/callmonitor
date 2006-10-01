@@ -109,6 +109,7 @@ _opt_getmsg() {
 }
 readonly var_getmsg="$var_net $var_auth HTTP_VIRTUAL"
 
+## There is an additional call of this internal function in actions.d/dboxlcd.sh; sigh ...
 __getmsg() {
     local $VAR_http; unset $VAR_http
     local - $var_getmsg HOST=; unset $var_getmsg

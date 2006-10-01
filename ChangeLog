@@ -311,3 +311,14 @@
 
 	* reverse.sh: www.dastelefonbuch.de und www.goyellow.de als neue
 	Rückwärtssuche-Provider
+
+2006-09-30:
+
+	callmonitor-1.6 veröffentlicht
+
+2006-10-01:
+
+	* dboxlcd.sh: Behebung eines dummen Fehlers bei internen Umstellungen
+	(Danke an Obi)
+
+	callmonitor-1.6.1 bereitgestellt

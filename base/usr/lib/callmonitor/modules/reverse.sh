@@ -29,8 +29,8 @@ require recode
 ## The resulting name and address should be returned in Latin-1 encoding
 
 reverse_lookup() {
-    local NUMBER="$1" prov area_prov child afile name
-    case "$NUMBER" in
+    local number="$1" prov area_prov child afile name
+    case "$number" in
 	00*|[^0]*|*[^0-9]*) return 1;
     esac
     case $CALLMONITOR_REVERSE_PROVIDER in
@@ -44,15 +44,15 @@ reverse_lookup() {
 	*) area_prov= ;;
     esac
 
-    afile="/var/run/phonebook/lookup-$area_prov-$NUMBER"
-    _reverse_lookup $area_prov "$NUMBER" | _reverse_atomic "$afile" & child=$!
-    name="$(_reverse_lookup $prov "$NUMBER")"
+    afile="/var/run/phonebook/lookup-$area_prov-$number"
+    _reverse_lookup "$area_prov" "$number" | _reverse_atomic "$afile" & child=$!
+    name="$(_reverse_lookup "$prov" "$number")"
     if ! empty "$name"; then
 	echo "$name"
     else
 	name="$(cat "$afile" 2>/dev/null)"
 	if ! empty "$name"; then
-	    echo "$NUMBER ($name)" ## $name is only city
+	    echo "$number ($name)" ## $name is only city
 	fi
     fi
     { kill "$child" 2>/dev/null; rm -f "$afile"; } &
@@ -197,11 +197,11 @@ _reverse_google_request() {
 _reverse_google_extract() {
     sed -n -e '
 	/Call-by-Call-Vorwahlen/{
-		s#.*/images/euro_phone.gif[^>]*>\([[:space:]]*<[^>]*>\)*[[:space:]]*##
-		s#[[:space:]]*<.*##
-		s#^Deutschland,[[:space:]]*##
-		p
-		q
+	    s#.*/images/euro_phone.gif[^>]*>\([[:space:]]*<[^>]*>\)*[[:space:]]*##
+	    s#[[:space:]]*<.*##
+	    s#^Deutschland,[[:space:]]*##
+	    p
+	    q
 	}
     '
 }

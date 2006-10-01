@@ -22,6 +22,7 @@
 require cgi
 require if_jfritz_status
 require if_jfritz_cgi
+require version
 
 check "$CALLMONITOR_ENABLED" yes:auto *:man
 check "$CALLMONITOR_DEBUG" yes:debug
@@ -35,8 +36,6 @@ SYSLOG='$(lang de:"System-Log" en:"system log")'
 if has_package syslogd; then
     SYSLOG="<a href='pkgconf.cgi?pkg=syslogd'>$SYSLOG</a>"
 fi
-
-read CALLMONITOR_VERSION < /mod/etc/default.callmonitor/.version
 
 sec_begin '$(lang de:"Starttyp" en:"Startup type")'
 

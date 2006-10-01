@@ -48,7 +48,7 @@ require message
 require recode
 
 dboxlcd() {
-    __getmsg __getmsg_dboxlcd -T dboxlcd -t "-" "$@"
+    __getmsg dboxlcd -T dboxlcd -t "-" "$@"
 }
 __getmsg_dboxlcd() {
     local lcd="/control/lcd"

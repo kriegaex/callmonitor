@@ -24,10 +24,10 @@
 
 require lock
 
-FLASH="/tmp/flash"
-LATER_NAME="modflash-later"
-NOW_NAME="modflash-now"
-DEFAULT_MAX="300"
+FLASH=/tmp/flash
+LATER_NAME=modflash-later
+NOW_NAME=modflash-now
+DEFAULT_MAX=600
 
 DIR=$(dirname "$0")
 NAME=$(basename "$0")

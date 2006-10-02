@@ -29,7 +29,7 @@ require recode
 ## The resulting name and address should be returned in Latin-1 encoding
 
 reverse_lookup() {
-    local number=$1 prov area_prov child afile name
+    local number=$1 prov area_prov child afile name exit
     case $number in
 	00*|[^0]*|*[^0-9]*) return 1;
     esac
@@ -46,16 +46,19 @@ reverse_lookup() {
 
     afile="/var/run/phonebook/lookup-$area_prov-$number"
     _reverse_lookup "$area_prov" "$number" | _reverse_atomic "$afile" & child=$!
-    name=$(_reverse_lookup "$prov" "$number")
+    name=$(_reverse_lookup "$prov" "$number"); exit=$?
     if ! empty "$name"; then
 	echo "$name"
+	exit=0
     else
 	name=$(cat "$afile" 2>/dev/null)
 	if ! empty "$name"; then
 	    echo "$number ($name)" ## $name is only city
+	    exit=0
 	fi
     fi
     { kill "$child" 2>/dev/null; rm -f "$afile"; } &
+    return $exit
 }
 _reverse_atomic() {
     local file=$1 tmp=$1.tmp

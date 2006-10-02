@@ -67,9 +67,7 @@ _reverse_atomic() {
 
 _reverse_lookup() {
     local prov=$1 number=$2 exit=0
-    case $prov in
-	"") return 0 ;;
-    esac
+    if empty "$prov"; then return 0; fi
     eval $({
 	{ _reverse_${prov}_request "$number"; echo exit=$? >&4; } |
 	_reverse_${prov}_extract

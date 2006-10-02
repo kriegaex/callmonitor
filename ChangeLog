@@ -322,3 +322,9 @@
 	(Danke an Obi)
 
 	callmonitor-1.6.1 bereitgestellt
+
+2006-10-02:
+
+	* reverse.sh: Neuer Rückwärtssuche-Provider 11880; zusätzliche
+	Fallback-Suche nur nach Vorwahlen (bei Google oder in experimenteller
+	Datenbank auf callmonitor.berlios.de)

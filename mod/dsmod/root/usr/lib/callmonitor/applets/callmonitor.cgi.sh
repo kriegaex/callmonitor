@@ -29,7 +29,7 @@ check "$CALLMONITOR_DEBUG" yes:debug
 check "$CALLMONITOR_REVERSE" yes:reverse
 select "$CALLMONITOR_REVERSE_CACHE" no transient:trans persistent:pers
 select "$CALLMONITOR_REVERSE_PROVIDER" dasoertliche:oert \
-    inverssuche:invers telefonbuch:telbu goyellow:goye
+    inverssuche:invers telefonbuch:telbu goyellow:goye 11880:elf
 select "$CALLMONITOR_AREA_PROVIDER" google callmonitor:cm :null
 
 SYSLOG='$(lang de:"System-Log" en:"system log")'
@@ -104,6 +104,8 @@ cat << EOF
 	    value="inverssuche"$invers_sel>inverssuche.de</option>
 	<option title="www.goyellow.de"
 	    value="goyellow"$goye_sel>GoYellow</option>
+	<option title="www.11880.com"
+	    value="11880"$elf_sel>11880</option>
     </select></td>
 </tr>
 <tr><td />

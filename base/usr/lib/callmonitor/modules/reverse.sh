@@ -34,7 +34,7 @@ reverse_lookup() {
 	00*|[^0]*|*[^0-9]*) return 1;
     esac
     case $CALLMONITOR_REVERSE_PROVIDER in
-	inverssuche|dasoertliche|telefonbuch|goyellow)
+	inverssuche|dasoertliche|telefonbuch|goyellow|11880)
 	    prov=$CALLMONITOR_REVERSE_PROVIDER ;;
 	*) prov=telefonbuch ;;
     esac
@@ -78,6 +78,25 @@ _reverse_lookup() {
     return $(( exit == 141 ? 0 : exit ))
 } 9>&1
 
+
+readonly REVERSE_SANITIZE='
+    s#<[^>]*># #g
+    s#&nbsp;# #g
+    s#&amp;#\&#g
+    s#&lt;#<#g
+    s#&gt;#>#g
+    s#&quot;#"#g
+    s#&apos;#'\''#g
+    s#[[:space:] ]\+# #g
+    s#,\( *,\)\+#,#
+    s#^[, ]*##
+    s# \([,)]\)#\1#g
+    s#\([(]\) #\1#g
+    s#[, ]*$##
+'
+
+## reverse-lookup provider
+
 _reverse_dasoertliche_request() {
     wget "http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$(urlencode "$1")" -q -O -
 }
@@ -100,13 +119,7 @@ _reverse_dasoertliche_extract() {
 	: cleanup
 	g
 	s/\(<br\/>\)\?\n\|<br\/>/, /g
-	s/<[^>]*>/ /g
-	s/\&nbsp;/ /g
-	s/[[:space:]]\+/ /g
-	s/^ //
-	s/ \([,)]\)/\1/g
-	s/\([(]\) /\1/g
-	s/[[:space:],]*$//
+	'"$REVERSE_SANITIZE"'
 	p
 	q
     '
@@ -129,7 +142,7 @@ _reverse_telefonbuch_extract() {
 	}
 	b
 	: cleanup
-	s#,\([[:space:]]*,\)\+#,#
+	'"$REVERSE_SANITIZE"'
 	p
 	q
     '
@@ -149,8 +162,7 @@ _reverse_goyellow_extract() {
 	\#<div[^>]*class="col contact# {
 	    g
 	    s/\n/, /g
-	    s/[,[:space:]]*$//
-	    s/[ ]/ /g
+	    '"$REVERSE_SANITIZE"'
 	    p
 	    q
 	}
@@ -179,18 +191,38 @@ _reverse_inverssuche_extract() {
 	    : again
 	    N
 	    s/\n[^\n]*javascript:toggle[^\n]*$//
+	    s#<span [^>]*>(Trefferquote.*$##
 	    \#</div>[[:space:]]*</div>[[:space:]]*$#!b again
-	    s/&nbsp;/ /g
-	    s/[[:space:]]*<div[^>]*>[[:space:]]*/, /g
-	    s/[[:space:]]*<[^>]*>[[:space:]]*/ /g
-	    s/[[:space:]]*,\([[:space:]]*,\)*[[:space:]]*/, /g
-	    s/^[[:space:]]*,[[:space:]]*//
-	    s/[[:space:]]*,[[:space:]]*$//
+	    s#<div[^>]*>#, #g
+	    '"$REVERSE_SANITIZE"'
 	    p
 	    q
 	}
     ' | utf8_latin1
 }
+
+_reverse_11880_request() {
+    wget "http://www.11880.com/Suche/index.cfm?fuseaction=Suche.rueckwaertssucheresult&init=true&change=false&searchform=Rueckwaerts&tel=$(urlencode "$1")" -q -O -
+}
+_reverse_11880_extract() {
+    sed -n -e '
+	/keine Treffer gefunden/ q
+	/<h1 class="nam_header"/,/<table/ {
+	    /<table/ b found
+	    H
+	}
+	b
+	: found
+	g
+	s#</h1>#, #
+	s#<br />#, #g
+	'"$REVERSE_SANITIZE"'
+	p
+	q
+    '
+}
+
+## area-code lookup
 
 _reverse_google_request() {
     # anonymize as far as possible (use only the first six digits)
@@ -203,6 +235,7 @@ _reverse_google_extract() {
 	    s#.*/images/euro_phone.gif[^>]*>\([[:space:]]*<[^>]*>\)*[[:space:]]*##
 	    s#[[:space:]]*<.*##
 	    s#^Deutschland,[[:space:]]*##
+	    '"$REVERSE_SANITIZE"'
 	    p
 	    q
 	}

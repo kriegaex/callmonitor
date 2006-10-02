@@ -101,7 +101,7 @@ _pb_get() {
     exitval=$?; NAME=$__
     if ? "exitval != 0"; then
 	normalize_address "$NUMBER"; NUMBER_NORM=$__
-	case $NUMBER_NORM in $NUMBER) ;; *)
+	case $NUMBER_NORM in "$NUMBER") ;; *)
 	    _pb_get_local "$NUMBER_NORM"
 	    exitval=$?; NAME=$__
 	;; esac
@@ -122,11 +122,11 @@ _pb_get_local() {
     local NUMBER=$1 NUMBER_RE NAME num nam
     unset NAME
     while read -r num nam; do
-	case $num in $NUMBER) NAME=$nam; break ;; esac
+	case $num in "$NUMBER") NAME=$nam; break ;; esac
     done < "$CALLMONITOR_PERSISTENT"
     if ! ? "${NAME+1}"; then
 	while read -r num nam; do
-	    case $num in $NUMBER) NAME=$nam; break ;; esac
+	    case $num in "$NUMBER") NAME=$nam; break ;; esac
 	done < "$CALLMONITOR_TRANSIENT"
     fi
     if ? "${NAME+1}"; then

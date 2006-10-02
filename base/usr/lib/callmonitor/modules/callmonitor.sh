@@ -148,44 +148,44 @@ __info_rule() {
 
 ## match a single pattern from a rule
 __match() {
-    local PARAM=$1 VALUE=$2 PATTERN=$3 RESULT=1
-    local REGEXP=${PATTERN#!}
-    local SHPAT=${REGEXP#^}
-    SHPAT=${SHPAT%\$}
-    case $SHPAT in
+    local param=$1 value=$2 pattern=$3 result=1
+    local regexp=${pattern#!}
+    local shpat=${regexp#^}
+    shpat=${shpat%\$}
+    case $shpat in
 	*[!A-Za-z_0-9-]*)
-	    if echo "$VALUE" | egrep -q "$REGEXP"; then
-		RESULT=0
+	    if echo "$value" | egrep -q "$regexp"; then
+		result=0
 	    fi
 	    ;;
 	*) # match simple patterns on our own
-	    case $REGEXP in
+	    case $regexp in
 		^*) ;;
-		*) SHPAT="*$SHPAT" ;;
+		*) shpat="*$shpat" ;;
 	    esac
-	    case $REGEXP in
+	    case $regexp in
 		*\$) ;;
-		*) SHPAT="$SHPAT*" ;;
+		*) shpat="$shpat*" ;;
 	    esac
-	    case $VALUE in
-		$SHPAT) RESULT=0 ;;
+	    case $value in
+		$shpat) result=0 ;;
 	    esac
 	    ;;
     esac
-    case $PATTERN in
-	!*) let RESULT="!RESULT" ;;
+    case $pattern in
+	!*) let result="!result" ;;
     esac
-    if ? RESULT == 0; then
-	__debug_rule "parameter $PARAM='$VALUE' matches pattern '$PATTERN'"
+    if ? result == 0; then
+	__debug_rule "parameter $param='$value' matches pattern '$pattern'"
     else
-	__debug_rule "parameter $PARAM='$VALUE' does NOT match" \
-	    "pattern '$PATTERN'"
+	__debug_rule "parameter $param='$value' does NOT match" \
+	    "pattern '$pattern'"
     fi
-    return $RESULT
+    return $result
 }
 
 __match_event() {
-    local event=$1 spec=$2 dir= type= - RESULT=1 ifs=$IFS IFS=,
+    local event=$1 spec=$2 dir= type= - result=1 ifs=$IFS IFS=, pattern
     set -f
     for pattern in $spec; do
 	IFS=$ifs
@@ -195,19 +195,19 @@ __match_event() {
 	    *:*) 
 		dir=${pattern%:*}
 		type=${pattern#*:}
-		case $event in $dir*:$type*) RESULT=0;; esac
+		case $event in $dir*:$type*) result=0;; esac
 		;;
 	    *) 
-		case $event in $pattern*:*|*:$pattern*) RESULT=0;; esac
+		case $event in $pattern*:*|*:$pattern*) result=0;; esac
 		;;
 	esac
-	if ? "RESULT == 0"; then
+	if ? "result == 0"; then
 	    __debug_rule "event '$event' matches pattern '$pattern'"
 	    break
 	fi
     done
-    if ? "RESULT == 1"; then
+    if ? "result == 1"; then
 	__debug_rule "event '$event' does NOT match pattern '$spec'"
     fi
-    return $RESULT
+    return $result
 }

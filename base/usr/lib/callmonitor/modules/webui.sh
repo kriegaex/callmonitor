@@ -26,12 +26,12 @@ WEBCM=$WEBCM_DIR/webcm
 
 webui_post_form() (
     cd "$WEBCM_DIR"
-    local POST_DATA=$1
+    local post_data=$1
     echo -n "$POST_DATA" |
     REQUEST_METHOD="POST" \
     REMOTE_ADDR="127.0.0.1" \
     CONTENT_TYPE="application/x-www-form-urlencoded" \
-    CONTENT_LENGTH=${#POST_DATA} \
+    CONTENT_LENGTH=${#post_data} \
     $WEBCM
 )
 webui_get() (

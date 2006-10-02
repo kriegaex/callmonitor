@@ -33,7 +33,7 @@ DIR=$(dirname "$0")
 NAME=$(basename "$0")
 
 case $NAME in
-    $LATER_NAME)
+    "$LATER_NAME")
 	MAX=${1:-$DEFAULT_MAX}
 	sleep "$MAX" &
 	trap "kill $! 2> /dev/null; exit" TERM
@@ -46,7 +46,7 @@ case $NAME in
 	    exec "$DIR/$NOW_NAME"
 	fi
 	;;
-    $NOW_NAME)
+    "$NOW_NAME")
 	## kill all of our competitors
 	killall -q "$LATER_NAME"
 	modsave flash

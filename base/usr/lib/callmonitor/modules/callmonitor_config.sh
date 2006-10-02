@@ -24,13 +24,13 @@ __info() { true; }
 __dump() { true; }
 __configure() {
     ## import action functions
-    local ACTIONSDIR ACTIONS
-    for ACTIONSDIR in "$CALLMONITOR_LIBDIR/actions.d" \
+    local actionsdir actions
+    for actionsdir in "$CALLMONITOR_LIBDIR/actions.d" \
 	"$CALLMONITOR_LIBDIR/actions.local.d"; do
-	for ACTIONS in "$ACTIONSDIR"/*.sh; do
-	    case $ACTIONS in *"/*.sh") continue ;; esac
-	    __debug "including $(realpath "$ACTIONS")"
-	    . "$ACTIONS"
+	for actions in "$actionsdir"/*.sh; do
+	    case $actions in *"/*.sh") continue ;; esac
+	    __debug "including $(realpath "$actions")"
+	    . "$actions"
 	done
     done
 }

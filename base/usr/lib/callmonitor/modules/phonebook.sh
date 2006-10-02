@@ -66,7 +66,7 @@ normalize_sip() {
     __=$NUMBER
 }
 ## read SIP[0-9] to address mapping
-if < /var/run/phonebook/sip; then
+if [ -r /var/run/phonebook/sip ]; then
     . /var/run/phonebook/sip
 fi
 
@@ -122,11 +122,11 @@ _pb_get_local() {
     local NUMBER=$1 NUMBER_RE NAME num nam
     unset NAME
     while read -r num nam; do
-	case $num in "$NUMBER") NAME=$nam; break ;; esac
+	if [ "$num" = "$NUMBER"]; then NAME=$nam; break; fi
     done < "$CALLMONITOR_PERSISTENT"
     if ! ? "${NAME+1}"; then
 	while read -r num nam; do
-	    case $num in "$NUMBER") NAME=$nam; break ;; esac
+	    if [ "$num" = "$NUMBER"]; then NAME=$nam; break; fi
 	done < "$CALLMONITOR_TRANSIENT"
     fi
     if ? "${NAME+1}"; then

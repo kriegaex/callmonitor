@@ -21,6 +21,7 @@
 ##
 
 ## efficient boolean expressions with 'let': some syntactic sugar
+## (busybox 1.2.1: no longer necessary; 'test' ('[') is a built-in!
 __is_true() {
     let "$*"
 }

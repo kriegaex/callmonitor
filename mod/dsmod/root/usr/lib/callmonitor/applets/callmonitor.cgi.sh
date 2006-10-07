@@ -115,8 +115,8 @@ cat << EOF
     <td><select name="area_provider" id="area">
 	<option title="Keine Auflösung von Vorwahlen"
 	    value=""$null_sel>$(lang de:"niemandem" en:"nowhere")</option>
-	<option title="callmonitor.berlios.de"
-	    value="callmonitor"$cm_sel>Callmonitor (beta)</option>
+	<!--<option title="callmonitor.berlios.de"
+	    value="callmonitor"$cm_sel>Callmonitor (beta)</option>-->
 	<option title="www.google.de"
 	    value="google"$google_sel>Google</option>
     </select></td>

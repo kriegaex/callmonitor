@@ -326,5 +326,4 @@
 2006-10-02:
 
 	* reverse.sh: Neuer Rückwärtssuche-Provider 11880; zusätzliche
-	Fallback-Suche nur nach Vorwahlen (bei Google oder in experimenteller
-	Datenbank auf callmonitor.berlios.de)
+	Fallback-Suche nur nach Vorwahlen (bei Google)

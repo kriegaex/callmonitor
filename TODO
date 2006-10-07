@@ -6,11 +6,16 @@ Testen
 Wichtig
 ----------------------------------------------------------------------
 
-getmsg funktioniert mit einigen Webservern nicht zuverlässig (dasoertliche, goyellow)
+Längenbeschränkung in default_message rechnet nicht richtig
+
+getmsg funktioniert mit einigen Webservern nicht zuverlässig (dasoertliche,
+goyellow)
 
 ----------------------------------------------------------------------
 Demnächst anschauen
 ----------------------------------------------------------------------
+
+default_message aufwerten (auf *:cancel, *:connect und *:disconnect eingehen)
 
 ----------------------------------------------------------------------
 Nicht so wichtig

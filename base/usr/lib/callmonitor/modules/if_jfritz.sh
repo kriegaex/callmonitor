@@ -28,6 +28,7 @@ readonly var_jfritz="event id timestamp ext source dest remote duration provider
 ## analyze call information
 __read() {
     local $var_jfritz
+    export INSTANCE
     while _j_parse; do
 
 	## complete information
@@ -103,7 +104,6 @@ _j_transition() {
 	;;
     esac
     let INSTANCE++
-    export INSTANCE
     case $output in
 	""|in:accept)
 	    ## not used yet

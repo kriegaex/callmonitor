@@ -24,6 +24,7 @@ require lock
 require util
 require reverse
 require file
+require usage
 
 normalize_address() {
     local number=$1
@@ -235,7 +236,7 @@ _pb_main() {
 	init) _pb_init ;;
 	tidy) _pb_tidy ;;
 	list) _pb_list "$2" ;;
-	*) _usage >&2; exit 1 ;;
+	*) usage >&2; exit 1 ;;
     esac
     return $?
 }

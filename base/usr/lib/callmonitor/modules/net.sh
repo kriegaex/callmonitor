@@ -24,38 +24,13 @@ require message
 require url
 require http
 require getopt
+require usage
 
 ## Basic networking utilities
 
 ## connection; no arguments; needs TIMEOUT, HOST, and PORT
 _connect() {
     __nc "$TIMEOUT" "$HOST" "$PORT"
-}
-
-__getmsg_usage() {
-#<
-    cat <<'EOH'
-Usage:	getmsg [OPTION]... <authority> <part-url-template> [<message>]...
-	getmsg [OPTION]... -t <part-url-template> <authority> [<message>]...
-	getmsg [OPTION]... <full-url-template> [<message>]...
-Send a message in a simple HTTP GET request.
-
-  -t, --template=FORMAT  use this printf-style template to build the URL,
-			 all following messages are URL-encoded and filled
-			 into this template
-  -T TYPE                type of message (use default_TYPE, encode_TYPE, etc.)
-  -p, --port=PORT	 use a special target port (default 80)
-  -w, --timeout=SECONDS  set connect timeout (default 3)
-  -v, --virtual=VIRT	 use a different virtual host (default HOST)
-  -U, --user=USER	 user for basic authorization
-  -P, --password=PASS	 password for basic authorization
-      --help		 show this help
-
-  <full-url-template>    http://<authority><partial-url-template>
-  <part-url-template>    e.g., /path/to/resource?query=string&message=%s
-  <authority>            [user[:password]@]host[:port]
-EOH
-#>
 }
 
 # return value: number of consumed arguments
@@ -103,7 +78,7 @@ _opt_getmsg() {
 	-v|--virtual)
 	    HTTP_VIRTUAL=$2; return 2 ;;
 	--help)
-	    __getmsg_usage >&2; ERROR=1 ;;
+	    usage getmsg >&2; ERROR=1 ;;
     esac
     return 0
 }
@@ -189,23 +164,6 @@ __msg_set_authority() {
 
 ## 'raw' TCP message
 
-__rawmsg_usage() {
-#<
-    cat <<'EOH'
-Usage: rawmsg [OPTION]... <host[:port]> <template> [<param>]...
-       rawmsg [OPTION]... -t <template> <host[:port]> [<param>]...
-Send a message over a plain TCP connection.
-
-  -t, --template=FORMAT  use this printf-style template to build the message,
-			 all following parameters are filled in
-  -T TYPE                type of message (use default_TYPE, etc.)
-  -p, --port=PORT	 use a special target port (default 80)
-  -w, --timeout=SECONDS  set connect timeout (default 3)
-      --help		 show this help
-EOH
-#>
-}
-
 _getopt_rawmsg() {
     getopt -n rawmsg -o T:t:w:p: -l port:,template:,timeout:,help -- "$@"
 }
@@ -213,7 +171,7 @@ _opt_rawmsg() {
     _opt_net "$@" || return $?
     case $1 in
 	--help)
-	    __rawmsg_usage >&2; ERROR=1 ;;
+	    usage rawmsg >&2; ERROR=1 ;;
     esac
     return 0
 }

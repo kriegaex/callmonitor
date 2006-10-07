@@ -19,21 +19,9 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-usage() {
-#<
-    cat <<EOF
-Usage:	$APPLET [OPTION]...
-Options:
-    -f		run in foreground
-    -s		stop the callmonitor
-    --debug     log rule matching/executed commands to syslog
-		(and to stderr with -f)
-    --help	show this help
-EOF
-#>
-}
 
 require callmonitor
+require usage
 
 ## parse options
 TEMP=$(getopt -o 'fs' -l debug,help -n "$APPLET" -- "$@") || exit 1
@@ -54,7 +42,7 @@ while true; do
     shift
 done
 
-## set up logging
+## set up logging (run once)
 __log_setup() {
     if $FOREGROUND; then
 	__logger() { exec logger -t "$APPLET" -s "$@"; }
@@ -86,6 +74,7 @@ __log_setup() {
 	;;
     esac
     __debug "entering DEBUG mode"
+    unset -f __log_setup
 }
 
 __work() {
@@ -107,7 +96,7 @@ __shutdown() {
     __info "Exiting ..."
     for file in "$PIDFILE" /var/run/callmonitor/pid/*; do
 	[ ! -f "$file" ] && continue
-	PID=
+	unset -v PID
 	read PID < "$file"
 	if [ "$$" = "$PID" ]; then
 	    rm -f "$file"

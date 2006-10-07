@@ -19,24 +19,9 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-_usage() {
-#<
-    cat <<END
-Usage:	phonebook [option]... command [argument]...
-	phonebook {get|exists|remove} 053712931
-	phonebook put 0357937829 "John Smith"
-	phonebook list [all]
-	phonebook init # prepare SIP to name mapping
-	phonebook tidy # tidy up phonebook (sort)
-Options:
-    --local  suppress reverse lookup
-    --debug  enable extra debugging output
-    --help   show this help and exit
-END
-#>
-}
 
 require phonebook
+require usage
 
 ## format of phone book: ${NUMBER}<whitespace>${NAME}
 
@@ -49,7 +34,7 @@ while true; do
     case $1 in
 	--local) _pb_REVERSE=false ;;
 	--debug) _pb_DEBUG=true ;;
-	--help) _usage >&2; exit 1 ;;
+	--help) usage >&2; exit 1 ;;
 	--) shift; break ;;
 	*) ;; # should never happen
     esac
@@ -72,7 +57,7 @@ case $1 in
     *) check= ;;
 esac
 if ! ? "$check"; then
-    _usage >&2
+    usage >&2
     exit 1
 fi
 

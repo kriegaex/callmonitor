@@ -60,7 +60,7 @@ url_parse() {
     local rest hier_part authority_path authority userinfo host_port
 
     ## output variables
-    unset url_scheme url_path url_query url_fragment
+    unset -v url_scheme url_path url_query url_fragment
     case $1 in
 	*:*)
 	    url_scheme=${1%%:*} rest=${1#*:}
@@ -96,7 +96,7 @@ url_parse() {
 }
 url_parse_authority() {
     local authority=$1 userinfo host_port
-    unset url_user url_auth url_host url_port
+    unset -v url_user url_auth url_host url_port
     case $authority in
 	*@*) userinfo=${authority%%@*} ;;
     esac

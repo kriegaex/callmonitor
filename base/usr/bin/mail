@@ -139,12 +139,12 @@ prepare_mail() {
 	let COUNT++
     }
     if let "${ATTACHMENTS+1}"; then
-	unset TEMP
+	unset -v TEMP
 	foreach "$ATTACHMENTS" save_attachment
 	ATTACHMENTS=$TEMP
     fi
     if let "${INLINES+1}"; then
-	unset TEMP
+	unset -v TEMP
 	foreach "$INLINES" save_attachment
 	INLINES=$TEMP
     fi
@@ -181,7 +181,7 @@ unpack() {
     tar xzf "$archive" -C "$TMP"
 }
 
-unset From To SMTPServer accountname passwd
+unset -v From To SMTPServer accountname passwd
 
 config() {
     allcfgconv -C ar7 -c -o - | 

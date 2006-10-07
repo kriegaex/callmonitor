@@ -119,7 +119,7 @@ _j_parse() {
     IFS=";" read -r timestamp event _1 _2 _3 _4 _5 empty || return 1
     id=$_1
     DEBUG="timestamp=$timestamp event=$event id=$id"
-    unset ext source dest remote duration provider
+    unset -v ext source dest remote duration provider
     case $event in
 	CALL)
 	    ext=$_2 source=$_3 dest=$_4 provider=$_5
@@ -198,7 +198,7 @@ _j_output() {
 	"EXT=$EXT DURATION=$DURATION PROVIDER=$PROVIDER"
 
     if ! empty "$EVENT"; then
-	unset $var_jfritz
+	unset -v $var_jfritz
 	incoming_call
     fi
 }
@@ -215,5 +215,5 @@ _j_load() {
 }
 _j_remove() {
     local var
-    for var; do unset $var; _j__remove ${var}_${id}; done
+    for var; do unset -v $var; _j__remove ${var}_${id}; done
 }

@@ -110,6 +110,6 @@ _reverse_init() {
     _reverse_choose_provider
     _reverse_load "$CALLMONITOR_REVERSE_PROVIDER"
     _reverse_load "$CALLMONITOR_AREA_PROVIDER"
-    unset _reverse_load _reverse_init
+    unset -f _reverse_load _reverse_init
 }
 _reverse_init

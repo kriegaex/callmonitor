@@ -111,8 +111,8 @@ readonly var_getmsg="$var_net $var_auth HTTP_VIRTUAL"
 
 ## There is an additional call of this internal function in actions.d/dboxlcd.sh; sigh ...
 __getmsg() {
-    local $VAR_http; unset $VAR_http
-    local - $var_getmsg HOST=; unset $var_getmsg
+    local $VAR_http; unset -v $VAR_http
+    local - $var_getmsg HOST=; unset -v $var_getmsg
     local TYPE=message PORT=80 TIMEOUT=3
     local SEND="__getmsg_$1"; shift
     _getopt getmsg "$@"
@@ -220,7 +220,7 @@ _opt_rawmsg() {
 readonly var_rawmsg=$var_net
 
 __rawmsg() {
-    local - HOST= $var_rawmsg; unset $var_rawmsg
+    local - HOST= $var_rawmsg; unset -v $var_rawmsg
     local PORT=80 TIMEOUT=3 TYPE=raw
     local SEND="__rawmsg_$1"; shift
     _getopt rawmsg "$@"
@@ -255,7 +255,7 @@ default_raw() {
 
 post_form() {
     local url=$1 data=$2 TIMEOUT= HOST= PORT=80
-    local $VAR_http; unset $VAR_http
+    local $VAR_http; unset -v $VAR_http
     local $VAR_url
     if url_parse "$url"; then
 	case $url_scheme in

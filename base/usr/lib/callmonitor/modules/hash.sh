@@ -36,7 +36,7 @@ _hash_put() {
 }
 _hash_remove() {
     local name=$1 key=$2
-    unset _h_${name}_${key}
+    unset -v _h_${name}_${key}
 }
 _hash_contains() {
     local name=$1 key=$2

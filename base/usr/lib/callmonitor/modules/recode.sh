@@ -22,8 +22,7 @@
 
 ## convert latin1 to utf8
 latin1_utf8() {
-    hexdump -v -e '100/1 " %02x" "\n"' |
-    sed -e '
+    _recode '
 	s/ \([89ab]\)/c2\1/g
 	s/ c/c38/g
 	s/ d/c39/g
@@ -31,14 +30,12 @@ latin1_utf8() {
 	s/ f/c3b/g
 	s/ //g
 	s/\(..\)/\\x\1/g
-    ' |
-    while IFS= read -r line; do echo -ne "$line"; done
+    '
 }
 
 ## convert utf8 to latin1
 utf8_latin1() {
-    hexdump -v -e '100/1 " %02x" "\n"' |
-    sed -e '
+    _recode '
 	s/ c2 \([89ab]\)/\1/g
 	s/ c3 8/c/g
 	s/ c3 9/d/g
@@ -55,6 +52,11 @@ utf8_latin1() {
 	}
 	s/ //g
 	s/\(..\)/\\x\1/g
-    ' |
+    '
+}
+
+_recode() {
+    hexdump -v -e '100/1 " %02x" "\n"' |
+    sed -e "$1" |
     while IFS= read -r line; do echo -ne "$line"; done
 }

@@ -33,16 +33,7 @@ reverse_lookup() {
     case $number in
 	00*|[^0]*|*[^0-9]*) return 1;
     esac
-    case $CALLMONITOR_REVERSE_PROVIDER in
-	inverssuche|dasoertliche|telefonbuch|goyellow|11880)
-	    prov=$CALLMONITOR_REVERSE_PROVIDER ;;
-	*) prov=telefonbuch ;;
-    esac
-    case $CALLMONITOR_AREA_PROVIDER in
-	google|callmonitor)
-	    area_prov=$CALLMONITOR_AREA_PROVIDER ;;
-	*) area_prov= ;;
-    esac
+    _reverse_choose_provider
 
     afile="/var/run/phonebook/lookup-$area_prov-$number"
     _reverse_lookup "$area_prov" "$number" | _reverse_atomic "$afile" & child=$!
@@ -60,6 +51,18 @@ reverse_lookup() {
     { kill "$child" 2>/dev/null; rm -f "$afile"; } &
     return $exit
 }
+_reverse_choose_provider() {
+    case $CALLMONITOR_REVERSE_PROVIDER in
+	inverssuche|dasoertliche|telefonbuch|goyellow|11880)
+	    prov=$CALLMONITOR_REVERSE_PROVIDER ;;
+	*) prov=telefonbuch ;;
+    esac
+    case $CALLMONITOR_AREA_PROVIDER in
+	google|callmonitor)
+	    area_prov=$CALLMONITOR_AREA_PROVIDER ;;
+	*) area_prov= ;;
+    esac
+}
 _reverse_atomic() {
     local file=$1 tmp=$1.tmp
     cat > "$tmp" && mv "$tmp" "$file" || rm "$tmp"
@@ -75,7 +78,6 @@ _reverse_lookup() {
 ## 141: nc: Broken pipe
     return $(( exit == 141 ? 0 : exit ))
 } 9>&1
-
 
 readonly REVERSE_SANITIZE='
     s#<[^>]*># #g
@@ -93,160 +95,21 @@ readonly REVERSE_SANITIZE='
     s#[, ]*$##
 '
 
-## reverse-lookup provider
+## initialization: load needed provider modules
 
-_reverse_dasoertliche_request() {
-    wget "http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$(urlencode "$1")" -q -O -
+_reverse_load() {
+    local provider=$1
+    if [ -z "$provider" ]; then return; fi
+    local file=$CALLMONITOR_LIBDIR/reverse/$provider.sh
+    if [ -e "$file" ]; then
+	. "$file"
+    fi
 }
-_reverse_dasoertliche_extract() {
-   sed -n -e '
-	: main
-        \#Kein Teilnehmer gefunden:#q
-        \#<a[[:space:]].*[[:space:]]class="entry">#,\#<input[[:space:]]type="hidden"# {
-	    s#^.*<a[[:space:]].*[[:space:]]class="entry">\([^<]*\)</a>.*$#\1#
-	    t hold
-	    \#<br/># H
-	    \#<input[[:space:]]type="hidden"# b cleanup
-        }
-        b
-
-        : hold
-        h
-	b
-
-	: cleanup
-	g
-	s/\(<br\/>\)\?\n\|<br\/>/, /g
-	'"$REVERSE_SANITIZE"'
-	p
-	q
-    '
+_reverse_init() {
+    local prov area_prov
+    _reverse_choose_provider
+    _reverse_load "$CALLMONITOR_REVERSE_PROVIDER"
+    _reverse_load "$CALLMONITOR_AREA_PROVIDER"
+    unset _reverse_load _reverse_init
 }
-
-_reverse_telefonbuch_request() {
-    getmsg -w 5 'http://www.dastelefonbuch.de/?la=de&kw=%s&cmd=search' "$1"
-}
-_reverse_telefonbuch_extract() {
-    sed -n -e '
-	/kein Teilnehmer gefunden/q
-	/<!-- \*\{2,\} Treffer Eintr.ge \*\{2,\} -->/,/<!-- \*\{2,\} Ende Treffer Eintr.ge \*\{2,\} -->/ {
-	    \#^[[:space:]]*$#! H
-	}
-	/<!-- \*\{2,\} Ende Treffer Eintr.ge \*\{2,\} -->/ {
-	    g
-	    s#^[^<]*\(<[^a][^<]*\)*<a[^>]*title="\([^"]*\)"[[:space:]]*>.*<td width="180">\([^<]*\)</td>.*<span title="\([^"]*\)".*$#\2, \3, \4#
-	    t cleanup
-	    q
-	}
-	b
-	: cleanup
-	'"$REVERSE_SANITIZE"'
-	p
-	q
-    '
-}
-
-_reverse_goyellow_request() {
-    wget "http://www.goyellow.de/inverssuche/?TEL=$(urlencode "$1")" -q -O -
-}
-_reverse_goyellow_extract() {
-    sed -n -e '
-	\#Es wurden keine Eintr.ge gefunden.# q
-	\#<div[^>]*id="listing"#,\#<div[^>]*class="col contact# {
-	    /title="Detailinformationen/ b name
-	    \#<h3>.*</h3># b name
-	    /<p class="address/ b address
-	}
-	\#<div[^>]*class="col contact# {
-	    g
-	    s/\n/, /g
-	    '"$REVERSE_SANITIZE"'
-	    p
-	    q
-	}
-	b
-	: name
-	s#^[^<]*<\(a\|h3\)[^>]*>\([^<]*\)</\(a\|h3\)>.*#\2#
-	h
-	b
-	: address
-	s#^[^<]*<p[^>]*class="address">\(.*\)</p>#\1#
-	s#<br />#, #g
-	H
-	b
-    '
-}
-
-_reverse_inverssuche_request() {
-    local data="__EVENTTARGET=cmdSearch&txtNumber=$1"
-    post_form http://www.inverssuche.de/teleauskunft/results_inverse.aspx \
-	"$data"
-}
-_reverse_inverssuche_extract() {
-    sed -n -e '
-	\#<div class="eintrag_name"#{
-	    /\([Zz]u viele\|keine\).*gefunden/q
-	    : again
-	    N
-	    s/\n[^\n]*javascript:toggle[^\n]*$//
-	    s#<span [^>]*>(Trefferquote.*$##
-	    \#</div>[[:space:]]*</div>[[:space:]]*$#!b again
-	    s#<div[^>]*>#, #g
-	    '"$REVERSE_SANITIZE"'
-	    p
-	    q
-	}
-    ' | utf8_latin1
-}
-
-_reverse_11880_request() {
-    wget "http://www.11880.com/Suche/index.cfm?fuseaction=Suche.rueckwaertssucheresult&init=true&change=false&searchform=Rueckwaerts&tel=$(urlencode "$1")" -q -O -
-}
-_reverse_11880_extract() {
-    sed -n -e '
-	/keine Treffer gefunden/ q
-	/<h1 class="nam_header"/,/<table/ {
-	    /<table/ b found
-	    H
-	}
-	b
-	: found
-	g
-	s#</h1>#, #
-	s#<br />#, #g
-	'"$REVERSE_SANITIZE"'
-	p
-	q
-    '
-}
-
-## area-code lookup
-
-_reverse_google_request() {
-    # anonymize as far as possible (use only the first six digits)
-    local number=$(expr substr "$1" 1 6)0000000000
-    getmsg -w 4 "http://www.google.de/search?num=0&q=%s" "$number"
-}
-_reverse_google_extract() {
-    sed -n -e '
-	/Call-by-Call-Vorwahlen/{
-	    s#.*/images/euro_phone.gif[^>]*>\([[:space:]]*<[^>]*>\)*[[:space:]]*##
-	    s#[[:space:]]*<.*##
-	    s#^Deutschland,[[:space:]]*##
-	    '"$REVERSE_SANITIZE"'
-	    p
-	    q
-	}
-    '
-}
-
-_reverse_callmonitor_request() {
-    # anonymize (use only the first six digits)
-    local number=$(expr substr "$1" 1 6)
-    getmsg -w 4 'http://callmonitor.berlios.de/vorwahl.php?number=%s' "$number" | sed -e "1,/^$CR\?$/d"
-}
-_reverse_callmonitor_extract() {
-    local vorwahl ortsnetz
-    read vorwahl ortsnetz
-    echo "$ortsnetz"
-}
+_reverse_init

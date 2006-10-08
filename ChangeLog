@@ -327,3 +327,7 @@
 
 	* reverse.sh: Neuer Rückwärtssuche-Provider 11880; zusätzliche
 	Fallback-Suche nur nach Vorwahlen (bei Google)
+
+2006-10-08:
+
+	callmonitor 1.7 veröffentlicht

@@ -20,7 +20,7 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 mod_register() {
-    local DAEMON=callmonitor deffile= flash=/tmp/flash/$DAEMON
+    local deffile flash=/tmp/flash/$DAEMON
     mkdir -p "$flash"
     modreg cgi $DAEMON 'Callmonitor'
     modreg extra $DAEMON '$(lang de:"Testanruf" en:"Test call")' 1 'testcall'

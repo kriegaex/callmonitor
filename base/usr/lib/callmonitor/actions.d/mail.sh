@@ -27,10 +27,10 @@ mail_subject() {
 	in:cancel) echo -n "$(lang de:"Verpasst" en:"Missed"): " ;;
     esac
     case $EVENT in
-	in:*) echo -n "$(lang de:"Anruf" en:"Call")${SOURCE:+" $(lang
-	    de:"von" en:"from") $SOURCE"}" ;;
-	out:*) echo -n "$(lang de:"Anruf" en:"Call")${DEST:+" $(lang
-	    de:"an" en:"to") $DEST"}" ;;
+	in:*) echo -n "$(lang de:"Anruf" en:"Call")${SOURCE_DISP:+" $(lang
+	    de:"von" en:"from") $SOURCE_DISP"}" ;;
+	out:*) echo -n "$(lang de:"Anruf" en:"Call")${DEST_DISP:+" $(lang
+	    de:"an" en:"to") $DEST_DISP"}" ;;
     esac
     echo " [$EVENT]"
 }

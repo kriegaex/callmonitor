@@ -331,3 +331,9 @@
 2006-10-08:
 
 	callmonitor 1.7 veröffentlicht
+
+2006-10-11:
+
+	* callmonitor.sh: Neue Variablen SOURCE_DISP und DEST_DISP mit
+	"anzeigefreundlicheren" Varianten von SOURCE und DEST (Landesvorwahl
+	weg, Call-by-Call-Vorwahlen weg, etc.)

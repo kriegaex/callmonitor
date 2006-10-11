@@ -30,12 +30,12 @@ default_message() {
     local here here_name here_dir there there_name there_dir
     case $EVENT in
 	in:*)
-	    there_dir=$from there=$SOURCE there_name=$SOURCE_NAME
-	    here_dir=$to here=$DEST here_name=$DEST_NAME
+	    there_dir=$from there=$SOURCE_DISP there_name=$SOURCE_NAME
+	    here_dir=$to here=$DEST_DISP here_name=$DEST_NAME
 	    ;;
 	*)
-	    here_dir=$from here=$SOURCE here_name=$SOURCE_NAME
-	    there_dir=$to there=$DEST there_name=$DEST_NAME
+	    here_dir=$from here=$SOURCE_DISP here_name=$SOURCE_NAME
+	    there_dir=$to there=$DEST_DISP there_name=$DEST_NAME
 	    ;;
     esac
     

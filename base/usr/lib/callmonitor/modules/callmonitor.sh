@@ -62,6 +62,7 @@ _provider_name() {
 }
 
 __incoming_call() {
+    local __
     if ! empty "$SOURCE"; then
 	case $EVENT,$PROVIDER in
 	    out:*,SIP*) SOURCE_NAME=$(_provider_name "$PROVIDER") ;;
@@ -72,6 +73,9 @@ __incoming_call() {
 	case $EVENT in
 	    out:*) SOURCE=$PROVIDER ;;
 	esac
+    fi
+    if ! empty "$SOURCE"; then
+	normalize_address "$SOURCE" display; SOURCE_DISP=$__
     fi
     if ! empty "$DEST"; then
 	case $EVENT,$PROVIDER in 
@@ -84,13 +88,18 @@ __incoming_call() {
 	    in:*) DEST=$PROVIDER ;;
 	esac
     fi
+    if ! empty "$DEST"; then
+	normalize_address "$DEST" display; DEST_DISP=$__
+    fi
+
     __info "[$INSTANCE] EVENT=$EVENT SOURCE='$SOURCE' DEST='$DEST'" \
-	"SOURCE_NAME='$SOURCE_NAME' DEST_NAME='$DEST_NAME'" \
+	"SOURCE_NAME='$SOURCE_NAME' DEST_NAME='$DEST_NAME'"
+    __info "[$INSTANCE+] SOURCE_DISP='$SOURCE_DISP' DEST_DISP='$DEST_DISP'" \
 	"ID=$ID EXT=$EXT DURATION=$DURATION TIMESTAMP='$TIMESTAMP'" \
 	"PROVIDER=$PROVIDER"
 
-    local var_cm="SOURCE DEST SOURCE_NAME DEST_NAME EVENT ID EXT DURATION
-	TIMESTAMP PROVIDER"
+    local var_cm="SOURCE DEST SOURCE_NAME DEST_NAME SOURCE_DISP DEST_DISP EVENT
+	ID EXT DURATION TIMESTAMP PROVIDER"
 
     ## make call information available to listeners
     export $var_cm

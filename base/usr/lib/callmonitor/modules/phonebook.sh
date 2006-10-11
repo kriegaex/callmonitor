@@ -29,14 +29,14 @@ require usage
 normalize_address() {
     local number=$1
     case $number in
-	SIP*) normalize_sip "$number" ;;
-	*)    normalize_tel "$number" ;;
+	SIP*|*@*) normalize_sip "$@" ;;
+	*) normalize_tel "$@" ;;
     esac
 }
 
 ## normalize phone numbers
 normalize_tel() {
-    local number=$1
+    local number=$1 mode=$2
     # Call by call
     case $number in
 	010[1-9]?*) number=${number#010[1-9]?} ;;
@@ -48,9 +48,11 @@ normalize_tel() {
 	49*) if ? "${#number} > 10"; then number=0${number#49}; fi ;;
     esac
     # Local number
-    case $number in
-	[1-9]*) number=${CALLMONITOR_OKZ}${number} ;; 
-    esac
+    if [ "$mode" != display ]; then
+	case $number in
+	    [1-9]*) number=${CALLMONITOR_OKZ}${number} ;; 
+	esac
+    fi
     __=$number
 }
 
@@ -97,7 +99,7 @@ fi
 ensure_file "$CALLMONITOR_TRANSIENT" "$CALLMONITOR_PERSISTENT"
 
 _pb_get() {
-    local number=$1 number_norm name exitval
+    local number=$1 number_norm name exitval __
     _pb_get_local "$number"
     exitval=$?; name=$__
     if ? "exitval != 0"; then
@@ -146,7 +148,7 @@ _pb_put_local() {
     MODE=put _pb_put_or_remove "$@"
 }
 _pb_put_or_remove() {
-    local number=$1 name=$2
+    local number=$1 name=$2 __
     local number_re=$(sed_re_escape "$number")
     case $MODE in 
 	remove)

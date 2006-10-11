@@ -30,6 +30,7 @@
 ##  SOURCE_NAME source name
 ##  DEST	destination number
 ##  DEST_NAME	destination name
+##  ... and others (see $var_cm in callmonitor.sh)
 
 require net
 require message
@@ -76,7 +77,7 @@ yac() {
     rawmsg -T yac -p 10629 -t "%s\0" "$@"
 }
 default_yac() {
-    echo "@CALL$SOURCE_NAME~$SOURCE"
+    echo "@CALL$SOURCE_NAME~$SOURCE_DISP"
 }
 
 ## Usage: vdr [OPTION]... [MESSAGE]

@@ -19,6 +19,7 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
+require format
 
 ## default message (multi-line)
 default_message() {

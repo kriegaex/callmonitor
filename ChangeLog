@@ -337,3 +337,19 @@
 	* callmonitor.sh: Neue Variablen SOURCE_DISP und DEST_DISP mit
 	"anzeigefreundlicheren" Varianten von SOURCE und DEST (Landesvorwahl
 	weg, Call-by-Call-Vorwahlen weg, etc.)
+
+2006-11-03:
+
+	* format.sh: Funktion f_duration (1. Argument: Zeit in Sekunden, z.B.
+	$DURATION) zur Darstellung von Zeitdauern als "hh:mm:ss"
+
+2006-11-17:
+	
+	* config.sh: Portfreigaben, WLAN oder SIP-Accounts an-/ausschalten:
+
+	    config forward 1 on  # 1. Portforwarding aktivieren
+	    config forward 3 off # 3. Portforwarding deaktivieren
+	    config wlan off      # WLAN aus
+	    config wlan on       # WLAN an
+	    config sip 4 on      # 4. SIP-Account aktivieren
+	    config sip 2 off     # 2. SIP-Account deaktivieren

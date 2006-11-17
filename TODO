@@ -6,20 +6,23 @@ Testen
 Wichtig
 ----------------------------------------------------------------------
 
-Längenbeschränkung in default_message rechnet nicht richtig
-
-getmsg funktioniert mit einigen Webservern nicht zuverlässig (dasoertliche,
-goyellow)
-
 ----------------------------------------------------------------------
 Demnächst anschauen
 ----------------------------------------------------------------------
+
+Ergebnis der Rückwärtssuche besser strukturieren (zumindest Name und Adresse
+trennen)
 
 default_message aufwerten (auf *:cancel, *:connect und *:disconnect eingehen)
 
 ----------------------------------------------------------------------
 Nicht so wichtig
 ----------------------------------------------------------------------
+
+Längenbeschränkung in default_message rechnet nicht richtig
+
+getmsg funktioniert mit einigen Webservern nicht zuverlässig (dasoertliche,
+goyellow)
 
 Ergebnis der Rückwärtssuche im Fritzbox-Telefonbuch ablegen.
     (zu langsam!!)
@@ -37,3 +40,7 @@ System zur Ersetzung von Konfigurationsstrings in Dateien
 ar7cfgconv-"Parser" separieren
 
 Betrieb ohne Mod vorbereiten (zum Nachladen auf unveränderte Firmware)
+
+[0] EVENT=in:request SOURCE='0941879633' DEST='0941566302' SOURCE_NAME='0941879633 (HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">)' DEST_NAME='' ID=1 EXT=4 DURATION=16 TIMESTAMP='03.11.06 11:37' PROVIDER=
+=> Google-Suche funktioniert nicht mehr
+=> nicht reproduzierbar, anscheinend nur sporadisch

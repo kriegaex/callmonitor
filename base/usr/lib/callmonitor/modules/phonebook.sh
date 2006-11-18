@@ -37,17 +37,17 @@ normalize_address() {
 ## normalize phone numbers
 normalize_tel() {
     local number=$1 mode=$2
-    # Call by call
+    ## Call by call
     case $number in
 	010[1-9]?*) number=${number#010[1-9]?} ;;
 	0100??*) number=${number#0100??} ;;
     esac
-    # Country prefix of Germany
+    ## Country prefix of Germany
     case $number in
 	0049*) number=0${number#0049} ;;
 	49*) if ? "${#number} > 10"; then number=0${number#49}; fi ;;
     esac
-    # Local number
+    ## Local number
     if [ "$mode" != display ]; then
 	case $number in
 	    [1-9]*) number=${CALLMONITOR_OKZ}${number} ;; 

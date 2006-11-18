@@ -20,7 +20,7 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 _reverse_callmonitor_request() {
-    # anonymize (use only the first six digits)
+    ## anonymize (use only the first six digits)
     local number=$(expr substr "$1" 1 6)
     getmsg -w 4 'http://callmonitor.berlios.de/vorwahl.php?number=%s' "$number" | sed -e "1,/^$CR\?$/d"
 }

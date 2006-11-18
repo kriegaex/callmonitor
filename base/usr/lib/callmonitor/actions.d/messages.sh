@@ -98,9 +98,9 @@ encode_xboxmessage() {
     echo "$1" | tr "," ";"
 }
 
-# DGStation Relook 400S (Geckow Web Interface)
-# (only one line with about 40 characters; "\r" and "\r\n" do not mark newlines;
-# Latin-1 and UTF-8 umlauts translate to question marks)
+## DGStation Relook 400S (Geckow Web Interface)
+## (only one line with about 40 characters; "\r" and "\r\n" do not mark newlines;
+## Latin-1 and UTF-8 umlauts translate to question marks)
 relookmessage() {
     getmsg -T relookmessage \
 	-t "/cgi-bin/command?printmessage&${RELOOK_TIMEOUT:-10}%%20%s" "$@"

@@ -33,7 +33,7 @@ _connect() {
     __nc "$TIMEOUT" "$HOST" "$PORT"
 }
 
-# return value: number of consumed arguments
+## return value: number of consumed arguments
 _opt_net() {
     _opt_nc "$@" || return $?
     case $1 in

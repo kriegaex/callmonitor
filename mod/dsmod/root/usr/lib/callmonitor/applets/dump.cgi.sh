@@ -33,24 +33,24 @@ cols="EVENT SOURCE DEST TIMESTAMP"
 n=0
 ___() {
     let n++
-    #if ? "n == DUMP_SHOW"; then
-#	echo "<table>"
-#	for var; do
-#	    echo "<tr><th>$var</th>"
-#	    eval 'echo "<td>$(html "$'"$var"'")</td>"'
-#	done
-#	echo "</table>"
-#   else
-#	echo -n "<a href='dump?show=$n'>"
-#	echo -n "[$(html "$EVENT")] $(html "$SOURCE") ~ $(html "$DEST")"
-#	echo "</a>"
+##   if ? "n == DUMP_SHOW"; then
+##	echo "<table>"
+##	for var; do
+##	    echo "<tr><th>$var</th>"
+##	    eval 'echo "<td>$(html "$'"$var"'")</td>"'
+##	done
+##	echo "</table>"
+##   else
+##	echo -n "<a href='dump?show=$n'>"
+##	echo -n "[$(html "$EVENT")] $(html "$SOURCE") ~ $(html "$DEST")"
+##	echo "</a>"
 	echo "<tr>"
 	for var in $cols; do
 	    eval 'echo "<td>$(html "$'"$var"'")</td>"'
 	done
 	echo "</tr>"
-#   fi
-#  echo "</li>"
+##   fi
+##  echo "</li>"
 }
 
 if [ -r "$CALLMONITOR_DUMPFILE" ]; then

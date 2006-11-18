@@ -43,15 +43,15 @@ _hash_contains() {
     eval "? \${_h_${name}_${key}+1}"
 }
 
-# new_hash a
-# a_put 123 "foo"
-# a_put 456 "lasijdflaisjdf"
-# a_get 123 val
-# echo $val
-# a_get 456 val
-# echo $val
-# if a_contains 123; then echo yes; else echo no; fi
-# a_remove 123
-# a_get 123 val
-# echo $val
-# if a_contains 123; then echo yes; else echo no; fi
+## new_hash a
+## a_put 123 "foo"
+## a_put 456 "lasijdflaisjdf"
+## a_get 123 val
+## echo $val
+## a_get 456 val
+## echo $val
+## if a_contains 123; then echo yes; else echo no; fi
+## a_remove 123
+## a_get 123 val
+## echo $val
+## if a_contains 123; then echo yes; else echo no; fi

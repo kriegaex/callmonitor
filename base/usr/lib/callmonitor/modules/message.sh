@@ -57,7 +57,7 @@ default_message() {
     fi
 }
 
-# one-liner
+## one-liner
 default_short_message() {
     default_message ${1:-50} 1
 }

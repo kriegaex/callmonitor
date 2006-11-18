@@ -343,6 +343,10 @@
 	* format.sh: Funktion f_duration (1. Argument: Zeit in Sekunden, z.B.
 	$DURATION) zur Darstellung von Zeitdauern als "hh:mm:ss"
 
+2006-11-14:
+
+	* webui.sh: Fixed bug: uc/lc variable name (thanks to mic29)
+
 2006-11-17:
 	
 	* config.sh: Portfreigaben, WLAN oder SIP-Accounts an-/ausschalten:
@@ -353,3 +357,7 @@
 	    config wlan on       # WLAN an
 	    config sip 4 on      # 4. SIP-Account aktivieren
 	    config sip 2 off     # 2. SIP-Account deaktivieren
+
+2006-11-18:
+
+	callmonitor 1.8 veröffentlicht

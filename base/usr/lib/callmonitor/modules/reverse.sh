@@ -53,7 +53,7 @@ reverse_lookup() {
 }
 _reverse_choose_provider() {
     case $CALLMONITOR_REVERSE_PROVIDER in
-	inverssuche|dasoertliche|telefonbuch|goyellow|11880)
+	inverssuche|dasoertliche|telefonbuch|goyellow|11880|search_ch)
 	    prov=$CALLMONITOR_REVERSE_PROVIDER ;;
 	*) prov=telefonbuch ;;
     esac

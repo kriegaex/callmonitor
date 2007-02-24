@@ -28,6 +28,7 @@ config() {
 	forward) type=post data="forwardrules:settings/rule$((${2:-1}-1))/activated=$(_c_boolean "${3:-on}")" ;;
 	wlan)    type=post data="wlan:settings/ap_enabled=$(_c_boolean "${2:-on}")" ;;
 	sip)     type=post data="sip:settings/sip$((${2:-1}-1))/activated=$(_c_boolean "${3:-on}")" ;;
+	diversion) type=post data="telcfg:settings/Diversity$((${2:-1}-1))/Active=$(_c_boolean "${3:-on}")" ;;
 	*)       type=fail ;;
     esac
     case $type in

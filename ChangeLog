@@ -370,3 +370,11 @@
 2006-01-05:
 
 	callmonitor 1.8.1 veröffentlicht
+
+2006-02-24:
+
+	callmonitor 1.8.2 veröffentlicht:
+
+	* config.sh: Rufumleitungen schalten (config diversion 1 on)
+
+	* messages.sh: Aktion Advanced AYAC (ayac) für Gundalfs Client

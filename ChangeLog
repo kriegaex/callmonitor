@@ -378,3 +378,10 @@
 	* config.sh: Rufumleitungen schalten (config diversion 1 on)
 
 	* messages.sh: Aktion Advanced AYAC (ayac) für Gundalfs Client
+
+2006-02-25:
+
+	callmonitor 1.8.3:
+
+	* mail: Quoting von Shell-Metazeichen $ und ` beim Lesen der
+	Konfiguration (Danke an bsirius)

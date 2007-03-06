@@ -186,7 +186,12 @@ unset -v From To SMTPServer accountname passwd
 config() {
     allcfgconv -C ar7 -c -o - | 
     sed -ne '/^emailnotify[[:space:]]*{/,/^}/{
-	/=/{s/[[:space:]]*=[[:space:]]*/=/;s/^[[:space:]]*//;p}
+	/=/{
+	    s/[[:space:]]*=[[:space:]]*/=/
+	    s/^[[:space:]]*//
+	    s/[$`]/\\&/g
+	    p
+	}
     }'
 }
 

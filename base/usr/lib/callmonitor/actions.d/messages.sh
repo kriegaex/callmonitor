@@ -69,7 +69,15 @@ dreammessage() {
 	-t "/cgi-bin/xmessage?timeout=${DREAM_TIMEOUT:-10}&caption=$(urlprintfencode "${DREAM_CAPTION:-$(lang
     de:"Telefonanruf" en:"Phone call")}")&charset=latin1&icon=${DREAM_ICON:-1}&body=%s" "$@"
 }
-default_dreammessage() { default_message; }
+## with Enigma 2
+dream2message() {
+    "/web/message?text=%s&type=1&timeout=15" "$@"
+    getmsg -T dream2message \
+	-t "/web/message?timeout=${DREAM_TIMEOUT:-10}&type=${DREAM_ICON:-1}&text=%s" "$@"
+}
+default_dreammessage() { default_dream; }
+default_dream2message() { default_dream; }
+default_dream() { default_message; }
 
 ## Usage: yac [OPTION]... [MESSAGE]
 ## Send a message to a yac listener (Yet Another Caller ID Program)
@@ -106,11 +114,14 @@ encode_xboxmessage() {
     echo "$1" | tr "," ";"
 }
 
-## DGStation Relook 400S (Geckow Web Interface)
-## (only one line with about 40 characters; "\r" and "\r\n" do not mark newlines;
+## DGStation Relook 400S (Geckow Web Interface 1.04)
+## (4 lines with about 40 characters (39 according to bolle); "|" is newline;
 ## Latin-1 and UTF-8 umlauts translate to question marks)
 relookmessage() {
     getmsg -T relookmessage \
 	-t "/cgi-bin/command?printmessage&${RELOOK_TIMEOUT:-10}%%20%s" "$@"
 }
-default_relookmessage() { default_short_message 40; }
+default_relookmessage() { default_message 39; }
+encode_relookmessage() {
+    echo "$1" | sed -n 's,|,/,g;1h;2,4{H;g;s/\n/|/g;h};${g;p}'
+}

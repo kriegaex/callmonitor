@@ -385,3 +385,24 @@
 
 	* mail: Quoting von Shell-Metazeichen $ und ` beim Lesen der
 	Konfiguration (Danke an bsirius)
+
+2006-04-21:
+
+	callmonitor 1.9:
+
+	* dream2message: Nachricht für Dreamboxen mit Enigma 2; benutzt
+	Umgebungsvariablen DREAM_TIMEOUT (10) und DREAM_ICON (1). Danke an
+	kolbem.
+
+	* relookmessage: Mit neuer Version des Webinterfaces jetzt mehrzeilige
+	Nachrichten möglich. Danke an bolle.
+
+2006-04-28:
+
+	callmonitor 1.9.1:
+
+	* config: Die Konfiguration kann nun abgefragt werden: Einfach den
+	Wert weglassen; so gibt z.B. "config forward 1" einen der Werte "on",
+	"off" oder "error" (z.B. wenn es die Regel nicht gibt) aus.
+	Entsprechend funktionieren "config wlan", "config sip 2", etc. Danke
+	an silberwolf für die Anregung.

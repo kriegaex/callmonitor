@@ -42,7 +42,9 @@ reverse_lookup() {
 	echo "$name"
 	exit=0
     else
-	name=$(cat "$afile" 2>/dev/null)
+	## wait for area provider to finish
+	wait $child
+	name=$(cat "$afile" 2>/dev/null); exit=$?
 	if ! empty "$name"; then
 	    echo "$number ($name)" ## $name is only city
 	    exit=0

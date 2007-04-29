@@ -406,3 +406,12 @@
 	"off" oder "error" (z.B. wenn es die Regel nicht gibt) aus.
 	Entsprechend funktionieren "config wlan", "config sip 2", etc. Danke
 	an silberwolf für die Anregung.
+
+2006-04-29:
+
+	callmonitor 1.9.2:
+
+	* reverse.sh: Auf Ergebnis der Fallback-Suche warten (Suche mit
+	dasoertliche und google hat manchmal kein Ergebnis geliefert, wenn
+	dasoertliche schneller als google war). Danke an GBuster und
+	silberwolf.

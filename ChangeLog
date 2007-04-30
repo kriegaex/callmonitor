@@ -418,6 +418,8 @@
 
 2006-04-30:
 
+	callmonitor 1.9.3:
+
 	* phonebook: Optional auch das eingebaute Telefonbuch der Fritzbox
 	durchsuchen (nur Lesen!)
 

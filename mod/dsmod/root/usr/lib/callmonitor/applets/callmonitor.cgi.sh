@@ -32,6 +32,7 @@ select "$CALLMONITOR_REVERSE_PROVIDER" dasoertliche:oert \
     inverssuche:invers telefonbuch:telbu goyellow:goye 11880:elf \
     search_ch:ch
 select "$CALLMONITOR_AREA_PROVIDER" google callmonitor:cm :null
+check "$CALLMONITOR_READ_FONBUCH" yes:fon
 
 SYSLOG='$(lang de:"System-Log" en:"system log")'
 if has_package syslogd; then
@@ -85,6 +86,14 @@ sec_begin '$(lang de:"Rückwärtssuche" en:"Reverse lookup")'
 
 cat << EOF
 <table>
+<tr>
+    <td><input type="hidden" name="read_fonbuch" value="no"><!--
+    --><input type="checkbox" name="read_fonbuch" value="yes"$fon_chk id="r5"></td>
+    <td><label for="r5">$(lang
+	de:"Im FRITZ!Box-Telefonbuch nachschlagen"
+	en:"Lookup in the FRITZ!Box's phone book"
+    )</label></td>
+</tr>
 <tr>
     <td><input type="hidden" name="reverse" value="no"><!--
     --><input type="checkbox" name="reverse" value="yes"$reverse_chk id="r4"></td>

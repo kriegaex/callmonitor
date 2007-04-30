@@ -415,3 +415,10 @@
 	dasoertliche und google hat manchmal kein Ergebnis geliefert, wenn
 	dasoertliche schneller als google war). Danke an GBuster und
 	silberwolf.
+
+2006-04-30:
+
+	* phonebook: Optional auch das eingebaute Telefonbuch der Fritzbox
+	durchsuchen (nur Lesen!)
+
+	* webui.sh: Caching des Passworts; Login nur, wenn Passwort nicht-leer

@@ -1,0 +1,4 @@
+<? multiquery telcfg:settings/HotDialEntry/list(Number,Name)
+`$2	$3
+`
+?>

@@ -25,6 +25,12 @@ require util
 require reverse
 require file
 require usage
+[ "$CALLMONITOR_READ_FONBUCH" = yes ] && require webui
+
+_pb_fonbuch() {
+    webui_login
+    webui_get "getpage=../html/callmonitor/fonbuch.txt" | sed -e '1,/^$/d;$d'
+}
 
 normalize_address() {
     local number=$1
@@ -124,7 +130,11 @@ _pb_get() {
 _pb_get_local() {
     local number=$1 name
     if _pb_find_number < "$CALLMONITOR_PERSISTENT" ||
-	_pb_find_number < "$CALLMONITOR_TRANSIENT"
+	_pb_find_number < "$CALLMONITOR_TRANSIENT" ||
+	{
+	    [ "$CALLMONITOR_READ_FONBUCH" = yes ] &&
+	    name=$(_pb_fonbuch | { _pb_find_number && echo "$name"; })
+	}
     then
 	_pb_debug "phone book contains {$number -> $name}"
 	__=$name
@@ -217,9 +227,13 @@ _pb_tidy() {
 
 _pb_list() {
     case $1 in
-	all) cat "$CALLMONITOR_PERSISTENT" "$CALLMONITOR_TRANSIENT" 2>/dev/null ;;
+	all)
+	    cat "$CALLMONITOR_PERSISTENT" "$CALLMONITOR_TRANSIENT" 2>/dev/null 
+	    [ "$CALLMONITOR_READ_FONBUCH" = yes ] && _pb_fonbuch
+	    ;;
 	*)   cat "$CALLMONITOR_PERSISTENT" 2>/dev/null ;;
     esac
+    return 0
 }
 
 _pb_main() {

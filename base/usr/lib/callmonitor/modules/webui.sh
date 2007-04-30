@@ -38,8 +38,11 @@ webui_get() (
     REQUEST_METHOD=GET REMOTE_ADDR=127.0.0.1 QUERY_STRING=$1 "$WEBCM"
 )
 webui_login() {
-    webui_post_form "login:command/password=$(urlencode "$(webui_password)")" \
-    > /dev/null
+    local password="$(webui_password)"
+    if ! empty "$password"; then
+	webui_post_form "login:command/password=$(urlencode "$password")" \
+	> /dev/null
+    fi
 }
 
 webui_config() {
@@ -48,10 +51,16 @@ webui_config() {
 	/=/{s/[[:space:]]*=[[:space:]]*/=/;s/^[[:space:]]*//;p}
     }'
 }
+
+## cache password
+unset WEBUI_PASSWORD
 webui_password() {
     local password=
-    eval "$(webui_config | grep '^password=')"
-    echo "$password"
+    if ! [ ${WEBUI_PASSWORD+set} ]; then
+	eval "$(webui_config | grep '^password=')"
+	WEBUI_PASSWORD=$password
+    fi
+    echo "$WEBUI_PASSWORD"
 }
 
 webui_query() {

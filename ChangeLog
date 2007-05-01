@@ -424,3 +424,8 @@
 	durchsuchen (nur Lesen!)
 
 	* webui.sh: Caching des Passworts; Login nur, wenn Passwort nicht-leer
+
+2006-05-01:
+
+	* cfg2sh: allcfgconv-Parser separiert (macht Fritzbox-Config verdaubar
+	für die Shell)

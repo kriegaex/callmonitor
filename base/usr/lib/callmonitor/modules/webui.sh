@@ -46,19 +46,16 @@ webui_login() {
 }
 
 webui_config() {
-    allcfgconv -C ar7 -c -o - | 
-    sed -ne '/^webui[[:space:]]*{/,/^}/{
-	/=/{s/[[:space:]]*=[[:space:]]*/=/;s/^[[:space:]]*//;p}
-    }'
+    cfg2sh ar7 webui
 }
 
 ## cache password
 unset WEBUI_PASSWORD
 webui_password() {
-    local password=
+    local webui_password=
     if ! [ ${WEBUI_PASSWORD+set} ]; then
-	eval "$(webui_config | grep '^password=')"
-	WEBUI_PASSWORD=$password
+	eval "$(webui_config | grep '^webui_password=')"
+	WEBUI_PASSWORD=$webui_password
     fi
     echo "$WEBUI_PASSWORD"
 }

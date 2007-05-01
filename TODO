@@ -2,8 +2,6 @@
 Testen
 ----------------------------------------------------------------------
 
-relookmessage mit 4 Zeilen
-
 ----------------------------------------------------------------------
 Wichtig
 ----------------------------------------------------------------------
@@ -40,8 +38,6 @@ Seltsame Aufhänger von callaction beheben (Ininterruptible sleep!)
 
 System zur Ersetzung von Konfigurationsstrings in Dateien
     CALLMONITOR_CFG in controller
-
-ar7cfgconv-"Parser" separieren
 
 Betrieb ohne Mod vorbereiten (zum Nachladen auf unveränderte Firmware)
 

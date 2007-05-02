@@ -1,4 +1,4 @@
-<? multiquery telcfg:settings/HotDialEntry/list(Number,Name)
+<? multiquerytext telcfg:settings/HotDialEntry/list(Number,Name)
 `$2	$3
 `
 ?>

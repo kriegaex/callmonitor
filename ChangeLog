@@ -429,3 +429,8 @@
 
 	* cfg2sh: allcfgconv-Parser separiert (macht Fritzbox-Config verdaubar
 	für die Shell)
+
+2006-05-02:
+
+	* phonebook: Fehler bei Nutzung des FRITZ!Box-Telefonbuch behoben:
+	Umlaute als Latin1; Wichtig-Flag (!) entfernt; letzte Zeile behalten

@@ -29,7 +29,11 @@ require usage
 
 _pb_fonbuch() {
     webui_login
-    webui_get "getpage=../html/callmonitor/fonbuch.txt" | sed -e '1,/^$/d;$d'
+    webui_get "getpage=../html/callmonitor/fonbuch.txt" | sed -e '
+	1,/^$/d
+	## remove the VIP flag
+	s/^\([^	]*	\)!/\1/
+    '
 }
 
 normalize_address() {

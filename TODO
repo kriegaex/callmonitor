@@ -1,6 +1,10 @@
 ----------------------------------------------------------------------
 Testen
 ----------------------------------------------------------------------
+fonbuch-Leser:
+    Wichtig-Flag "!" (vorne) entfernen
+    HTML-Umlaute zurückkodieren -> mit multiquerytext (!) HTML vermieden
+    Letzte Zeile nicht anfassen
 
 ----------------------------------------------------------------------
 Wichtig

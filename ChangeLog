@@ -434,3 +434,7 @@
 
 	* phonebook: Fehler bei Nutzung des FRITZ!Box-Telefonbuch behoben:
 	Umlaute als Latin1; Wichtig-Flag (!) entfernt; letzte Zeile behalten
+
+2006-05-05:
+
+	callmonitor 1.9.4 veröffentlicht

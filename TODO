@@ -1,23 +1,19 @@
 ----------------------------------------------------------------------
 Testen
 ----------------------------------------------------------------------
-fonbuch-Leser:
-    Wichtig-Flag "!" (vorne) entfernen
-    HTML-Umlaute zurückkodieren -> mit multiquerytext (!) HTML vermieden
-    Letzte Zeile nicht anfassen
 
 ----------------------------------------------------------------------
 Wichtig
 ----------------------------------------------------------------------
+
+Ergebnis der Rückwärtssuche besser strukturieren (zumindest Name und Adresse
+trennen)
 
 ----------------------------------------------------------------------
 Demnächst anschauen
 ----------------------------------------------------------------------
 
 Landeseinstellungen (Schweiz, Österreich)
-
-Ergebnis der Rückwärtssuche besser strukturieren (zumindest Name und Adresse
-trennen)
 
 default_message aufwerten (auf *:cancel, *:connect und *:disconnect eingehen)
 

@@ -25,7 +25,14 @@ require util
 require reverse
 require file
 require usage
-[ "$CALLMONITOR_READ_FONBUCH" = yes ] && require webui
+require webui
+
+## retrieve OKZ from AVM config
+webui_login
+CALLMONITOR_OKZ="$(
+    webui_query telcfg:settings/Location/OKZPrefix telcfg:settings/Location/OKZ |
+    { read prefix; read okz; echo "$prefix$okz"; }
+)"
 
 _pb_fonbuch() {
     webui_login

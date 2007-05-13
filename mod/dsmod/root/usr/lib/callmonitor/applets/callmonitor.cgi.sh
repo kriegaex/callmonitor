@@ -155,14 +155,6 @@ cat << EOF
     [<a href="/cgi-bin/file.cgi?id=callers">$(lang 
 	de:"Callers&nbsp;bearbeiten" en:"Edit&nbsp;Callers")</a>]</td>
 </tr>
-<tr><td />
-    <td><label for="okz">$(lang
-	de:"Vorwahl für lokale Rufnummern"
-	en:"Area code for local numbers"
-    ):</label></td>
-    <td><input type="text" name="okz" value="$(html "$CALLMONITOR_OKZ")"
-	size="5" id="okz"></td>
-</tr>
 </table>
 EOF
 

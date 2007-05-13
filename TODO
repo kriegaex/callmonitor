@@ -6,9 +6,6 @@ Testen
 Wichtig
 ----------------------------------------------------------------------
 
-Ergebnis der Rückwärtssuche besser strukturieren (zumindest Name und Adresse
-trennen)
-
 ----------------------------------------------------------------------
 Demnächst anschauen
 ----------------------------------------------------------------------
@@ -20,6 +17,9 @@ default_message aufwerten (auf *:cancel, *:connect und *:disconnect eingehen)
 ----------------------------------------------------------------------
 Nicht so wichtig
 ----------------------------------------------------------------------
+
+Ergebnis der Rückwärtssuche besser strukturieren (zumindest Name und Adresse
+trennen)
 
 Längenbeschränkung in default_message rechnet nicht richtig
 

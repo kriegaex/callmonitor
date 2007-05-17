@@ -445,3 +445,7 @@
 
 	* phonebook.sh: Ortsvorwahl automatisch aus AVM-Konfiguration übernehmen
 	(einzustellen unter Telefonie/Internettelefonie/Erweiterte Einstellungen)
+
+2006-05-17:
+
+	callmonitor 1.9.5 veröffentlicht

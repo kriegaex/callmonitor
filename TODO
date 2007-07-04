@@ -5,6 +5,40 @@ Testen
 ----------------------------------------------------------------------
 Wichtig
 ----------------------------------------------------------------------
+ dksoft2
+IPPF-Aufsteiger
+ 
+Registriert seit: 24.11.2005
+Beiträge: 50
+post[field6]
+    
+Probleme 29.04.34(DSLVersion)ds26-15
+    
+Hallo,
+
+ich habe zwei reproduzierbare Abstürze, vielleicht kann jemand das bestätigen
+und hat schon eine Lösung:
+
+a) Callmonitor 1.9.5
+Mit der Option "Im FRITZ!Box-Telefonbuch nachschlagen" und dem automatischen
+Start werden beim Start sehr viele Prozesse erzeugt, die wohl die
+Telefonnummern aus dem Telefonbuch holen.
+Dies bewirkt bei mir einen Neustart kurz nach dem Boot. Hier kann ich nur mit
+einem Recover die FB in einen stabilen Zustand bringen.
+Schalte ich den automatischen Start aus und starte den callmonitor später
+händisch, so funktioniert alles prima.
+
+Ja, darüber wurde weiter oben bereits geschrieben. Das kann man nur als Problem
+des Callmonitors bezeichnen, der hier sehr gierig mit den knappen Ressourcen
+umgeht und dadurch den Start so lange verzögert, bis der Watchdog zuschlägt und
+die Box neu startet. Um ein Recover zu vermeiden, hat jemand vorgeschlagen, per
+Telnet oder SSH auf die Box zu gehen und einige der Prozesse mit kill
+abzuschießen, damit die Box zu Ende bootet. Danach kannst Du dann in Ruhe das
+Nachschlagen beim Start deaktivieren.
+
+Appell an Mr. Callmonitor (buehmann): Überleg Dir hierzu bitte etwas. Laß uns
+per PN bei Bedarf darüber diskutieren, was man machen kann, um hier asynchron
+zu arbeiten und nicht so viel gleichzeitig zu machen.
 
 ----------------------------------------------------------------------
 Demnächst anschauen

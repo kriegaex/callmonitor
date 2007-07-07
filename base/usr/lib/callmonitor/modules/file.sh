@@ -22,9 +22,15 @@
 ensure_file() {
     local file dir
     for file; do
-	if ! touch "$file"; then
+	if ! touch "$file" 2> /dev/null; then
 	    dir=$(dirname "$file")
-	    mkdir -p "$dir" && touch "$file"
+	    ensure_dir "$dir" && touch "$file"
 	fi
+    done
+}
+ensure_dir() {
+    local dir
+    for dir; do
+	[ -e "$dir" ] || mkdir -p "$dir"
     done
 }

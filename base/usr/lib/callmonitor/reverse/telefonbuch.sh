@@ -26,13 +26,14 @@ _reverse_telefonbuch_extract() {
     sed -n -e '
 	/kein Teilnehmer gefunden/q
 	/<!-- \*\{2,\} Treffer Eintr.ge \*\{2,\} -->/,/<!-- \*\{2,\} Ende Treffer Eintr.ge \*\{2,\} -->/ {
-	    \#^[[:space:]]*$#! H
+	    \#<td class="cel\(name\|street\|city\)"# {
+	    	s/$/,/
+	    	H
+	    }
 	}
 	/<!-- \*\{2,\} Ende Treffer Eintr.ge \*\{2,\} -->/ {
 	    g
-	    s#^[^<]*\(<[^a][^<]*\)*<a[^>]*title="\([^"]*\)"[[:space:]]*>.*<td width="180">\([^<]*\)</td>.*<span title="\([^"]*\)".*$#\2, \3, \4#
-	    t cleanup
-	    q
+	    b cleanup
 	}
 	b
 	: cleanup

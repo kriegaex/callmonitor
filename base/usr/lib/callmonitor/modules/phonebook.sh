@@ -27,14 +27,38 @@ require file
 require usage
 require webui
 
+_pb_CACHE_DIR="/var/cache/phonebook"
+ensure_dir "$_pb_CACHE_DIR"
+_pb_FONBUCH_CACHE="$_pb_CACHE_DIR/avm"
+_pb_OKZ_CACHE="$_pb_CACHE_DIR/okz"
+
 ## retrieve OKZ from AVM config
-webui_login
-CALLMONITOR_OKZ="$(
-    webui_query telcfg:settings/Location/OKZPrefix telcfg:settings/Location/OKZ |
-    { read prefix; read okz; echo "$prefix$okz"; }
-)"
+_pb_okz() {
+    if [ -r "$_pb_OKZ_CACHE" ]; then
+	CALLMONITOR_OKZ="$(cat "$_pb_OKZ_CACHE")"
+    else
+	webui_login
+	CALLMONITOR_OKZ="$(
+	    webui_query telcfg:settings/Location/OKZPrefix telcfg:settings/Location/OKZ |
+	    { read prefix; read okz; echo "$prefix$okz"; }
+	)"
+	ensure_file "$_pb_OKZ_CACHE"
+	echo "$CALLMONITOR_OKZ" > "$_pb_OKZ_CACHE"
+    fi
+}
+
 
 _pb_fonbuch() {
+    if [ ! -e "$_pb_FONBUCH_CACHE" ]; then
+	ensure_file "$_pb_FONBUCH_CACHE"
+	if lock "$_pb_FONBUCH_CACHE"; then
+	    _pb_fonbuch_read > "$_pb_FONBUCH_CACHE"
+	    unlock "$_pb_FONBUCH_CACHE"
+	fi
+    fi
+    cat "$_pb_FONBUCH_CACHE"
+}
+_pb_fonbuch_read() {
     webui_login
     webui_get "getpage=../html/callmonitor/fonbuch.txt" | sed -e '
 	1,/^$/d
@@ -45,6 +69,7 @@ _pb_fonbuch() {
 
 normalize_address() {
     local number=$1
+    _pb_okz
     case $number in
 	SIP*|*@*) normalize_sip "$@" ;;
 	*) normalize_tel "$@" ;;
@@ -107,12 +132,6 @@ case $CALLMONITOR_REVERSE_CACHE in
     transient)	_pb_CACHE=true _pb_PERSISTENT=false ;;
     persistent) _pb_CACHE=true _pb_PERSISTENT=true ;;
 esac
-## where to put new number-name pairs
-if $_pb_PERSISTENT; then
-    _pb_PHONEBOOK=$CALLMONITOR_PERSISTENT
-else
-    _pb_PHONEBOOK=$CALLMONITOR_TRANSIENT
-fi
 ensure_file "$CALLMONITOR_TRANSIENT" "$CALLMONITOR_PERSISTENT"
 
 _pb_get() {
@@ -204,9 +223,19 @@ _pb_norm_value() {
 }
 
 _pb_init() {
-    local run="/var/run/phonebook"
-    mkdir -p "$run"
-    "$CALLMONITOR_LIBDIR/sipnames" > "$run"/sip
+    local sip="/var/run/phonebook/sip"
+    ensure_file "$sip"
+    "$CALLMONITOR_LIBDIR/sipnames" > "$sip"
+}
+
+_pb_start() {
+    rm -rf "$_pb_CACHE_DIR"
+    _pb_okz
+    if [ "$CALLMONITOR_READ_FONBUCH" = "yes" ]; then
+	echo -n "Reading AVM's phone book..." >&2
+	_pb_fonbuch > /dev/null
+	echo "done." >&2
+    fi
 }
 
 _pb_tidy() {
@@ -255,12 +284,19 @@ _pb_main() {
 	    --) shift; break ;;
 	esac
     done
+    ## where to put new number-name pairs
+    if $_pb_PERSISTENT; then
+	_pb_PHONEBOOK=$CALLMONITOR_PERSISTENT
+    else
+	_pb_PHONEBOOK=$CALLMONITOR_TRANSIENT
+    fi
     case $1 in
 	get) _pb_get "$2" ;;
 	exists) _pb_get "$2" > /dev/null ;;
 	remove) _pb_remove "$2" ;;
 	put) _pb_put_local "$2" "$3" ;;
 	init) _pb_init ;;
+	start) _pb_start ;;
 	tidy) _pb_tidy ;;
 	list) _pb_list "$2" ;;
 	*) usage >&2; exit 1 ;;

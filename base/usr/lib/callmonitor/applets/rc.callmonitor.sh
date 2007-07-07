@@ -21,14 +21,13 @@
 ##
 DAEMON=callmonitor
 
-## we no longer need the telefon package
-
 require rc
 require modreg
+require file
 
 FIFO=$CALLMONITOR_FIFO
 FIFO_DIR=${FIFO%/*}
-mkdir -p "$FIFO_DIR"
+ensure_dir "$FIFO_DIR"
 PIDFILE="/var/run/$DAEMON/pid/$DAEMON"
 
 case $1 in
@@ -68,6 +67,7 @@ start() {
 	echo "$DAEMON already started."
 	exit 0
     fi
+    phonebook start 2>&1 > /dev/null
     start_daemon || exitval=$?
     return $exitval
 }

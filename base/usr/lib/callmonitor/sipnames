@@ -56,7 +56,7 @@ shorten_registrar() {
 add_phonebook_default() {
     local address=$1 name=$2
     if ! phonebook --local exists "$address"; then
-	phonebook put "$address" "$name"
+	phonebook --persistent put "$address" "$name"
     fi
 }
 
@@ -70,7 +70,7 @@ for sip in $SIP_LIST; do
     short=$(shorten_registrar "$registrar")
 
     echo "$sip: $address -> $short" >&2
-    add_phonebook_default "$address" "$short" > /dev/null 2>&1 &
+    add_phonebook_default "$address" "$short" > /dev/null 2>&1
     echo "${sip}_address=\"$address\""
 done
 echo "done." >&2

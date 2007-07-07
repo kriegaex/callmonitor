@@ -22,6 +22,7 @@
 
 require callmonitor
 require usage
+require file
 
 ## parse options
 TEMP=$(getopt -o 'fs' -l debug,help -n "$APPLET" -- "$@") || exit 1
@@ -121,8 +122,7 @@ if $STOP; then
 	exit $?
     fi
 else
-    mkdir -p "$(dirname "$FIFO")"
-    mkdir -p "$(dirname "$PIDFILE")"
+    ensure_dir "$(dirname "$FIFO")" "$(dirname "$PIDFILE")"
 
     for fifo in "$FIFO" "$DEBUG_FIFO" "$INFO_FIFO"; do
 	mknod "$fifo" p 2>/dev/null

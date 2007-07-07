@@ -27,13 +27,14 @@ require usage
 
 ## parse options
 _pb_DEBUG=false
-TEMP=$(getopt -o '' -l debug,local,help -n "${0##*/}" -- "$@") || exit 1
+TEMP=$(getopt -o '' -l debug,local,help,persistent -n "${0##*/}" -- "$@") || exit 1
 eval "set -- $TEMP"
 
 while true; do
     case $1 in
 	--local) _pb_REVERSE=false ;;
 	--debug) _pb_DEBUG=true ;;
+	--persistent) _pb_PERSISTENT=true ;;
 	--help) usage >&2; exit 1 ;;
 	--) shift; break ;;
 	*) ;; # should never happen
@@ -52,7 +53,7 @@ check=1
 case $1 in
     put) check="$# == 3" ;;
     get|exists|remove) check="$# == 2" ;;
-    init|tidy) check="$# == 1" ;;
+    init|start|tidy) check="$# == 1" ;;
     list) check="$# >= 1 && $# <= 2" ;;
     *) check= ;;
 esac

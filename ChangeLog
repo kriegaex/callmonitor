@@ -452,13 +452,8 @@
 
 2006-07-07:
 
-	callmonitor 1.9.6: 
+	callmonitor 1.9.6 (Preview): 
 
-	* telefonbuch.sh: Rückwärtsuche bei dastelefonbuch.de an geändertes
-	Webseitenformat angepasst
-
-	* fonbuch.txt: Abfrage des AVM-Telefonbuchs repariert (Refresh fehlte)
-	
 	Maßnahmen gegen Abstürze wegen Überlastsituation beim Booten:
 
 	* phonebook: Caching des Telefonbuchs von AVM; wird jetzt nur einmal
@@ -469,3 +464,12 @@
 	* phonebook: Caching der Ortskennzahl
 
 	* sipnames: Sequentielles Eintragen der erzeugten Nummern
+
+2006-07-08:
+
+	* telefonbuch.sh: Rückwärtsuche bei dastelefonbuch.de an geändertes
+	Webseitenformat angepasst
+
+	* fonbuch.txt: Abfrage des AVM-Telefonbuchs repariert (Refresh fehlte)
+	
+	callmonitor 1.9.7 veröffentlicht

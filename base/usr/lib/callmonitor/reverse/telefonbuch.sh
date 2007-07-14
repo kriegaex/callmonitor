@@ -20,7 +20,7 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 _reverse_telefonbuch_request() {
-    getmsg -w 5 'http://www.dastelefonbuch.de/?la=de&kw=%s&cmd=search' "$1"
+    wget -q -O - "http://www.dastelefonbuch.de/?la=de&kw=$(urlencode "$1")&cmd=search"
 }
 _reverse_telefonbuch_extract() {
     sed -n -e '

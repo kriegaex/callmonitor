@@ -1,7 +1,7 @@
 ##
 ## Callmonitor for Fritz!Box (callmonitor)
 ## 
-## Copyright (C) 2005--2007  Andreas BÃ¼hmann <buehmann@users.berlios.de>
+## Copyright (C) 2005--2007  Andreas Bühmann <buehmann@users.berlios.de>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ mod_register() {
     mkdir -p "$flash"
     modreg cgi $DAEMON 'Callmonitor'
     modreg extra $DAEMON '$(lang de:"Testanruf" en:"Test call")' 1 'testcall'
+    modreg extra $DAEMON '$(lang de:"Test der Rückwärtssuche" en:"Test reverse lookup")' 1 'testlookup'
     modreg extra $DAEMON '$(lang de:"Wartung" en:"Maintenance")' 1 'maint'
     if [ -r "$flash/listeners.def" ]; then 
 	deffile=$flash/listeners.def
@@ -42,6 +43,7 @@ mod_unregister() {
     modunreg file 'callers'
     modunreg file 'listeners'
     modunreg extra $DAEMON 'testcall'
+    modunreg extra $DAEMON 'testlookup'
     modunreg extra $DAEMON 'maint'
     modunreg cgi $DAEMON
 }

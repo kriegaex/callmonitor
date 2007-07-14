@@ -473,3 +473,15 @@
 	* fonbuch.txt: Abfrage des AVM-Telefonbuchs repariert (Refresh fehlte)
 	
 	callmonitor 1.9.7 veröffentlicht
+
+2006-07-14:
+
+	* google.sh: Vorwahlsuche bei Google repariert
+
+	* testlookup.sh: Einfache Seite, um alle Rückwärtssuche-Provider
+	zu testen
+
+	* telefonbuch: Auf wget umgestellt, um zuverlässiger eine
+	Antwort zu bekommen
+	
+	* callmonitor.cfg: Default-Provider auf dasoertliche geändert

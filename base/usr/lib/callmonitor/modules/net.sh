@@ -25,6 +25,7 @@ require url
 require http
 require getopt
 require usage
+require version
 
 ## Basic networking utilities
 

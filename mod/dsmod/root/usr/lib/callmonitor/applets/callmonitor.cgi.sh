@@ -31,7 +31,7 @@ select "$CALLMONITOR_REVERSE_CACHE" no transient:trans persistent:pers
 select "$CALLMONITOR_REVERSE_PROVIDER" dasoertliche:oert \
     telefonbuch:telbu goyellow:goye 11880:elf \
     search_ch:ch
-select "$CALLMONITOR_AREA_PROVIDER" google callmonitor:cm :null
+select "$CALLMONITOR_AREA_PROVIDER" google :null
 check "$CALLMONITOR_READ_FONBUCH" yes:fon
 
 SYSLOG='$(lang de:"System-Log" en:"system log")'
@@ -125,8 +125,6 @@ cat << EOF
     <td><select name="area_provider" id="area">
 	<option title="Keine Auflösung von Vorwahlen"
 	    value=""$null_sel>$(lang de:"niemandem" en:"nowhere")</option>
-	<!--<option title="callmonitor.berlios.de"
-	    value="callmonitor"$cm_sel>Callmonitor (beta)</option>-->
 	<option title="www.google.de"
 	    value="google"$google_sel>Google</option>
     </select></td>

@@ -25,7 +25,9 @@ _reverse_dasoertliche_request() {
 _reverse_dasoertliche_extract() {
    sed -n -e '
 	: main
-        \#Kein Teilnehmer gefunden:#q
+        \#Kein Teilnehmer gefunden:# {
+	    '"$REVERSE_NA"'
+	}
         \#<a[[:space:]].*[[:space:]]class="entry">#,\#<input[[:space:]]type="hidden"# {
 	    s#^.*<a[[:space:]].*[[:space:]]class="entry">\([^<]*\)</a>.*$#\1#
 	    t hold
@@ -42,7 +44,6 @@ _reverse_dasoertliche_extract() {
 	g
 	s/\(<br\/>\)\?\n\|<br\/>/, /g
 	'"$REVERSE_SANITIZE"'
-	p
-	q
+	'"$REVERSE_OK"'
     '
 }

@@ -27,7 +27,9 @@ _reverse_search_ch_request() {
 
 _reverse_search_ch_extract() {
     sed -n -e '
-	\#Keine Einträge gefunden.# q
+	\#Keine Eintr..\?ge gefunden.# {
+	    '"$REVERSE_NA"'
+	}
 	\#<div class="rname"# b name
 	\#<div class="raddr"# b address
 	b
@@ -41,7 +43,6 @@ _reverse_search_ch_extract() {
 	x
 	s/\n/, /g
 	'"$REVERSE_SANITIZE"'
-	p
-	q
+	'"$REVERSE_OK"'
     '
 }

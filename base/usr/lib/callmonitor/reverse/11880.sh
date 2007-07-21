@@ -24,7 +24,9 @@ _reverse_11880_request() {
 }
 _reverse_11880_extract() {
     sed -n -e '
-	/keine Treffer gefunden/ q
+	/keine Treffer gefunden/ {
+	    '"$REVERSE_NA"'
+	}
 	/<h1 class="nam_header"/,/<table/ {
 	    /<table/ b found
 	    H
@@ -35,7 +37,6 @@ _reverse_11880_extract() {
 	s#</h1>#, #
 	s#<br />#, #g
 	'"$REVERSE_SANITIZE"'
-	p
-	q
+	'"$REVERSE_OK"'
     '
 }

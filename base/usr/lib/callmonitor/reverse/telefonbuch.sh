@@ -24,7 +24,9 @@ _reverse_telefonbuch_request() {
 }
 _reverse_telefonbuch_extract() {
     sed -n -e '
-	/kein Teilnehmer gefunden/q
+	/kein Teilnehmer gefunden/ {
+	    '"$REVERSE_NA"'
+	}
 	/<!-- \*\{2,\} Treffer Eintr.ge \*\{2,\} -->/,/<!-- \*\{2,\} Ende Treffer Eintr.ge \*\{2,\} -->/ {
 	    \#<td class="cel\(name\|street\|city\)"# {
 	    	s/$/,/
@@ -38,7 +40,6 @@ _reverse_telefonbuch_extract() {
 	b
 	: cleanup
 	'"$REVERSE_SANITIZE"'
-	p
-	q
+	'"$REVERSE_OK"'
     '
 }

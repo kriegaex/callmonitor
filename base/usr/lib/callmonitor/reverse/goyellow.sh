@@ -24,7 +24,9 @@ _reverse_goyellow_request() {
 }
 _reverse_goyellow_extract() {
     sed -n -e '
-	\#Es wurden keine Eintr.ge gefunden.# q
+	\#Es wurden keine Eintr.ge gefunden.# {
+	    '"$REVERSE_NA"'
+	}
 	\#<div[^>]*id="listing"#,\#<div[^>]*class="col contact# {
 	    /title="Detailinformationen/ b name
 	    \#<h3>.*</h3># b name
@@ -34,8 +36,7 @@ _reverse_goyellow_extract() {
 	    g
 	    s/\n/, /g
 	    '"$REVERSE_SANITIZE"'
-	    p
-	    q
+	    '"$REVERSE_OK"'
 	}
 	b
 	: name

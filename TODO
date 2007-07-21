@@ -5,44 +5,14 @@ Testen
 ----------------------------------------------------------------------
 Wichtig
 ----------------------------------------------------------------------
- dksoft2
-IPPF-Aufsteiger
- 
-Registriert seit: 24.11.2005
-Beiträge: 50
-post[field6]
-    
-Probleme 29.04.34(DSLVersion)ds26-15
-    
-Hallo,
-
-ich habe zwei reproduzierbare Abstürze, vielleicht kann jemand das bestätigen
-und hat schon eine Lösung:
-
-a) Callmonitor 1.9.5
-Mit der Option "Im FRITZ!Box-Telefonbuch nachschlagen" und dem automatischen
-Start werden beim Start sehr viele Prozesse erzeugt, die wohl die
-Telefonnummern aus dem Telefonbuch holen.
-Dies bewirkt bei mir einen Neustart kurz nach dem Boot. Hier kann ich nur mit
-einem Recover die FB in einen stabilen Zustand bringen.
-Schalte ich den automatischen Start aus und starte den callmonitor später
-händisch, so funktioniert alles prima.
-
-Ja, darüber wurde weiter oben bereits geschrieben. Das kann man nur als Problem
-des Callmonitors bezeichnen, der hier sehr gierig mit den knappen Ressourcen
-umgeht und dadurch den Start so lange verzögert, bis der Watchdog zuschlägt und
-die Box neu startet. Um ein Recover zu vermeiden, hat jemand vorgeschlagen, per
-Telnet oder SSH auf die Box zu gehen und einige der Prozesse mit kill
-abzuschießen, damit die Box zu Ende bootet. Danach kannst Du dann in Ruhe das
-Nachschlagen beim Start deaktivieren.
-
-Appell an Mr. Callmonitor (buehmann): Überleg Dir hierzu bitte etwas. Laß uns
-per PN bei Bedarf darüber diskutieren, was man machen kann, um hier asynchron
-zu arbeiten und nicht so viel gleichzeitig zu machen.
-
-- Mengenbasierte Abfrage aus Webinterface?
-- Caching des Telefonbuchs?
-- Verzögerung/Streckung/Optimierung der Initialisierung?
+kolbem, 17.07.2007
+An was kann das liegen, dass das cgi vom Callmonitor nur bis "mit
+Debug-Ausgaben (ins System-Log)" angezeigt wird und das Dreamboxpopup des
+Callmonitors zwar bei einem Testanruf über Extras funktioniert, aber bei einem
+echten Anruf nicht?
+(sieht nach dem selbe Problem wie hier
+http://www.ip-phone-forum.de/showpos...33&postcount=4 aus, aber bei mir half
+auch x-maliges neu-compilen und installieren nix.)
 
 ----------------------------------------------------------------------
 Demnächst anschauen
@@ -69,16 +39,3 @@ Ergebnis der Rückwärtssuche im Fritzbox-Telefonbuch ablegen.
 
 Die (SOURCE, DEST)-Paare der letzten k Anrufe aufzeichnen und als Vorgabe bei
 Testanrufen verwenden.
-
-Wizard/Oberfläche zur Erstellung einfacher Regeln (für Einsteiger)
-
-Seltsame Aufhänger von callaction beheben (Ininterruptible sleep!)
-
-System zur Ersetzung von Konfigurationsstrings in Dateien
-    CALLMONITOR_CFG in controller
-
-Betrieb ohne Mod vorbereiten (zum Nachladen auf unveränderte Firmware)
-
-[0] EVENT=in:request SOURCE='0941879633' DEST='0941566302' SOURCE_NAME='0941879633 (HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">)' DEST_NAME='' ID=1 EXT=4 DURATION=16 TIMESTAMP='03.11.06 11:37' PROVIDER=
-=> Google-Suche funktioniert nicht mehr
-=> nicht reproduzierbar, anscheinend nur sporadisch

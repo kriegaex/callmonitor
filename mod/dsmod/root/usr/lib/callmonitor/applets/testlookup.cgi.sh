@@ -52,7 +52,7 @@ do_test() {
 }
 
 show_test_results() {
-    local provider number=$1 name
+    local provider number=$1 name status
     number="$(echo $number | sed -e 's/[^0-9]//g')"
     normalize_tel "$number"; number=$__
     echo "<dl>"
@@ -60,8 +60,15 @@ show_test_results() {
 	echo "<dt><strong>$provider</strong></dt>"
 	_reverse_load "$provider"
 	echo -n "<dd>"
-	name=$(_reverse_lookup "$provider" "$number")
-	html "$name"
+	name=$(_reverse_lookup "$provider" "$number"); status=$?
+	case $status in
+	    0) 
+		echo "$(lang de:"Gefunden: " en:"Found: ")"
+		echo "$name" | pre
+		;;
+	    1) echo "$(lang de:"Nicht gefunden. " en:"Not found. ")" ;;
+	    *) echo "$(lang de:"Fehler." en:"Error.")" ;;
+	esac
 	echo -n "</dd>"
     done
     echo "</dl>"

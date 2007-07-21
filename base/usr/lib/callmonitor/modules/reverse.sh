@@ -71,6 +71,19 @@ _reverse_atomic() {
 }
 
 _reverse_lookup() {
+    local exit=0 result
+    result=$(_reverse_query_provider "$@"); exit=$?
+    case $result in
+	OK:*) echo "${result#OK:}"; return 0 ;;
+	NA:*) echo ""; return 1 ;;
+	*)    echo ""; return 2 ;;
+    esac
+}
+
+readonly REVERSE_OK='s/^/OK:/; p; q'
+readonly REVERSE_NA='s/.*/NA:/; p; q'
+
+_reverse_query_provider() {
     local prov=$1 number=$2 exit=0
     if empty "$prov"; then return 0; fi
     eval $({

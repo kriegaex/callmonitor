@@ -116,7 +116,9 @@ cat << EOF
 	    value="11880"$elf_sel>11880</option>
 	<option title="tel.search.ch"
 	    value="search_ch"$ch_sel>search.ch (CH)</option>
-    </select></td>
+    </select>
+    [<a href="/cgi-bin/extras.cgi/callmonitor/testlookup">$(lang 
+	de:"Test" en:"Test")</a>]</td>
 </tr>
 <tr><td />
     <td><label for="area">$(lang 

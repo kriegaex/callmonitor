@@ -31,8 +31,10 @@ _reverse_google_extract() {
 	    s#[[:space:]]*<.*##
 	    s#^Deutschland,[[:space:]]*##
 	    '"$REVERSE_SANITIZE"'
-	    p
-	    q
+	    '"$REVERSE_OK"'
+	}
+	/Es wurden keine mit Ihrer Suchanfrage/ {
+	    '"$REVERSE_NA"'
 	}
     '
 }

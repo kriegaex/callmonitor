@@ -6,6 +6,7 @@ files
 {
 	usr/lib/callmonitor/applets/callmonitor.cgi.sh
 	usr/lib/callmonitor/applets/testcall.cgi.sh
+	usr/lib/callmonitor/applets/testlookup.cgi.sh
 	usr/lib/callmonitor/applets/maint.cgi.sh
 	usr/lib/callmonitor/modules/modreg.sh
 	etc/default.callmonitor/callers.def

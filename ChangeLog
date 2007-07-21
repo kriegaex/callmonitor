@@ -485,3 +485,11 @@
 	Antwort zu bekommen
 	
 	* callmonitor.cfg: Default-Provider auf dasoertliche geändert
+
+2006-07-21:
+
+	* reverse.sh: Unterscheide besser zwischen "Teilnehmer nicht gefunden"
+	und Fehler bei der Abfrage: Nur "nicht gefunden" wird gecachet.
+
+	Immer die busybox-Version von 'nc' verwenden. (Es gibt jetzt ein
+	netcat-Paket im ds-mod, dessen 'nc' sich anders verhält.)

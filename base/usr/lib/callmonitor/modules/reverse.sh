@@ -56,12 +56,12 @@ reverse_lookup() {
     return $exit
 }
 _reverse_choose_provider() {
-    if grep -q "^R[^\t]*\t$CALLMONITOR_REVERSE_PROVIDER\t" "$REVERSE_CFG"; then
+    if grep -q "^R[^	]*	$CALLMONITOR_REVERSE_PROVIDER	" "$REVERSE_CFG" > /dev/null; then
 	prov=$CALLMONITOR_REVERSE_PROVIDER
     else
 	prov=$(grep '^R\*' "$REVERSE_CFG" | cut -f2)
     fi
-    if grep -q "^A[^\t]*\t$CALLMONITOR_AREA_PROVIDER\t" "$REVERSE_CFG"; then
+    if grep -q "^A[^	]*	$CALLMONITOR_AREA_PROVIDER	" "$REVERSE_CFG" > /dev/null; then
 	area_prov=$CALLMONITOR_AREA_PROVIDER
     else
 	area_prov=

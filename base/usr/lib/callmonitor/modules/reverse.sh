@@ -22,6 +22,8 @@
 require net
 require recode
 
+readonly REVERSE_CFG="$CALLMONITOR_LIBDIR/reverse/provider.cfg"
+
 ## resolve numbers to names and addresses; the number is
 ## used as given (should be normalized beforehand); returns 1 if no lookup
 ## performed or if there were errors (no need to cache)
@@ -54,16 +56,16 @@ reverse_lookup() {
     return $exit
 }
 _reverse_choose_provider() {
-    case $CALLMONITOR_REVERSE_PROVIDER in
-	inverssuche|dasoertliche|telefonbuch|goyellow|11880|search_ch)
-	    prov=$CALLMONITOR_REVERSE_PROVIDER ;;
-	*) prov=telefonbuch ;;
-    esac
-    case $CALLMONITOR_AREA_PROVIDER in
-	google|callmonitor)
-	    area_prov=$CALLMONITOR_AREA_PROVIDER ;;
-	*) area_prov= ;;
-    esac
+    if grep -q "^R[^\t]*\t$CALLMONITOR_REVERSE_PROVIDER\t" "$REVERSE_CFG"; then
+	prov=$CALLMONITOR_REVERSE_PROVIDER
+    else
+	prov=$(grep '^R\*' "$REVERSE_CFG" | cut -f2)
+    fi
+    if grep -q "^A[^\t]*\t$CALLMONITOR_AREA_PROVIDER\t" "$REVERSE_CFG"; then
+	area_prov=$CALLMONITOR_AREA_PROVIDER
+    else
+	area_prov=
+    fi
 }
 _reverse_atomic() {
     local file=$1 tmp=$1.tmp

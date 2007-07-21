@@ -52,12 +52,13 @@ do_test() {
 }
 
 show_test_results() {
-    local provider number=$1 name status
+    local number=$1 name status
     number="$(echo $number | sed -e 's/[^0-9]//g')"
     normalize_tel "$number"; number=$__
     echo "<dl>"
-    for provider in telefonbuch dasoertliche 11880 goyellow search_ch google; do
-	echo "<dt><strong>$provider</strong></dt>"
+    local type provider site label
+    while read -r type provider site label; do
+	echo "<dt><strong>$(html "$label")</strong></dt>"
 	_reverse_load "$provider"
 	echo -n "<dd>"
 	name=$(_reverse_lookup "$provider" "$number"); status=$?
@@ -70,7 +71,7 @@ show_test_results() {
 	    *) echo "$(lang de:"Fehler." en:"Error.")" ;;
 	esac
 	echo -n "</dd>"
-    done
+    done < "$REVERSE_CFG"
     echo "</dl>"
 }
 

@@ -23,15 +23,13 @@ require cgi
 require if_jfritz_status
 require if_jfritz_cgi
 require version
+readonly REVERSE_CFG="$CALLMONITOR_LIBDIR/reverse/provider.cfg"
 
 check "$CALLMONITOR_ENABLED" yes:auto *:man
 check "$CALLMONITOR_DEBUG" yes:debug
 check "$CALLMONITOR_REVERSE" yes:reverse
 select "$CALLMONITOR_REVERSE_CACHE" no transient:trans persistent:pers
-select "$CALLMONITOR_REVERSE_PROVIDER" dasoertliche:oert \
-    telefonbuch:telbu goyellow:goye 11880:elf \
-    search_ch:ch
-select "$CALLMONITOR_AREA_PROVIDER" google :null
+select "$CALLMONITOR_AREA_PROVIDER" :null
 check "$CALLMONITOR_READ_FONBUCH" yes:fon
 
 SYSLOG='$(lang de:"System-Log" en:"system log")'
@@ -106,16 +104,27 @@ cat << EOF
     )</label>
     <label for="provider">$(lang de:"bei" en:"at")</label></td>
     <td><select name="reverse_provider" id="provider">
-	<option title="www.dastelefonbuch.de"
-	    value="telefonbuch"$telbu_sel>DasTelefonbuch</option>
-	<option title="www.dasoertliche.de"
-	    value="dasoertliche"$oert_sel>Das÷rtliche</option>
-	<option title="www.goyellow.de"
-	    value="goyellow"$goye_sel>GoYellow</option>
-	<option title="www.11880.com"
-	    value="11880"$elf_sel>11880</option>
-	<option title="tel.search.ch"
-	    value="search_ch"$ch_sel>search.ch (CH)</option>
+EOF
+list_providers() {
+    local match=$1 selected=$2 type provider site label sel
+    while read -r type provider site label; do
+	case $type in
+	    $match*) ;;
+	    *) continue ;;
+	esac
+	if [ "$selected" = "$provider" ]; then
+	    sel=" selected"
+	else
+	    sel=
+	fi
+	cat << EOF
+	    <option title="$site"
+		value="$provider"$sel>$label</option>
+EOF
+    done < "$REVERSE_CFG"
+}
+list_providers R "$CALLMONITOR_REVERSE_PROVIDER"
+cat << EOF
     </select>
     [<a href="/cgi-bin/extras.cgi/callmonitor/testlookup">$(lang 
 	de:"Test" en:"Test")</a>]</td>
@@ -127,8 +136,9 @@ cat << EOF
     <td><select name="area_provider" id="area">
 	<option title="Keine Auflˆsung von Vorwahlen"
 	    value=""$null_sel>$(lang de:"niemandem" en:"nowhere")</option>
-	<option title="www.google.de"
-	    value="google"$google_sel>Google</option>
+EOF
+list_providers A "$CALLMONITOR_AREA_PROVIDER"
+cat << EOF
     </select></td>
 </tr>
 <tr><td />

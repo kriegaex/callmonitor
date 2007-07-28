@@ -493,3 +493,7 @@
 
 	Immer die busybox-Version von 'nc' verwenden. (Es gibt jetzt ein
 	netcat-Paket im ds-mod, dessen 'nc' sich anders verhält.)
+
+2006-07-28:
+
+	callmonitor 1.10 veröffentlicht

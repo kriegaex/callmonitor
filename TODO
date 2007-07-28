@@ -5,14 +5,6 @@ Testen
 ----------------------------------------------------------------------
 Wichtig
 ----------------------------------------------------------------------
-kolbem, 17.07.2007
-An was kann das liegen, dass das cgi vom Callmonitor nur bis "mit
-Debug-Ausgaben (ins System-Log)" angezeigt wird und das Dreamboxpopup des
-Callmonitors zwar bei einem Testanruf über Extras funktioniert, aber bei einem
-echten Anruf nicht?
-(sieht nach dem selbe Problem wie hier
-http://www.ip-phone-forum.de/showpos...33&postcount=4 aus, aber bei mir half
-auch x-maliges neu-compilen und installieren nix.)
 
 ----------------------------------------------------------------------
 Demnächst anschauen

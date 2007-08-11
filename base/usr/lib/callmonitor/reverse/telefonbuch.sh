@@ -27,13 +27,13 @@ _reverse_telefonbuch_extract() {
 	/kein Teilnehmer gefunden/ {
 	    '"$REVERSE_NA"'
 	}
-	/<!-- \*\{2,\} Treffer Eintr.ge \*\{2,\} -->/,/<!-- \*\{2,\} Ende Treffer Eintr.ge \*\{2,\} -->/ {
+	/<!-- \*\{2,\} Treffer Eintr.ge \*\{2,\} -->/,\#</table># {
 	    \#<td class="cel\(name\|street\|city\)"# {
 	    	s/$/,/
 	    	H
 	    }
 	}
-	/<!-- \*\{2,\} Ende Treffer Eintr.ge \*\{2,\} -->/ {
+	\#</table># {
 	    g
 	    b cleanup
 	}

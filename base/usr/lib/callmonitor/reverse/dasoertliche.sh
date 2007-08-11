@@ -28,8 +28,8 @@ _reverse_dasoertliche_extract() {
         \#Kein Teilnehmer gefunden:# {
 	    '"$REVERSE_NA"'
 	}
-        \#<a[[:space:]].*[[:space:]]class="entry">#,\#<input[[:space:]]type="hidden"# {
-	    s#^.*<a[[:space:]].*[[:space:]]class="entry">\([^<]*\)</a>.*$#\1#
+        \#<a[[:space:]].*[[:space:]]class="entry[^"]*">#,\#<input[[:space:]]type="hidden"# {
+	    s#^.*<a[[:space:]].*[[:space:]]class="entry[^"]*">\([^<]*\)</a>.*$#\1#
 	    t hold
 	    \#<br/># H
 	    \#<input[[:space:]]type="hidden"# b cleanup

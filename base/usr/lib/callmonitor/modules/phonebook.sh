@@ -276,6 +276,10 @@ _pb_list() {
     return 0
 }
 
+_pb_flush() {
+    rm -f "$CALLMONITOR_TRANSIENT"
+}
+
 _pb_main() {
     local _pb_REVERSE
     for arg; do
@@ -298,6 +302,7 @@ _pb_main() {
 	init) _pb_init ;;
 	start) _pb_start ;;
 	tidy) _pb_tidy ;;
+	flush) _pb_flush ;;
 	list) _pb_list "$2" ;;
 	*) usage >&2; exit 1 ;;
     esac

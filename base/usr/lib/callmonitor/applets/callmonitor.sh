@@ -123,6 +123,7 @@ if $STOP; then
     fi
 else
     ensure_dir "$(dirname "$FIFO")" "$(dirname "$PIDFILE")"
+    phonebook flush
 
     for fifo in "$FIFO" "$DEBUG_FIFO" "$INFO_FIFO"; do
 	mknod "$fifo" p 2>/dev/null

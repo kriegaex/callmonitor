@@ -497,3 +497,13 @@
 2006-07-28:
 
 	callmonitor 1.10 veröffentlicht
+
+	* telefonbuch.sh: Verbessert für den Fall, dass es zwei oder mehr
+	Suchergebnisse gibt
+
+	* dasoertliche.sh: Findet jetzt auch Einträge, die wie manche
+	Firmeneinträge besonders hervorgehoben sind.
+
+	* callmonitor: Rückwärtssuche-Cache bei Neustart des Callmonitors
+	löschen (um vermeintliche Fehler aufgrund geänderter
+	Rückwärtssuche-Parameter zu vermeiden)

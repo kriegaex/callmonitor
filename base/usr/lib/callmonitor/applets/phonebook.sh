@@ -53,7 +53,7 @@ check=1
 case $1 in
     put) check="$# == 3" ;;
     get|exists|remove) check="$# == 2" ;;
-    init|start|tidy) check="$# == 1" ;;
+    init|start|tidy|flush) check="$# == 1" ;;
     list) check="$# >= 1 && $# <= 2" ;;
     *) check= ;;
 esac

@@ -33,7 +33,7 @@ _reverse_telefonbuch_extract() {
 	    	H
 	    }
 	}
-	\#</table># {
+	/<!-- \*\{2,\} Ende Treffer Eintr.ge \*\{2,\} -->/ {
 	    g
 	    b cleanup
 	}

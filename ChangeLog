@@ -504,6 +504,12 @@
 	* dasoertliche.sh: Findet jetzt auch Einträge, die wie manche
 	Firmeneinträge besonders hervorgehoben sind.
 
+2006-08-11:
+
 	* callmonitor: Rückwärtssuche-Cache bei Neustart des Callmonitors
 	löschen (um vermeintliche Fehler aufgrund geänderter
 	Rückwärtssuche-Parameter zu vermeiden)
+
+2006-08-12:
+
+	callmonitor 1.10.1 veröffentlicht

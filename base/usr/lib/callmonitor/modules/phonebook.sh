@@ -277,7 +277,9 @@ _pb_list() {
 }
 
 _pb_flush() {
+    echo -n "Flushing temporary caches..." >&2
     rm -f "$CALLMONITOR_TRANSIENT"
+    echo -n "done." >&2
 }
 
 _pb_main() {

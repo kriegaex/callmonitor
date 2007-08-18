@@ -513,3 +513,11 @@
 2006-08-12:
 
 	callmonitor 1.10.1 veröffentlicht
+
+2006-08-18:
+
+	* maint.cgi: Button, um den Rückwärtssuche-Cache manuell zu leeren.
+
+	* rc.callmonitor: Listener-Konversioncode entfernt (für Format vor
+	v1.0; wer so einen alten Callmonitor immer noch benutzt, ist selbst
+	schuld ;-))

@@ -57,6 +57,10 @@ if ! empty "$MAINT_CMD"; then
 	    )</p>"
 	    phonebook init 2>&1 | pre
 	    ;;
+	phonebook_flush)
+	    echo "<p>$(lang de:"Leere den Rückwärtssuche-Cache" en:"Flushing the reverse-lookup cache"):</p>"
+	    phonebook flush 2>&1 | pre
+	    ;;
 	*)
 	    echo "<p>$(lang de:"Unbekannter Befehl" en:"Unknown command")</p>"
 	    ;;
@@ -92,9 +96,14 @@ cat << EOF
     en:"A SIP update creates default entries for newly installed Internet
 	numbers."
 )</p>
+<p>$(lang
+    de:"Der Rückwärtssuche-Cache kann hier geleert werden, um veraltete oder falsche Einträge zu entfernen und so eine neue Rückwärtssuche zu erzwingen."
+    en:"The reverse-lookup cache may be flushed in order to remove out-of-date or wrong entries and thus to enforce fresh reverse lookups."
+)</p>
 EOF
 cmd_button phonebook_tidy '$(lang de:"Aufräumen" en:"Tidy up")'
 cmd_button phonebook_init '$(lang de:"SIP-Update durchführen" en:"Perform SIP update")'
+cmd_button phonebook_flush '$(lang de:"Cache leeren" en:"Flush cache")'
 sec_end
 
 sec_begin "$(lang de:"Schnittstellen" en:"Interfaces")"

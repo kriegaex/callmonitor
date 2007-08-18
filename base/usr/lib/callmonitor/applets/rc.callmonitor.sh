@@ -87,28 +87,8 @@ is_running() {
 	kill -0 "$pid" 2> /dev/null
 }
 
-## convert listeners from versions < 1.0
-convert() {
-    if [ ! -e "$CALLMONITOR_LISTENERS" -a -r "$CALLMONITOR_LISTENERS_OLD" ]
-    then
-	"$CALLMONITOR_LIBDIR/convert.sed" \
-	    < "$CALLMONITOR_LISTENERS_OLD" \
-	    > "$CALLMONITOR_LISTENERS"
-	callmonitor_store
-    fi
-    ## after two month, delete obsolete listeners
-    if [ -e "$CALLMONITOR_LISTENERS" -a -e "$CALLMONITOR_LISTENERS_OLD" ]
-    then
-	find "$(dirname "$CALLMONITOR_LISTENERS_OLD")" -type f \
-	    -name "$(basename "$CALLMONITOR_LISTENERS_OLD")" -mtime +60 \
-	    -exec rm {} \;
-	callmonitor_store
-    fi
-}
-
 case $1 in
     ""|load)
-	convert
 	mod_register
 	phonebook init 2> /dev/null
 	try_start

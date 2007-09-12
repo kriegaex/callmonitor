@@ -33,7 +33,7 @@ config() {
 	    ;;
 	wlan)
 	    key="wlan:settings/ap_enabled"
-	    if ? "${3:+1}"; then
+	    if ? "${2:+1}"; then
 		type=post value="$(_c_boolean "${2:-on}")"
 	    fi
 	    ;;

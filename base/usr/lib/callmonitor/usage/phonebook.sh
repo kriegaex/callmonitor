@@ -6,6 +6,7 @@ Usage:	phonebook [option]... command [argument]...
 	phonebook list [all]
 	phonebook init # prepare SIP to name mapping
 	phonebook tidy # tidy up phonebook (sort)
+	phonebook flush # flush temporary caches
 Options:
     --local  suppress reverse lookup
     --debug  enable extra debugging output

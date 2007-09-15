@@ -521,3 +521,9 @@
 	* rc.callmonitor: Listener-Konversioncode entfernt (für Format vor
 	v1.0; wer so einen alten Callmonitor immer noch benutzt, ist selbst
 	schuld ;-))
+
+2006-09-15:
+
+	* config: "config wlan [on|off]" repariert
+
+	callmonitor 1.10.2 veröffentlicht

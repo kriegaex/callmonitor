@@ -367,11 +367,11 @@
 	* search_ch.sh: Rückwärtssuche bei tel.search.ch (für Nummern aus der
 	Schweiz); vielen Dank an niknak.
 
-2006-01-05:
+2007-01-05:
 
 	callmonitor 1.8.1 veröffentlicht
 
-2006-02-24:
+2007-02-24:
 
 	callmonitor 1.8.2 veröffentlicht:
 
@@ -379,14 +379,14 @@
 
 	* messages.sh: Aktion Advanced AYAC (ayac) für Gundalfs Client
 
-2006-02-25:
+2007-02-25:
 
 	callmonitor 1.8.3:
 
 	* mail: Quoting von Shell-Metazeichen $ und ` beim Lesen der
 	Konfiguration (Danke an bsirius)
 
-2006-04-21:
+2007-04-21:
 
 	callmonitor 1.9:
 
@@ -397,7 +397,7 @@
 	* relookmessage: Mit neuer Version des Webinterfaces jetzt mehrzeilige
 	Nachrichten möglich. Danke an bolle.
 
-2006-04-28:
+2007-04-28:
 
 	callmonitor 1.9.1:
 
@@ -407,7 +407,7 @@
 	Entsprechend funktionieren "config wlan", "config sip 2", etc. Danke
 	an silberwolf für die Anregung.
 
-2006-04-29:
+2007-04-29:
 
 	callmonitor 1.9.2:
 
@@ -416,7 +416,7 @@
 	dasoertliche schneller als google war). Danke an GBuster und
 	silberwolf.
 
-2006-04-30:
+2007-04-30:
 
 	callmonitor 1.9.3:
 
@@ -425,32 +425,32 @@
 
 	* webui.sh: Caching des Passworts; Login nur, wenn Passwort nicht-leer
 
-2006-05-01:
+2007-05-01:
 
 	* cfg2sh: allcfgconv-Parser separiert (macht Fritzbox-Config verdaubar
 	für die Shell)
 
-2006-05-02:
+2007-05-02:
 
 	* phonebook: Fehler bei Nutzung des FRITZ!Box-Telefonbuch behoben:
 	Umlaute als Latin1; Wichtig-Flag (!) entfernt; letzte Zeile behalten
 
-2006-05-05:
+2007-05-05:
 
 	callmonitor 1.9.4 veröffentlicht
 
-2006-05-13:
+2007-05-13:
 
 	* inverse.sh: Rückwärtssuche über inverssuche.de entfernt
 
 	* phonebook.sh: Ortsvorwahl automatisch aus AVM-Konfiguration übernehmen
 	(einzustellen unter Telefonie/Internettelefonie/Erweiterte Einstellungen)
 
-2006-05-17:
+2007-05-17:
 
 	callmonitor 1.9.5 veröffentlicht
 
-2006-07-07:
+2007-07-07:
 
 	callmonitor 1.9.6 (Preview): 
 
@@ -465,7 +465,7 @@
 
 	* sipnames: Sequentielles Eintragen der erzeugten Nummern
 
-2006-07-08:
+2007-07-08:
 
 	* telefonbuch.sh: Rückwärtsuche bei dastelefonbuch.de an geändertes
 	Webseitenformat angepasst
@@ -474,7 +474,7 @@
 	
 	callmonitor 1.9.7 veröffentlicht
 
-2006-07-14:
+2007-07-14:
 
 	* google.sh: Vorwahlsuche bei Google repariert
 
@@ -486,7 +486,7 @@
 	
 	* callmonitor.cfg: Default-Provider auf dasoertliche geändert
 
-2006-07-21:
+2007-07-21:
 
 	* reverse.sh: Unterscheide besser zwischen "Teilnehmer nicht gefunden"
 	und Fehler bei der Abfrage: Nur "nicht gefunden" wird gecachet.
@@ -494,7 +494,7 @@
 	Immer die busybox-Version von 'nc' verwenden. (Es gibt jetzt ein
 	netcat-Paket im ds-mod, dessen 'nc' sich anders verhält.)
 
-2006-07-28:
+2007-07-28:
 
 	callmonitor 1.10 veröffentlicht
 
@@ -504,17 +504,17 @@
 	* dasoertliche.sh: Findet jetzt auch Einträge, die wie manche
 	Firmeneinträge besonders hervorgehoben sind.
 
-2006-08-11:
+2007-08-11:
 
 	* callmonitor: Rückwärtssuche-Cache bei Neustart des Callmonitors
 	löschen (um vermeintliche Fehler aufgrund geänderter
 	Rückwärtssuche-Parameter zu vermeiden)
 
-2006-08-12:
+2007-08-12:
 
 	callmonitor 1.10.1 veröffentlicht
 
-2006-08-18:
+2007-08-18:
 
 	* maint.cgi: Button, um den Rückwärtssuche-Cache manuell zu leeren.
 
@@ -522,8 +522,13 @@
 	v1.0; wer so einen alten Callmonitor immer noch benutzt, ist selbst
 	schuld ;-))
 
-2006-09-15:
+2007-09-15:
 
 	* config: "config wlan [on|off]" repariert
 
 	callmonitor 1.10.2 veröffentlicht
+
+2007-09-22:
+
+	* config.sh: Neue Funktion "pushservice", um genau den sofort
+	auszulösen.

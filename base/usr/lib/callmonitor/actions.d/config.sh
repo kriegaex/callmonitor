@@ -61,6 +61,10 @@ config() {
     esac
 }
 
+pushservice() {
+    webui_login; webui_post_form "emailnotify:settings/TestMail=1" > /dev/null
+}
+
 _c_boolean() {
     case $1 in
 	on|yes|true|1) echo "1" ;;

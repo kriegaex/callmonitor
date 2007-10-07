@@ -532,3 +532,8 @@
 
 	* config.sh: Neue Funktion "pushservice", um genau den sofort
 	auszulösen.
+
+2007-10-07:
+
+	* messages.sh: xboxmessage verträgt neben Kommas auch keine
+	Semikolons, werden nun durch Punkt ersetzt (Danke an macknight)

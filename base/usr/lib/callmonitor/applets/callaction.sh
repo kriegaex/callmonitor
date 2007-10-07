@@ -25,4 +25,12 @@
 
 require callmonitor_config
 __configure
+
+## Additional modules may be loaded via -M<module>
+while true; do
+    case $1 in
+	-M*) require "${1#-M}"; shift ;;
+	*) break ;;
+    esac
+done
 "$@"

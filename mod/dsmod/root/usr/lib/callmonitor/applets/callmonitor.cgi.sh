@@ -87,7 +87,7 @@ cat << EOF
 <tr>
     <td><input type="hidden" name="read_fonbuch" value="no"><!--
     --><input type="checkbox" name="read_fonbuch" value="yes"$fon_chk id="r5"></td>
-    <td><label for="r5">$(lang
+    <td colspan="0"><label for="r5">$(lang
 	de:"Im FRITZ!Box-Telefonbuch nachschlagen"
 	en:"Lookup in the FRITZ!Box's phone book"
     )</label></td>

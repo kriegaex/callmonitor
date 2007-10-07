@@ -6,17 +6,24 @@ Testen
 Wichtig
 ----------------------------------------------------------------------
 
+xboxmessage: Semikolon machen (zusätzlich zu Kommas) Probleme. Ersetzen.
+(Danke an macknight)
+
 ----------------------------------------------------------------------
 Demnächst anschauen
+----------------------------------------------------------------------
+
+Die Details der letzten k Anrufe aufzeichnen und verwenden
+* als Vorgabe bei Testanrufen
+* zum Erstellen von einfachen Regeln
+
+----------------------------------------------------------------------
+Nicht so wichtig
 ----------------------------------------------------------------------
 
 Landeseinstellungen (Schweiz, Österreich)
 
 default_message aufwerten (auf *:cancel, *:connect und *:disconnect eingehen)
-
-----------------------------------------------------------------------
-Nicht so wichtig
-----------------------------------------------------------------------
 
 Ergebnis der Rückwärtssuche besser strukturieren (zumindest Name und Adresse
 trennen)
@@ -28,6 +35,3 @@ goyellow)
 
 Ergebnis der Rückwärtssuche im Fritzbox-Telefonbuch ablegen.
     (zu langsam!!)
-
-Die (SOURCE, DEST)-Paare der letzten k Anrufe aufzeichnen und als Vorgabe bei
-Testanrufen verwenden.

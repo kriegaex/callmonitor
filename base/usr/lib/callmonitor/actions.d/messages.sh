@@ -111,7 +111,7 @@ default_xboxmessage() {
     default_message "" 2
 }
 encode_xboxmessage() {
-    echo "$1" | tr "," ";"
+    echo "$1" | tr ",;" "."
 }
 
 ## DGStation Relook 400S (Geckow Web Interface 1.04)

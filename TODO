@@ -6,8 +6,7 @@ Testen
 Wichtig
 ----------------------------------------------------------------------
 
-xboxmessage: Semikolon machen (zusätzlich zu Kommas) Probleme. Ersetzen.
-(Danke an macknight)
+config forward 6 toggle
 
 ----------------------------------------------------------------------
 Demnächst anschauen

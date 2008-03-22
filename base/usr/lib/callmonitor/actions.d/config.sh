@@ -28,26 +28,26 @@ config() {
 	forward)
 	    key="forwardrules:settings/rule$((${2:-1}-1))/activated"
 	    if ? "${3:+1}"; then
-		type=post value="$(_c_boolean "${3:-on}")"
+		type=post value="$(_c_value "$3" "$1" "$2")"
 	    fi
 	    ;;
 	wlan)
 	    key="wlan:settings/ap_enabled"
 	    if ? "${2:+1}"; then
-		type=post value="$(_c_boolean "${2:-on}")"
+		type=post value="$(_c_value "$2" "$1")"
 	    fi
 	    ;;
 	sip)
 	    key="sip:settings/sip$((${2:-1}-1))/activated"
 	    if ? "${3:+1}"; then
-		type=post value="$(_c_boolean "${3:-on}")"
+		type=post value="$(_c_value "$3" "$1" "$2")"
 	    fi
 	    ;;
 	diversion)
 	    key="telcfg:settings/Diversity$((${2:-1}-1))/Active"
 	    extra="telcfg:settings/RefreshDiversity"
 	    if ? "${3:+1}"; then
-		type=post value="$(_c_boolean "${3:-on}")"
+		type=post value="$(_c_value "$3" "$1" "$2")"
 	    fi
 	    ;;
 	*)
@@ -77,5 +77,18 @@ _c_f_boolean() {
 	0) echo "off" ;;
 	*) echo "error" ;;
     esac
+}
+_c_value() {
+    local val=$1
+    case $1 in
+	toggle)
+	    shift
+	    case $(config "$@") in
+		on)  val=off ;;
+		off) val=on ;;
+	    esac
+	    ;;
+    esac
+    _c_boolean "$val"
 }
 

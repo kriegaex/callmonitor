@@ -27,3 +27,8 @@ dump() {
     done
     echo "___ $*"
 }
+dump2() {
+    ( export "$@"; sh -c "readonly $*; readonly -p $*") |
+	sed -e "/^readonly [^=]*='\"'\"/! s/^readonly //"
+    echo "___ $*"
+}

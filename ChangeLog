@@ -530,10 +530,16 @@
 
 2007-09-22:
 
-	* config.sh: Neue Funktion "pushservice", um genau den sofort
+	* config.sh: Neue Funktion "pushservice", um genau diesen sofort
 	auszulösen.
 
 2007-10-07:
 
 	* messages.sh: xboxmessage verträgt neben Kommas auch keine
 	Semikolons, werden nun durch Punkt ersetzt (Danke an macknight)
+
+2008-03-22:
+
+	* config.sh: Neuer Pseudowert "toggle" schaltet zwischen "on" und
+	"off" um, z.B. "config forward 1 toggle", um das erste Portforwarding
+	im Wechsel an- und auszuschalten

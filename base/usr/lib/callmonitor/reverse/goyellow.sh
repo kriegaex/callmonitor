@@ -20,7 +20,7 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 _reverse_goyellow_request() {
-    wget "http://www.goyellow.de/inverssuche/?TEL=$(urlencode "$1")" -q -O -
+    wget_callmonitor "http://www.goyellow.de/inverssuche/?TEL=$(urlencode "$1")" -q -O -
 }
 _reverse_goyellow_extract() {
     sed -n -e '

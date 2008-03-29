@@ -22,7 +22,7 @@
 _reverse_google_request() {
     ## anonymize as far as possible (use only the first six digits)
     local number=$(expr substr "$1" 1 6)0000000000
-    getmsg -w 4 "http://www.google.de/search?num=1&q=%s" "$number"
+    wget_callmonitor "http://www.google.de/search?num=1&q=$(urlencode "$number")" -q -O -
 }
 _reverse_google_extract() {
     sed -n -e '

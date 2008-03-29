@@ -239,3 +239,7 @@ post_form() {
 	echo -n "$data" 
     } | _connect
 }
+
+wget_callmonitor() {
+    wget -U "callmonitor/${CALLMONITOR_VERSION}" "$@"
+}

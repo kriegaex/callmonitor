@@ -22,7 +22,7 @@
 ## This file based on telsearch.sh by niknak(@IPPF).
 ##
 _reverse_search_ch_request() {
-    wget "http://tel.search.ch/result.html?tel=$(urlencode "$1")" -q -O -
+    wget_callmonitor "http://tel.search.ch/result.html?tel=$(urlencode "$1")" -q -O -
 }
 
 _reverse_search_ch_extract() {

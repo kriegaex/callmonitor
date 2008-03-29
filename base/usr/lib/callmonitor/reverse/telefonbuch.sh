@@ -20,15 +20,15 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 _reverse_telefonbuch_request() {
-    wget -q -O - "http://www.dastelefonbuch.de/?la=de&kw=$(urlencode "$1")&cmd=search"
+    wget_callmonitor -q -O - "http://www.dastelefonbuch.de/?la=de&kw=$(urlencode "$1")&cmd=search"
 }
 _reverse_telefonbuch_extract() {
     sed -n -e '
 	/kein Teilnehmer gefunden/ {
 	    '"$REVERSE_NA"'
 	}
-	/<!-- \*\{2,\} Treffer Eintr.ge \*\{2,\} -->/,\#</table># {
-	    \#<td class="cel\(name\|street\|city\)"# {
+	/<table.*class="bg-01"/,\#</table># {
+	    \#<td class="col[123]"# {
 	    	s/$/,/
 	    	H
 	    }

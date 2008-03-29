@@ -37,6 +37,12 @@ config() {
 		type=post value="$(_c_value "$2" "$1")"
 	    fi
 	    ;;
+	dect)
+	    key="dect:settings/enabled"
+	    if ? "${2:+1}"; then
+		type=post value="$(_c_value "$2" "$1")"
+	    fi
+	    ;;
 	sip)
 	    key="sip:settings/sip$((${2:-1}-1))/activated"
 	    if ? "${3:+1}"; then

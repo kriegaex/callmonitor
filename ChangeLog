@@ -543,3 +543,7 @@
 	* config.sh: Neuer Pseudowert "toggle" schaltet zwischen "on" und
 	"off" um, z.B. "config forward 1 toggle", um das erste Portforwarding
 	im Wechsel an- und auszuschalten
+
+2008-03-28:
+	* config.sh: 'config dect' zum An- und Abschalten des DECT-Teils der
+	7270 ff.

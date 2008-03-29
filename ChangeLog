@@ -545,5 +545,12 @@
 	im Wechsel an- und auszuschalten
 
 2008-03-28:
+
 	* config.sh: 'config dect' zum An- und Abschalten des DECT-Teils der
 	7270 ff.
+
+2008-03-29:
+
+	* reverse: Rückwärtssuche bei Google und DasTelefonbuch angepasst
+
+	callmonitor 1.10.3 veröffentlicht

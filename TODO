@@ -2,8 +2,6 @@
 Testen
 ----------------------------------------------------------------------
 
-'config dect' zum An- und Abschalten des DECT-Teils der 7270 ff.
-
 ----------------------------------------------------------------------
 Wichtig
 ----------------------------------------------------------------------
@@ -12,13 +10,13 @@ Wichtig
 Demnächst anschauen
 ----------------------------------------------------------------------
 
-Die Details der letzten k Anrufe aufzeichnen und verwenden
-* als Vorgabe bei Testanrufen
-* zum Erstellen von einfachen Regeln
-
 ----------------------------------------------------------------------
 Nicht so wichtig
 ----------------------------------------------------------------------
+
+Die Details der letzten k Anrufe aufzeichnen und verwenden
+* als Vorgabe bei Testanrufen
+* zum Erstellen von einfachen Regeln
 
 Landeseinstellungen (Schweiz, Österreich)
 

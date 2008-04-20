@@ -39,24 +39,24 @@ fi
 
 sec_begin '$(lang de:"Starttyp" en:"Startup type")'
 
-cat << EOF
-<div style="float: right;"><a href="$CALLMONITOR_FORUM_URL">Version
+echo "
+<div style='float: right;'><a href='$CALLMONITOR_FORUM_URL'>Version
     $CALLMONITOR_VERSION</a></div>
 <p>
-    <input type="radio" name="enabled" value="yes"$auto_chk id="e1">
-    <label for="e1">$(lang de:"Automatisch" en:"Automatic")</label>
-    <input type="radio" name="enabled" value="no"$man_chk id="e2">
-    <label for="e2">$(lang de:"Manuell" en:"Manual")</label>
+    <input type='radio' name='enabled' value='yes'$auto_chk id='e1'>
+    <label for='e1'>$(lang de:"Automatisch" en:"Automatic")</label>
+    <input type='radio' name='enabled' value='no'$man_chk id='e2'>
+    <label for='e2'>$(lang de:"Manuell" en:"Manual")</label>
 </p>
 <p>
-    <input type="hidden" name="debug" value="no">
-    <input type="checkbox" name="debug" value="yes"$debug_chk id="d1">
-    <label for="d1">$(lang 
+    <input type='hidden' name='debug' value='no'>
+    <input type='checkbox' name='debug' value='yes'$debug_chk id='d1'>
+    <label for='d1'>$(lang 
 	de:"mit Debug-Ausgaben" 
 	en:"with debugging output"
     )</label> ($(lang de:"ins" en:"into the") $SYSLOG)
 </p>
-EOF
+"
 
 sec_end
 
@@ -70,41 +70,41 @@ fi
 
 sec_begin '$(lang de:"Aktionen bei Anruf" en:"Actions upon calls")'
 
-cat << EOF
+echo "
 <ul>
-    <li><a href="/cgi-bin/file.cgi?id=listeners">$(lang
+    <li><a href='/cgi-bin/file.cgi?id=listeners'>$(lang
 	de:"Listeners bearbeiten" en:"Edit Listeners")</a></li>
-    <li><a href="/cgi-bin/extras.cgi/callmonitor/testcall">$(lang
+    <li><a href='/cgi-bin/extras.cgi/callmonitor/testcall'>$(lang
 	de:"Testanruf" en:"Test call")</a></li>
 </ul>
-EOF
+"
 
 sec_end
 sec_begin '$(lang de:"Rückwärtssuche" en:"Reverse lookup")'
 
-cat << EOF
+echo "
 <table>
 <tr>
-    <td><input type="hidden" name="read_fonbuch" value="no"><!--
-    --><input type="checkbox" name="read_fonbuch" value="yes"$fon_chk id="r5"></td>
-    <td colspan="0"><label for="r5">$(lang
+    <td><input type='hidden' name='read_fonbuch' value='no'><!--
+    --><input type='checkbox' name='read_fonbuch' value='yes'$fon_chk id='r5'></td>
+    <td colspan='0'><label for='r5'>$(lang
 	de:"Im FRITZ!Box-Telefonbuch nachschlagen"
 	en:"Lookup in the FRITZ!Box's phone book"
     )</label></td>
 </tr>
 <tr>
-    <td><input type="hidden" name="reverse" value="no"><!--
-    --><input type="checkbox" name="reverse" value="yes"$reverse_chk id="r4"></td>
-    <td><label title="$(lang
+    <td><input type='hidden' name='reverse' value='no'><!--
+    --><input type='checkbox' name='reverse' value='yes'$reverse_chk id='r4'></td>
+    <td><label title='$(lang
 	de:"Rufnummern wenn möglich in Namen auflösen"
 	en:"Resolve numbers to names if possible"
-    )" for="r4">$(lang
+    )' for='r4'>$(lang
 	de:"Rückwärtssuche durchführen"
 	en:"Perform reverse lookup"
     )</label>
-    <label for="provider">$(lang de:"bei" en:"at")</label></td>
-    <td><select name="reverse_provider" id="provider">
-EOF
+    <label for='provider'>$(lang de:"bei" en:"at")</label></td>
+    <td><select name='reverse_provider' id='provider'>
+"
 list_providers() {
     local match=$1 selected=$2 type provider site label sel
     while read -r type provider site label; do
@@ -117,55 +117,55 @@ list_providers() {
 	else
 	    sel=
 	fi
-	cat << EOF
-	    <option title="$site"
-		value="$provider"$sel>$label</option>
-EOF
+	echo "
+	    <option title='$site'
+		value='$provider'$sel>$label</option>
+	"
     done < "$REVERSE_CFG"
 }
 list_providers R "$CALLMONITOR_REVERSE_PROVIDER"
-cat << EOF
+echo "
     </select>
-    [<a href="/cgi-bin/extras.cgi/callmonitor/testlookup">$(lang 
+    [<a href='/cgi-bin/extras.cgi/callmonitor/testlookup'>$(lang 
 	de:"Test" en:"Test")</a>]</td>
 </tr>
 <tr><td />
-    <td><label for="area">$(lang 
+    <td><label for='area'>$(lang 
 	de:"Ersatzweise Vorwahl nachschlagen bei"
 	en:"Alternatively lookup area code at")</label></td>
-    <td><select name="area_provider" id="area">
-	<option title="Keine Auflösung von Vorwahlen"
-	    value=""$null_sel>$(lang de:"niemandem" en:"nowhere")</option>
-EOF
+    <td><select name='area_provider' id='area'>
+	<option title='Keine Auflösung von Vorwahlen'
+	    value=''$null_sel>$(lang de:"niemandem" en:"nowhere")</option>
+"
 list_providers A "$CALLMONITOR_AREA_PROVIDER"
-cat << EOF
+echo "
     </select></td>
 </tr>
 <tr><td />
-    <td><label for="cache">$(lang
+    <td><label for='cache'>$(lang
 	de:"Suchergebnisse zwischenspeichern?"
 	en:"Cache query results?"
     )</label></td>
-    <td><select name="reverse_cache" id="cache">
-	<option title="$(lang
+    <td><select name='reverse_cache' id='cache'>
+	<option title='$(lang
 	    de:"Keine Speicherung der Namen"
 	    en:"Names are not stored"
-	)" value="no"$no_sel>$(lang de:"Nein" en:"No")</option>
-	<option title="$(lang
+	)' value='no'$no_sel>$(lang de:"Nein" en:"No")</option>
+	<option title='$(lang
 	    de:"Namen gehen bei nächstem Neustart verloren"
 	    en:"Names will be lost at the next reboot"
-	)" value="transient"$trans_sel>$(lang
+	)' value='transient'$trans_sel>$(lang
 	    de:"Flüchtig" en:"Transiently")</option>
-	<option title="$(lang 
+	<option title='$(lang 
 	    de:"Namen werden im Telefonbuch im Flash gespeichert"
 	    en:"Names are stored in the flash memory phone book"
-	)" value="persistent"$pers_sel>$(lang
+	)' value='persistent'$pers_sel>$(lang
 	    de:"Dauerhaft" en:"Persistently")</option>
     </select>
-    [<a href="/cgi-bin/file.cgi?id=callers">$(lang 
+    [<a href='/cgi-bin/file.cgi?id=callers'>$(lang 
 	de:"Callers&nbsp;bearbeiten" en:"Edit&nbsp;Callers")</a>]</td>
 </tr>
 </table>
-EOF
+"
 
 sec_end

@@ -33,50 +33,50 @@ source_val=$(html "$TESTCALL_SOURCE")
 dest_val=$(html "$TESTCALL_DEST")
 
 new_testcall_form() {
-    cat << EOF
-<form action="$SELF" method="post">
+    echo "
+<form action='$SELF' method='post'>
     <table><tr>
-	<td><label for="event">$(lang de:"Ereignis" en:"Event"):</label> </td>
+	<td><label for='event'>$(lang de:"Ereignis" en:"Event"):</label> </td>
 	<td>
-	    <select name="event_dir">
-		<option value="in"$in_sel title="$(lang
-		    de:"Eingehender Anruf" en:"Incoming call")">in</option>
-		<option value="out"$out_sel title="$(lang
-		    de:"Ausgehender Anruf" en:"Outgoing call")">out</option>
-	    </select>:<select name="event">
-		<option value="request"$request_sel title="$(lang
+	    <select name='event_dir'>
+		<option value='in'$in_sel title='$(lang
+		    de:"Eingehender Anruf" en:"Incoming call")'>in</option>
+		<option value='out'$out_sel title='$(lang
+		    de:"Ausgehender Anruf" en:"Outgoing call")'>out</option>
+	    </select>:<select name='event'>
+		<option value='request'$request_sel title='$(lang
 		    de:"Verbindungsanfrage (Klingeln)"
 		    en:"Connection request (ringing)"
-		)">request</option>
-		<option value="cancel"$cancel_sel title="$(lang
+		)'>request</option>
+		<option value='cancel'$cancel_sel title='$(lang
 		    de:"Verbindungsanfrage abgebrochen"
 		    en:"Connection request canceled"
-		)">cancel</option>
-		<option value="connect"$connect_sel title="$(lang 
+		)'>cancel</option>
+		<option value='connect'$connect_sel title='$(lang 
 		    de:"Verbindung zustandegekommen"
 		    en:"Connection established"
-		)">connect</option>
-		<option value="disconnect"$disconnect_sel title="$(lang
+		)'>connect</option>
+		<option value='disconnect'$disconnect_sel title='$(lang
 		    de:"Verbindung beendet"
 		    en:"Connection terminated"
-		)">disconnect</option>
+		)'>disconnect</option>
 	    </select>
 	</td>
     </tr><tr>
-	<td><label for="source">$(lang
+	<td><label for='source'>$(lang
 	    de:"Quellrufnummer" en:"Source number"):</label> </td>
 	<td>
-	    <input type="text" name="source" id="source" value="$source_val">
+	    <input type='text' name='source' id='source' value='$source_val'>
 	</td>
     </tr><tr>
-	<td><label for="dest">$(lang
+	<td><label for='dest'>$(lang
 	    de:"Zielrufnummer" en:"Destination number"):</label> </td>
-	<td><input type="text" name="dest" id="dest" value="$dest_val"></td>
+	<td><input type='text' name='dest' id='dest' value='$dest_val'></td>
     </tr></table>
-    <div class="btn"><input type="submit" 
-	value="$(lang de:"Testanruf" en:"Test call")"></div>
+    <div class='btn'><input type='submit' 
+	value='$(lang de:"Testanruf" en:"Test call")'></div>
 </form>
-EOF
+"
 }
 
 do_testcall() {

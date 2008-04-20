@@ -31,19 +31,19 @@ eval "$(modcgi number test)"
 number_val=$(html "$TEST_NUMBER")
 
 new_test_form() {
-    cat << EOF
-<form action="$SELF" method="post">
+    echo "
+<form action='$SELF' method='post'>
     <table><tr>
-	<td><label for="number">$(lang
+	<td><label for='number'>$(lang
 	    de:"Rufnummer" en:"Number"):</label> </td>
 	<td>
-	    <input type="text" name="number" id="number" value="$number_val">
+	    <input type='text' name='number' id='number' value='$number_val'>
 	</td>
     </tr></table>
-    <div class="btn"><input type="submit" 
-	value="$(lang de:"Nachschlagen" en:"Look up")"></div>
+    <div class='btn'><input type='submit' 
+	value='$(lang de:"Nachschlagen" en:"Look up")'></div>
 </form>
-EOF
+"
 }
 
 do_test() {

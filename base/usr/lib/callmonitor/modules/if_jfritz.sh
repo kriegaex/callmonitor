@@ -164,10 +164,8 @@ __read_from_iface() {
 	    echo $! > "$pidfile"
 	    wait
 	    rm -f "$pidfile"
-	} | {
-	    busybox nc 127.0.0.1 1012
-	    read pid < "$pidfile" && kill "$pid" > /dev/null 2>&1
-	} | __read
+	} | busybox nc 127.0.0.1 1012 | __read
+	read pid < "$pidfile" && kill "$pid" > /dev/null 2>&1
     fi
 }
 

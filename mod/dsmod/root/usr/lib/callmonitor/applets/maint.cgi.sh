@@ -31,14 +31,14 @@ cmd_button() {
     if empty "$cmd"; then
 	method="get"
     fi
-    cat << EOF
-<div class="btn">
-    <form class="btn" action="$SELF" method="$method">
-	<input name="cmd" value="$1" type="hidden">
-	<input value="$2" type="submit">
+    echo "
+<div class='btn'>
+    <form class='btn' action='$SELF' method='$method'>
+	<input name='cmd' value='$1' type='hidden'>
+	<input value='$2' type='submit'>
     </form>
 </div>
-EOF
+"
 }
 
 eval "$(modcgi cmd maint)"
@@ -78,11 +78,11 @@ let LINES="$({
 let BYTES="$(wc -c < "$CALLMONITOR_PERSISTENT" 2>/dev/null)+0"
 SIZE="$BYTES $(lang de:"Bytes" en:"bytes")"
 
-cat << EOF
+echo "
 <p>$(lang
     de:"$LINES Einträge (Größe: $SIZE)
-	<a href=\"/cgi-bin/file.cgi?id=callers\">bearbeiten</a>"
-    en:"<a href=\"/cgi-bin/file.cgi?id=callers\">Edit</a>
+	<a href='/cgi-bin/file.cgi?id=callers'>bearbeiten</a>"
+    en:"<a href='/cgi-bin/file.cgi?id=callers'>Edit</a>
 	$LINES entries (size: $SIZE)"
 )</p>
 <p>$(lang
@@ -100,7 +100,7 @@ cat << EOF
     de:"Der Rückwärtssuche-Cache kann hier geleert werden, um veraltete oder falsche Einträge zu entfernen und so eine neue Rückwärtssuche zu erzwingen."
     en:"The reverse-lookup cache may be flushed in order to remove out-of-date or wrong entries and thus to enforce fresh reverse lookups."
 )</p>
-EOF
+"
 cmd_button phonebook_tidy '$(lang de:"Aufräumen" en:"Tidy up")'
 cmd_button phonebook_init '$(lang de:"SIP-Update durchführen" en:"Perform SIP update")'
 cmd_button phonebook_flush '$(lang de:"Cache leeren" en:"Flush cache")'

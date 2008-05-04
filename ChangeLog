@@ -557,4 +557,9 @@
 
 2008-04-19:
 
-	* Web interface: Performance-Steigerung
+	* Web interface: Kleine Performance-Steigerung
+
+2008-05-04:
+
+	* phonebook: Unterstützung für neue AVM-Telefonbücher (mit mehreren
+	Rufnummern pro Eintrag); Dank an wengi

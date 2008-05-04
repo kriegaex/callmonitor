@@ -176,6 +176,7 @@ _pb_get_local() {
 _pb_find_number() {
     local nu na
     while read -r nu na; do
+	case $nu in \#*) continue ;; esac
 	if [ "$nu" = "$number" ]; then name=$na; return 0; fi
     done
     return 1

@@ -19,7 +19,7 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-MOD := dsmod
+MOD := freetz
 PKG := callmonitor
 
 include common/common.mk

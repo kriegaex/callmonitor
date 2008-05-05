@@ -71,7 +71,6 @@ dreammessage() {
 }
 ## with Enigma 2
 dream2message() {
-    "/web/message?text=%s&type=1&timeout=15" "$@"
     getmsg -T dream2message \
 	-t "/web/message?timeout=${DREAM_TIMEOUT:-10}&type=${DREAM_ICON:-1}&text=%s" "$@"
 }

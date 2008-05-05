@@ -563,3 +563,9 @@
 
 	* phonebook: Unterstützung für neue AVM-Telefonbücher (mit mehreren
 	Rufnummern pro Eintrag); Dank an wengi
+
+	* Makefile: Umstellung von Mod 'dsmod' auf 'freetz'
+
+2008-05-05:
+
+	callmonitor-1.11 veröffentlicht

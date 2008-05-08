@@ -246,12 +246,20 @@ _pb_tidy() {
     if lock "$book"; then
 	echo -n "sorting and cleansing, " >&2
 	local tmpfile=$CALLMONITOR_TMPDIR/.callmonitor.tmp
-	sort -u "$book" | 
 	sed -e '
 	    /^[[:space:]]*$/d
 	    s/^[[:space:]]*//
 	    s/[[:space:]]\+/	/
-	' > "$tmpfile" && mv "$tmpfile" "$book"
+	' "$book" | sort -u > "$tmpfile" && mv "$tmpfile" "$book"
+	local max_length=0 num rest
+	while read -r num rest; do
+	    case $num in \#*) continue ;; esac
+	    let max_length="(${#num} > max_length ? ${#num} : max_length)"    
+	done < "$book"
+	while read -r num rest; do
+	    case $num in \#*) echo "$num $name"; continue ;; esac
+	    printf "%-${max_length}s  %s\n" "$num" "$rest"
+	done < "$book" > "$tmpfile" && mv "$tmpfile" "$book"
 	exitval=$?
 	rm -f "$tmpfile"
 	unlock "$book"

@@ -264,7 +264,7 @@ _pb_tidy() {
 	rm -f "$tmpfile"
 	unlock "$book"
     fi
-    if ? exitval == 0 && $_pb_PERSISTENT; then
+    if ? exitval == 0; then
 	callmonitor_store
     fi
     if ? exitval == 0; then

@@ -257,7 +257,7 @@ _pb_tidy() {
 	    let max_length="(${#num} > max_length ? ${#num} : max_length)"    
 	done < "$book"
 	while read -r num rest; do
-	    case $num in \#*) echo "$num $name"; continue ;; esac
+	    case $num in \#*) echo "$num $rest"; continue ;; esac
 	    printf "%-${max_length}s  %s\n" "$num" "$rest"
 	done < "$book" > "$tmpfile" && mv "$tmpfile" "$book"
 	exitval=$?

@@ -8,6 +8,7 @@ Send a message in a simple HTTP GET request.
   -t, --template=FORMAT  use this printf-style template to build the URL,
 			 all following messages are URL-encoded and filled
 			 into this template
+  -m MAX		 use at most MAX messages
   -T TYPE                type of message (use default_TYPE, encode_TYPE, etc.)
   -p, --port=PORT	 use a special target port (default 80)
   -w, --timeout=SECONDS  set connect timeout (default 3)

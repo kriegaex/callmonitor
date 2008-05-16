@@ -42,6 +42,8 @@ _opt_net() {
 	    TEMPLATE=$2; return 2 ;;
 	-T)
 	    TYPE=$2; return 2 ;;
+	-m)
+	    NUMMSG=$2; return 2 ;;
     esac
     return 0
 }
@@ -56,10 +58,10 @@ _opt_nc() {
 }
 
 readonly var_nc="TIMEOUT PORT"
-readonly var_net="$var_nc TEMPLATE TYPE"
+readonly var_net="$var_nc TEMPLATE TYPE NUMMSG"
 
 _getopt_getmsg() {
-    getopt -n getmsg -o T:U:P:v:t:w:p: \
+    getopt -n getmsg -o T:U:P:v:t:w:p:m: \
 	-l user:,password:,virtual:,port:,template:,timeout:,help -- "$@"
 }
 _opt_auth() {
@@ -89,7 +91,7 @@ readonly var_getmsg="$var_net $var_auth HTTP_VIRTUAL"
 __getmsg() {
     local $VAR_http; unset -v $VAR_http
     local - $var_getmsg HOST=; unset -v $var_getmsg
-    local TYPE=message PORT=80 TIMEOUT=3
+    local TYPE=message PORT=80 TIMEOUT=3 NUMMSG=999999
     local SEND="__getmsg_$1"; shift
     _getopt getmsg "$@"
 }
@@ -112,7 +114,8 @@ __getmsg_simple() {
     HTTP_PATH=$(
 	n=1
 	for arg in "$@"; do
-	    shift; set -- "$@" "$(__getmsg_encode "$arg" $n)"
+	    shift
+	    ? "n <= NUMMSG" && set -- "$@" "$(__getmsg_encode "$arg" $n)"
 	    let n++
 	done
 	printf "$TEMPLATE" "$@"

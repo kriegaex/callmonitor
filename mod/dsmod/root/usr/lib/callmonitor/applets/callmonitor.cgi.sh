@@ -129,7 +129,7 @@ echo "
     [<a href='/cgi-bin/extras.cgi/callmonitor/testlookup'>$(lang 
 	de:"Test" en:"Test")</a>]</td>
 </tr>
-<tr><td />
+<tr><td></td>
     <td><label for='area'>$(lang 
 	de:"Ersatzweise Vorwahl nachschlagen bei"
 	en:"Alternatively lookup area code at")</label></td>
@@ -141,7 +141,7 @@ list_providers A "$CALLMONITOR_AREA_PROVIDER"
 echo "
     </select></td>
 </tr>
-<tr><td />
+<tr><td></td>
     <td><label for='cache'>$(lang
 	de:"Suchergebnisse zwischenspeichern?"
 	en:"Cache query results?"

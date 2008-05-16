@@ -48,10 +48,10 @@ for_leases() {
 
 ## simple *box listeners
 dboxpopup() {
-    getmsg -T dboxpopup -t "/control/message?popup=%s" "$@"
+    getmsg -T dboxpopup -t "/control/message?popup=%s" -m 1 "$@"
 }
 dboxmessage() {
-    getmsg -T dboxmessage -t "/control/message?nmsg=%s" "$@"
+    getmsg -T dboxmessage -t "/control/message?nmsg=%s" -m 1 "$@"
 }
 default_dboxpopup() { default_dbox; }
 default_dboxmessage() { default_dbox; }
@@ -67,12 +67,12 @@ encode_dbox() {
 dreammessage() {
     getmsg -T dreammessage \
 	-t "/cgi-bin/xmessage?timeout=${DREAM_TIMEOUT:-10}&caption=$(urlprintfencode "${DREAM_CAPTION:-$(lang
-    de:"Telefonanruf" en:"Phone call")}")&charset=latin1&icon=${DREAM_ICON:-1}&body=%s" "$@"
+    de:"Telefonanruf" en:"Phone call")}")&charset=latin1&icon=${DREAM_ICON:-1}&body=%s" -m 1 "$@"
 }
 ## with Enigma 2
 dream2message() {
     getmsg -T dream2message \
-	-t "/web/message?timeout=${DREAM_TIMEOUT:-10}&type=${DREAM_ICON:-1}&text=%s" "$@"
+	-t "/web/message?timeout=${DREAM_TIMEOUT:-10}&type=${DREAM_ICON:-1}&text=%s" -m 1 "$@"
 }
 default_dreammessage() { default_dream; }
 default_dream2message() { default_dream; }
@@ -104,7 +104,7 @@ default_vdr() { default_short_message; }
 
 xboxmessage() {
     getmsg -T xboxmessage \
-	-t "/xbmcCmds/xbmcHttp?command=ExecBuiltIn&parameter=XBMC.Notification($(urlprintfencode "${XBOX_CAPTION:-$(lang de:"Telefonanruf" en:"Phone call")}"),%s)" "$@"
+	-t "/xbmcCmds/xbmcHttp?command=ExecBuiltIn&parameter=XBMC.Notification($(urlprintfencode "${XBOX_CAPTION:-$(lang de:"Telefonanruf" en:"Phone call")}"),%s)" -m 1 "$@"
 }
 default_xboxmessage() {
     default_message "" 2
@@ -118,7 +118,7 @@ encode_xboxmessage() {
 ## Latin-1 and UTF-8 umlauts translate to question marks)
 relookmessage() {
     getmsg -T relookmessage \
-	-t "/cgi-bin/command?printmessage&${RELOOK_TIMEOUT:-10}%%20%s" "$@"
+	-t "/cgi-bin/command?printmessage&${RELOOK_TIMEOUT:-10}%%20%s" -m 1 "$@"
 }
 default_relookmessage() { default_message 39; }
 encode_relookmessage() {

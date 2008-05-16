@@ -569,3 +569,7 @@
 2008-05-05:
 
 	callmonitor-1.11 veröffentlicht
+
+2008-05-16:
+
+	* net.sh: Option -m für getmsg: Schutz gegen zu viele Argumente

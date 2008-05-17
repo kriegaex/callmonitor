@@ -20,24 +20,14 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 mod_register() {
-    local deffile flash=/tmp/flash/$DAEMON
+    local deffile flash=/tmp/flash/$DAEMON def="/mod/etc/default.$DAEMON"
     mkdir -p "$flash"
     modreg cgi $DAEMON 'Callmonitor'
     modreg extra $DAEMON '$(lang de:"Testanruf" en:"Test call")' 1 'testcall'
     modreg extra $DAEMON '$(lang de:"Test der Rückwärtssuche" en:"Test reverse lookup")' 1 'testlookup'
     modreg extra $DAEMON '$(lang de:"Wartung" en:"Maintenance")' 1 'maint'
-    if [ -r "$flash/listeners.def" ]; then 
-	deffile=$flash/listeners.def
-    else 
-	deffile=/etc/default.$DAEMON/listeners.def
-    fi
-    modreg file 'listeners' 'Listeners' 0 "$deffile"
-    if [ -r "$flash/callers.def" ]; then 
-	deffile=$flash/callers.def
-    else 
-	deffile=/etc/default.$DAEMON/callers.def
-    fi
-    modreg file 'callers' 'Callers' 1 "$deffile"
+    modreg file 'listeners' 'Listeners' 0 "$def/listeners.def"
+    modreg file 'callers' 'Callers' 1 "$def/callers.def"
 }
 mod_unregister() {
     modunreg file 'callers'

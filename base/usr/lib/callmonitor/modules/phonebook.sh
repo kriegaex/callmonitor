@@ -156,20 +156,31 @@ _pb_get() {
     return $exitval
 }
 
+_pb_get_local_pers() {
+    _pb_find_number < "$CALLMONITOR_PERSISTENT"
+}
+_pb_get_local_trans() {
+    _pb_find_number < "$CALLMONITOR_TRANSIENT"
+}
+_pb_get_local_avm() {
+    [ "$CALLMONITOR_READ_FONBUCH" = yes ] &&
+    name=$(_pb_fonbuch | { _pb_find_number && echo "$name"; })
+}
 ## for performance, _pb_get_local returns its result in $__
 _pb_get_local() {
-    local number=$1 name
-    if _pb_find_number < "$CALLMONITOR_PERSISTENT" ||
-	_pb_find_number < "$CALLMONITOR_TRANSIENT" ||
-	{
-	    [ "$CALLMONITOR_READ_FONBUCH" = yes ] &&
-	    name=$(_pb_fonbuch | { _pb_find_number && echo "$name"; })
-	}
-    then
-	_pb_debug "phone book contains {$number -> $name}"
-	__=$name
-	return 0
-    fi
+    local number=$1 name source
+    for source in ${CALLMONITOR_PHONEBOOKS:-callers cache avm}; do
+	if case $source in
+	    callers) _pb_get_local_pers ;;
+	    cache) _pb_get_local_trans ;;
+	    avm) _pb_get_local_avm ;;
+	    *) false ;;
+	esac; then
+	    _pb_debug "phone book '$source' contains {$number -> $name}"
+	    __=$name
+	    return 0
+	fi
+    done
     __=
     return 1
 }

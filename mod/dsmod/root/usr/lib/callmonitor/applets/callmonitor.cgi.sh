@@ -23,14 +23,11 @@ require cgi
 require if_jfritz_status
 require if_jfritz_cgi
 require version
-require file
-readonly REVERSE_CFG="$CALLMONITOR_LIBDIR/reverse/provider.cfg"
 
 check "$CALLMONITOR_ENABLED" yes:auto *:man
 check "$CALLMONITOR_DEBUG" yes:debug
 check "$CALLMONITOR_REVERSE" yes:reverse
 select "$CALLMONITOR_REVERSE_CACHE" no transient:trans persistent:pers
-select "$CALLMONITOR_AREA_PROVIDER" :null
 check "$CALLMONITOR_READ_FONBUCH" yes:fon
 
 SYSLOG='$(lang de:"System-Log" en:"system log")'
@@ -76,7 +73,7 @@ echo "
     <li><a href='/cgi-bin/file.cgi?id=listeners'>$(lang
 	de:"Listeners bearbeiten" en:"Edit Listeners")</a></li>
     <li><a href='/cgi-bin/extras.cgi/callmonitor/testcall'>$(lang
-	de:"Testanruf" en:"Test call")</a></li>
+	de:"Testanruf durchführen" en:"Perform test call")</a></li>
 </ul>
 "
 
@@ -102,45 +99,7 @@ echo "
     )' for='r4'>$(lang
 	de:"Rückwärtssuche durchführen"
 	en:"Perform reverse lookup"
-    )</label>
-    <label for='provider'>$(lang de:"bei" en:"at")</label></td>
-    <td><select name='reverse_provider' id='provider'>
-"
-list_providers() {
-    local match=$1 selected=$2 type provider site label sel countries
-    while readx type provider countries site label; do
-	case $type in
-	    $match*) ;;
-	    *) continue ;;
-	esac
-	if [ "$selected" = "$provider" ]; then
-	    sel=" selected"
-	else
-	    sel=
-	fi
-	echo "
-	    <option title='$site'
-		value='$provider'$sel>$label</option>
-	"
-    done < "$REVERSE_CFG"
-}
-list_providers R "$CALLMONITOR_REVERSE_PROVIDER"
-echo "
-    </select>
-    [<a href='/cgi-bin/extras.cgi/callmonitor/testlookup'>$(lang 
-	de:"Test" en:"Test")</a>]</td>
-</tr>
-<tr><td></td>
-    <td><label for='area'>$(lang 
-	de:"Ersatzweise Vorwahl nachschlagen bei"
-	en:"Alternatively lookup area code at")</label></td>
-    <td><select name='area_provider' id='area'>
-	<option title='Keine Auflösung von Vorwahlen'
-	    value=''$null_sel>$(lang de:"niemandem" en:"nowhere")</option>
-"
-list_providers A "$CALLMONITOR_AREA_PROVIDER"
-echo "
-    </select></td>
+    )</label></td>
 </tr>
 <tr><td></td>
     <td><label for='cache'>$(lang
@@ -162,11 +121,17 @@ echo "
 	    en:"Names are stored in the flash memory phone book"
 	)' value='persistent'$pers_sel>$(lang
 	    de:"Dauerhaft" en:"Persistently")</option>
-    </select>
-    [<a href='/cgi-bin/file.cgi?id=callers'>$(lang 
-	de:"Callers&nbsp;bearbeiten" en:"Edit&nbsp;Callers")</a>]</td>
+    </select></td>
 </tr>
 </table>
+<ul>
+    <li><a href="/cgi-bin/extras.cgi/callmonitor/reverse">$(lang
+	de:"Anbieter einstellen"
+	en:"Set providers"
+    )</a></li>
+    <li><a href='/cgi-bin/file.cgi?id=callers'>$(lang 
+	de:"Callers&nbsp;bearbeiten (Telefonbuch)" en:"Edit&nbsp;Callers (phone book)")</a></li>
+</ul>
 "
 
 sec_end

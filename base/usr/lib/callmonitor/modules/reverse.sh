@@ -23,8 +23,6 @@ require net
 require recode
 require tel
 
-readonly REVERSE_CFG="$CALLMONITOR_LIBDIR/reverse/provider.cfg"
-
 ## resolve numbers to names and addresses; the number is
 ## used as given (should be normalized beforehand); returns 1 if no lookup
 ## performed or if there were errors (no need to cache)
@@ -50,7 +48,8 @@ reverse_lookup() {
 	wait $child
 	name=$(cat "$afile" 2>/dev/null); exit=$?
 	if ! empty "$name"; then
-	    echo "$number ($name)" ## $name is only city
+	    ## $name is only country/city
+	    echo "$(normalize_address "$number" display; echo $__) ($name)"
 	    exit=0
 	fi
     fi
@@ -64,12 +63,12 @@ _reverse_choose_provider() {
 	    $lkz:*) choice=${entry#*:}; break ;;
 	esac
     done
-    if grep -q "^R[^	]*	$choice	" "$REVERSE_CFG" > /dev/null; then
+    if grep -q "^R[^	]*	$choice	" "$CALLMONITOR_REVERSE_CFG" > /dev/null; then
 	prov=$choice
     else
-	prov=$(grep "$lkz!" "$REVERSE_CFG" | cut -f2)
+	prov=$(grep "$lkz!" "$CALLMONITOR_REVERSE_CFG" | cut -f2)
     fi
-    if grep -q "^A[^	]*	$CALLMONITOR_AREA_PROVIDER	" "$REVERSE_CFG" > /dev/null; then
+    if grep -q "^A[^	]*	$CALLMONITOR_AREA_PROVIDER	" "$CALLMONITOR_REVERSE_CFG" > /dev/null; then
 	area_prov=$CALLMONITOR_AREA_PROVIDER
     else
 	area_prov=

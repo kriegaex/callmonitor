@@ -25,8 +25,6 @@ require dump
 require set
 
 _tel_OKZ_CACHE="/var/cache/phonebook/telcfg"
-readonly REVERSE_CFG="$CALLMONITOR_LIBDIR/reverse/provider.cfg"
-## TODO: Move to config
 
 normalize_address() {
     local number=$1
@@ -40,6 +38,9 @@ normalize_address() {
 ## normalize phone numbers
 normalize_tel() {
     local number=$1 mode=$2 lkz=$LKZ
+    case $number in
+	*[^0-9+]*) number=$(echo "$number" | tr -cd "0-9+")
+    esac
     case $number in
 	+*) number="$LKZ_PREFIX${number#+}" ;;
     esac
@@ -76,7 +77,7 @@ normalize_tel() {
 	    *) __="+$lkz${number#$OKZ_PREFIX}" ;;
 	esac
     else
-	__="${LKZ_PREFIX}${LKZ}${number#$OKZ_PREFIX}"
+	__="${LKZ_PREFIX}${lkz}${number#$OKZ_PREFIX}"
     fi
 }
 
@@ -89,7 +90,7 @@ tel_collect_lkzs() {
 	    [ "$c" = "*" ] && continue
 	    set_add LKZ_LIST "${c%!}"
 	done
-    done < "$REVERSE_CFG"
+    done < "$CALLMONITOR_REVERSE_CFG"
 }
 
 ## recognize country prefixes

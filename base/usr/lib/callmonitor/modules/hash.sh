@@ -27,20 +27,20 @@ new_hash() {
 }
 
 _hash_get() {
-    local name=$1 key=$2 var=$3
-    eval "$var=\$_h_${name}_${key}"
+    local _name=$1 _key=$2 _var=$3
+    eval "$_var=\$_h_${_name}_${_key}"
 }
 _hash_put() {
-    local name=$1 key=$2 value=$3
-    eval "_h_${name}_${key}=\$value"
+    local _name=$1 _key=$2 _value=$3
+    eval "_h_${_name}_${_key}=\$_value"
 }
 _hash_remove() {
-    local name=$1 key=$2
-    unset -v _h_${name}_${key}
+    local _name=$1 _key=$2
+    unset -v _h_${_name}_${_key}
 }
 _hash_contains() {
-    local name=$1 key=$2
-    eval "? \${_h_${name}_${key}+1}"
+    local _name=$1 _key=$2
+    eval "? \${_h_${_name}_${_key}+1}"
 }
 
 ## new_hash a

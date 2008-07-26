@@ -21,7 +21,7 @@
 ##
 _reverse_telefonbuch_at_request() {
     local number="0${1#${LKZ_PREFIX}43}"
-    wget_callmonitor -q -O - "http://www.tb-online.at/index.php?pc=in&aktion=suchein&telnummer=$(urlencode "$1")"
+    wget_callmonitor -q -O - "http://www.tb-online.at/index.php?pc=in&aktion=suchein&telnummer=$(urlencode "$number")"
 }
 _reverse_telefonbuch_at_extract() {
     sed -n -e '

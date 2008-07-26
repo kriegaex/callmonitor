@@ -25,7 +25,7 @@ require reverse
 require file
 
 SELF=testlookup
-TITLE="$(lang de:"Test der Rückwärtssuche" en:"Test reverse look-up")"
+TITLE="$(lang de:"Test der Rückwärtssuche" en:"Check reverse look-up")"
 
 eval "$(modcgi number test)"
 
@@ -47,21 +47,28 @@ new_test_form() {
 "
 }
 
-do_test() {
-    callmonitor-test "$TESTCALL_EVENT_DIR:$TESTCALL_EVENT" \
-	"$TESTCALL_SOURCE" "$TESTCALL_DEST" 2>&1
-}
-
 show_test_results() {
-    local number=$1 name status
-    number="$(echo $number | sed -e 's/[^0-9]//g')"
+    local number=$1 name status lkz disp
     normalize_tel "$number"; number=$__
+    normalize_tel "$number" display; disp=$__
+    lkz=$(tel_lkz "$number")
+    echo "<p>$(lang de:"Schlage $disp nach" en:"Looking up $disp") ...</p>"
     echo "<dl>"
-    local type provider site label
-    while readx type provider site label; do
-	echo "<dt><strong>$(html "$label")</strong></dt>"
-	_reverse_load "$provider"
+    local type provider site label countries
+    while readx type provider countries site label; do
+	echo "<dt><strong><a href="http://$site/">$(html "$label")</a></strong></dt>"
 	echo -n "<dd>"
+	case ",$countries," in
+	    *",$lkz,"*|*",$lkz!,"*|*",*,") ;;
+	    *)
+		echo "$(lang 
+		    de:"Unterstützt +$lkz nicht."
+		    en:"Does not support +$lkz."
+		)"
+		continue
+		;;
+	esac
+	_reverse_load "$provider"
 	name=$(_reverse_lookup "$provider" "$number"); status=$?
 	case $status in
 	    0) 

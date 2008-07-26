@@ -2,26 +2,18 @@
 Testen
 ----------------------------------------------------------------------
 
-Österreich:
-http://www.tb-online.at/index.php?pc=in&aktion=suchein&telnummer=%s
-
-Landeseinstellungen (Schweiz, Österreich)
-- Rückwärtssuche je nach Land unterschiedlich
-  - Zuordnung von LKZs zu Providern
-  - Konfig-Format ("49=dasoertliche,41=foobar"?)
-
 ----------------------------------------------------------------------
 Wichtig
 ----------------------------------------------------------------------
-
-  - Konfigurationsseite (Extras?)
 
 ----------------------------------------------------------------------
 Demnächst anschauen
 ----------------------------------------------------------------------
 
+- Default für CALLMONITOR_REVERSE_PROVIDER aus provider.cfg bestimmen
+
 ----------------------------------------------------------------------
-Nicht so wichtig
+Nicht so wichtig, Ideen
 ----------------------------------------------------------------------
 
 Die Details der letzten k Anrufe aufzeichnen und verwenden

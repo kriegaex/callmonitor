@@ -65,11 +65,8 @@ __incoming_call() {
     __prepare_env
 
     local event_spec source_pattern dest_pattern listener rule=0
-    while read -r event_spec source_pattern dest_pattern listener
+    while readx event_spec source_pattern dest_pattern listener
     do
-	## comment or empty line
-	case $event_spec in \#*|"") continue ;; esac
-
 	## process rule asynchronously
 	RULE=$rule \
 	__process_rule "$event_spec" "$source_pattern" "$dest_pattern" "$listener" &

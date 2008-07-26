@@ -1,13 +1,13 @@
-<? setvariable var:phonebook 
+<? setvariable var:refresh '<? query telcfg:settings/HotDialRefresh ?>' 
+?><? setvariable var:refresh '<? query telcfg:settings/Phonebook0/Refresh ?>'
+?><? setvariable var:phonebook 
   '<? if eq <? query telcfg:settings/Phonebook/Entry/count ?> 0 old new ?>'
 ?># AVM's phone book (<? print $var:phonebook ?>)
 <? if eq $var:phonebook old
-  `<? setvariable var:refresh '<? query telcfg:settings/HotDialRefresh ?>'
- ?><? multiquerytext telcfg:settings/HotDialEntry/list(Number,Name)
+  `<? multiquerytext telcfg:settings/HotDialEntry/list(Number,Name)
 	'$12	$13
 '  ?>`
-  `<? setvariable var:refresh '<? query telcfg:settings/Phonebook0/Refresh ?>'
- ?><? multiquerytext telcfg:settings/Phonebook/Entry/list(Name,Category)
+  `<? multiquerytext telcfg:settings/Phonebook/Entry/list(Name,Category)
   	'<? multiquerytext telcfg:settings/Phonebook/$11/Number/list(Type,Number,Code,Vanity)
 	  	"$23	$12 [$22]
 "        ?>'

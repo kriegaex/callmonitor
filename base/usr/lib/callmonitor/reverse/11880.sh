@@ -20,7 +20,8 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 _reverse_11880_request() {
-    wget_callmonitor "http://www.11880.com/Suche/index.cfm?fuseaction=Suche.rueckwaertssucheresult&init=true&change=false&searchform=Rueckwaerts&tel=$(urlencode "$1")" -q -O -
+    local number="0${1#${LKZ_PREFIX}49}"
+    wget_callmonitor "http://www.11880.com/Suche/index.cfm?fuseaction=Suche.rueckwaertssucheresult&init=true&change=false&searchform=Rueckwaerts&tel=$(urlencode "$number")" -q -O -
 }
 _reverse_11880_extract() {
     sed -n -e '

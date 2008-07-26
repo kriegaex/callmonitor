@@ -21,6 +21,7 @@
 ##
 require net
 require recode
+require tel
 
 readonly REVERSE_CFG="$CALLMONITOR_LIBDIR/reverse/provider.cfg"
 
@@ -33,9 +34,10 @@ readonly REVERSE_CFG="$CALLMONITOR_LIBDIR/reverse/provider.cfg"
 reverse_lookup() {
     local number=$1 prov area_prov child afile name exit
     case $number in
-	00*|[^0]*|*[^0-9]*) return 1;
+	*[^0-9]*) return 1;
     esac
-    _reverse_choose_provider
+    local lkz=$(tel_lkz "$number")
+    _reverse_choose_provider "$lkz"
 
     afile="/var/run/phonebook/lookup-$area_prov-$number"
     _reverse_lookup "$area_prov" "$number" | _reverse_atomic "$afile" & child=$!
@@ -56,10 +58,16 @@ reverse_lookup() {
     return $exit
 }
 _reverse_choose_provider() {
-    if grep -q "^R[^	]*	$CALLMONITOR_REVERSE_PROVIDER	" "$REVERSE_CFG" > /dev/null; then
-	prov=$CALLMONITOR_REVERSE_PROVIDER
+    local lkz=$1 entry choice
+    for entry in $CALLMONITOR_REVERSE_PROVIDER; do
+	case $entry in
+	    $lkz:*) choice=${entry#*:}; break ;;
+	esac
+    done
+    if grep -q "^R[^	]*	$choice	" "$REVERSE_CFG" > /dev/null; then
+	prov=$choice
     else
-	prov=$(grep '^R\*' "$REVERSE_CFG" | cut -f2)
+	prov=$(grep "$lkz!" "$REVERSE_CFG" | cut -f2)
     fi
     if grep -q "^A[^	]*	$CALLMONITOR_AREA_PROVIDER	" "$REVERSE_CFG" > /dev/null; then
 	area_prov=$CALLMONITOR_AREA_PROVIDER
@@ -123,10 +131,11 @@ _reverse_load() {
     fi
 }
 _reverse_init() {
-    local prov area_prov
-    _reverse_choose_provider
-    _reverse_load "$CALLMONITOR_REVERSE_PROVIDER"
-    _reverse_load "$CALLMONITOR_AREA_PROVIDER"
+    local entry prov
+    for entry in $CALLMONITOR_REVERSE_PROVIDER $CALLMONITOR_AREA_PROVIDER; do
+	prov=${entry#*:}
+	_reverse_load "$prov"
+    done
     unset -f _reverse_init
 }
 _reverse_init

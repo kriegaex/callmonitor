@@ -20,7 +20,8 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 _reverse_dasoertliche_request() {
-    wget_callmonitor "http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$(urlencode "$1")" -q -O -
+    local number="0${1#${LKZ_PREFIX}49}"
+    wget_callmonitor "http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$(urlencode "$number")" -q -O -
 }
 _reverse_dasoertliche_extract() {
    sed -n -e '

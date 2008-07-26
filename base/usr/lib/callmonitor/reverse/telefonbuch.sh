@@ -20,6 +20,7 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 _reverse_telefonbuch_request() {
+    local number="0${1#${LKZ_PREFIX}49}"
     wget_callmonitor -q -O - "http://www.dastelefonbuch.de/?la=de&kw=$(urlencode "$1")&cmd=search"
 }
 _reverse_telefonbuch_extract() {

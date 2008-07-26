@@ -20,8 +20,8 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 _reverse_google_request() {
-    ## anonymize as far as possible (use only the first six digits)
-    local number=$(expr substr "$1" 1 6)0000000000
+    ## anonymize as far as possible (use only the first nine digits)
+    local number=$(expr substr "$1" 1 9)0000000000
     wget_callmonitor "http://www.google.de/search?num=1&q=$(urlencode "$number")" -q -O -
 }
 _reverse_google_extract() {

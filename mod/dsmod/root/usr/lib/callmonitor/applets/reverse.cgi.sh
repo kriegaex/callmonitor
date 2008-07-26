@@ -19,35 +19,18 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-_reverse_goyellow_request() {
-    local number="0${1#${LKZ_PREFIX}49}"
-    wget_callmonitor "http://www.goyellow.de/inverssuche/?TEL=$(urlencode "$number")" -q -O -
-}
-_reverse_goyellow_extract() {
-    sed -n -e '
-	\#Es wurden keine Eintr.ge gefunden.# {
-	    '"$REVERSE_NA"'
-	}
-	\#<div[^>]*id="listing"#,\#<div[^>]*class="col contact# {
-	    /title="Detailinformationen/ b name
-	    \#<h3>.*</h3># b name
-	    /<p class="address/ b address
-	}
-	\#<div[^>]*class="col contact# {
-	    g
-	    s/\n/, /g
-	    '"$REVERSE_SANITIZE"'
-	    '"$REVERSE_OK"'
-	}
-	b
-	: name
-	s#^[^<]*<\(a\|h3\)[^>]*>\([^<]*\)</\(a\|h3\)>.*#\2#
-	h
-	b
-	: address
-	s#^[^<]*<p[^>]*class="address">\(.*\)</p>#\1#
-	s#<br />#, #g
-	H
-	b
-    '
-}
+require cgi
+
+SELF=reverse
+TITLE='$(lang de:"Konfiguration der Rückwärtssuche" en:"Reverse-lookup configuration")'
+
+eval "$(modcgi cmd reverse)"
+
+cgi_begin "$TITLE" extras
+sec_begin 'Foobar'
+
+echo foo
+
+sec_end
+
+cgi_end

@@ -23,6 +23,7 @@ require cgi
 require if_jfritz_status
 require if_jfritz_cgi
 require version
+require file
 readonly REVERSE_CFG="$CALLMONITOR_LIBDIR/reverse/provider.cfg"
 
 check "$CALLMONITOR_ENABLED" yes:auto *:man
@@ -106,8 +107,8 @@ echo "
     <td><select name='reverse_provider' id='provider'>
 "
 list_providers() {
-    local match=$1 selected=$2 type provider site label sel
-    while read -r type provider site label; do
+    local match=$1 selected=$2 type provider site label sel countries
+    while readx type provider countries site label; do
 	case $type in
 	    $match*) ;;
 	    *) continue ;;

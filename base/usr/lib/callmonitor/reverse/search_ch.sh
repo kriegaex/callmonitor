@@ -22,6 +22,7 @@
 ## This file based on telsearch.sh by niknak(@IPPF).
 ##
 _reverse_search_ch_request() {
+    local number="0${1#${LKZ_PREFIX}41}"
     wget_callmonitor "http://tel.search.ch/result.html?tel=$(urlencode "$1")" -q -O -
 }
 

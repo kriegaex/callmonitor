@@ -18,4 +18,5 @@ files
 	usr/lib/callmonitor/modules/if_jfritz_cgi.sh
 	usr/lib/callmonitor/modules/message.sh
 	usr/lib/callmonitor/modules/modreg.sh
+	usr/lib/callmonitor/reverse/country.cfg
 }

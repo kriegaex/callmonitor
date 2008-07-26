@@ -19,35 +19,16 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-_reverse_goyellow_request() {
-    local number="0${1#${LKZ_PREFIX}49}"
-    wget_callmonitor "http://www.goyellow.de/inverssuche/?TEL=$(urlencode "$number")" -q -O -
-}
-_reverse_goyellow_extract() {
-    sed -n -e '
-	\#Es wurden keine Eintr.ge gefunden.# {
-	    '"$REVERSE_NA"'
-	}
-	\#<div[^>]*id="listing"#,\#<div[^>]*class="col contact# {
-	    /title="Detailinformationen/ b name
-	    \#<h3>.*</h3># b name
-	    /<p class="address/ b address
-	}
-	\#<div[^>]*class="col contact# {
-	    g
-	    s/\n/, /g
-	    '"$REVERSE_SANITIZE"'
-	    '"$REVERSE_OK"'
-	}
-	b
-	: name
-	s#^[^<]*<\(a\|h3\)[^>]*>\([^<]*\)</\(a\|h3\)>.*#\2#
-	h
-	b
-	: address
-	s#^[^<]*<p[^>]*class="address">\(.*\)</p>#\1#
-	s#<br />#, #g
-	H
-	b
-    '
+
+## maintain a set of space-separated words
+set_add() {
+    local name=$1 set elem; shift
+    eval "set=\$$name"
+    for elem; do
+	case " $set " in
+	    *" $elem "*) ;;
+	    *) set="${set:+$set }$elem"
+	esac		
+    done
+    eval "$name=\$set"
 }

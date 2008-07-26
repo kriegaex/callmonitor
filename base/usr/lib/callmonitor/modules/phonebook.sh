@@ -26,27 +26,11 @@ require reverse
 require file
 require usage
 require webui
+require tel
 
 _pb_CACHE_DIR="/var/cache/phonebook"
 ensure_dir "$_pb_CACHE_DIR"
 _pb_FONBUCH_CACHE="$_pb_CACHE_DIR/avm"
-_pb_OKZ_CACHE="$_pb_CACHE_DIR/okz"
-
-## retrieve OKZ from AVM config
-_pb_okz() {
-    if [ -r "$_pb_OKZ_CACHE" ]; then
-	CALLMONITOR_OKZ="$(cat "$_pb_OKZ_CACHE")"
-    else
-	webui_login
-	CALLMONITOR_OKZ="$(
-	    webui_query telcfg:settings/Location/OKZPrefix telcfg:settings/Location/OKZ |
-	    { read prefix; read okz; echo "$prefix$okz"; }
-	)"
-	ensure_file "$_pb_OKZ_CACHE"
-	echo "$CALLMONITOR_OKZ" > "$_pb_OKZ_CACHE"
-    fi
-}
-
 
 _pb_fonbuch() {
     if [ ! -e "$_pb_FONBUCH_CACHE" ]; then
@@ -66,54 +50,6 @@ _pb_fonbuch_read() {
 	s/^\([^	]*	\)!/\1/
     '
 }
-
-normalize_address() {
-    local number=$1
-    _pb_okz
-    case $number in
-	SIP*|*@*) normalize_sip "$@" ;;
-	*) normalize_tel "$@" ;;
-    esac
-}
-
-## normalize phone numbers
-normalize_tel() {
-    local number=$1 mode=$2
-    ## Call by call
-    case $number in
-	010[1-9]?*) number=${number#010[1-9]?} ;;
-	0100??*) number=${number#0100??} ;;
-    esac
-    ## Country prefix of Germany
-    case $number in
-	0049*) number=0${number#0049} ;;
-	49*) if ? "${#number} > 10"; then number=0${number#49}; fi ;;
-    esac
-    ## Local number
-    if [ "$mode" != display ]; then
-	case $number in
-	    [1-9]*) number=${CALLMONITOR_OKZ}${number} ;; 
-	esac
-    fi
-    __=$number
-}
-
-## transform SIP[0-9] into SIP addresses
-normalize_sip() {
-    local number=$1
-    case $number in
-	SIP[0-9])
-	    if eval "? \"\${${number}_address+1}\""; then
-		eval "number=\"\$${number}_address\""
-	    fi
-	    ;;
-    esac
-    __=$number
-}
-## read SIP[0-9] to address mapping
-if [ -r /var/run/phonebook/sip ]; then
-    . /var/run/phonebook/sip
-fi
 
 ## Options to be overwritten before call of phonebook functions
 _pb_REVERSE=false
@@ -136,20 +72,14 @@ ensure_file "$CALLMONITOR_TRANSIENT" "$CALLMONITOR_PERSISTENT"
 
 _pb_get() {
     local number=$1 number_norm name exitval __
-    _pb_get_local "$number"
+    normalize_address "$number"; number_norm=$__
+    _pb_get_local "$number_norm"
     exitval=$?; name=$__
-    if ? "exitval != 0"; then
-	normalize_address "$number"; number_norm=$__
-	if [ "$number_norm" != "$number" ]; then
-	    _pb_get_local "$number_norm"
-	    exitval=$?; name=$__
-	fi
-	if ? "exitval != 0" && $_pb_REVERSE; then
-	    name=$(reverse_lookup "$number_norm")
-	    if ? $? == 0 && $_pb_CACHE; then
-		_pb_put_local "$number_norm" "$name" >&2 &
-		exitval=0
-	    fi
+    if ? "exitval != 0" && $_pb_REVERSE; then
+	name=$(reverse_lookup "$number_norm")
+	if ? $? == 0 && $_pb_CACHE; then
+	    _pb_put_local "$number_norm" "$name" >&2 &
+	    exitval=0
 	fi
     fi
     echo "$name"
@@ -186,9 +116,9 @@ _pb_get_local() {
 }
 _pb_find_number() {
     local nu na
-    while read -r nu na; do
-	case $nu in \#*) continue ;; esac
-	if [ "$nu" = "$number" ]; then name=$na; return 0; fi
+    while readx nu na; do
+	normalize_address "$nu"
+	if [ "$__" = "$number" ]; then name=$na; return 0; fi
     done
     return 1
 }
@@ -242,7 +172,7 @@ _pb_init() {
 
 _pb_start() {
     rm -rf "$_pb_CACHE_DIR"
-    _pb_okz
+    tel_config
     if [ "$CALLMONITOR_READ_FONBUCH" = "yes" ]; then
 	echo -n "Reading AVM's phone book..." >&2
 	_pb_fonbuch > /dev/null
@@ -263,8 +193,7 @@ _pb_tidy() {
 	    s/[[:space:]]\+/	/
 	' "$book" | sort -u > "$tmpfile" && mv "$tmpfile" "$book"
 	local max_length=0 num rest
-	while read -r num rest; do
-	    case $num in \#*) continue ;; esac
+	while readx num rest; do
 	    let max_length="(${#num} > max_length ? ${#num} : max_length)"    
 	done < "$book"
 	while read -r num rest; do

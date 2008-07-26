@@ -34,3 +34,16 @@ ensure_dir() {
 	[ -e "$dir" ] || mkdir -p "$dir"
     done
 }
+
+## 'read -r' that skips comments and empty lines
+readx() {
+    local __
+    while true; do
+	read -r "$@" || return $?
+	eval "__=\$$1"
+	case $__ in
+	    \#*|"") continue ;;
+	    *) return 0 ;;
+	esac
+    done
+}

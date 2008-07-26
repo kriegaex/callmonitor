@@ -19,12 +19,17 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-dump() {
+require util
+dump_var() {
+    local var
     for var; do
-	echo -n "$var='"
-	eval "echo -n \"\$$var\"" | sed -e "s/'/'\\\\''/g"
-	echo "'"
+	echo -n "$var="
+	eval "sh_escape \"\$$var\""
+	echo
     done
+}
+dump() {
+    dump_var "$@"
     echo "___ $*"
 }
 dump2() {

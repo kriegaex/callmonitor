@@ -2,9 +2,19 @@
 Testen
 ----------------------------------------------------------------------
 
+Österreich:
+http://www.tb-online.at/index.php?pc=in&aktion=suchein&telnummer=%s
+
+Landeseinstellungen (Schweiz, Österreich)
+- Rückwärtssuche je nach Land unterschiedlich
+  - Zuordnung von LKZs zu Providern
+  - Konfig-Format ("49=dasoertliche,41=foobar"?)
+
 ----------------------------------------------------------------------
 Wichtig
 ----------------------------------------------------------------------
+
+  - Konfigurationsseite (Extras?)
 
 ----------------------------------------------------------------------
 Demnächst anschauen
@@ -17,8 +27,6 @@ Nicht so wichtig
 Die Details der letzten k Anrufe aufzeichnen und verwenden
 * als Vorgabe bei Testanrufen
 * zum Erstellen von einfachen Regeln
-
-Landeseinstellungen (Schweiz, Österreich)
 
 default_message aufwerten (auf *:cancel, *:connect und *:disconnect eingehen)
 

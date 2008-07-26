@@ -22,6 +22,7 @@
 require cgi
 require phonebook
 require reverse
+require file
 
 SELF=testlookup
 TITLE="$(lang de:"Test der Rückwärtssuche" en:"Test reverse look-up")"
@@ -57,7 +58,7 @@ show_test_results() {
     normalize_tel "$number"; number=$__
     echo "<dl>"
     local type provider site label
-    while read -r type provider site label; do
+    while readx type provider site label; do
 	echo "<dt><strong>$(html "$label")</strong></dt>"
 	_reverse_load "$provider"
 	echo -n "<dd>"

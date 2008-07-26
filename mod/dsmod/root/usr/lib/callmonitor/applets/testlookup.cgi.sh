@@ -79,7 +79,7 @@ show_test_results() {
 	    *) echo "$(lang de:"Fehler." en:"Error.")" ;;
 	esac
 	echo -n "</dd>"
-    done < "$REVERSE_CFG"
+    done < "$CALLMONITOR_REVERSE_CFG"
     echo "</dl>"
 }
 

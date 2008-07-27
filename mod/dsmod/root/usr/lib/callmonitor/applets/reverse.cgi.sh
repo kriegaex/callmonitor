@@ -24,6 +24,7 @@ require tel
 require file
 require hash
 require url
+require webui
 
 SELF=reverse
 TITLE='$(lang
@@ -46,10 +47,8 @@ if [ -n "$REVERSE_SAVE" ]; then
     new_provider=${new_provider# }
 
     ## delegate to save.cgi
-    post_data="reverse_provider=$(urlencode "$new_provider")&area_provider=$(urlencode "$REVERSE_AREA")"
-    echo -n "$post_data" | 
-	QUERY_STRING="form=pkg_callmonitor" CONTENT_LENGTH=${#post_data} \
-	/usr/mww/cgi-bin/save.cgi
+    QUERY_STRING="form=pkg_callmonitor" post_form /usr/mww/cgi-bin/save.cgi \
+    	"reverse_provider=$(urlencode "$new_provider")&area_provider=$(urlencode "$REVERSE_AREA")"
     exit $?
 fi
 

@@ -24,14 +24,18 @@ require url
 WEBCM_DIR=/usr/www/html/cgi-bin
 WEBCM=$WEBCM_DIR/webcm
 
+post_form() {
+    local cgi=$1 post_data=$2
+    echo -n "$post_data" |
+    REQUEST_METHOD=POST REMOTE_ADDR=${REMOTE_ADDR-127.0.0.1} \
+    CONTENT_TYPE=application/x-www-form-urlencoded \
+    CONTENT_LENGTH=${#post_data} \
+    "$cgi"
+}
 webui_post_form() (
     cd "$WEBCM_DIR"
     local post_data=$1
-    echo -n "$post_data" |
-    REQUEST_METHOD=POST REMOTE_ADDR=127.0.0.1 \
-    CONTENT_TYPE=application/x-www-form-urlencoded \
-    CONTENT_LENGTH=${#post_data} \
-    "$WEBCM"
+    post_form "$WEBCM" "$post_data"
 )
 webui_get() (
     cd "$WEBCM_DIR"

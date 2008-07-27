@@ -80,8 +80,18 @@ echo "
 sec_end
 sec_begin '$(lang de:"Rückwärtssuche" en:"Reverse lookup")'
 
+H_CALLERS="<a href='/cgi-bin/file.cgi?id=callers' title='$(lang 
+	de:"Telefonbuch des Callmonitors"
+	en:"Callmonitor's phone book"
+    )'>Callers</a>"
+
 echo "
 <table>
+<tr>
+    <td><input type='checkbox' name='dummy' checked disabled></td>
+    <td>$(lang de:"In" en:"Lookup in") $H_CALLERS
+	$(lang de:"nachschlagen" en:"")</td>
+</tr>
 <tr>
     <td><input type='hidden' name='read_fonbuch' value='no'><!--
     --><input type='checkbox' name='read_fonbuch' value='yes'$fon_chk id='r5'></td>
@@ -90,6 +100,12 @@ echo "
 	en:"Lookup in the FRITZ!Box's phone book"
     )</label></td>
 </tr>
+"
+H_PROVIDERS="<a href='/cgi-bin/extras.cgi/callmonitor/reverse' title='$(lang
+	de:"Rückwärtssucheseiten im Web"
+	en:"Reverse-lookup Web sites"
+    )'>$(lang de:"externen Anbietern" en:"external providers")</a>"
+echo "
 <tr>
     <td><input type='hidden' name='reverse' value='no'><!--
     --><input type='checkbox' name='reverse' value='yes'$reverse_chk id='r4'></td>
@@ -97,9 +113,12 @@ echo "
 	de:"Rufnummern wenn möglich in Namen auflösen"
 	en:"Resolve numbers to names if possible"
     )' for='r4'>$(lang
-	de:"Rückwärtssuche durchführen"
+	de:"Rückwärtssuche"
 	en:"Perform reverse lookup"
-    )</label></td>
+    )</label> $(lang
+	de:"bei $H_PROVIDERS durchführen"
+	en:"at $H_PROVIDERS"
+    )</td>
 </tr>
 <tr><td></td>
     <td><label for='cache'>$(lang
@@ -117,21 +136,13 @@ echo "
 	)' value='transient'$trans_sel>$(lang
 	    de:"Flüchtig" en:"Transiently")</option>
 	<option title='$(lang 
-	    de:"Namen werden im Telefonbuch im Flash gespeichert"
-	    en:"Names are stored in the flash memory phone book"
+	    de:"Namen werden in den Callers gespeichert"
+	    en:"Names are stored in the Callers"
 	)' value='persistent'$pers_sel>$(lang
 	    de:"Dauerhaft" en:"Persistently")</option>
     </select></td>
 </tr>
 </table>
-<ul>
-    <li><a href="/cgi-bin/extras.cgi/callmonitor/reverse">$(lang
-	de:"Anbieter einstellen"
-	en:"Set providers"
-    )</a></li>
-    <li><a href='/cgi-bin/file.cgi?id=callers'>$(lang 
-	de:"Callers&nbsp;bearbeiten (Telefonbuch)" en:"Edit&nbsp;Callers (phone book)")</a></li>
-</ul>
 "
 
 sec_end

@@ -29,11 +29,34 @@ check "$CALLMONITOR_DEBUG" yes:debug
 check "$CALLMONITOR_REVERSE" yes:reverse
 select "$CALLMONITOR_REVERSE_CACHE" no transient:trans persistent:pers
 check "$CALLMONITOR_READ_FONBUCH" yes:fon
+check "$CALLMONITOR_PHONEBOOKS" "callers cache avm":after "avm callers cache":before
 
 SYSLOG='$(lang de:"System-Log" en:"system log")'
 if has_package syslogd; then
     SYSLOG="<a href='pkgconf.cgi?pkg=syslogd'>$SYSLOG</a>"
 fi
+echo '
+<script type="text/javascript">
+    function dep(father, child) {
+	document.getElementById(child).disabled = ! father.checked;
+    }
+    dep.init = function() {
+	for (var i = 0; i < document.forms.length; i++) {
+	    var f = document.forms[i];
+	    for (var j = 0; j < f.elements.length; j++) {
+		var e = f.elements[j];
+		if (e.onchange) e.onchange();
+	    }
+	}
+    }
+
+    var oldonload = window.onload;
+    window.onload = function() {
+	if (oldonload) oldonload();
+	dep.init();
+    }
+</script>
+'
 
 sec_begin '$(lang de:"Starttyp" en:"Startup type")'
 
@@ -94,10 +117,17 @@ echo "
 </tr>
 <tr>
     <td><input type='hidden' name='read_fonbuch' value='no'><!--
-    --><input type='checkbox' name='read_fonbuch' value='yes'$fon_chk id='r5'></td>
-    <td colspan='0'><label for='r5'>$(lang
+    --><input type='checkbox' name='read_fonbuch' value='yes'$fon_chk id='r5'
+	onchange='dep(this,\"prio\")'></td>
+    <td><label for='r5'>$(lang
 	de:"Im FRITZ!Box-Telefonbuch nachschlagen"
 	en:"Lookup in the FRITZ!Box's phone book"
+    )</label></td>
+    <td><input type='hidden' name='phonebooks' value='callers cache avm'><!--
+    --><input type='checkbox' name='phonebooks' value='avm callers cache'$before_chk id='prio'></td>
+    <td><label for='prio'>$(lang
+	de:"vor Callers"
+	en:"before Callers"
     )</label></td>
 </tr>
 "
@@ -108,7 +138,8 @@ H_PROVIDERS="<a href='/cgi-bin/extras.cgi/callmonitor/reverse' title='$(lang
 echo "
 <tr>
     <td><input type='hidden' name='reverse' value='no'><!--
-    --><input type='checkbox' name='reverse' value='yes'$reverse_chk id='r4'></td>
+    --><input type='checkbox' name='reverse' value='yes'$reverse_chk id='r4'
+	onchange='dep(this,\"cache\")'></td>
     <td><label title='$(lang
 	de:"Rufnummern wenn möglich in Namen auflösen"
 	en:"Resolve numbers to names if possible"
@@ -125,7 +156,7 @@ echo "
 	de:"Suchergebnisse zwischenspeichern?"
 	en:"Cache query results?"
     )</label></td>
-    <td><select name='reverse_cache' id='cache'>
+    <td colspan="0"><select name='reverse_cache' id='cache'>
 	<option title='$(lang
 	    de:"Keine Speicherung der Namen"
 	    en:"Names are not stored"

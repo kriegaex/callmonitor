@@ -66,19 +66,21 @@ normalize_tel() {
 	*) number="${OKZ_PREFIX}${OKZ}$number" ;;
     esac
 
-    if [ "$mode" = display ]; then
-	case $lkz in
-	    $LKZ)
-		case $number in
-		    $OKZ_PREFIX$OKZ*) __=${number#$OKZ_PREFIX$OKZ} ;;
-		    *) __=$number ;;
-		esac
+    case $mode in
+	display)
+	    case $lkz in
+		$LKZ)
+		    case $number in
+			$OKZ_PREFIX$OKZ*) __=${number#$OKZ_PREFIX$OKZ} ;;
+			*) __=$number ;;
+		    esac
+		;;
+		*) __="+$lkz${number#$OKZ_PREFIX}" ;;
+	    esac
 	    ;;
-	    *) __="+$lkz${number#$OKZ_PREFIX}" ;;
-	esac
-    else
-	__="${LKZ_PREFIX}${lkz}${number#$OKZ_PREFIX}"
-    fi
+	save) __="+$lkz${number#$OKZ_PREFIX}" ;;
+	*) __="${LKZ_PREFIX}${lkz}${number#$OKZ_PREFIX}" ;;
+    esac
 }
 
 tel_collect_lkzs() {
@@ -140,6 +142,8 @@ tel_config() {
 	    read LKZ
 	    read OKZ_PREFIX
 	    read OKZ
+	    ## sensible defaults 
+	    : ${LKZ_PREFIX:=00} ${LKZ:=49} ${OKZ_PREFIX:=0}
 	    dump_var LKZ_PREFIX LKZ OKZ_PREFIX OKZ
 	} > "$_tel_OKZ_CACHE"
     fi

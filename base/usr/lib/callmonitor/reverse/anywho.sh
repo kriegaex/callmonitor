@@ -19,32 +19,28 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-_reverse_telefonbuch_at_request() {
-    local number="0${1#${LKZ_PREFIX}43}"
-    wget_callmonitor -q -O - "http://www.tb-online.at/index.php?pc=in&aktion=suchein&telnummer=$(urlencode "$number")"
+_reverse_anywho_request() {
+    local number="${1#${LKZ_PREFIX}1}"
+    wget_callmonitor "http://www.anywho.com/qry/wp_rl?telephone=$(urlencode "$number")" -q -O -
+
 }
-_reverse_telefonbuch_at_extract() {
-    sed -n -e '
-	/keine passenden Teilnehmer gefunden/ {
+_reverse_anywho_extract() {
+   sed -n -e '
+	: main
+        \#Unable to return results\|<!-- /All_LISTINGS # {
 	    '"$REVERSE_NA"'
 	}
-	/<div class="ergebnis"/,/<div class="servicelinks"/ {
-	    /<div class="adresse"/ b adresse
+	/<!-- listing /,\#<!-- /listing\|<DIV CLASS="phone"# {
+	    /<!-- Out for now /d
+	    H
 	}
+	\#<!-- /listing \|<DIV CLASS="phone"# b cleanup
 	b
-	
-	: adresse
-	\#</div># b cleanup
-	/<div class="servicelinks"/ b cleanup
-	s/$/, /g
-	H
-	n; b adresse
-	
+
 	: cleanup
 	g
-	s/<p class="telnummer".*//
-	s#</p>#, #g
+	s/<BR>/, /g
 	'"$REVERSE_SANITIZE"'
 	'"$REVERSE_OK"'
-    ' | utf8_latin1
+    '
 }

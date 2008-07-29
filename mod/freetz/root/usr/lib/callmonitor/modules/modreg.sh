@@ -24,7 +24,7 @@ mod_register() {
     mkdir -p "$flash"
     modreg cgi $DAEMON 'Callmonitor'
     modreg extra $DAEMON '$(lang de:"Testanruf" en:"Test call")' 1 'testcall'
-    modreg extra $DAEMON '$(lang de:"Konfiguration der Rückwärtssuche" en:"Reverse-lookup configuration")' 1 'reverse'
+    modreg extra $DAEMON '$(lang de:"Rückwärtssuche-Anbieter" en:"Reverse-lookup providers")' 1 'reverse'
     modreg extra $DAEMON '$(lang de:"Test der Rückwärtssuche" en:"Test reverse lookup")' 1 'testlookup'
     modreg extra $DAEMON '$(lang de:"Wartung" en:"Maintenance")' 1 'maint'
     modreg file 'listeners' 'Listeners' 0 "$def/listeners.def"

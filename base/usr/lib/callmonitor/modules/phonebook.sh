@@ -71,14 +71,15 @@ esac
 ensure_file "$CALLMONITOR_TRANSIENT" "$CALLMONITOR_PERSISTENT"
 
 _pb_get() {
-    local number=$1 number_norm name exitval __
+    local number=$1 number_norm name exitval __ number_save
     normalize_address "$number"; number_norm=$__
     _pb_get_local "$number_norm"
     exitval=$?; name=$__
     if ? "exitval != 0" && $_pb_REVERSE; then
 	name=$(reverse_lookup "$number_norm")
 	if ? $? == 0 && $_pb_CACHE; then
-	    _pb_put_local "$number_norm" "$name" >&2 &
+	    normalize_address "$number" save; number_save=$__
+	    _pb_put_local "$number_save" "$name" >&2 &
 	    exitval=0
 	fi
     fi

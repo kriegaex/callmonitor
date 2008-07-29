@@ -62,8 +62,8 @@ show_test_results() {
 	    *",$lkz,"*|*",$lkz!,"*|*",*,") ;;
 	    *)
 		echo "$(lang 
-		    de:"Unterstützt +$lkz nicht."
-		    en:"Does not support +$lkz."
+		    de:"Unterstützt ${lkz:++}${lkz:-$disp} nicht."
+		    en:"Does not support ${lkz:++}${lkz:-$disp}."
 		)"
 		continue
 		;;

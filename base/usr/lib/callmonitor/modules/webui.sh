@@ -34,7 +34,7 @@ post_form() {
 }
 webui_post_form() (
     cd "$WEBCM_DIR"
-    local post_data=$1
+    local post_data=$1 REMOTE_ADDR=127.0.0.1
     post_form "$WEBCM" "$post_data"
 )
 webui_get() (

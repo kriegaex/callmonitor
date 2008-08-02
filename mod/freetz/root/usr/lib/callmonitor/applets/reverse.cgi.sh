@@ -25,6 +25,7 @@ require file
 require hash
 require url
 require webui
+require reverse_config
 
 SELF=reverse
 TITLE='$(lang
@@ -57,12 +58,7 @@ while readx lkz country; do
     country_put "$lkz" "$country"
 done < $COUNTRIES
 
-new_hash selected
-for entry in $CALLMONITOR_REVERSE_PROVIDER; do
-    selected_put "${entry%:*}" "${entry#*:}"
-done
-
-select "$CALLMONITOR_AREA_PROVIDER" :null
+select "$AREA_PROVIDER" :null
 
 cgi_begin "$TITLE" extras
 
@@ -90,7 +86,7 @@ select_fullprovider() {
     fi
     echo "<tr><td>$(html "$name")</td><td>+$lkz</td>"
     echo "<td>"
-    selected_get "$lkz" selected
+    REVERSE_PROVIDER_get "$lkz" selected
     echo "<select name='full_$lkz'>"
     list_providers R "$lkz" "$selected"
     echo "</select>"
@@ -113,10 +109,7 @@ list_providers() {
 	else
 	    sel=
 	fi
-	echo "
-	    <option title='$site'
-		value='$provider'$sel>$label</option>
-	"
+	echo "<option title='$site' value='$provider'$sel>$label</option>"
     done < "$CALLMONITOR_REVERSE_CFG"
 }
 
@@ -151,7 +144,7 @@ echo "
 	<option title='Keine Auflösung von Vorwahlen'
 	    value=''$null_sel>$(lang de:"niemandem" en:"nowhere")</option>
 "
-list_providers A "*" "$CALLMONITOR_AREA_PROVIDER"
+list_providers A "*" "$AREA_PROVIDER"
 echo "
     </select>
     </td></tr>
@@ -160,7 +153,7 @@ echo "
 
 sec_end
 
-echo "<div class='btn'><input type='submit' value='$(lang de:"&Uuml;bernehmen" en:"Apply")' name='save'></div>"
+echo "<div class='btn'><input type='submit' value='$(lang de:"Übernehmen" en:"Apply")' name='save'></div>"
 echo "</form>"
 
 cgi_end

@@ -22,6 +22,7 @@
 require net
 require recode
 require tel
+require reverse_config
 
 ## resolve numbers to names and addresses; the number is
 ## used as given (should be normalized beforehand); returns 1 if no lookup
@@ -57,22 +58,9 @@ reverse_lookup() {
     return $exit
 }
 _reverse_choose_provider() {
-    local lkz=$1 entry choice
-    for entry in $CALLMONITOR_REVERSE_PROVIDER; do
-	case $entry in
-	    $lkz:*) choice=${entry#*:}; break ;;
-	esac
-    done
-    if grep -q "^R[^	]*	$choice	" "$CALLMONITOR_REVERSE_CFG" > /dev/null; then
-	prov=$choice
-    else
-	prov=$(grep "$lkz!" "$CALLMONITOR_REVERSE_CFG" | cut -f2)
-    fi
-    if grep -q "^A[^	]*	$CALLMONITOR_AREA_PROVIDER	" "$CALLMONITOR_REVERSE_CFG" > /dev/null; then
-	area_prov=$CALLMONITOR_AREA_PROVIDER
-    else
-	area_prov=
-    fi
+    local lkz=$1
+    REVERSE_PROVIDER_get "$lkz" prov
+    area_prov=$AREA_PROVIDER
 }
 _reverse_atomic() {
     local file=$1 tmp=$1.tmp
@@ -89,9 +77,6 @@ _reverse_lookup() {
     esac
 }
 
-readonly REVERSE_OK='s/^/OK:/; p; q'
-readonly REVERSE_NA='s/.*/NA:/; p; q'
-
 _reverse_query_provider() {
     local prov=$1 number=$2 exit=0
     if empty "$prov"; then return 0; fi
@@ -102,6 +87,11 @@ _reverse_query_provider() {
 ## 141: nc: Broken pipe
     return $(( exit == 141 ? 0 : exit ))
 } 9>&1
+
+## sed snippets used by provider plugins
+
+readonly REVERSE_OK='s/^/OK:/; p; q'
+readonly REVERSE_NA='s/.*/NA:/; p; q'
 
 readonly REVERSE_SANITIZE='
     s#<[^>]*># #g
@@ -119,7 +109,7 @@ readonly REVERSE_SANITIZE='
     s#[, ]*$##
 '
 
-## initialization: load needed provider modules
+## initialization: load required provider modules
 
 _reverse_load() {
     local provider=$1
@@ -131,7 +121,7 @@ _reverse_load() {
 }
 _reverse_init() {
     local entry prov
-    for entry in $CALLMONITOR_REVERSE_PROVIDER $CALLMONITOR_AREA_PROVIDER; do
+    for entry in $REVERSE_PROVIDER $AREA_PROVIDER; do
 	prov=${entry#*:}
 	_reverse_load "$prov"
     done

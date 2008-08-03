@@ -42,7 +42,7 @@ webui_get() (
     REQUEST_METHOD=GET REMOTE_ADDR=127.0.0.1 QUERY_STRING=$1 "$WEBCM"
 )
 webui_login() {
-    local password="$(webui_password)"
+    local password=$(webui_password)
     if ! empty "$password"; then
 	webui_post_form "login:command/password=$(urlencode "$password")" \
 	> /dev/null
@@ -71,4 +71,9 @@ webui_query() {
 	let n++
     done
     webui_get "$query" | sed -e '1,/^$/d;$d'
+}
+
+webui_page_url() {
+    local menu=${1%/*} pagename=${1#*/}
+    echo "http://fritz.box/cgi-bin/webcm?getpage=..%2Fhtml%2F${Language:-de}%2Fmenus%2Fmenu2.html&var%3Alang=${Language:-de}&var%3Apagename=$(urlencode "$pagename")&var%3Amenu=$(urlencode "$menu")"
 }

@@ -23,6 +23,8 @@ require cgi
 require if_jfritz_status
 require if_jfritz_cgi
 require version
+require webui
+require tel
 
 check "$CALLMONITOR_ENABLED" yes:auto *:man
 check "$CALLMONITOR_DEBUG" yes:debug
@@ -101,6 +103,32 @@ echo "
 "
 
 sec_end
+sec_begin '$(lang de:"Standortangaben" en:"Location data")'
+
+echo "
+<table width='100%'>
+    <colgroup>
+	<col width='25%' span='2'>
+	<col width='50%'>
+    </colgroup>
+<tr>
+    <td>$(lang de:"Landesvorwahl" en:"Country code")</td>
+    <td><input disabled size="3" value='$(html "$LKZ_PREFIX")'>
+	<input disabled size="4" value='$(html "$LKZ")'></td>
+</tr>
+<tr>
+    <td>$(lang de:"Ortsvorwahl" en:"Area code")</td>
+    <td><input disabled size="3" value='$(html "$OKZ_PREFIX")'>
+	<input disabled size="4" value='$(html "$OKZ")'></td>
+    <td>
+	<a href='$(html "$(webui_page_url fon/sipoptionen)")'>$(lang de:"Ändern" en:"Change")</a>
+    </td>
+</tr>
+</table>
+"
+
+sec_end
+
 sec_begin '$(lang de:"Rückwärtssuche" en:"Reverse lookup")'
 
 H_CALLERS="<a href='/cgi-bin/file.cgi?id=callers' title='$(lang 

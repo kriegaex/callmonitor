@@ -77,7 +77,7 @@ sec_end
 
 echo "<form action='$SELF' method='post'>"
 
-sec_begin '$(lang de:"Vollständige Rufnummern" en:"Complete numbers")'
+sec_begin '$(lang de:"Anbieter für vollständige Rufnummern" en:"Providers for complete numbers")'
 
 select_fullprovider() {
     local lkz=$1 name="?"
@@ -116,8 +116,8 @@ list_providers() {
 echo "
 <table width='100%'>
     <colgroup>
-	<col width='25%' span='2'/>
-	<col width='50%'/>
+	<col width='25%' span='2'>
+	<col width='50%'>
     </colgroup>
 "
 for lkz in $LKZ_LIST; do
@@ -129,11 +129,11 @@ echo "
 
 sec_end
 
-sec_begin '$(lang de:"Vorwahlen" en:"Prefixes")'
+sec_begin '$(lang de:"Anbieter für Vorwahlen" en:"Providers for prefixes")'
 echo "
 <table width='100%'>
     <colgroup>
-	<col width='50%' span='2'/>
+	<col width='50%' span='2'>
     </colgroup>
 <tr><td>
     <label for='area'>$(lang 

@@ -63,7 +63,7 @@ echo '
 sec_begin '$(lang de:"Starttyp" en:"Startup type")'
 
 echo "
-<div style='float: right;'><a href='$CALLMONITOR_FORUM_URL'>Version
+<div style='float: right;'><a target='_blank' href='$CALLMONITOR_FORUM_URL'>Version
     $CALLMONITOR_VERSION</a></div>
 <p>
     <input type='radio' name='enabled' value='yes'$auto_chk id='e1'>
@@ -121,7 +121,7 @@ echo "
     <td><input disabled size="3" value='$(html "$OKZ_PREFIX")'>
 	<input disabled size="4" value='$(html "$OKZ")'></td>
     <td>
-	<a href='$(html "$(webui_page_url fon/sipoptionen)")'>$(lang de:"Ändern" en:"Change")</a>
+	<a target='_blank' href='$(html "$(webui_page_url fon/sipoptionen)")'>$(lang de:"Ändern" en:"Change")</a>
     </td>
 </tr>
 </table>

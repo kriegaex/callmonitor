@@ -38,4 +38,4 @@ DESCRIPTION="$(lang
 	&lt;action&gt;<br>
 	(e.g., <code>in:request ^(08|15) ^SIP0$ dboxpopup 192.168.3.4</code>)"
 )<br>
-<a href="http://wiki.ip-phone-forum.de/software:callmonitor:start">$(lang de:"Hilfe im Wiki" en:"Help (wiki)")</a>"
+<a target='_blank' href='http://wiki.ip-phone-forum.de/software:callmonitor:start'>$(lang de:"Hilfe im Wiki" en:"Help (wiki)")</a>"

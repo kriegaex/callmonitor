@@ -106,14 +106,33 @@ __prepare_env() {
 	normalize_address "$DEST" display; DEST_DISP=$__
     fi
 
-    __info "[$INSTANCE] EVENT=$EVENT SOURCE='$SOURCE' DEST='$DEST'" \
-	"SOURCE_NAME='$SOURCE_NAME' DEST_NAME='$DEST_NAME'"
+    ## split name into name and address
+    case $SOURCE_NAME in
+	*\;*)
+	    SOURCE_ADDRESS=${SOURCE_NAME#*;}
+	    SOURCE_ADDRESS=${SOURCE_ADDRESS# } 
+	    SOURCE_NAME=${SOURCE_NAME%%;*}
+	    ;;
+	*)  SOURCE_ADDRESS= ;;
+    esac
+    case $DEST_NAME in
+	*\;*)
+	    DEST_ADDRESS=${DEST_NAME#*;}
+	    DEST_ADDRESS=${DEST_ADDRESS# } 
+	    DEST_NAME=${DEST_NAME%%;*}
+	    ;;
+	*)  DEST_ADDRESS= ;;
+    esac
+
+    __info "[$INSTANCE] EVENT=$EVENT SOURCE='$SOURCE' DEST='$DEST'"
+    __info "[$INSTANCE+] SOURCE_NAME='$SOURCE_NAME' SOURCE_ADDRESS='$SOURCE_ADDRESS'"
+    __info "[$INSTANCE+] DEST_NAME='$DEST_NAME' DEST_ADDRESS='$DEST_ADDRESS'"
     __info "[$INSTANCE+] SOURCE_DISP='$SOURCE_DISP' DEST_DISP='$DEST_DISP'" \
 	"ID=$ID EXT=$EXT DURATION=$DURATION TIMESTAMP='$TIMESTAMP'" \
 	"PROVIDER=$PROVIDER"
 
-    local var_cm="SOURCE DEST SOURCE_NAME DEST_NAME SOURCE_DISP DEST_DISP EVENT
-	ID EXT DURATION TIMESTAMP PROVIDER"
+    local var_cm="SOURCE DEST SOURCE_NAME DEST_NAME SOURCE_ADDRESS DEST_ADDRESS
+	SOURCE_DISP DEST_DISP EVENT ID EXT DURATION TIMESTAMP PROVIDER"
 
     ## make call information available to listeners
     export $var_cm

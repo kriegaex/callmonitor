@@ -19,9 +19,14 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-_reverse_dasoertliche_request() {
+_reverse_dasoertliche_url() {
     local number="0${1#${LKZ_PREFIX}49}"
-    wget_callmonitor "http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$(urlencode "$number")" -q -O -
+    URL="http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$(urlencode "$number")"
+}
+_reverse_dasoertliche_request() {
+    local URL=
+    _reverse_dasoertliche_url "$@"
+    wget_callmonitor "$URL" -q -O -
 }
 _reverse_dasoertliche_extract() {
    sed -n -e '
@@ -31,13 +36,14 @@ _reverse_dasoertliche_extract() {
 	}
         \#<a[[:space:]].*[[:space:]]class="entry[^"]*">#,\#<input[[:space:]]type="hidden"# {
 	    s#^.*<a[[:space:]].*[[:space:]]class="entry[^"]*">\([^<]*\)</a>.*$#\1#
-	    t hold
+	    t holdname
 	    \#<br/># H
 	    \#<input[[:space:]]type="hidden"# b cleanup
         }
         b
 
-        : hold
+        : holdname
+	s#.*#<rev:name>&</rev:name>#
         h
 	b
 

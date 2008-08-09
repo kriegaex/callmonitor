@@ -19,9 +19,14 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-_reverse_telefonbuch_request() {
+_reverse_telefonbuch_url() {
     local number="0${1#${LKZ_PREFIX}49}"
-    wget_callmonitor -q -O - "http://www.dastelefonbuch.de/?la=de&kw=$(urlencode "$1")&cmd=search"
+    URL="http://www.dastelefonbuch.de/?la=de&kw=$(urlencode "$1")&cmd=search"
+}
+_reverse_telefonbuch_request() {
+    local URL=
+    _reverse_telefonbuch_url "$@"
+    wget_callmonitor -q -O - "$URL"
 }
 _reverse_telefonbuch_extract() {
     sed -n -e '
@@ -29,7 +34,12 @@ _reverse_telefonbuch_extract() {
 	    '"$REVERSE_NA"'
 	}
 	/<table.*class="bg-01"/,\#</table># {
-	    \#<td class="col[123]"# {
+	    \#<td class="col1"# {
+	    	s#.*#<rev:name>&</rev:name>#
+	    	H
+		b
+	    }
+	    \#<td class="col[23]"# {
 	    	s/$/,/
 	    	H
 	    }

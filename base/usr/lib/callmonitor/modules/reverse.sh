@@ -88,25 +88,39 @@ _reverse_query_provider() {
     return $(( exit == 141 ? 0 : exit ))
 } 9>&1
 
+_reverse_lookup_url() {
+    local prov=$1 number=$2 URL=
+    _reverse_${prov}_url "$number"
+    echo "$URL"
+}
+
 ## sed snippets used by provider plugins
 
 readonly REVERSE_OK='s/^/OK:/; p; q'
 readonly REVERSE_NA='s/.*/NA:/; p; q'
 
 readonly REVERSE_SANITIZE='
+    s#</rev:name>#\&PART;#g
     s#<[^>]*># #g
     s#&nbsp;# #g
-    s#&amp;#\&#g
     s#&lt;#<#g
     s#&gt;#>#g
     s#&quot;#"#g
     s#&apos;#'\''#g
+    s#|#,#g
+    s#&PART;#|#g
+    s#&\([^a]\|a[^m]\|am[^p]\|amp[A-Za-z]\)[A-Za-z]*;##g
+    s#&amp;#\&#g
+    s#;#,#g
+    s#|#;#g
     s#[[:space:] ]\+# #g
-    s#,\( *,\)\+#,#
-    s#^[, ]*##
-    s# \([,)]\)#\1#g
-    s#\([(]\) #\1#g
-    s#[, ]*$##
+    s#,\( *,\)\+#,#g
+    s#; *,#;#g
+    s#, *;#;#g
+    s#^[,; ]*##
+    s# \([],;)]\)#\1#g
+    s#\([([]\) #\1#g
+    s#[,; ]*$##
 '
 
 ## initialization: load required provider modules

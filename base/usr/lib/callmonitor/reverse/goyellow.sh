@@ -19,9 +19,14 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-_reverse_goyellow_request() {
+_reverse_goyellow_url() {
     local number="0${1#${LKZ_PREFIX}49}"
-    wget_callmonitor "http://www.goyellow.de/inverssuche/?TEL=$(urlencode "$number")" -q -O -
+    URL="http://www.goyellow.de/inverssuche/?TEL=$(urlencode "$number")"
+}
+_reverse_goyellow_request() {
+    local URL=
+    _reverse_goyellow_url "$@" 
+    wget_callmonitor "$URL" -q -O -
 }
 _reverse_goyellow_extract() {
     sed -n -e '
@@ -42,6 +47,7 @@ _reverse_goyellow_extract() {
 	b
 	: name
 	s#^[^<]*<\(a\|h3\)[^>]*>\([^<]*\)</\(a\|h3\)>.*#\2#
+	s#.*#<rev:name>&</rev:name>#
 	h
 	b
 	: address

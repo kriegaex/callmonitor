@@ -19,9 +19,14 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-_reverse_telefonbuch_at_request() {
+_reverse_telefonbuch_at_url() {
     local number="0${1#${LKZ_PREFIX}43}"
-    wget_callmonitor -q -O - "http://www.tb-online.at/index.php?pc=in&aktion=suchein&telnummer=$(urlencode "$number")"
+    URL="http://www.tb-online.at/index.php?pc=in&aktion=suchein&telnummer=$(urlencode "$number")"
+}
+_reverse_telefonbuch_at_request() {
+    local URL=
+    _reverse_telefonbuch_at_url "$@"
+    wget_callmonitor -q -O - "$URL"
 }
 _reverse_telefonbuch_at_extract() {
     sed -n -e '
@@ -42,6 +47,7 @@ _reverse_telefonbuch_at_extract() {
 	
 	: cleanup
 	g
+	s#<p class="name">\([^<]*\)</p>#<rev:name>&</rev:name>#
 	s/<p class="telnummer".*//
 	s#</p>#, #g
 	'"$REVERSE_SANITIZE"'

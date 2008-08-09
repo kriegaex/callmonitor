@@ -21,9 +21,14 @@
 ##
 ## This file based on telsearch.sh by niknak(@IPPF).
 ##
-_reverse_search_ch_request() {
+_reverse_search_ch_url() {
     local number="0${1#${LKZ_PREFIX}41}"
-    wget_callmonitor "http://tel.search.ch/result.html?tel=$(urlencode "$1")" -q -O -
+    URL="http://tel.search.ch/result.html?tel=$(urlencode "$1")"
+}
+_reverse_search_ch_request() {
+    local URL=
+    _reverse_search_ch_url "$@"
+    wget_callmonitor "$URL" -q -O -
 }
 
 _reverse_search_ch_extract() {
@@ -36,6 +41,7 @@ _reverse_search_ch_extract() {
 	b
 	: name
 	s#.*<a href="/detail/[^"]*">\(.*\)</a>.*#\1#
+	s#.*#<rev:name>&</rev:name>#
 	h
 	b
 	: address

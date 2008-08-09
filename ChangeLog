@@ -573,3 +573,28 @@
 2008-05-16:
 
 	* net.sh: Option -m für getmsg: Schutz gegen zu viele Argumente
+
+2008-07-*:
+
+	* Unterstützung von verschiedenen Rückwärtssuche-Anbietern, je nach
+	Landesvorwahl; Speicherung in Callers im internationalen Format. Neue
+	Rückwärtssuchen für Österreich (telefonbuch.at) und USA (anywho.com)
+	als Beispiele.
+
+	* Die Priorität der Telefonbücher kann eingestellt werden (Callers vor
+	AVM (Standard) oder umgekehrt).
+
+	* fonbuch.txt: Neues AVM-Telefonbuch wurde manchmal nicht erkannt.
+
+	* getmsg.sh: Bessere Vermeidung von Fehlbedienungen (zu hohe Anzahl an
+	Nachrichten für das anzuwendende Template)
+
+2008-08-09:
+
+	* reverse: Neue Konvention für Telefonbucheinträge: Abtrennung der
+	Adresse mit Semikolon: "NAME; ADDRESS". Die Adresse ist dann separat
+	in {SOURCE,DEST}_ADDRESS verfügbar und nicht mehr in
+	{SOURCE,DEST}_NAME enthalten.
+	
+	* testlookup: Links eingefügt, um die Rückwärtssuche-Seiten manuell zu
+	überprüfen

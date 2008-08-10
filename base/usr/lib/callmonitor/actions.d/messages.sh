@@ -84,7 +84,7 @@ yac() {
     rawmsg -T yac -p 10629 -t "%s\0" "$@"
 }
 default_yac() {
-    echo "@CALL$SOURCE_NAME~$SOURCE_DISP"
+    echo "@CALL$SOURCE_ENTRY~$SOURCE_DISP"
 }
 
 ## "Advanced YAC" (for Gundalf's CallMonitor Client)
@@ -92,7 +92,7 @@ ayac() {
     rawmsg -T ayac -p 10629 -t "%s\0" "$@"
 }
 default_ayac() {
-    echo "@CALL${SOURCE_NAME}~${SOURCE_DISP}~${DEST_NAME}~${DEST_DISP}~${TIMESTAMP}~${EVENT}"
+    echo "@CALL${SOURCE_ENTRY}~${SOURCE_DISP}~${DEST_ENTRY}~${DEST_DISP}~${TIMESTAMP}~${EVENT}"
 }
 
 ## Usage: vdr [OPTION]... [MESSAGE]

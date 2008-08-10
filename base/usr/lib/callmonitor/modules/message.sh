@@ -28,20 +28,20 @@ default_message() {
     local call="$(lang de:"Anruf" en:"Call")"
     local from="$(lang de:"von" en:"from")" to="$(lang de:"an" en:"to")"
 
-    local here here_name here_dir there there_name there_dir
+    local here here_entry here_dir there there_entry there_dir
     case $EVENT in
 	in:*)
-	    there_dir=$from there=$SOURCE_DISP there_name=$SOURCE_NAME
-	    here_dir=$to here=$DEST_DISP here_name=$DEST_NAME
+	    there_dir=$from there=$SOURCE_DISP there_entry=$SOURCE_ENTRY
+	    here_dir=$to here=$DEST_DISP here_entry=$DEST_ENTRY
 	    ;;
 	*)
-	    here_dir=$from here=$SOURCE_DISP here_name=$SOURCE_NAME
-	    there_dir=$to there=$DEST_DISP there_name=$DEST_NAME
+	    here_dir=$from here=$SOURCE_DISP here_entry=$SOURCE_ENTRY
+	    there_dir=$to there=$DEST_DISP there_entry=$DEST_ENTRY
 	    ;;
     esac
     
     if ! empty "$here" && ? "lines > 1"; then
-	echo "$call $here_dir ${here_name:-$here}"
+	echo "$call $here_dir ${here_entry:-$here}"
     elif ? "lines == 1"; then
 	echo -n "$call "
     else
@@ -50,9 +50,9 @@ default_message() {
     if ! empty "$there"; then
 	if ? "lines >= 3"; then
 	    echo "$there_dir $there"
-	    wrap "$cols" "$there_name"
+	    wrap "$cols" "$there_entry"
 	else
-	    echo "$there_dir ${there_name:-$there}" | cut -c "1-$cols"
+	    echo "$there_dir ${there_entry:-$there}" | cut -c "1-$cols"
 	fi
     fi
 }

@@ -592,9 +592,10 @@
 2008-08-09:
 
 	* reverse: Neue Konvention für Telefonbucheinträge: Abtrennung der
-	Adresse mit Semikolon: "NAME; ADDRESS". Die Adresse ist dann separat
-	in {SOURCE,DEST}_ADDRESS verfügbar und nicht mehr in
-	{SOURCE,DEST}_NAME enthalten.
+	Adresse mit Semikolon: "NAME; ADDRESS". Die Adresse ist nun separat in
+	*_ADDRESS verfügbar und nicht mehr in *_NAME enthalten. Der ganze
+	Telefonbucheintrag befindet sich in *_ENTRY (entspricht dem vorherigen
+	*_NAME)
 	
 	* testlookup: Links eingefügt, um die Rückwärtssuche-Seiten manuell zu
 	überprüfen

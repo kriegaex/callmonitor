@@ -79,10 +79,10 @@ __prepare_env() {
     local __
     if ! empty "$SOURCE"; then
 	case $EVENT,$PROVIDER in
-	    out:*,SIP*) SOURCE_NAME=$(_provider_name "$PROVIDER") ;;
+	    out:*,SIP*) SOURCE_ENTRY=$(_provider_name "$PROVIDER") ;;
 	    *) false ;;
 	esac ||
-	SOURCE_NAME=$(_pb_main $SOURCE_OPTIONS -- get "$SOURCE")
+	SOURCE_ENTRY=$(_pb_main $SOURCE_OPTIONS -- get "$SOURCE")
     else ## empty "$SOURCE"
 	case $EVENT in
 	    out:*) SOURCE=$PROVIDER ;;
@@ -93,10 +93,10 @@ __prepare_env() {
     fi
     if ! empty "$DEST"; then
 	case $EVENT,$PROVIDER in 
-	    in:*,SIP*) DEST_NAME=$(_provider_name "$PROVIDER") ;;
+	    in:*,SIP*) DEST_ENTRY=$(_provider_name "$PROVIDER") ;;
 	    *) false ;;
 	esac ||
-	DEST_NAME=$(_pb_main $DEST_OPTIONS -- get "$DEST")
+	DEST_ENTRY=$(_pb_main $DEST_OPTIONS -- get "$DEST")
     else ## empty "$DEST"
 	case $EVENT in
 	    in:*) DEST=$PROVIDER ;;
@@ -107,21 +107,21 @@ __prepare_env() {
     fi
 
     ## split name into name and address
-    case $SOURCE_NAME in
+    case $SOURCE_ENTRY in
 	*\;*)
-	    SOURCE_ADDRESS=${SOURCE_NAME#*;}
+	    SOURCE_ADDRESS=${SOURCE_ENTRY#*;}
 	    SOURCE_ADDRESS=${SOURCE_ADDRESS# } 
-	    SOURCE_NAME=${SOURCE_NAME%%;*}
+	    SOURCE_NAME=${SOURCE_ENTRY%%;*}
 	    ;;
-	*)  SOURCE_ADDRESS= ;;
+	*)  SOURCE_ADDRESS= SOURCE_NAME=$SOURCE_ENTRY ;;
     esac
-    case $DEST_NAME in
+    case $DEST_ENTRY in
 	*\;*)
-	    DEST_ADDRESS=${DEST_NAME#*;}
+	    DEST_ADDRESS=${DEST_ENTRY#*;}
 	    DEST_ADDRESS=${DEST_ADDRESS# } 
-	    DEST_NAME=${DEST_NAME%%;*}
+	    DEST_NAME=${DEST_ENTRY%%;*}
 	    ;;
-	*)  DEST_ADDRESS= ;;
+	*)  DEST_ADDRESS= DEST_NAME=$DEST_ENTRY ;;
     esac
 
     __info "[$INSTANCE] EVENT=$EVENT SOURCE='$SOURCE' DEST='$DEST'"
@@ -131,8 +131,9 @@ __prepare_env() {
 	"ID=$ID EXT=$EXT DURATION=$DURATION TIMESTAMP='$TIMESTAMP'" \
 	"PROVIDER=$PROVIDER"
 
-    local var_cm="SOURCE DEST SOURCE_NAME DEST_NAME SOURCE_ADDRESS DEST_ADDRESS
-	SOURCE_DISP DEST_DISP EVENT ID EXT DURATION TIMESTAMP PROVIDER"
+    local var_cm="SOURCE DEST SOURCE_ENTRY DEST_ENTRY SOURCE_NAME DEST_NAME
+	SOURCE_ADDRESS DEST_ADDRESS SOURCE_DISP DEST_DISP EVENT ID EXT DURATION
+	TIMESTAMP PROVIDER"
 
     ## make call information available to listeners
     export $var_cm

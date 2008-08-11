@@ -50,7 +50,7 @@ reverse_lookup() {
 	name=$(cat "$afile" 2>/dev/null); exit=$?
 	if ! empty "$name"; then
 	    ## $name is only country/city
-	    echo "$(normalize_address "$number" display; echo $__) ($name)"
+	    echo "$(normalize_address "$number" display; echo $__); $name"
 	    exit=0
 	fi
     fi

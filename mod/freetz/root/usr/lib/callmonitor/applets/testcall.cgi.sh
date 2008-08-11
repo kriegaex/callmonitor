@@ -99,7 +99,7 @@ cgi_main() {
 	cgi_begin "$TITLE" extras
     fi
     new_testcall_form
-    config_button
+    ## config_button
     cgi_end
 }
 

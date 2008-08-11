@@ -32,7 +32,7 @@ config_button() {
 <form class='btn' action='/cgi-bin/pkgconf.cgi' method='get'>
     <input type='hidden' name='pkg' value='callmonitor'>
     <div class='btn'><input type='submit' 
-	value='$(lang de:"Zur&uuml;ck" en:"Back")'></div>
+	value='$(lang de:"Konfiguration" en:"Configuration")'></div>
 </form>
 "
 }

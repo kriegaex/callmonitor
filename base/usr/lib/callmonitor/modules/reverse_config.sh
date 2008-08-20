@@ -25,7 +25,7 @@ _reverse_init() {
     local type prov countries site label lkz entry cfg=
 
     ## validation
-    for entry in $CALLMONITOR_REVERSE_CFG; do
+    for entry in $CALLMONITOR_REVERSE_PROVIDER; do
 	lkz=${entry%:*}
 	prov=${entry#*:}
 	if grep -q "^R[^	]*	$prov	" "$CALLMONITOR_REVERSE_CFG" > /dev/null; then

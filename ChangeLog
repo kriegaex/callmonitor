@@ -603,3 +603,8 @@
 2008-08-16:
 
 	callmonitor-1.12 zum öffentlichen Testen freigegeben
+
+2008-08-23:
+
+	* reverse_config: Es wurde fälschlicherweise immer der
+	Standardanbieter benutzt.

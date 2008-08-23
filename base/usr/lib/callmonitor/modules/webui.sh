@@ -24,7 +24,7 @@ require url
 WEBCM_DIR=/usr/www/html/cgi-bin
 WEBCM=$WEBCM_DIR/webcm
 
-post_form() {
+webui_post_form_generic() {
     local cgi=$1 post_data=$2
     echo -n "$post_data" |
     REQUEST_METHOD=POST REMOTE_ADDR=${REMOTE_ADDR-127.0.0.1} \
@@ -35,7 +35,7 @@ post_form() {
 webui_post_form() (
     cd "$WEBCM_DIR"
     local post_data=$1 REMOTE_ADDR=127.0.0.1
-    post_form "$WEBCM" "$post_data"
+    webui_post_form_generic "$WEBCM" "$post_data"
 )
 webui_get() (
     cd "$WEBCM_DIR"
@@ -64,10 +64,14 @@ webui_password() {
     echo "$WEBUI_PASSWORD"
 }
 
+## 2008-08-23: The interface to query.txt has been modified in recent 7270
+## (Labor) firmwares. Let's try to use both interfaces simultaneously instead
+## of doing some kind of firmware detection.
 webui_query() {
-    local query="getpage=..%2Fhtml%2Fquery.txt&var:cnt=$#" var= n=0
+    local query="getpage=../html/query.txt&var:cnt=$#" var= n=0
     for var; do
-	query="$query&var%3An$n=$(urlencode "$var")"
+	local value=$(urlencode "$var")
+	query="$query&var:n${n}=${value}&var:n%5b${n}%5d=${value}"
 	let n++
     done
     webui_get "$query" | sed -e '1,/^$/d;$d'

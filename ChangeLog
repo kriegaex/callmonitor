@@ -607,4 +607,14 @@
 2008-08-23:
 
 	* reverse_config: Es wurde fälschlicherweise immer der
-	Standardanbieter benutzt.
+	Standardanbieter benutzt. (Dank an DennisBK75)
+
+	* webui: Unterstützung für neue query.txt-Schnittstelle; sollte den
+	Fehler bei aktuellen 7270-Labor-Firmwares beheben, dass die
+	Standortangaben nicht korrekt gelesen werden können. (Dank an
+	DennisBK75 und olistudent)
+
+	* webui: Kollision bei Funktionsnamen behoben (womöglich haben dadurch
+	einige POST-Requests nicht funktioniert, z.B. der Login)
+
+	callmonitor-1.12.2 (Bugfix-Release)

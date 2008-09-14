@@ -74,6 +74,9 @@ dream2message() {
     getmsg -T dream2message \
 	-t "/web/message?timeout=${DREAM_TIMEOUT:-10}&type=${DREAM_ICON:-1}&text=%s" -m 1 "$@"
 }
+encode_dream2message() {
+    echo "$1" | latin1_utf8
+}
 default_dreammessage() { default_dream; }
 default_dream2message() { default_dream; }
 default_dream() { default_message; }

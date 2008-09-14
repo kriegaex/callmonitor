@@ -33,7 +33,7 @@ Usage: $PROGRAM {send|sendonce|enqueue} [MAILER_OPTION]...
 EOF
 #>
     echo
-    "$MAILER" -?
+    "$MAILER" -? 2>&1 | grep -v "^  -[MpD] "
 }
 
 mkdir -p "$SPOOL"
@@ -156,7 +156,9 @@ prepare_mail() {
 	${AUTHNAME+    "-a" "$AUTHNAME"} \
 	${PASSWORD+    "-w" "$PASSWORD"} \
 	${ATTACHMENTS+ "-d" "$ATTACHMENTS"} \
-	${INLINES+     "-i" "$INLINES"}
+	${INLINES+     "-i" "$INLINES"} \
+	${RELATED+     "-r"} \
+	${STARTTLS+    "-l"}
     script=$dir/send
     {
 	printf "#! /usr/bin/env ash\n"
@@ -188,6 +190,8 @@ config() {
 }
 
 trap 'exit 2' HUP INT QUIT TERM
+unset SUBJECT FROM TO MAILSERVER AUTHNAME PASSWORD ATTACHMENTS INLINES RELATED
+unset STARTTLS
 case $1 in
     send|sendonce|enqueue) 
 	## use push service configuration per default
@@ -201,19 +205,20 @@ case $1 in
 	if let "${passwd:+1}"; then
 	    PASSWORD=$passwd
 	fi
+	if let "${starttls:+1}"; then
+	    STARTTLS=$starttls
+	fi
 
 	## parse command line options
-	TEMP=$(getopt -o 'M:p:s:f:t:m:a:w:d:i:D:' -n "$PROGRAM" -- "$@")
+	TEMP=$(getopt -o 's:f:t:m:a:w:d:i:rl' -n "$PROGRAM" -- "$@")
 	if let "$? != 0"; then 
 	    usage >&2
 	    exit 1
 	fi
 	eval "set -- $TEMP"
 
-	alias roll='set -- "$@" "$1"; shift'
 	while true; do
 	    case $1 in
-		-[MpD]) roll; roll ;;
 		-s) SUBJECT=$2; shift 2 ;;
 		-f) FROM=$2; shift 2 ;;
 		-t) TO=$2; shift 2 ;;
@@ -222,9 +227,13 @@ case $1 in
 		-w) PASSWORD=$2; shift 2 ;;
 		-d) ATTACHMENTS=$2; shift 2 ;;
 		-i) INLINES=$2; shift 2 ;;
+		-r) RELATED=yes; shift 1 ;;
+		-l) STARTTLS=yes; shift 1 ;;
 		--) shift; break ;;
 	    esac
 	done
+	[ "$RELATED" == yes ] || unset RELATED
+	[ "$STARTTLS" == yes ] || unset STARTTLS
 	id=$(date +%s)-$$
 	case $1 in
 	    send|enqueue)

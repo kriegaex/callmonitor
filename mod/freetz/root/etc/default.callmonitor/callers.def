@@ -25,6 +25,6 @@ CONFIG_TYPE='text'
 
 CAPTION='Callers (Callmonitor)'
 DESCRIPTION="$(lang
-    de:"Syntax: &lt;Nummer&gt; &lt;Name&gt;"
-    en:"Syntax: &lt;number&gt; &lt;name&gt;"
+    de:"Syntax: &lt;Nummer&gt; &lt;Name&gt;[; &lt;Adresse&gt;]</code>"
+    en:"Syntax: &lt;number&gt; &lt;name&gt;[; &lt;address&gt;]</code>"
 )"

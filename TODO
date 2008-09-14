@@ -20,13 +20,7 @@ Die Details der letzten k Anrufe aufzeichnen und verwenden
 
 default_message aufwerten (auf *:cancel, *:connect und *:disconnect eingehen)
 
-Ergebnis der Rückwärtssuche besser strukturieren (zumindest Name und Adresse
-trennen)
-
 Längenbeschränkung in default_message rechnet nicht richtig
-
-getmsg funktioniert mit einigen Webservern nicht zuverlässig (dasoertliche,
-goyellow)
 
 Ergebnis der Rückwärtssuche im Fritzbox-Telefonbuch ablegen.
     (zu langsam!!)

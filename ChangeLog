@@ -618,3 +618,7 @@
 	einige POST-Requests nicht funktioniert, z.B. der Login)
 
 	callmonitor-1.12.2 (Bugfix-Release)
+
+2008-09-14:
+
+	* mail: Unterstützung für SSL/TLS

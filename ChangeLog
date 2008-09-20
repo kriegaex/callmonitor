@@ -624,3 +624,7 @@
 	* mail: Unterstützung für SSL/TLS
 	
 	* dream2message: Darstellung von Umlauten behoben (benötigt UTF-8)
+
+2008-09-20:
+
+	callmonitor-1.12.3

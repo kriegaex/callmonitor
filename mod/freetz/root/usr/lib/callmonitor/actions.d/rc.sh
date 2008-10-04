@@ -20,28 +20,43 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 
-## start or stop ssh daemon
-RC_DROPBEAR="/mod/etc/init.d/rc.dropbear"
-droptoggle() {
-    if [ -x "$RC_DROPBEAR" ]; then
-	if [ "$("$RC_DROPBEAR" status)" = "running" ]; then
-	    "$RC_DROPBEAR" stop
-	else
-	    "$RC_DROPBEAR" start
-	fi
+rc() {
+    local service=$1; shift
+    local dir rc
+    for dir in /mod/etc/init.d /etc/init.d ""; do
+	[ "$dir" == "" ] && return 1
+	rc="$dir/rc.$service"
+	[ -x "$rc" ] && break
+    done
+    if [ "$#" -eq 0 ]; then
+	echo "$rc"
+	return
     fi
+    local cmd=$2; shift
+    case $cmd in
+    	toggle)
+	    case $("$rc" status) in
+	    	running) "$rc" stop ;;
+		stopped) "$rc" start ;;
+	    esac
+	    ;;
+	*)
+	    "$rc" "$cmd" "$@"
+	    ;;
+    esac
+}
+
+## start or stop ssh daemon
+droptoggle() {
+    rc dropbear toggle
 }
 
 ## start ssh daemon
 dropon() {
-    if [ -x "$RC_DROPBEAR" ]; then
-	"$RC_DROPBEAR" start
-    fi
+    rc dropbear start
 }
 
 ## stop ssh daemon
 dropoff() {
-    if [ -x "$RC_DROPBEAR" ]; then
-	"$RC_DROPBEAR" stop
-    fi
+    rc dropbear stop
 }

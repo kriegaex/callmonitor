@@ -628,3 +628,16 @@
 2008-09-20:
 
 	callmonitor-1.12.3
+
+2009-01-11:
+
+	* callaction: Kurze Kommandozeilenhilfe
+	* roku.sh: sbxmessage für mehrzeilige Nachrichten an SoundBridge
+
+2009-03-13:
+
+	* reverse: DasTelefonbuch und 11880 aktualisiert
+
+2009-03-15:
+
+	callmonitor-1.12.4

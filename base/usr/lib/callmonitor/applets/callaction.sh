@@ -24,12 +24,14 @@
 ## appear in the "Listeners")
 
 require callmonitor_config
+require usage
 __configure
 
 ## Additional modules may be loaded via -M<module>
 while true; do
     case $1 in
 	-M*) require "${1#-M}"; shift ;;
+	--help|-*) usage >&2; exit ;;
 	*) break ;;
     esac
 done

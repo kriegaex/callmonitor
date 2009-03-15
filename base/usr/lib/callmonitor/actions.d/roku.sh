@@ -49,6 +49,29 @@ __rawmsg_sbmessage() {
     } | _sb_sketch 
 }
 
+## multi-line static text
+
+default_sbxmessage() { default_sbmessage; }
+encode_sbxmessage() { encode_sb "$@"; }
+
+sbxmessage() {
+    __rawmsg sbxmessage --port=4444 -t dummy "$@"
+}
+
+__rawmsg_sbxmessage() {
+    {
+	local msg lno=0
+	_sb_init
+	echo "$*" | while IFS= read -r line; do
+	    msg=$(encode_sbxmessage "$line")
+	    echo "text c $lno \"$msg\""
+	    let lno++
+	done
+	sleep ${SB_TIMEOUT:-10}
+	echo "quit"
+    } | _sb_sketch 
+}
+
 ## scrolling text
 
 default_sbmarquee() { default_message; }

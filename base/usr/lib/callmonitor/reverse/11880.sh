@@ -33,15 +33,15 @@ _reverse_11880_extract() {
 	/keine Treffer gefunden/ {
 	    '"$REVERSE_NA"'
 	}
-	/<h1 class="nam_header"/,/<table/ {
+	/<h[1-9] class="nam_header"/,/<table/ {
 	    /<table/ b found
 	    H
 	}
 	b
 	: found
 	g
-	s#<h1[^>]>#<rev:name>#
-	s#</h1>#</rev:name>#
+	s#<h[1-9][^>]>#<rev:name>#
+	s#</h[1-9]>#</rev:name>#
 	s#<br />#, #g
 	'"$REVERSE_SANITIZE"'
 	'"$REVERSE_OK"'

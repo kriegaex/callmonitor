@@ -33,23 +33,16 @@ _reverse_telefonbuch_extract() {
 	/kein Teilnehmer gefunden/ {
 	    '"$REVERSE_NA"'
 	}
-	/<table.*class="bg-01"/,\#</table># {
-	    \#<td class="col1"# {
-	    	s#.*#<rev:name>&</rev:name>#
-	    	H
-		b
-	    }
-	    \#<td class="col[23]"# {
-	    	s/$/,/
-	    	H
-	    }
-	}
-	/<!-- \*\{2,\} Ende Treffer Eintr.ge \*\{2,\} -->/ {
-	    g
-	    b cleanup
+	/<table[^>]*class="[^"]*\(bg-0[12]\|entry\)/,\#<td class="col4"# {
+	    \#<div class="[^"]*hide# b
+	    \#<td class="col[23]"# s/$/,/
+	    H
+	    \#<td class="col4"# b cleanup
 	}
 	b
 	: cleanup
+	g
+	s#<a href[^>]*>\(.*\)</a>#<rev:name>&</rev:name>#
 	'"$REVERSE_SANITIZE"'
 	'"$REVERSE_OK"'
     '

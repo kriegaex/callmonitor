@@ -641,3 +641,9 @@
 2009-03-15:
 
 	callmonitor-1.12.4
+
+2009-03-27:
+
+	* droptoggle/rc: toggle funktionierte nicht
+
+	callmonitor-1.12.5

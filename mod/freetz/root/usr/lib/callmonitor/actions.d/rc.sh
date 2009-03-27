@@ -32,7 +32,7 @@ rc() {
 	echo "$rc"
 	return
     fi
-    local cmd=$2; shift
+    local cmd=$1; shift
     case $cmd in
     	toggle)
 	    case $("$rc" status) in

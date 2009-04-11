@@ -55,5 +55,5 @@ _reverse_goyellow_extract() {
 	s#<br />#, #g
 	H
 	b
-    '
+    ' | utf8_latin1
 }

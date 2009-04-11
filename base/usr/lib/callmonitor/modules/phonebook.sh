@@ -27,20 +27,30 @@ require file
 require usage
 require webui
 require tel
+require fshash
+require recode
 
 _pb_CACHE_DIR="/var/cache/phonebook"
 ensure_dir "$_pb_CACHE_DIR"
 _pb_FONBUCH_CACHE="$_pb_CACHE_DIR/avm"
+new_fshash _pb_avm "$_pb_FONBUCH_CACHE"
 
-_pb_fonbuch() {
+_pb_fonbuch_init() {
+    local nu na
     if [ ! -e "$_pb_FONBUCH_CACHE" ]; then
-	ensure_file "$_pb_FONBUCH_CACHE"
-	if lock "$_pb_FONBUCH_CACHE"; then
-	    _pb_fonbuch_read > "$_pb_FONBUCH_CACHE"
-	    unlock "$_pb_FONBUCH_CACHE"
-	fi
+        _pb_fonbuch_read | while readx nu na; do
+	    normalize_address "$nu"
+	    _pb_avm_put "$__" "$na"
+        done
     fi
-    cat "$_pb_FONBUCH_CACHE"
+}
+_pb_fonbuch() {
+    local key value
+    _pb_fonbuch_init
+    _pb_avm_keys | while read -r key; do
+    	_pb_avm_get "$key" value
+    	echo "$key	$value"
+    done
 }
 _pb_fonbuch_read() {
     webui_login
@@ -48,7 +58,14 @@ _pb_fonbuch_read() {
 	1,/^$/d
 	## remove the VIP flag
 	s/^\([^	]*	\)!/\1/
-    '
+    ' | {
+	local line charset IFS=
+	read -r line
+	case $line in
+	    *charset=utf-8*) utf8_latin1 ;;
+	    *) cat ;;
+	esac
+    }
 }
 
 ## Options to be overwritten before call of phonebook functions
@@ -94,8 +111,9 @@ _pb_get_local_trans() {
     _pb_find_number < "$CALLMONITOR_TRANSIENT"
 }
 _pb_get_local_avm() {
-    [ "$CALLMONITOR_READ_FONBUCH" = yes ] &&
-    name=$(_pb_fonbuch | { _pb_find_number && echo "$name"; })
+    [ "$CALLMONITOR_READ_FONBUCH" = yes ] || return
+    _pb_fonbuch_init
+    _pb_avm_get "$number" name
 }
 ## for performance, _pb_get_local returns its result in $__
 _pb_get_local() {
@@ -176,7 +194,7 @@ _pb_start() {
     tel_config
     if [ "$CALLMONITOR_READ_FONBUCH" = "yes" ]; then
 	echo -n "Reading AVM's phone book..." >&2
-	_pb_fonbuch > /dev/null
+	_pb_fonbuch_init
 	echo "done." >&2
     fi
 }

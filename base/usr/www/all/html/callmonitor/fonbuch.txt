@@ -2,7 +2,7 @@
 ?><? setvariable var:refresh '<? query telcfg:settings/Phonebook0/Refresh ?>'
 ?><? setvariable var:phonebook 
   '<? if eq <? query telcfg:settings/Phonebook/Entry/count ?> 0 old new ?>'
-?># AVM's phone book (<? print $var:phonebook ?>)
+?># AVM's phone book (<? print $var:phonebook ?>); charset=<? if eq $var:phonebook old 'iso-8859-1' 'utf-8' ?>
 <? if eq $var:phonebook old
   `<? multiquerytext telcfg:settings/HotDialEntry/list(Number,Name)
 	'$12	$13

@@ -647,3 +647,12 @@
 	* droptoggle/rc: toggle funktionierte nicht
 
 	callmonitor-1.12.5
+
+2009-04-10:
+
+	* reverse: GoYellow hat auf UTF8-Kodierung umgestellt
+	* phonebook: AVM-Telefonbuch wird nun intern als Baum gespeichert
+	=> relativ konstante Zugriffszeiten auch bei 1000 Einträgen
+	(Dank an Telefonmännchen)
+	* phonebook: Umlaute beim Lesen vom AVM-Telefonbuch korrigiert
+	(Kodierung wurde geändert)

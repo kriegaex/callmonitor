@@ -19,6 +19,7 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
+## new_fshash <name> <root-path>
 new_fshash() {
     local name=$1 root=$2 op
     for op in get put remove contains keys; do
@@ -26,6 +27,7 @@ new_fshash() {
     done
 }
 
+## convert the key into a file-system path; this is where the value gets stored
 _fshash_hash() {
     local key=$1 head tail
     DIR= FILE=

@@ -24,17 +24,16 @@ require recode
 require tel
 require reverse_config
 
-## resolve numbers to names and addresses; the number is
-## used as given (should be normalized beforehand); returns 1 if no lookup
+## resolve numbers to names and addresses; returns 1 if no lookup
 ## performed or if there were errors (no need to cache)
 ##
 ## The resulting name and address should be returned in Latin-1 encoding
 
 reverse_lookup() {
-    local number=$1 prov area_prov child afile name exit
-    case $number in
-	*[^0-9]*) return 1;
-    esac
+    local number_plain=$1 prov area_prov child afile name exit number __
+    normalize_address "$number_plain"; number=$__
+    if ! let "${number:+1}"; then return 1; fi
+
     local lkz=$(tel_lkz "$number")
     _reverse_choose_provider "$lkz"
 

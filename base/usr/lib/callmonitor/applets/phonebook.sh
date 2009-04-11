@@ -52,9 +52,9 @@ fi
 check=1
 case $1 in
     put) check="$# == 3" ;;
-    get|exists|remove) check="$# == 2" ;;
+    get|exists|remove|rm) check="$# == 2" ;;
     init|start|tidy|flush) check="$# == 1" ;;
-    list) check="$# >= 1 && $# <= 2" ;;
+    list|ls) check="$# >= 1 && $# <= 2" ;;
     *) check= ;;
 esac
 if ! ? "$check"; then

@@ -33,13 +33,18 @@ require recode
 _pb_CACHE_DIR="/var/cache/phonebook"
 ensure_dir "$_pb_CACHE_DIR"
 _pb_FONBUCH_CACHE="$_pb_CACHE_DIR/avm"
+
 new_fshash _pb_avm "$_pb_FONBUCH_CACHE"
+new_fshash _pb_cache "$CALLMONITOR_TRANSIENT"
+
+ensure_file "$CALLMONITOR_PERSISTENT"
+ensure_dir "$CALLMONITOR_TRANSIENT"
 
 _pb_fonbuch_init() {
     local nu na
     if [ ! -e "$_pb_FONBUCH_CACHE" ]; then
         _pb_fonbuch_read | while readx nu na; do
-	    normalize_address "$nu"
+	    normalize_address "$nu" save
 	    _pb_avm_put "$__" "$na"
         done
     fi
@@ -47,8 +52,13 @@ _pb_fonbuch_init() {
 _pb_fonbuch() {
     local key value
     _pb_fonbuch_init
-    _pb_avm_keys | while read -r key; do
-    	_pb_avm_get "$key" value
+    _pb_list_hash _pb_avm
+}
+## convert a hash-based phonebook into flat-file form
+_pb_list_hash() {
+    local hash=$1 key value
+    ${hash}_keys | while read -r key; do
+    	${hash}_get "$key" value
     	echo "$key	$value"
     done
 }
@@ -85,18 +95,16 @@ case $CALLMONITOR_REVERSE_CACHE in
     transient)	_pb_CACHE=true _pb_PERSISTENT=false ;;
     persistent) _pb_CACHE=true _pb_PERSISTENT=true ;;
 esac
-ensure_file "$CALLMONITOR_TRANSIENT" "$CALLMONITOR_PERSISTENT"
 
 _pb_get() {
-    local number=$1 number_norm name exitval __ number_save
-    normalize_address "$number"; number_norm=$__
+    local number=$1 number_norm name exitval __
+    normalize_address "$number" save; number_norm=$__
     _pb_get_local "$number_norm"
     exitval=$?; name=$__
     if ? "exitval != 0" && $_pb_REVERSE; then
 	name=$(reverse_lookup "$number_norm")
 	if ? $? == 0 && $_pb_CACHE; then
-	    normalize_address "$number" save; number_save=$__
-	    _pb_put_local "$number_save" "$name" >&2 &
+	    _pb_put_local "$number_norm" "$name" >&2 &
 	    exitval=0
 	fi
     fi
@@ -108,7 +116,7 @@ _pb_get_local_pers() {
     _pb_find_number < "$CALLMONITOR_PERSISTENT"
 }
 _pb_get_local_trans() {
-    _pb_find_number < "$CALLMONITOR_TRANSIENT"
+    _pb_cache_get "$number" name
 }
 _pb_get_local_avm() {
     [ "$CALLMONITOR_READ_FONBUCH" = yes ] || return
@@ -136,10 +144,16 @@ _pb_get_local() {
 _pb_find_number() {
     local nu na
     while readx nu na; do
-	normalize_address "$nu"
+	normalize_address "$nu" save
 	if [ "$__" = "$number" ]; then name=$na; return 0; fi
     done
     return 1
+}
+
+_pb_put() {
+    local number_plain=$1 name=$2 __
+    normalize_address "$number_plain" save
+    _pb_put_local "$__" "$name"
 }
 
 _pb_remove() {
@@ -150,7 +164,14 @@ _pb_put_local() {
 }
 _pb_put_or_remove() {
     local number=$1 name=$2 __
-    local number_re=$(sed_re_escape "$number")
+
+    ## where to put new number-name pairs
+    if $_pb_PERSISTENT; then
+	_pb_PHONEBOOK=$CALLMONITOR_PERSISTENT
+    else
+	_pb_PHONEBOOK=$CALLMONITOR_TRANSIENT
+    fi
+
     case $MODE in 
 	remove)
 	    _pb_debug "removing $number from phone book $_pb_PHONEBOOK" ;;
@@ -160,22 +181,31 @@ _pb_put_or_remove() {
 	;;
     esac
 
-    ## beware of concurrent updates
-    if lock "$_pb_PHONEBOOK"; then
-	local tmpfile=$CALLMONITOR_TMPDIR/.callmonitor.tmp
-	{ 
-	    sed -e "/^${number_re}[[:space:]]/d" "$_pb_PHONEBOOK" 2> /dev/null
-	    case $MODE in put)
-		echo "${number}	${name}" ;;
-	    esac
-	} > "$tmpfile"
-	mv "$tmpfile" "$_pb_PHONEBOOK"
-	unlock "$_pb_PHONEBOOK"
-    else
-	_pb_debug "locking $_pb_PHONEBOOK failed"
-    fi
     if $_pb_PERSISTENT; then
+	## persistent storage as a small flat file
+	local number_re=$(sed_re_escape "$number")
+	## beware of concurrent updates
+	if lock "$_pb_PHONEBOOK"; then
+	    local tmpfile=$CALLMONITOR_TMPDIR/.callmonitor.tmp
+	    { 
+		sed -e "/^${number_re}[[:space:]]/d" "$_pb_PHONEBOOK" 2> /dev/null
+		case $MODE in put)
+		    echo "${number}	${name}" ;;
+		esac
+	    } > "$tmpfile"
+	    mv "$tmpfile" "$_pb_PHONEBOOK"
+	    unlock "$_pb_PHONEBOOK"
+	else
+	    _pb_debug "locking $_pb_PHONEBOOK failed"
+	fi
 	callmonitor_store
+    else
+	## Temporary storage as a fshash for quick access
+	## Without locking because conflicts will be rare
+	case $MODE in
+	    put) _pb_cache_put "$number" "$name" ;;
+	    remove) _pb_cache_remove "$number" ;;
+	esac
     fi
 }
 ## a value must always be a single line (we normalize whitespace as we go)
@@ -183,12 +213,14 @@ _pb_norm_value() {
     __=$(echo $(echo "$@" | sed -e '$!s/$/;/'))
 }
 
+## once at boot time
 _pb_init() {
     local sip="/var/run/phonebook/sip"
     ensure_file "$sip"
     "$CALLMONITOR_LIBDIR/sipnames" > "$sip"
 }
 
+## everytime callmonitor is started
 _pb_start() {
     rm -rf "$_pb_CACHE_DIR"
     tel_config
@@ -236,18 +268,34 @@ _pb_tidy() {
 _pb_list() {
     case $1 in
 	all)
-	    cat "$CALLMONITOR_PERSISTENT" "$CALLMONITOR_TRANSIENT" 2>/dev/null 
-	    [ "$CALLMONITOR_READ_FONBUCH" = yes ] && _pb_fonbuch
+	    _pb_list callers
+	    echo
+	    _pb_list cache
+	    if [ "$CALLMONITOR_READ_FONBUCH" = yes ]; then
+		echo
+		_pb_list avm
+	    fi
 	    ;;
-	*)   cat "$CALLMONITOR_PERSISTENT" 2>/dev/null ;;
+	cache)
+	    echo "## cache ($CALLMONITOR_TRANSIENT)"
+	    _pb_list_hash _pb_cache
+	    ;;
+	avm) 
+	    echo "## avm ($_pb_FONBUCH_CACHE)"
+	    _pb_fonbuch
+	    ;;
+	callers|*)
+	    echo "## callers ($CALLMONITOR_PERSISTENT)"
+	    cat "$CALLMONITOR_PERSISTENT" 2>/dev/null
+	    ;;
     esac
     return 0
 }
 
 _pb_flush() {
     echo -n "Flushing temporary caches..." >&2
-    rm -f "$CALLMONITOR_TRANSIENT"
-    echo -n "done." >&2
+    [ -d "$CALLMONITOR_TRANSIENT" ] && rm -rf "$CALLMONITOR_TRANSIENT"
+    echo "done." >&2
 }
 
 _pb_main() {
@@ -258,22 +306,16 @@ _pb_main() {
 	    --) shift; break ;;
 	esac
     done
-    ## where to put new number-name pairs
-    if $_pb_PERSISTENT; then
-	_pb_PHONEBOOK=$CALLMONITOR_PERSISTENT
-    else
-	_pb_PHONEBOOK=$CALLMONITOR_TRANSIENT
-    fi
     case $1 in
 	get) _pb_get "$2" ;;
 	exists) _pb_get "$2" > /dev/null ;;
-	remove) _pb_remove "$2" ;;
-	put) _pb_put_local "$2" "$3" ;;
+	remove|rm) _pb_remove "$2" ;;
+	put) _pb_put "$2" "$3" ;;
 	init) _pb_init ;;
 	start) _pb_start ;;
 	tidy) _pb_tidy ;;
 	flush) _pb_flush ;;
-	list) _pb_list "$2" ;;
+	list|ls) _pb_list "$2" ;;
 	*) usage >&2; exit 1 ;;
     esac
     return $?

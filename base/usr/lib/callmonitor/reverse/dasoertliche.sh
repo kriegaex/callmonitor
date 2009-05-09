@@ -31,14 +31,14 @@ _reverse_dasoertliche_request() {
 _reverse_dasoertliche_extract() {
    sed -n -e '
 	: main
-        \#Kein Teilnehmer gefunden:# {
+        \#Kein Teilnehmer gefunden:\|keine Treffer finden# {
 	    '"$REVERSE_NA"'
 	}
-        \#<a[[:space:]].*[[:space:]]class="entry[^"]*">#,\#<input[[:space:]]type="hidden"# {
-	    s#^.*<a[[:space:]].*[[:space:]]class="entry[^"]*">\([^<]*\)</a>.*$#\1#
+        \#<div[[:space:]]\+class="adresse"[[:space:]]*>#,\#<input[[:space:]]\+type="hidden"# {
+	    s#^.*<a[[:space:]][^>]*class="preview[^"]*"[^>]*>\([^<]*\)<.*$#\1#
 	    t holdname
-	    \#<br/># H
-	    \#<input[[:space:]]type="hidden"# b cleanup
+	    \#<input[[:space:]]\+type="hidden"# b cleanup
+	    H
         }
         b
 

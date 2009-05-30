@@ -34,6 +34,7 @@ EXTRAS := README COPYING ChangeLog
 #ifneq (,$(wildcard common/mod/$(MOD)/install))
 #EXTRAS += common/mod/$(MOD)/install
 #endif
+CODE := base callmonitor actions freetz
 
 TAR := tar
 TAR_OWNER := --owner=root --group=root
@@ -76,7 +77,7 @@ collect: check
 
 check:
 	@[ -d $(CONF) ] || (echo Configuration $(CONF) is missing; false)
-	find base mod/*/root $(wildcard mod/*/install) -name .svn -prune \
+	find $(CODE) -name .svn -prune \
 	    -or -type f -not \( -name "*.sed" -or -name "*.txt" -or -name "*.cfg" \) -exec busybox ash -n {} \;
 
 clean:

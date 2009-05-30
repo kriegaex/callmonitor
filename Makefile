@@ -49,14 +49,14 @@ build-all:
 	for pkg in $(PKG_LIST); do $(MAKE) build PKG=$$pkg; done
 
 $(NAME)-$(MOD).tar.bz2: collect
-	$(TAR) cvjf $@ $(TAR_OWNER) -C $(BUILD) $(NAME) \
+	$(TAR) cjf $@ $(TAR_OWNER) -C $(BUILD) $(NAME) \
 	    || (rm $@ && false)
 
 $(NAME)-reload.tar.bz2: collect
 	$(TAR) cvf $(BNAME)/$(NAME)-root.tar --format=oldgnu \
 	    $(TAR_OWNER) -C $(BNAME)/root .
 	rm -rf $(BNAME)/root
-	$(TAR) cvjf $@ $(TAR_OWNER) -C $(BUILD) $(NAME) \
+	$(TAR) cjf $@ $(TAR_OWNER) -C $(BUILD) $(NAME) \
 	    || (rm $@ && false)
 
 collect: check

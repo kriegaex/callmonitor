@@ -34,7 +34,7 @@ EXTRAS := README COPYING ChangeLog
 #ifneq (,$(wildcard common/mod/$(MOD)/install))
 #EXTRAS += common/mod/$(MOD)/install
 #endif
-CODE := base callmonitor actions freetz
+CODE := base callmonitor actions freetz/root freetz-actions freetz-base
 
 TAR := tar
 TAR_OWNER := --owner=root --group=root

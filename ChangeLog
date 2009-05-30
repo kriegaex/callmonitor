@@ -663,3 +663,7 @@
 	Rückwärtssuche angepasst
 
 	callmonitor-1.13
+
+2009-05-30:
+
+	* webui.sh: Unterstützung der neuen Session-IDs (ungetestet).

@@ -664,6 +664,8 @@
 
 	callmonitor-1.13
 
-2009-05-30:
+2009-05-31:
 
-	* webui.sh: Unterstützung der neuen Session-IDs (ungetestet).
+	* webui.sh: Unterstützung der neuen Session-IDs
+
+	callmonitor-1.14

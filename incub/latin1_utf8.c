@@ -1,9 +1,10 @@
 #include <stdio.h>
+#include <strings.h>
 
 /*
 ENCODING
-       The  following  byte  sequences are used to represent a character. The sequence to be used depends on
-       the UCS code number of the character:
+       The  following  byte  sequences are used to represent a character. The
+       sequence to be used depends on the UCS code number of the character:
 
        0x00000000 - 0x0000007F:
            0xxxxxxx
@@ -56,7 +57,23 @@ void latin1_json(FILE* in, FILE* out) {
     }
 }
 
+void utf8_latin1(FILE* in, FILE* out) {
+    fprintf(stderr, "Not implemented yet\n");
+}
+
 int main(int argc, char** argv) {
-    //latin1_utf8(stdin, stdout);
-    latin1_json(stdin, stdout);
+    if (argc > 1) {
+	if (strcmp(argv[1], "latin1_utf8") == 0) {
+	    latin1_utf8(stdin, stdout);
+	} else if (strcmp(argv[1], "latin1_json") == 0) {
+	    latin1_json(stdin, stdout);
+	} else if (strcmp(argv[1], "utf8_latin1") == 0) {
+	    utf8_latin1(stdin, stdout);
+	} else {
+	    fprintf(stderr, "Unknown function '%s'\n", argv[1]);
+	}
+    } else {
+	fprintf(stderr, "Usage: %s FUNCTION\n", argv[0]);
+    }
+    return 0;
 }

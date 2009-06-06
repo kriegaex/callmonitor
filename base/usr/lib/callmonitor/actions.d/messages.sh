@@ -58,10 +58,11 @@ default_dboxmessage() { default_dbox; }
 default_dbox() {
     default_message
 }
+## 2009-06-06: D-Box appears to have problems processing some characters [;&]
 encode_dboxpopup() { encode_dbox "$@"; }
 encode_dboxmessage() { encode_dbox "$@"; }
 encode_dbox() {
-    echo "$1" | latin1_utf8 | sed -e 's/,[[:space:]]\+/\n/g' 
+    echo "$1" | sed -e 's/;/./g;s/&/+/g' | latin1_utf8 | sed -e 's/,[[:space:]]\+/\n/g' 
 }
 
 dreammessage() {

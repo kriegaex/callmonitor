@@ -34,10 +34,10 @@ _reverse_dasoertliche_extract() {
         \#Kein Teilnehmer gefunden:\|keine Treffer finden# {
 	    '"$REVERSE_NA"'
 	}
-        \#<div[[:space:]]\+class="adresse"[[:space:]]*>#,\#<input[[:space:]]\+type="hidden"# {
+        \#<div[[:space:]]\+class="adresse"[[:space:]]*>#,\#<input[[:space:]]\+type="hidden"\|<div[[:space:]]class="topx"# {
 	    s#^.*<a[[:space:]][^>]*class="preview[^"]*"[^>]*>\([^<]*\)<.*$#\1#
 	    t holdname
-	    \#<input[[:space:]]\+type="hidden"# b cleanup
+	    \#<input[[:space:]]\+type="hidden"\|<div[[:space:]]class="topx"# b cleanup
 	    H
         }
         b

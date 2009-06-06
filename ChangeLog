@@ -669,3 +669,8 @@
 	* webui.sh: Unterstützung der neuen Session-IDs
 
 	callmonitor-1.14
+
+2009-06-06:
+
+	* dbox*: Ersetzung von ";" und "&", die von der DBox nicht richtig
+	verarbeitet zu werden scheinen

@@ -1,7 +1,8 @@
 CC=gcc
+CFLAGS=
 
 all: recode
 .PHONY: all
 
 recode: recode.c
-	$(CC) -o $@ $<
+	$(CC) -o $@ $< $(CFLAGS)

@@ -22,40 +22,11 @@
 
 ## convert latin1 to utf8
 latin1_utf8() {
-    _recode '
-	s/ \([89ab]\)/c2\1/g
-	s/ c/c38/g
-	s/ d/c39/g
-	s/ e/c3a/g
-	s/ f/c3b/g
-	s/ //g
-	s/\(..\)/\\x\1/g
-    '
+    $CALLMONITOR_LIBDIR/bin/recode latin1_utf8
 }
 ## convert latin1 to JSON string (utf8) without enclosing double quotes
 latin1_json() {
-    _recode '
-	s/ 08/5c62/g
-	s/ 0c/5c66/g
-	s/ 0a/5c6e/g
-	s/ 0d/5c72/g
-	s/ 09/5c74/g
-	s/ \([01]\)\([0-9]\)/5c7530303\13\2/g
-	s/ \([01]\)a/5c7530303\161/g
-	s/ \([01]\)b/5c7530303\162/g
-	s/ \([01]\)c/5c7530303\163/g
-	s/ \([01]\)d/5c7530303\164/g
-	s/ \([01]\)e/5c7530303\165/g
-	s/ \([01]\)f/5c7530303\166/g
-	s/ \(22\|5c\)/5c\1/g
-	s/ \([89ab]\)/c2\1/g
-	s/ c/c38/g
-	s/ d/c39/g
-	s/ e/c3a/g
-	s/ f/c3b/g
-	s/ //g
-	s/\(..\)/\\x\1/g
-    '
+    $CALLMONITOR_LIBDIR/bin/recode latin1_json
 }
 
 ## convert utf8 to latin1

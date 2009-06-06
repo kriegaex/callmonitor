@@ -66,7 +66,7 @@ show_test_results() {
 	    *",$lkz,"*|*",$lkz!,"*|*",*,") supported=true ;;
 	    *) supported=false ;;
 	esac
-	local html_label="<a href='http://$site/'>$(html "$label")</a>"
+	local html_label="<a href='http://$site/' target='_blank'>$(html "$label")</a>"
 	if ! $supported; then
 	    unsupported="${unsupported:+$unsupported, }$html_label"
 	else 

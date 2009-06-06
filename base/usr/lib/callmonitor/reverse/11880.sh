@@ -30,7 +30,7 @@ _reverse_11880_request() {
 }
 _reverse_11880_extract() {
     sed -n -e '
-	/keine Treffer gefunden/ {
+	/keine Treffer gefunden\|Tut uns leid/ {
 	    '"$REVERSE_NA"'
 	}
 	/<h[1-9] class="nam_header"/,/<table/ {

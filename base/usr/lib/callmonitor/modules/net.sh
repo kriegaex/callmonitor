@@ -74,6 +74,7 @@ _opt_auth() {
     return 0
 }
 readonly var_auth="USERNAME PASSWORD"
+## requires /usr/lib/callmonitor/usage/getmsg.sh
 _opt_getmsg() {
     _opt_net "$@" || return $?
     _opt_auth "$@" || return $?
@@ -171,6 +172,7 @@ __msg_set_authority() {
 _getopt_rawmsg() {
     getopt -n rawmsg -o T:t:w:p: -l port:,template:,timeout:,help -- "$@"
 }
+## requires /usr/lib/callmonitor/usage/rawmsg.sh
 _opt_rawmsg() {
     _opt_net "$@" || return $?
     case $1 in

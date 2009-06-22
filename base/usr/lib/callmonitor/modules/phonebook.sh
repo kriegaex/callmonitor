@@ -62,6 +62,7 @@ _pb_list_hash() {
     	echo "$key	$value"
     done
 }
+## requires usr/www/all/html/callmonitor/fonbuch.txt
 _pb_fonbuch_read() {
     webui_login
     webui_get "getpage=../html/callmonitor/fonbuch.txt" | sed -e '
@@ -214,6 +215,7 @@ _pb_norm_value() {
 }
 
 ## once at boot time
+## requires usr/lib/callmonitor/sipnames
 _pb_init() {
     local sip="/var/run/phonebook/sip"
     ensure_file "$sip"

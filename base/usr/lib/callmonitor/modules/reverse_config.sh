@@ -20,6 +20,7 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 require hash
+## requires /usr/lib/callmonitor/reverse/provider.cfg
 
 _reverse_init() {
     local type prov countries site label lkz entry cfg=

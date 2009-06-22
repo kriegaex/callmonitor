@@ -22,6 +22,8 @@
 __debug() { true; }
 __info() { true; }
 __dump() { true; }
+
+## requires /usr/lib/callmonitor/actions.local.d
 __configure() {
     ## import action functions
     local actionsdir actions

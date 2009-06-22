@@ -1,0 +1,2 @@
+## requires /usr/lib/cgi-bin/callmonitor.cgi
+## requires /usr/lib/cgi-bin/callmonitor/*.cgi

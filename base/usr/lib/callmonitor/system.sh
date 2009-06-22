@@ -40,3 +40,14 @@ require() {
 	let "LIB_$lib = 1"
     fi
 }
+
+support() {
+    local lib=$1; shift
+    local file=${CALLMONITOR_LIBDIR}/modules/$lib.sh
+    [ -e "$file" ] && require "$lib"
+}
+
+## feature sets
+have() {
+    [ -e "${CALLMONITOR_LIBDIR}/features/$1" ]
+}

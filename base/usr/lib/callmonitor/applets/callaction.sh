@@ -25,6 +25,7 @@
 
 require callmonitor_config
 require usage
+## requires /usr/lib/callmonitor/usage/callaction.sh
 __configure
 
 ## Additional modules may be loaded via -M<module>

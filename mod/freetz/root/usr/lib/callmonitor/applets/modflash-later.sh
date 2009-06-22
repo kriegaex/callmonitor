@@ -23,6 +23,7 @@
 ## modflash-later: flash at most $1 seconds later
 
 require lock
+## requires /usr/lib/callmonitor/modflash-now
 
 FLASH=/tmp/flash
 LATER_NAME=modflash-later

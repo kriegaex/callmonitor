@@ -60,6 +60,10 @@ echo '
 </script>
 '
 
+if ! have monitor; then
+    echo "<p>$(lang de:"Monitor nicht installiert" en:"Monitor not installed")</p>"
+else
+
 sec_begin '$(lang de:"Starttyp" en:"Startup type")'
 
 echo "
@@ -80,7 +84,6 @@ echo "
     )</label> ($(lang de:"ins" en:"into the") $SYSLOG)
 </p>
 "
-
 sec_end
 
 if ! _j_is_up; then
@@ -103,6 +106,12 @@ echo "
 "
 
 sec_end
+fi
+
+if ! have phonebook; then
+    echo "<p>$(lang de:"Telefonbuch nicht installiert" en:"Phone book not installed")</p>"
+else
+
 sec_begin '$(lang de:"Standortangaben" en:"Location data")'
 
 echo "
@@ -205,3 +214,4 @@ echo "
 "
 
 sec_end
+fi

@@ -22,6 +22,7 @@
 
 require callmonitor
 require usage
+## requires /usr/lib/callmonitor/usage/callmonitor.sh
 require file
 
 ## parse options

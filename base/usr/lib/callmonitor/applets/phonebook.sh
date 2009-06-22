@@ -22,6 +22,7 @@
 
 require phonebook
 require usage
+## requires /usr/lib/callmonitor/usage/phonebook.sh
 
 ## format of phone book: ${NUMBER}<whitespace>${NAME}
 

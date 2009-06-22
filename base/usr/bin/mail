@@ -185,6 +185,7 @@ unpack() {
 
 unset -v From To SMTPServer accountname passwd
 
+## requires usr/bin/cfg2sh
 config() {
     cfg2sh ar7 emailnotify | sed 's/^emailnotify_//'
 }

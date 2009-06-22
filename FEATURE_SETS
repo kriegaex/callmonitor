@@ -1,0 +1,4 @@
+webif		Web interface
+actions		Callmonitor actions (callable via 'callaction')
+monitor		Monitoring daemon 'callmonitor'
+phonebook	Phonebook support (and reverse lookup)

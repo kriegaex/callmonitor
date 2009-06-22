@@ -23,6 +23,7 @@ require net
 require recode
 require tel
 require reverse_config
+## requires /usr/lib/callmonitor/reverse/*.sh
 
 ## resolve numbers to names and addresses; returns 1 if no lookup
 ## performed or if there were errors (no need to cache)

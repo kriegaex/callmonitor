@@ -1,0 +1,121 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Cwd qw(realpath);
+use File::Spec::Functions qw(abs2rel splitpath canonpath);
+use File::Find;
+
+my $root_dir = $ARGV[0];
+chdir($root_dir) or die $!;
+
+my @features = glob("usr/lib/callmonitor/features/*");
+
+sub dependencies {
+    my ($file) = @_;
+    my @deps;
+    if (! -e $file) {
+	warn "$file does not exist"
+    } elsif (-l $file) {
+	push @deps, resolve_symlink($file);
+    } elsif (-f $file) {
+	open(INPUT, '<', $file) or die $!;
+	while (defined ($_ = <INPUT>)) {
+	    if (/^\s*require\s+(\S+)\s*$/) {
+		push @deps, resolve_lib($1);
+	    } elsif (/^\s*#+\s*requires\s+(\S+)\s*$/) {
+		push @deps, resolve_requires($file, $1);
+	    }
+	}
+	close(INPUT) or die $!;
+    } else {
+	die "$file: unexpected file type"
+    }
+    #print STDERR "DEBUG: $file depends on @deps\n";
+    return map canonpath($_), @deps;
+}
+
+sub resolve_symlink {
+    my ($file) = @_;
+    my $rel = abs2rel(realpath($file));
+    if ($rel eq 'usr/lib/callmonitor/controller') {
+	my $base = (splitpath($file))[2];
+	return $rel, "usr/lib/callmonitor/applets/$base.sh";
+    } else {
+	return $rel;
+    }
+}
+
+sub resolve_lib {
+    my $lib="usr/lib/callmonitor/modules/$1.sh";
+    if (-e "$lib") {
+	return "$lib";
+    } else {
+	die "module $lib does not exist";
+    }
+}
+
+sub resolve_requires {
+    my ($file, $pattern) = @_;
+    my @resolved = map { s#^\./+##; $_ } glob("./$pattern");
+    return @resolved;
+}
+
+my @todo = map canonpath($_), @features;
+my %deps;
+
+# collect dependencies, starting at features
+while (defined (my $file = shift @todo)) {
+    my @d = dependencies($file);
+    $deps{$file} = \@d;
+    for (@d) {
+	push @todo, $_ unless exists $deps{$_};
+	\$deps{$_};
+    }
+}
+
+my %feat;
+my @feature_names;
+
+# calculate closures of features
+for my $feature (@features) {
+    my $name = (splitpath($feature))[2];
+    push @feature_names, $name;
+    my @todo = ($feature);
+    my %include;
+    while (defined (my $file = pop @todo)) {
+	$include{$file} = 1;
+	$feat{$file}{$name} = 1;
+	for (@{$deps{$file}}) {
+	    push @todo, $_ unless exists $include{$_};
+	}
+    }
+    print "FEATURE $name\n";
+    open(OUT, ">", "../feature.$name") or die $!;
+    print join "\n", sort keys %include;
+    print OUT join "\n", sort keys %include;
+    print "\n\n";
+    close(OUT) or die $!;
+}
+
+# list files not included in any feature
+sub check_file {
+    my $file = canonpath($File::Find::name);
+    if (! exists $deps{$file} && ! -d $file) {
+	print "$file\n";
+    }
+}
+print "UNUSED FILES\n";
+find({ wanted => \&check_file, no_chdir => 1 }, ".");
+print "\n";
+
+# summarize all features
+my $pattern = "";
+for (@feature_names) {
+    $pattern .= " %-9s";
+}
+print "USAGE\n";
+for (sort keys %feat) {
+    my $f = $feat{$_};
+    printf "%-50s: $pattern\n", $_, map { exists $f->{$_} ? $_ : "" } @feature_names;
+}
+print "\n";

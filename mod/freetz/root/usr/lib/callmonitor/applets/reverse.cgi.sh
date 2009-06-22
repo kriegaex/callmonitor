@@ -36,6 +36,7 @@ PARAMS="area:save"
 for lkz in $LKZ_LIST; do
     PARAMS="$PARAMS:full_$lkz"
 done
+## requires /usr/lib/callmonitor/reverse/country.cfg
 COUNTRIES="$CALLMONITOR_LIBDIR/reverse/country.cfg"
 
 eval "$(modcgi "$PARAMS" reverse)"

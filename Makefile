@@ -22,4 +22,4 @@
 MOD := freetz
 PKG := callmonitor
 
-include common/common.mk
+include call.mk

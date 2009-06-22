@@ -41,7 +41,7 @@ incoming_call() { __incoming_call "$@"; }
 
 require callmonitor_config
 require if_jfritz
-require phonebook
+support phonebook
 require hash
 require file
 
@@ -54,7 +54,7 @@ new_hash _provider
 _provider_name() {
     local provider=$1 name=
     _provider_get "$provider" name
-    if empty "$name"; then
+    if have phonebook && empty "$name"; then
 	name="$(_pb_main --local -- get "$provider") "
 	_provider_put "$provider" "$name"
     fi
@@ -80,9 +80,12 @@ __prepare_env() {
     if ! empty "$SOURCE"; then
 	case $EVENT,$PROVIDER in
 	    out:*,SIP*) SOURCE_ENTRY=$(_provider_name "$PROVIDER") ;;
-	    *) false ;;
-	esac ||
-	SOURCE_ENTRY=$(_pb_main $SOURCE_OPTIONS -- get "$SOURCE")
+	    *) SOURCE_ENTRY=""; false ;;
+	esac || {
+	    if have phonebook; then
+		SOURCE_ENTRY=$(_pb_main $SOURCE_OPTIONS -- get "$SOURCE")
+	    fi
+	}
     else ## empty "$SOURCE"
 	case $EVENT in
 	    out:*) SOURCE=$PROVIDER ;;
@@ -94,9 +97,12 @@ __prepare_env() {
     if ! empty "$DEST"; then
 	case $EVENT,$PROVIDER in 
 	    in:*,SIP*) DEST_ENTRY=$(_provider_name "$PROVIDER") ;;
-	    *) false ;;
-	esac ||
-	DEST_ENTRY=$(_pb_main $DEST_OPTIONS -- get "$DEST")
+	    *) DEST_ENTRY=""; false ;;
+	esac || {
+	    if have phonebook; then
+		DEST_ENTRY=$(_pb_main $DEST_OPTIONS -- get "$DEST")
+	    fi
+	}
     else ## empty "$DEST"
 	case $EVENT in
 	    in:*) DEST=$PROVIDER ;;

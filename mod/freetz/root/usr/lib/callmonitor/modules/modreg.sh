@@ -19,23 +19,34 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
+
+## requires /etc/default.callmonitor/listeners.def
+## requires /etc/default.callmonitor/callers.def
 mod_register() {
     local deffile flash=/tmp/flash/$DAEMON def="/mod/etc/default.$DAEMON"
     mkdir -p "$flash"
-    modreg cgi $DAEMON 'Callmonitor'
-    modreg extra $DAEMON '$(lang de:"Testanruf" en:"Test call")' 1 'testcall'
-    modreg extra $DAEMON '$(lang de:"Rückwärtssuche-Anbieter" en:"Reverse-lookup providers")' 1 'reverse'
-    modreg extra $DAEMON '$(lang de:"Test der Rückwärtssuche" en:"Test reverse lookup")' 1 'testlookup'
-    modreg extra $DAEMON '$(lang de:"Wartung" en:"Maintenance")' 1 'maint'
-    modreg file 'listeners' 'Listeners' 0 "$def/listeners.def"
-    modreg file 'callers' 'Callers' 1 "$def/callers.def"
+    if have webif; then
+	modreg cgi $DAEMON 'Callmonitor'
+	modreg extra $DAEMON '$(lang de:"Testanruf" en:"Test call")' 1 'testcall'
+	modreg extra $DAEMON '$(lang de:"Wartung" en:"Maintenance")' 1 'maint'
+	modreg file 'listeners' 'Listeners' 0 "$def/listeners.def"
+	if have phonebook; then
+	    modreg extra $DAEMON '$(lang de:"Rückwärtssuche-Anbieter" en:"Reverse-lookup providers")' 1 'reverse'
+	    modreg extra $DAEMON '$(lang de:"Test der Rückwärtssuche" en:"Test reverse lookup")' 1 'testlookup'
+	    modreg file 'callers' 'Callers' 1 "$def/callers.def"
+	fi
+    fi
 }
 mod_unregister() {
-    modunreg file 'callers'
-    modunreg file 'listeners'
-    modunreg extra $DAEMON 'testcall'
-    modunreg extra $DAEMON 'testlookup'
-    modunreg extra $DAEMON 'maint'
-    modunreg extra $DAEMON 'reverse'
-    modunreg cgi $DAEMON
+    if have webif; then
+	if have phonebook; then
+	    modunreg file 'callers'
+	    modunreg extra $DAEMON 'testlookup'
+	    modunreg extra $DAEMON 'reverse'
+	fi
+	modunreg file 'listeners'
+	modunreg extra $DAEMON 'testcall'
+	modunreg extra $DAEMON 'maint'
+	modunreg cgi $DAEMON
+    fi
 }

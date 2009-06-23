@@ -24,6 +24,7 @@ require callmonitor
 require usage
 ## requires /usr/lib/callmonitor/usage/callmonitor.sh
 require file
+require version
 
 ## parse options
 TEMP=$(getopt -o 'fs' -l debug,help -n "$APPLET" -- "$@") || exit 1

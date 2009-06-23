@@ -90,8 +90,12 @@ is_running() {
 case $1 in
     ""|load)
 	mod_register
-	phonebook init 2> /dev/null
-	try_start
+	if have phonebook; then
+	    phonebook init 2> /dev/null
+	fi
+	if have monitor; then
+	    try_start
+	fi
 	;;
     unload)
 	stop

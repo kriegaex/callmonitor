@@ -20,17 +20,22 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 
-## requires /etc/default.callmonitor/listeners.def
-## requires /etc/default.callmonitor/callers.def
 mod_register() {
     local deffile flash=/tmp/flash/$DAEMON def="/mod/etc/default.$DAEMON"
     mkdir -p "$flash"
     if have webif; then
+## requires [webif] /usr/lib/cgi-bin/callmonitor.cgi
+## requires [webif] /usr/lib/cgi-bin/callmonitor/testcall.cgi
+## requires [webif] /usr/lib/cgi-bin/callmonitor/maint.cgi
+## requires [webif] /etc/default.callmonitor/listeners.def
 	modreg cgi $DAEMON 'Callmonitor'
 	modreg extra $DAEMON '$(lang de:"Testanruf" en:"Test call")' 1 'testcall'
 	modreg extra $DAEMON '$(lang de:"Wartung" en:"Maintenance")' 1 'maint'
 	modreg file 'listeners' 'Listeners' 0 "$def/listeners.def"
 	if have phonebook; then
+## requires [webif & phonebook] /usr/lib/cgi-bin/callmonitor/reverse.cgi
+## requires [webif & phonebook] /usr/lib/cgi-bin/callmonitor/testlookup.cgi
+## requires [webif & phonebook] /etc/default.callmonitor/callers.def
 	    modreg extra $DAEMON '$(lang de:"Rückwärtssuche-Anbieter" en:"Reverse-lookup providers")' 1 'reverse'
 	    modreg extra $DAEMON '$(lang de:"Test der Rückwärtssuche" en:"Test reverse lookup")' 1 'testlookup'
 	    modreg file 'callers' 'Callers' 1 "$def/callers.def"

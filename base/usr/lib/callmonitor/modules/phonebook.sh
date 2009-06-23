@@ -29,6 +29,7 @@ require webui
 require tel
 require fshash
 require recode
+require flash
 
 _pb_CACHE_DIR="/var/cache/phonebook"
 ensure_dir "$_pb_CACHE_DIR"

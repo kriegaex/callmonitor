@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use Data::Dumper;
 use Cwd qw(realpath);
 use File::Spec::Functions qw(abs2rel splitpath canonpath);
 use File::Find;
@@ -10,20 +11,203 @@ chdir($root_dir) or die $!;
 
 my @features = glob("usr/lib/callmonitor/features/*");
 
+# canonical predicate notation (disjunctive normal form)
+sub canonpred {
+    my $pred = shift;
+    #print "Analyzing '$pred'\n";
+#    print Dumper($parsed);
+#    print render_pred($parsed), "\n";;
+#    my $dnf = dnf($parsed);
+#    print Dumper($dnf);
+#    print render_pred($dnf), "\n";;
+    my $result = render_pred(dnf(pred($pred)));
+    #print "=> $result\n";
+    return $result;
+}
+
+sub pred {
+    my $pred = shift;
+    my @token = ($pred =~ /\G(\w+|[()&|-])\s*/gc);
+    die "syntax error in predicate '$pred'\n" unless $pred =~ /\G$/;
+    my ($disjunction, $conjunction, $atom);
+    $disjunction = sub {
+	my @clauses = ($conjunction->());
+	while (@token && $token[0] eq '|') {
+	    shift @token;
+	    push @clauses, $conjunction->();
+	}
+	if (@clauses >= 2) {
+	    return ['OR', @clauses];
+	} else {
+	    return $clauses[0];
+	}
+    };
+    $conjunction = sub {
+	my @clauses = ($atom->());
+	while (@token && $token[0] eq '&') {
+	    shift @token;
+	    push @clauses, $atom->();
+	}
+	if (@clauses >= 2) {
+	    return ['AND', @clauses];
+	} else {
+	    return $clauses[0];
+	}
+    };
+    $atom = sub {
+	my $t = shift @token;
+	if ($t =~ /\w+/) {
+	    return $t;
+	} elsif ($t eq '-') {
+	    return ['NEG', atom() ];
+	} elsif ($t eq '(') {
+	    my $e = $disjunction->();
+	    die "syntax error: ')' expected" unless shift(@token) eq ')';
+	    return $e;
+	} else {
+	    die "syntax error: <atom> may not start with '$t'";
+	}
+    };
+    my $parsed = $disjunction->();
+    return $parsed;
+}
+
+sub render_pred {
+    my $ast = shift;
+    if (ref($ast) ne 'ARRAY') {
+	return "$ast";
+    } else {
+	my $op = $ast->[0];
+	my @clauses = clauses($ast);
+	if ($op eq 'NEG') {
+	    return "-" . render_pred($clauses[0]);
+	} elsif ($op eq 'OR') {
+	    if (@clauses == 1) {
+		return render_pred($clauses[0]);
+	    } else {
+		return "(" . (join " | ", map render_pred($_), @clauses) . ")";
+	    }
+	} elsif ($op eq 'AND') {
+	    if (@clauses == 1) {
+		return render_pred($clauses[0]);
+	    } else {
+		return join " & ", map render_pred($_), @clauses;
+	    }
+	} else {
+	    die "Unknown operator '$op'";
+	}
+    }
+}
+
+sub shell_pred {
+    my $ast = pred(shift());
+    return render_shell_pred($ast);
+}
+
+sub render_shell_pred {
+    my $ast = shift;
+    if (ref($ast) ne 'ARRAY') {
+	return "\$$ast";
+    } else {
+	my $op = $ast->[0];
+	my @clauses = clauses($ast);
+	if ($op eq 'NEG') {
+	    return "! " . render_shell_pred($clauses[0]);
+	} elsif ($op eq 'OR') {
+	    if (@clauses == 1) {
+		return render_shell_pred($clauses[0]);
+	    } else {
+		return " { " . (join " || ", map render_shell_pred($_), @clauses) . "; } ";
+	    }
+	} elsif ($op eq 'AND') {
+	    if (@clauses == 1) {
+		return render_shell_pred($clauses[0]);
+	    } else {
+		return join " && ", map render_shell_pred($_), @clauses;
+	    }
+	} else {
+	    die "Unknown operator '$op'";
+	}
+    }
+}
+
+sub clauses {
+    if (ref($_[0]) eq 'ARRAY') {
+	my @cl = @{$_[0]};
+	shift @cl;
+	return @cl;
+    } else {
+	return $_[0];
+    }
+}
+
+my %nf = ( 'OR' => \&dnf, 'AND' => \&cnf );
+
+sub dnf {
+    return normalform('OR', 'AND', @_);
+}
+sub cnf {
+    return normalform('AND', 'OR', @_);
+}
+
+sub normalform {
+    my ($OR, $AND, $ast) = @_;
+    my $dnf = $nf{$OR};
+    my $cnf = $nf{$AND};
+    if (ref($ast) ne 'ARRAY') {
+	return [ $OR, $ast ] ;
+    } else {
+	my $op = $ast->[0];
+	my @clauses = clauses($ast);
+	if ($op eq 'NEG') {
+	    return [ $OR, map ['NEG', $_], clauses($cnf->($ast->[1])) ]; # De Morgan
+	} elsif ($op eq $OR) {
+	    return [ $OR, map clauses($dnf->($_)), @clauses ];
+	} elsif ($op eq $AND) {
+	    if (@clauses == '1') {
+		return $dnf->($clauses[0]);
+	    } else {
+		my $c = $cnf->($ast);
+		my @terms = clauses($c);
+		my @dist = ([]);
+		for (@terms) {
+		    my @new_dist = ();
+		    for my $atom (clauses($_)) {
+			push @new_dist, map [ @$_, $atom ], @dist;
+		    }
+		    @dist = @new_dist;
+		}
+		return [ 'OR', map ['AND', unique(@$_)], @dist ];
+	    }
+	}
+    }
+}
+sub unique {
+    my %u;
+    $u{$_} = 1 for @$_;
+    return sort keys %u;
+}
+
 sub dependencies {
-    my ($file) = @_;
+    my ($predicate, $file) = @_;
+    #print STDERR "dependencies($predicate, $file)\n";
     my @deps;
     if (! -e $file) {
 	warn "$file does not exist"
     } elsif (-l $file) {
-	push @deps, resolve_symlink($file);
+	for (resolve_symlink($file)) {
+	    push @deps, [ $predicate, canonpath($_) ];
+	}
     } elsif (-f $file) {
 	open(INPUT, '<', $file) or die $!;
 	while (defined ($_ = <INPUT>)) {
 	    if (/^\s*require\s+(\S+)\s*$/) {
-		push @deps, resolve_lib($1);
+		push @deps, [ $predicate, canonpath(resolve_lib($1)) ];
 	    } elsif (/^\s*#+\s*requires\s+(\S+)\s*$/) {
-		push @deps, resolve_requires($file, $1);
+		push @deps, map [ $predicate, canonpath($_) ], resolve_requires($file, $1);
+	    } elsif (/^\s*#+\s*requires\s+\[([^]]*)\]\s+(\S+)\s*$/) {
+		my $canon_pred = canonpred("($predicate)&($1)");
+		push @deps, map [ $canon_pred, canonpath($_) ], resolve_requires($file, $2);
 	    }
 	}
 	close(INPUT) or die $!;
@@ -31,7 +215,7 @@ sub dependencies {
 	die "$file: unexpected file type"
     }
     #print STDERR "DEBUG: $file depends on @deps\n";
-    return map canonpath($_), @deps;
+    return @deps;
 }
 
 sub resolve_symlink {
@@ -60,62 +244,60 @@ sub resolve_requires {
     return @resolved;
 }
 
-my @todo = map canonpath($_), @features;
+my @todo = map [feature_name($_), canonpath($_)], @features;
+my %added;
 my %deps;
+my %preds;
 
 # collect dependencies, starting at features
-while (defined (my $file = shift @todo)) {
-    my @d = dependencies($file);
-    $deps{$file} = \@d;
+while (defined (my $entry = shift @todo)) {
+    my ($pred, $file) = @$entry;
+    $preds{$file}{$pred} = 1;
+    #print STDERR "processing $file [$pred]\n";
+    my @d = dependencies($pred, $file);
     for (@d) {
-	push @todo, $_ unless exists $deps{$_};
-	\$deps{$_};
+	my ($dep_pred, $dep_file) = @$_;
+	#print STDERR "\t[$dep_pred] $dep_file\n";
+	#push @{$deps{$file}{$pred}}, $dep_file;
+	#$preds{$dep_file}{$dep_pred} = 1;
+
+	push @todo, $_ unless $added{$dep_pred}{$dep_file};
+	$added{$dep_pred}{$dep_file} = 1;
     }
 }
+#print Dumper(\%preds);
 
-my %feat;
-my @feature_names;
-
-# calculate closures of features
-for my $feature (@features) {
+sub feature_name {
+    my $feature = $_[0];
     my $name = (splitpath($feature))[2];
-    push @feature_names, $name;
-    my @todo = ($feature);
-    my %include;
-    while (defined (my $file = pop @todo)) {
-	$include{$file} = 1;
-	$feat{$file}{$name} = 1;
-	for (@{$deps{$file}}) {
-	    push @todo, $_ unless exists $include{$_};
-	}
-    }
-    print "FEATURE $name\n";
-    open(OUT, ">", "../feature.$name") or die $!;
-    print join "\n", sort keys %include;
-    print OUT join "\n", sort keys %include;
-    print "\n\n";
-    close(OUT) or die $!;
+    return $name;
 }
 
-# list files not included in any feature
+# print predicates for each file
+open(OUT, ">", "../file-list") or die $!;
+print OUT "#!/bin/sh\n";
+print "\n";
+for my $feature (@features) {
+    my $name = feature_name($feature);
+    print "FEATURE $name\n";
+    print OUT "${name}=false\n";
+}
+print OUT 'for arg; do eval "$arg=true"; done', "\n";
+for my $file (sort keys %preds) {
+    my $comb = join "|", map "($_)", keys %{$preds{$file}};
+    my $norm = canonpred($comb);
+    my $sh = shell_pred($norm);
+    print OUT "if $sh; then echo \"$file\"; fi\n";
+}
+close(OUT) or die $!;
+
+# list unreachable files
 sub check_file {
     my $file = canonpath($File::Find::name);
-    if (! exists $deps{$file} && ! -d $file) {
+    if (! exists $preds{$file} && ! -d $file) {
 	print "$file\n";
     }
 }
-print "UNUSED FILES\n";
+print "\nUNUSED FILES\n";
 find({ wanted => \&check_file, no_chdir => 1 }, ".");
-print "\n";
-
-# summarize all features
-my $pattern = "";
-for (@feature_names) {
-    $pattern .= " %-9s";
-}
-print "USAGE\n";
-for (sort keys %feat) {
-    my $f = $feat{$_};
-    printf "%-50s: $pattern\n", $_, map { exists $f->{$_} ? $_ : "" } @feature_names;
-}
 print "\n";

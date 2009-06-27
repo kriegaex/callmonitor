@@ -20,6 +20,8 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 
+## requires /usr/lib/cgi-bin/callmonitor/exec.cgi
+
 _j_cgi_is_down() {
     echo "
     <li><strong style='color: red'>$(lang 

@@ -147,15 +147,15 @@ _j_parse() {
 
 __read_from_iface() {
     local pidfile='/var/run/callmonitor/pid/sleep'
-    local _j_SLEEP=$(((_j_SLEEP < 1) ? 1 : _j_SLEEP))
+    _j_SLEEP=$(((_j_SLEEP < 1) ? 1 : _j_SLEEP))
     if ! _j_is_up; then
 	__info "Auto-dialing #96*5* to enable telefon's interface ..."
 	_j_enable
         __info "Trying again in $_j_SLEEP seconds ..."
 
 	sleep "$_j_SLEEP"
-	let "_j_SLEEP *= 2"
-	let "_j_SLEEP = (_j_SLEEP > 600) ? 600 : _j_SLEEP"
+	let "_j_SLEEP *= 3"
+	let "_j_SLEEP = (_j_SLEEP > 3600) ? 3600 : _j_SLEEP"
     else
 	_j_SLEEP=
 	## hack to provide "never"-ending but empty stdin: FIXME

@@ -674,3 +674,15 @@
 
 	* dbox*: Ersetzung von ";" und "&", die von der DBox nicht richtig
 	verarbeitet zu werden scheinen
+
+2009-08-??:
+
+	* if_jfritz: Automatisches Wählen (zur Aktivierung der Callmonitor-
+	Schnittstelle) im Sekundenabstand behoben; eigentliche Ursache für
+	wiederholtes Fehlschlagen ist noch unklar.
+
+	* recode: Von Shell- auf C-Implementierung umgestellt
+
+2009-08-16:
+
+	callmonitor-1.15

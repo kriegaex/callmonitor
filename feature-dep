@@ -15,11 +15,12 @@ my @features = glob("usr/lib/callmonitor/features/*");
 sub canonpred {
     my $pred = shift;
     #print "Analyzing '$pred'\n";
-#    print Dumper($parsed);
-#    print render_pred($parsed), "\n";;
-#    my $dnf = dnf($parsed);
-#    print Dumper($dnf);
-#    print render_pred($dnf), "\n";;
+    my $parsed = pred($pred);
+    #print Dumper($parsed);
+    #print render_pred($parsed), "\n";;
+    my $dnf = dnf($parsed);
+    #print "DNF finished: " . Dumper($dnf);
+    #print render_pred($dnf), "\n";;
     my $result = render_pred(dnf(pred($pred)));
     #print "=> $result\n";
     return $result;
@@ -59,7 +60,7 @@ sub pred {
 	if ($t =~ /\w+/) {
 	    return $t;
 	} elsif ($t eq '-') {
-	    return ['NEG', atom() ];
+	    return ['NEG', $atom->() ];
 	} elsif ($t eq '(') {
 	    my $e = $disjunction->();
 	    die "syntax error: ')' expected" unless shift(@token) eq ')';
@@ -117,13 +118,13 @@ sub render_shell_pred {
 	    if (@clauses == 1) {
 		return render_shell_pred($clauses[0]);
 	    } else {
-		return " { " . (join " || ", map render_shell_pred($_), @clauses) . "; } ";
+		return "{ " . (join " || ", map render_shell_pred($_), @clauses) . "; }";
 	    }
 	} elsif ($op eq 'AND') {
 	    if (@clauses == 1) {
 		return render_shell_pred($clauses[0]);
 	    } else {
-		return join " && ", map render_shell_pred($_), @clauses;
+		return "{ " . (join " && ", map render_shell_pred($_), @clauses) . "; }";
 	    }
 	} else {
 	    die "Unknown operator '$op'";
@@ -140,14 +141,34 @@ sub clauses {
 	return $_[0];
     }
 }
+sub atoms {
+    if (ref($_[0]) eq 'ARRAY' && $_[0]->[0] ne 'NEG') {
+	my @cl = @{$_[0]};
+	shift @cl;
+	return @cl;
+    } else {
+	return $_[0];
+    }
+}
 
 my %nf = ( 'OR' => \&dnf, 'AND' => \&cnf );
 
+my $indent = 0;
 sub dnf {
-    return normalform('OR', 'AND', @_);
+    #print STDERR +(" "x$indent) . "DNF " . render_pred(@_) . " {\n";
+    $indent++;
+    my $nf = normalform('OR', 'AND', @_);
+    $indent--;
+    #print STDERR +(" "x$indent) . "}\n";
+    return $nf;
 }
 sub cnf {
-    return normalform('AND', 'OR', @_);
+    #print STDERR +(" "x$indent) . "CNF " . render_pred(@_) . " {\n";
+    $indent++;
+    my $nf = normalform('AND', 'OR', @_);
+    $indent--;
+    #print STDERR +(" "x$indent) . "}\n";
+    return $nf;
 }
 
 sub normalform {
@@ -160,7 +181,7 @@ sub normalform {
 	my $op = $ast->[0];
 	my @clauses = clauses($ast);
 	if ($op eq 'NEG') {
-	    return [ $OR, map ['NEG', $_], clauses($cnf->($ast->[1])) ]; # De Morgan
+	    return [ $OR, map negate($_), clauses($cnf->(@clauses)) ]; # De Morgan
 	} elsif ($op eq $OR) {
 	    return [ $OR, map clauses($dnf->($_)), @clauses ];
 	} elsif ($op eq $AND) {
@@ -168,11 +189,11 @@ sub normalform {
 		return $dnf->($clauses[0]);
 	    } else {
 		my $c = $cnf->($ast);
-		my @terms = clauses($c);
+		my @terms = unique(clauses($c));
 		my @dist = ([]);
 		for (@terms) {
 		    my @new_dist = ();
-		    for my $atom (clauses($_)) {
+		    for my $atom (atoms($_)) {
 			push @new_dist, map [ @$_, $atom ], @dist;
 		    }
 		    @dist = @new_dist;
@@ -182,10 +203,20 @@ sub normalform {
 	}
     }
 }
+sub negate {
+    my $ast = $_;
+    if (ref($ast) eq 'ARRAY' && $ast->[0] eq 'NEG') {
+	return $ast->[1];
+    } else {
+	return ['NEG', $ast];
+    }
+}
+
 sub unique {
     my %u;
-    $u{$_} = 1 for @$_;
-    return sort keys %u;
+    $u{render_pred($_)} = 1 for @_;
+    my @unique = map pred($_), sort keys %u;
+    return @unique;
 }
 
 sub dependencies {
@@ -273,6 +304,17 @@ sub feature_name {
     return $name;
 }
 
+my %lang_file = ();
+# collect special file set 'lang'
+open(LANG, "-|", "grep -lr '\\\$(lang' .") or die $!;
+while (defined ($_ = <LANG>)) {
+    chomp;
+    $_ = canonpath($_);
+    print "LANG $_\n";
+    $lang_file{$_} = 1;
+}
+close(LANG) or $! && die $!;
+
 # print predicates for each file
 open(OUT, ">", "../file-list") or die $!;
 print OUT "#!/bin/sh\n";
@@ -282,9 +324,13 @@ for my $feature (@features) {
     print "FEATURE $name\n";
     print OUT "${name}=false\n";
 }
+print OUT "lang=false\n";
 print OUT 'for arg; do eval "$arg=true"; done', "\n";
 for my $file (sort keys %preds) {
     my $comb = join "|", map "($_)", keys %{$preds{$file}};
+    if (! $lang_file{$file}) {
+	$comb = "-lang & ($comb)";
+    }
     my $norm = canonpred($comb);
     my $sh = shell_pred($norm);
     print OUT "if $sh; then echo \"$file\"; fi\n";

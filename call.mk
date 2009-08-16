@@ -62,6 +62,7 @@ collect: check
 	$(TAR) c --exclude=.svn -C base . | $(TAR) x -C $(BNAME)/root
 	$(TAR) c --exclude=.svn -C $(CONF) . |  $(TAR) x -C $(BNAME)
 	$(TAR) c --exclude=.svn docs | $(TAR) x -C $(BNAME)
+	$(TAR) c --exclude=.svn src | $(TAR) x -C $(BNAME)
 	echo $(VERSION) > $(BNAME)/root/etc/default.$(PKG)/.version
 	echo $(MOD) > $(BNAME)/root/etc/default.$(PKG)/.subversion
 	cp $(EXTRAS) $(BNAME)

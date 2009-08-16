@@ -31,12 +31,12 @@ DESCRIPTION="$(lang
 	&lt;SOURCE-Muster&gt; 
 	&lt;DEST-Muster&gt;
 	&lt;Aktion&gt;<br>
-	(z.B. <code>in:request ^(08|15) ^SIP0$ dboxpopup 192.168.3.4</code>)"
+	(z.B. <code>in:request ^(08|15) ..4711$ dboxpopup 192.168.3.4</code>)"
     en:"Syntax:
 	&lt;EVENT&gt;
 	&lt;SOURCE pattern&gt; 
 	&lt;DEST pattern&gt;
 	&lt;action&gt;<br>
-	(e.g., <code>in:request ^(08|15) ^SIP0$ dboxpopup 192.168.3.4</code>)"
+	(e.g., <code>in:request ^(08|15) ..4711$ dboxpopup 192.168.3.4</code>)"
 )<br>
-<a target='_blank' href='http://wiki.ip-phone-forum.de/software:callmonitor:start'>$(lang de:"Hilfe im Wiki" en:"Help (wiki)")</a>"
+<a target='_blank' href='http://www.freetz.org/wiki/packages/callmonitor'>$(lang de:"Hilfe im Wiki" en:"Help (wiki)")</a>"

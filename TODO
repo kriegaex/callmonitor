@@ -2,15 +2,21 @@
 Testen
 ----------------------------------------------------------------------
 
+webui-Zugriff ohne Passwort testen
+Aktivierung des Callmonitor-Interfaces
+
 ----------------------------------------------------------------------
 Wichtig
 ----------------------------------------------------------------------
+
+Aktionen separat installierbar
+	.language generieren
+	file-list dynamisch aus .config erzeugen und installieren
 
 ----------------------------------------------------------------------
 Demnächst anschauen
 ----------------------------------------------------------------------
 
-Aktionen separat installierbar
 Evtl. webui_logout einfügen
 Evtl. temporäre Callers auf fshash umstellen
 

@@ -137,6 +137,7 @@ tel_config() {
 	    telcfg:settings/Location/LKZ \
 	    telcfg:settings/Location/OKZPrefix \
 	    telcfg:settings/Location/OKZ |
+	tr -cd '0-9\n' |
 	{
 	    read LKZ_PREFIX
 	    read LKZ

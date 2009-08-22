@@ -30,30 +30,22 @@ _reverse_goyellow_request() {
 }
 _reverse_goyellow_extract() {
     sed -n -e '
-	\#Es wurden keine Eintr.ge gefunden.# {
+	\#haben wir nichts gefunden# {
 	    '"$REVERSE_NA"'
 	}
-	\#<div[^>]*id="listing"#,\#<div[^>]*class="col contact# {
-	    /title="Detailinformationen/ b name
-	    \#<h3>.*</h3># b name
-	    /<p class="address/ b address
+	\#<div id="searchResultListing"#,\#<p class="moreInfo"# {
+	    \#<span class="normal"# b name
+	    \#<span class="\(street\|comma\|postcode\|city\)"># H
 	}
-	\#<div[^>]*class="col contact# {
+	\#<p class="moreInfo"# {
 	    g
-	    s/\n/, /g
 	    '"$REVERSE_SANITIZE"'
 	    '"$REVERSE_OK"'
 	}
 	b
 	: name
-	s#^[^<]*<\(a\|h3\)[^>]*>\([^<]*\)</\(a\|h3\)>.*#\2#
 	s#.*#<rev:name>&</rev:name>#
 	h
-	b
-	: address
-	s#^[^<]*<p[^>]*class="address">\(.*\)</p>#\1#
-	s#<br />#, #g
-	H
 	b
     ' | utf8_latin1
 }

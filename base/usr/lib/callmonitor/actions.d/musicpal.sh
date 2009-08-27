@@ -2,6 +2,10 @@
 ##
 ## http://www.ip-phone-forum.de/showthread.php?p=1382302
 ## http://forum.freecompromo.com/viewtopic.php?t=8028
+
+require net
+require message
+
 musicpalmessage() {
     getmsg -T musicpalmessage -U admin -P admin \
     	-t "/admin/cgi-bin/ipc_send?show_msg_box%%20%s%%a7%%23${MUSICPAL_TIMEOUT:-10}" -m 1 "$@"

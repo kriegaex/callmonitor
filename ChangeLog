@@ -686,3 +686,8 @@
 2009-08-16:
 
 	callmonitor-1.15
+
+2009-08-23:
+
+	* musicpal.sh: Aktionen für Freecom MusicPal (Internetradio)
+	* goyellow: Rückwärtssuche an neue Webseite angepasst

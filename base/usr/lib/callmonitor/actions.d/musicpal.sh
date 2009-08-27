@@ -4,7 +4,7 @@
 ## http://forum.freecompromo.com/viewtopic.php?t=8028
 musicpalmessage() {
     getmsg -T musicpalmessage -U admin -P admin \
-    	-t "/admin/cgi-bin/ipc_send?show_msg_box%%20%s%%a7%%a7%%23${MUSICPAL_TIMEOUT:-15}" -m 1 "$@"
+    	-t "/admin/cgi-bin/ipc_send?show_msg_box%%20%s%%a7%%23${MUSICPAL_TIMEOUT:-10}" -m 1 "$@"
 }
 musicpalclear() {
     getmsg -U admin -P admin \
@@ -13,6 +13,8 @@ musicpalclear() {
 default_musicpalmessage() {
     default_message "" 2
 }
+
+## we need exactly (!) two non-empty lines, separated by 'ง' (\xA7)
 encode_musicpalmessage() {
-    echo "$1" | sed -n 's,ยง,/,g;1h;2,${H;g;s/\n/ยง/g;h};${g;p}'
+    { echo "$1"; echo; } | sed -n 's,ง,/,g;s/^$/ /;1h;2{H;g;s/\n/ง/g;p;q}'
 }

@@ -8,7 +8,7 @@ require message
 
 musicpalmessage() {
     getmsg -T musicpalmessage -U admin -P admin \
-    	-t "/admin/cgi-bin/ipc_send?show_msg_box%%20%s%%a7%%23${MUSICPAL_TIMEOUT:-10}" -m 1 "$@"
+    	-t "/admin/cgi-bin/ipc_send?show_msg_box%%20%s%%a7%%23${MUSICPAL_TIMEOUT:-25}" -m 1 "$@"
 }
 musicpalclear() {
     getmsg -U admin -P admin \

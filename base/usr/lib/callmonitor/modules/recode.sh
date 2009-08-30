@@ -19,6 +19,7 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
+## requires /usr/lib/callmonitor/bin/recode
 
 ## convert latin1 to utf8
 latin1_utf8() {

@@ -2,7 +2,10 @@ CC=gcc
 CFLAGS=
 
 all: recode
-.PHONY: all
+.PHONY: all clean
 
 recode: recode.c
 	$(CC) -o $@ $< $(CFLAGS)
+
+clean:
+	rm -f recode

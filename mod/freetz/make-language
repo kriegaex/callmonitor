@@ -1,0 +1,5 @@
+#! /bin/sh
+sed '/@FILES@/ {
+    r .files-lang
+    d
+}' < .language.in > .language

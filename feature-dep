@@ -336,6 +336,7 @@ for my $file (sort keys %preds) {
     print OUT "if $sh; then echo \"$file\"; fi\n";
 }
 close(OUT) or die $!;
+chmod 0755, "../file-list";
 
 # list unreachable files
 sub check_file {

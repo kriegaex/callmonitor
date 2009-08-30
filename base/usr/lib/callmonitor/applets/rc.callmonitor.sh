@@ -39,19 +39,27 @@ case $1 in
 	;;
 esac
 
-start_daemon() {
-    echo -n "Starting $DAEMON..."
-    case $CALLMONITOR_DEBUG in
-	yes) "$DAEMON" --debug > /dev/null 2>&1 ;; 
-	*) "$DAEMON" > /dev/null 2>&1 ;;
-    esac
-    check_status
-}
-stop_daemon() {
-    echo -n "Stopping $DAEMON..."
-    "$DAEMON" -s
-    check_status
-}
+if have monitor; then
+    start_daemon() {
+	echo -n "Starting $DAEMON..."
+	case $CALLMONITOR_DEBUG in
+	    yes) "$DAEMON" --debug > /dev/null 2>&1 ;; 
+	    *) "$DAEMON" > /dev/null 2>&1 ;;
+	esac
+	check_status
+    }
+    stop_daemon() {
+	echo -n "Stopping $DAEMON..."
+	"$DAEMON" -s
+	check_status
+    }
+else
+    start_daemon() {
+	echo "$DAEMON is not installed"
+	return 1
+    }
+    stop_daemon() start_daemon
+fi
 
 try_start() {
     case $CALLMONITOR_ENABLED in yes) ;; *)

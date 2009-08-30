@@ -25,13 +25,15 @@ mod_register() {
     mkdir -p "$flash"
     if have webif; then
 ## requires [webif] /usr/lib/cgi-bin/callmonitor.cgi
-## requires [webif] /usr/lib/cgi-bin/callmonitor/testcall.cgi
 ## requires [webif] /usr/lib/cgi-bin/callmonitor/maint.cgi
-## requires [webif] /etc/default.callmonitor/listeners.def
 	modreg cgi $DAEMON 'Callmonitor'
-	modreg extra $DAEMON '$(lang de:"Testanruf" en:"Test call")' 1 'testcall'
 	modreg extra $DAEMON '$(lang de:"Wartung" en:"Maintenance")' 1 'maint'
-	modreg file 'listeners' 'Listeners' 0 "$def/listeners.def"
+## requires [webif & monitor] /usr/lib/cgi-bin/callmonitor/testcall.cgi
+## requires [webif & monitor] /etc/default.callmonitor/listeners.def
+	if have monitor; then
+	    modreg extra $DAEMON '$(lang de:"Testanruf" en:"Test call")' 1 'testcall'
+	    modreg file 'listeners' 'Listeners' 0 "$def/listeners.def"
+	fi
 	if have phonebook; then
 ## requires [webif & phonebook] /usr/lib/cgi-bin/callmonitor/reverse.cgi
 ## requires [webif & phonebook] /usr/lib/cgi-bin/callmonitor/testlookup.cgi
@@ -49,8 +51,10 @@ mod_unregister() {
 	    modunreg extra $DAEMON 'testlookup'
 	    modunreg extra $DAEMON 'reverse'
 	fi
-	modunreg file 'listeners'
-	modunreg extra $DAEMON 'testcall'
+	if have monitor; then
+	    modunreg file 'listeners'
+	    modunreg extra $DAEMON 'testcall'
+	fi
 	modunreg extra $DAEMON 'maint'
 	modunreg cgi $DAEMON
     fi

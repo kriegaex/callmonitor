@@ -24,6 +24,7 @@
 ## put default names for each SIP account into the phone book
 ## and print a mapping SIP[0-9] -> SIP address
 sip_info() {
+## requires /usr/bin/cfg2sh
     cfg2sh voip |
     sed -ne '
 	/^voipcfg_ua[[:digit:]]\+_\(username\|registrar\)=/ {

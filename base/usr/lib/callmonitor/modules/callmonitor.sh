@@ -42,6 +42,7 @@ incoming_call() { __incoming_call "$@"; }
 require callmonitor_config
 require if_jfritz
 support phonebook
+require tel
 require hash
 require file
 

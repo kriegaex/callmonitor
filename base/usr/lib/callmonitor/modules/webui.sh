@@ -131,6 +131,7 @@ webui_get() (
     QUERY_STRING="${WEBUI_SID:+sid=$WEBUI_SID&}$1" "$WEBCM"
 )
 
+## requires /usr/bin/cfg2sh
 webui_config() {
     cfg2sh ar7 webui
 }

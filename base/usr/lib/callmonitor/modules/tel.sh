@@ -94,6 +94,7 @@ tel_collect_lkzs() {
 	done
     done < "$CALLMONITOR_REVERSE_CFG"
 }
+## requires /usr/lib/callmonitor/reverse/provider.cfg
 
 ## recognize country prefixes
 tel_lkz() {

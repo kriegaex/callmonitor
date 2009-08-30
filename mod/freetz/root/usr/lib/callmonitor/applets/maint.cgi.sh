@@ -71,6 +71,10 @@ if ! empty "$MAINT_CMD"; then
 fi
 
 cgi_begin "$TITLE" extras
+
+if ! have phonebook; then
+    echo "<p>$(lang de:"Telefonbuch nicht installiert" en:"Phone book not installed")</p>"
+else
 sec_begin 'Callers'
 
 let LINES="$({ 
@@ -105,6 +109,7 @@ cmd_button phonebook_tidy '$(lang de:"Aufräumen" en:"Tidy up")'
 cmd_button phonebook_init '$(lang de:"SIP-Update durchführen" en:"Perform SIP update")'
 cmd_button phonebook_flush '$(lang de:"Cache leeren" en:"Flush cache")'
 sec_end
+fi
 
 sec_begin "$(lang de:"Schnittstellen" en:"Interfaces")"
 echo "<ul>"

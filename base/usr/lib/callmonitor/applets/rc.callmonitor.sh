@@ -67,7 +67,9 @@ start() {
 	echo "$DAEMON already started."
 	exit 0
     fi
-    phonebook start 2>&1 > /dev/null
+    if have phonebook; then
+	phonebook start 2>&1 > /dev/null
+    fi
     start_daemon || exitval=$?
     return $exitval
 }

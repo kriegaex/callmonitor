@@ -9,16 +9,11 @@ Aktivierung des Callmonitor-Interfaces
 Wichtig
 ----------------------------------------------------------------------
 
-Aktionen separat installierbar
-	.language generieren
-	file-list dynamisch aus .config erzeugen und installieren
-
 ----------------------------------------------------------------------
 Demnächst anschauen
 ----------------------------------------------------------------------
 
 Evtl. webui_logout einfügen
-Evtl. temporäre Callers auf fshash umstellen
 
 ----------------------------------------------------------------------
 Nicht so wichtig, Ideen

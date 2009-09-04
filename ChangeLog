@@ -704,3 +704,12 @@
 	    actions	Callmonitor actions (callable via 'callaction')
 	    monitor	Monitoring daemon 'callmonitor'
 	    phonebook	Phonebook support (and reverse lookup)
+
+2009-09-04:
+
+	* tel.sh: Bei der Normalisierung von Telefonnummern werden nun
+	vorausgewählte Gruppen, die in die Zeichen * oder # eingeschlossen
+	sind, entfernt (Anregung von ao)
+
+	* fshash.sh: Die Benutzung eines leeren AVM-Telefonbuch führte dazu,
+	dass das Telefonbuch immer wieder langwierig eingelesen wurde.

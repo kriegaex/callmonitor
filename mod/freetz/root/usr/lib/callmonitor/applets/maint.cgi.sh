@@ -72,9 +72,7 @@ fi
 
 cgi_begin "$TITLE" extras
 
-if ! have phonebook; then
-    echo "<p>$(lang de:"Telefonbuch nicht installiert" en:"Phone book not installed")</p>"
-else
+if have phonebook; then
 sec_begin 'Callers'
 
 let LINES="$({ 

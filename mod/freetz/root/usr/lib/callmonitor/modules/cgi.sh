@@ -1,7 +1,7 @@
 ##
 ## Callmonitor for Fritz!Box (callmonitor)
 ## 
-## Copyright (C) 2005--2008  Andreas Bühmann <buehmann@users.berlios.de>
+## Copyright (C) 2005--2009  Andreas Bühmann <buehmann@users.berlios.de>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -55,3 +55,18 @@ _check() {
 }
 check()  suffix=_chk checked=" checked" _check "$@"
 select() suffix=_sel checked=" selected" _check "$@"
+
+cgi_include() {
+    local path=$1 file
+    case $path in
+	/*) ;;
+	*) path="$CALLMONITOR_LIBDIR/web/$path" ;;
+    esac
+    if [ -d "$path" ]; then
+	for file in $(ls "$path"/*); do
+	    . "$file"
+	done
+    else
+	. "$path"
+    fi
+}

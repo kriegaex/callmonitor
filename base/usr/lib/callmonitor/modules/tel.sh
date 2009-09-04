@@ -38,9 +38,21 @@ normalize_address() {
 ## normalize phone numbers
 normalize_tel() {
     local number=$1 mode=$2 lkz=$LKZ
+    unset __
     case $number in
-	*[^0-9+]*) number=$(echo "$number" | tr -cd "0-9+")
+	*[^0-9+*#]*) number=$(echo "$number" | tr -cd "0-9+*#")
     esac
+    
+    ## strip prefixes often used for special functions like CLIR
+    case $number in
+	[*#]*) number=${number##*[*#]} ;;
+    esac
+
+    ## stop early if any [*#] is left
+    case $number in
+	*[*#]*) __=$number; return 1 ;;
+    esac
+
     case $number in
 	+*) number="$LKZ_PREFIX${number#+}" ;;
     esac
@@ -81,6 +93,7 @@ normalize_tel() {
 	save) __="+$lkz${number#$OKZ_PREFIX}" ;;
 	*) __="${LKZ_PREFIX}${lkz}${number#$OKZ_PREFIX}" ;;
     esac
+    return 0
 }
 
 tel_collect_lkzs() {
@@ -121,6 +134,7 @@ normalize_sip() {
 	    ;;
     esac
     __=$number
+    return 0
 }
 ## read SIP[0-9] to address mapping
 if [ -r /var/run/phonebook/sip ]; then

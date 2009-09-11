@@ -61,6 +61,9 @@ default_message() {
 default_short_message() {
     default_message ${1:-50} 1
 }
+default_raw() {
+    default_message
+}
 
 
 ## wrap text (line length <= max)

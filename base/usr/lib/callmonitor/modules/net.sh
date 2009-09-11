@@ -211,9 +211,6 @@ rawmsg() {
 __rawmsg_simple() {
     printf "$TEMPLATE" "$@" | _connect
 }
-default_raw() {
-    default_message
-}
 
 ## post form data (application/x-www-form-urlencoded) via HTTP
 

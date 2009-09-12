@@ -713,3 +713,7 @@
 
 	* fshash.sh: Die Benutzung eines leeren AVM-Telefonbuch führte dazu,
 	dass das Telefonbuch immer wieder langwierig eingelesen wurde.
+
+2009-09-11:
+
+	callmonitor-1.16

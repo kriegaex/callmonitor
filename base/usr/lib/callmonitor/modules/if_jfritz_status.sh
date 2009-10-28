@@ -23,13 +23,19 @@
 require dial
 
 _j_is_up() {
-    busybox nc 127.0.0.1 1012 < /dev/null > /dev/null 2>&1
+    busybox nc "$CALLMONITOR_MON_HOST" "$CALLMONITOR_MON_PORT" < /dev/null > /dev/null 2>&1
 }
 
+_j_dial() {
+    case $CALLMONITOR_MON_HOST in
+	localhost|127.0.0.1|) dial "$1" ;;
+	*) echo "Cannot $2 interface of remote box; please dial $1 manually" ;;
+    esac
+}
 _j_enable() {
-    dial "#96*5*"
+    _j_dial "#96*5*" enable
 }
 
 _j_disable() {
-    dial "#96*4*"
+    _j_dial "#96*4*" disable
 }

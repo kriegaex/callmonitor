@@ -25,8 +25,8 @@
 _j_cgi_is_down() {
     echo "
     <li><strong style='color: red'>$(lang 
-	de:"Die CallMonitor-Schnittstelle (Port 1012) ist nicht aktiv."
-	en:"The CallMonitor interface (port 1012) is not active."
+	de:"Die CallMonitor-Schnittstelle ($CALLMONITOR_MON_HOST:$CALLMONITOR_MON_PORT) ist nicht aktiv."
+	en:"The CallMonitor interface ($CALLMONITOR_MON_HOST:$CALLMONITOR_MON_PORT) is not active."
     )</strong>
     $(lang
 	de:"Sie wird zum Betrieb des Callmonitors benötigt und normalerweise
@@ -41,8 +41,8 @@ _j_cgi_is_down() {
 _j_cgi_is_up() {
     echo "
     <li>$(lang
-	de:"Die CallMonitor-Schnittstelle (Port 1012) ist aktiviert."
-	en:"The CallMonitor interface (port 1012) is active."
+	de:"Die CallMonitor-Schnittstelle ($CALLMONITOR_MON_HOST:$CALLMONITOR_MON_PORT) ist aktiviert."
+	en:"The CallMonitor interface ($CALLMONITOR_MON_HOST:$CALLMONITOR_MON_PORT) is active."
     ) [<a href='/cgi-bin/extras.cgi/callmonitor/exec?jfritz=off'>$(lang de:"Ausschalten" en:"Disable")</a>]
 "
 }

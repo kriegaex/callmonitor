@@ -165,7 +165,7 @@ __read_from_iface() {
 	    wait
 	    rm -f "$pidfile"
 	} | {
-	    busybox nc 127.0.0.1 1012
+	    busybox nc "${CALLMONITOR_MON_HOST:-127.0.0.1}" "${CALLMONITOR_MON_PORT:-1012}"
 	    read pid < "$pidfile" && kill "$pid" > /dev/null 2>&1
 	} | __read
     fi

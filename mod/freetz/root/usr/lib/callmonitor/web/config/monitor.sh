@@ -35,11 +35,15 @@ sec_end
 sec_begin '$(lang de:"Monitor" en:"Monitor")'
 
 echo "
+<p>
     <label for='m1'>$(lang de:"Zu überwachende Box" en:"Box to be monitored")</label>:
-    <input type='text' name='mon_host' value='$(html "$CALLMONITOR_MON_HOST") id='m1'>
+    <input type='text' name='mon_host' value='$(html "$CALLMONITOR_MON_HOST")' 
+	size='16' id='m1'>
+    <label for='m2'>Port:</label>
+    <input type='text' name='mon_port' value='$(html "$CALLMONITOR_MON_PORT")'
+    	size='6' maxlength='5' id='m2'>
+</p>
 "
-## <input type='text' name='mon_port' value='$(html "$CALLMONITOR_MON_PORT") id='m2'>
-
 sec_end
 
 if ! _j_is_up; then

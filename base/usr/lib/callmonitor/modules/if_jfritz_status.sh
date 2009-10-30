@@ -28,8 +28,12 @@ _j_is_up() {
 
 _j_dial() {
     case $CALLMONITOR_MON_HOST in
-	localhost|127.0.0.1|) dial "$1" ;;
-	*) echo "Cannot $2 interface of remote box; please dial $1 manually" ;;
+	localhost|127.*|"") ;;
+	*) echo "Cannot $2 interface of remote box; please dial $1 manually."; return 1 ;;
+    esac
+    case $CALLMONITOR_MON_PORT in
+	1012) dial "$1" ;;
+	*) echo "Cannot $2 interface at non-standard port."; return 1 ;;
     esac
 }
 _j_enable() {

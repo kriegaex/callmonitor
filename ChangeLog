@@ -717,3 +717,17 @@
 2009-09-11:
 
 	callmonitor-1.16
+
+2009-02-21:
+
+	* webui.sh: Login bei Firmware 54.04.80 funktionierte nicht.
+	
+	* callmonitor: Bei Bedarf lassen sich nun die Anrufe auf einer anderen
+	Box überwachen als auf der, auf der der Callmonitor läuft.
+	
+	* cgi: Expertenmodus eingeführt, um selten benötigte Funktionen zu
+	verstecken.
+
+	* 11880.sh: 11880 hat seine Rückwärtssuche-Seiten überarbeitet.
+
+	callmonitor-1.17

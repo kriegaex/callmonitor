@@ -1,7 +1,7 @@
 ##
 ## Callmonitor for Fritz!Box (callmonitor)
 ## 
-## Copyright (C) 2005--2008  Andreas BÃ¼hmann <buehmann@users.berlios.de>
+## Copyright (C) 2005--2008  Andreas Bühmann <buehmann@users.berlios.de>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -100,6 +100,15 @@ _reverse_lookup_url() {
 readonly REVERSE_OK='s/^/OK:/; p; q'
 readonly REVERSE_NA='s/.*/NA:/; p; q'
 
+readonly REVERSE_DECODE_ENTITIES='
+    s#&uuml;#ü#g
+    s#&auml;#ä#g
+    s#&ouml;#ö#g
+    s#&Uuml;#Ü#g
+    s#&Auml;#Ä#g
+    s#&Ouml;#Ö#g
+    s#&szlig;#ß#g
+'
 readonly REVERSE_SANITIZE='
     s#</rev:name>#\&PART;#g
     s#<[^>]*># #g
@@ -114,7 +123,7 @@ readonly REVERSE_SANITIZE='
     s#&amp;#\&#g
     s#;#,#g
     s#|#;#g
-    s#[[:space:]Â ]\+# #g
+    s#\([[:space:]]\|Â \)\+# #g
     s#,\( *,\)\+#,#g
     s#; *,#;#g
     s#, *;#;#g

@@ -21,7 +21,7 @@
 ##
 _reverse_11880_url() {
     local number="0${1#${LKZ_PREFIX}49}"
-    URL="http://www.11880.com/Suche/index.cfm?fuseaction=Suche.rueckwaertssucheresult&init=true&change=false&searchform=Rueckwaerts&tel=$(urlencode "$number")"
+    URL="http://www.11880.com/inverssuche/index/search?method=searchSimple&_dvform_posted=1&phoneNumber=$(urlencode "$number")"
 }
 _reverse_11880_request() {
     local URL=
@@ -30,19 +30,21 @@ _reverse_11880_request() {
 }
 _reverse_11880_extract() {
     sed -n -e '
-	/keine Treffer gefunden\|Tut uns leid/ {
+	/class="noResultCities"\|keinen Teilnehmer ermitteln/ {
 	    '"$REVERSE_NA"'
 	}
-	/<h[1-9] class="nam_header"/,/<table/ {
-	    /<table/ b found
+	/<[^[:space:]>]*[[:space:]]class="head[[:space:]]/,/<[^[:space:]>]*[[:space:]]class="numericdata/ {
+	    /<[^[:space:]>]*[[:space:]]class="numericdata/ b found
+	    /<a href=[^>]*#ratingform/ d
 	    H
 	}
 	b
 	: found
 	g
-	s#<h[1-9][^>]>#<rev:name>#
-	s#</h[1-9]>#</rev:name>#
+	s#<a class="namelink"[^>]>#<rev:name>#
+	s#</a>#</rev:name>#
 	s#<br />#, #g
+	'"$REVERSE_DECODE_ENTITIES"'
 	'"$REVERSE_SANITIZE"'
 	'"$REVERSE_OK"'
     '

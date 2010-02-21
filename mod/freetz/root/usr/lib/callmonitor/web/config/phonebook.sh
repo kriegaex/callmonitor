@@ -105,28 +105,34 @@ echo "
 	en:"at $H_PROVIDERS"
     )</td>
 </tr>
-<tr><td></td>
-    <td><label for='cache'>$(lang
-	de:"Suchergebnisse zwischenspeichern?"
-	en:"Cache query results?"
-    )</label></td>
-    <td colspan="0"><select name='reverse_cache' id='cache'>
-	<option title='$(lang
-	    de:"Keine Speicherung der Namen"
-	    en:"Names are not stored"
-	)' value='no'$no_sel>$(lang de:"Nein" en:"No")</option>
-	<option title='$(lang
-	    de:"Namen gehen bei nächstem Neustart verloren"
-	    en:"Names will be lost at the next reboot"
-	)' value='transient'$trans_sel>$(lang
-	    de:"Flüchtig" en:"Transiently")</option>
-	<option title='$(lang 
-	    de:"Namen werden in den Callers gespeichert"
-	    en:"Names are stored in the Callers"
-	)' value='persistent'$pers_sel>$(lang
-	    de:"Dauerhaft" en:"Persistently")</option>
-    </select></td>
-</tr>
+"
+if [ "$CALLMONITOR_EXPERT" = yes ]; then
+    echo "
+    <tr><td></td>
+	<td><label for='cache'>$(lang
+	    de:"Suchergebnisse zwischenspeichern?"
+	    en:"Cache query results?"
+	)</label></td>
+	<td colspan="0"><select name='reverse_cache' id='cache'>
+	    <option title='$(lang
+		de:"Keine Speicherung der Namen"
+		en:"Names are not stored"
+	    )' value='no'$no_sel>$(lang de:"Nein" en:"No")</option>
+	    <option title='$(lang
+		de:"Namen gehen bei nächstem Neustart verloren"
+		en:"Names will be lost at the next reboot"
+	    )' value='transient'$trans_sel>$(lang
+		de:"Flüchtig" en:"Transiently")</option>
+	    <option title='$(lang 
+		de:"Namen werden in den Callers gespeichert"
+		en:"Names are stored in the Callers"
+	    )' value='persistent'$pers_sel>$(lang
+		de:"Dauerhaft" en:"Persistently")</option>
+	</select></td>
+    </tr>
+    "
+fi
+echo "
 </table>
 "
 

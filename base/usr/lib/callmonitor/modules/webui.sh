@@ -128,7 +128,7 @@ webui_post_form() (
 )
 webui_get() (
     cd "$WEBCM_DIR"
-    REQUEST_METHOD=GET REMOTE_ADDR=${REMOTE_ADDR-127.0.0.1} \
+    REQUEST_METHOD=GET REMOTE_ADDR=127.0.0.1 \
     WEBDIR_PATH=/usr/www/html \
     QUERY_STRING="${WEBUI_SID:+sid=$WEBUI_SID&}$1" "$WEBCM"
 )

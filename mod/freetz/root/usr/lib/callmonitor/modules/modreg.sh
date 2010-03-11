@@ -29,9 +29,11 @@ mod_register() {
 	modreg cgi $DAEMON 'Callmonitor'
 	modreg extra $DAEMON '$(lang de:"Wartung" en:"Maintenance")' 1 'maint'
 ## requires [webif & monitor] /usr/lib/cgi-bin/callmonitor/testcall.cgi
+## requires [webif & monitor] /usr/lib/cgi-bin/callmonitor/dump.cgi
 ## requires [webif & monitor] /etc/default.callmonitor/listeners.def
 	if have monitor; then
 	    modreg extra $DAEMON '$(lang de:"Testanruf" en:"Test call")' 1 'testcall'
+	    modreg extra $DAEMON '$(lang de:"Ereignisse" en:"Events")' 1 'dump'
 	    modreg file 'listeners' 'Listeners' 0 "$def/listeners.def"
 	fi
 	if have phonebook; then
@@ -53,6 +55,7 @@ mod_unregister() {
 	fi
 	if have monitor; then
 	    modunreg file 'listeners'
+	    modunreg extra $DAEMON 'dump'
 	    modunreg extra $DAEMON 'testcall'
 	fi
 	modunreg extra $DAEMON 'maint'

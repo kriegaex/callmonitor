@@ -731,3 +731,11 @@
 	* 11880.sh: 11880 hat seine Rückwärtssuche-Seiten überarbeitet.
 
 	callmonitor-1.17
+
+2009-02-24:
+
+	* callmonitor.sh: Argument --version eingeführt
+
+2009-03-11:
+
+	* dump.cgi: Aufzeichnung und Darstellung der letzten k Ereignisse

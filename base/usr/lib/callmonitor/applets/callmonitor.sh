@@ -27,7 +27,7 @@ require file
 require version
 
 ## parse options
-TEMP=$(getopt -o 'fs' -l debug,help -n "$APPLET" -- "$@") || exit 1
+TEMP=$(getopt -o 'fs' -l debug,help,version -n "$APPLET" -- "$@") || exit 1
 eval "set -- $TEMP"
 
 DEBUG=false
@@ -38,6 +38,7 @@ while true; do
 	-f) FOREGROUND=true ;;
 	-s) STOP=true ;;
 	--debug) DEBUG=true ;;
+	--version) echo "$APPLET ${CALLMONITOR_VERSION} (${CALLMONITOR_SUBVERSION})"; exit ;;
 	--help) usage >&2; exit ;;
 	--) shift; break ;;
 	*) ;; # should never happen
@@ -62,18 +63,20 @@ __log_setup() {
     fi
     case $CALLMONITOR_DUMP in
 	yes)
-	    __info "dumping event information to $CALLMONITOR_DUMPFILE"
+	    __info "dumping event trace to $CALLMONITOR_DUMPDIR"
 	    require dump
-	    require lock
+	    require delivery
+	    mkdir -p "$CALLMONITOR_DUMPDIR"
+	    packet_cleanup "$CALLMONITOR_DUMPDIR"
 	    __dump() {
-		if lock "$CALLMONITOR_DUMPFILE"; then
-		    dump "$@" >> "$CALLMONITOR_DUMPFILE"
-		    unlock "$CALLMONITOR_DUMPFILE"
-		fi
+		local p=$(packet_new "$CALLMONITOR_DUMPDIR" "$INSTANCE")
+		dump "$@" > "$p"
+		packet_deliver "$p"
+		packet_cleanup "$CALLMONITOR_DUMPDIR"
 	    }
 	;;
 	*)
-	    rm -f "$CALLMONITOR_DUMPFILE"
+	    rm -f "$CALLMONITOR_DUMPDIR"
 	;;
     esac
     __debug "entering DEBUG mode"

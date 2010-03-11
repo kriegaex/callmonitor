@@ -20,7 +20,7 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 require cgi
-require lock
+require delivery
 
 SELF=maint
 TITLE='$(lang de:"Ereignisse" en:"Events")'
@@ -29,7 +29,7 @@ eval "$(modcgi show dump)"
 
 cgi_begin "$TITLE" extras
 
-cols="EVENT SOURCE DEST TIMESTAMP"
+cols="TIMESTAMP EVENT SOURCE DEST ID"
 n=0
 ___() {
     let n++
@@ -53,14 +53,17 @@ ___() {
 ##  echo "</li>"
 }
 
-if [ -r "$CALLMONITOR_DUMPFILE" ]; then
+if [ -d "$CALLMONITOR_DUMPDIR" ]; then
     echo "<table><tr>"
     for var in $cols; do echo "<th style='text-align: left;'>$var</th>"; done
     echo "</tr>"
-    if lock "$CALLMONITOR_DUMPFILE"; then
-	. "$CALLMONITOR_DUMPFILE"
-	unlock "$CALLMONITOR_DUMPFILE"
-    fi
+    tmp=/tmp/callmonitor/$$
+    mkdir -p "$tmp"
+    packet_snapshot "$CALLMONITOR_DUMPDIR" "$tmp"
+    for p in $(ls "$tmp"); do
+	. "$tmp/$p"
+    done
+    rm -rf "$tmp"
     echo "</table>"
 fi
 

@@ -1,7 +1,7 @@
 require if_jfritz_status
 require if_jfritz_cgi
 
-check "$CALLMONITOR_ENABLED" yes:auto *:man
+check "$CALLMONITOR_ENABLED" yes:auto "*":man
 check "$CALLMONITOR_DEBUG" yes:debug
 
 SYSLOG='$(lang de:"System-Log" en:"system log")'

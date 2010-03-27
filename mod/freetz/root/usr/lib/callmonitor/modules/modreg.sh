@@ -33,7 +33,7 @@ mod_register() {
 ## requires [webif & monitor] /etc/default.callmonitor/listeners.def
 	if have monitor; then
 	    modreg extra $DAEMON '$(lang de:"Testanruf" en:"Test call")' 1 'testcall'
-	    modreg extra $DAEMON '$(lang de:"Ereignisse" en:"Events")' 1 'dump'
+	    modreg extra $DAEMON '$(lang de:"Anruf-Ereignisse" en:"Call events")' 1 'dump'
 	    modreg file 'listeners' 'Listeners' 0 "$def/listeners.def"
 	fi
 	if have phonebook; then

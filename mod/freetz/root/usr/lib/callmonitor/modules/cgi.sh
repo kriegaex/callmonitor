@@ -50,7 +50,7 @@ _check() {
 		$key) eval "${val}${suffix}=\$checked"; found=true; continue ;;
 	    esac
 	fi
-	eval "${val}_chk="
+	eval "${val}${suffix}="
     done
 }
 check()  suffix=_chk checked=" checked" _check "$@"

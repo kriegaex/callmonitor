@@ -22,9 +22,8 @@
 require version
 
 ## carriage return & line feed
-readonly CR=""
-readonly LF="
-"
+readonly CR=$'\r'
+readonly LF=$'\n'
 
 ## output an HTTP Authorization header (Basic)
 ## _http_basic_auth <user> <password>

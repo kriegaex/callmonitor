@@ -22,10 +22,8 @@
 require cgi
 require delivery
 
-SELF=maint
+SELF=dump
 TITLE='$(lang de:"Ereignisse" en:"Events")'
-
-eval "$(modcgi show dump)"
 
 cgi_begin "$TITLE" extras
 
@@ -33,24 +31,11 @@ cols="TIMESTAMP EVENT SOURCE DEST ID"
 n=0
 ___() {
     let n++
-##   if ? "n == DUMP_SHOW"; then
-##	echo "<table>"
-##	for var; do
-##	    echo "<tr><th>$var</th>"
-##	    eval 'echo "<td>$(html "$'"$var"'")</td>"'
-##	done
-##	echo "</table>"
-##   else
-##	echo -n "<a href='dump?show=$n'>"
-##	echo -n "[$(html "$EVENT")] $(html "$SOURCE") ~ $(html "$DEST")"
-##	echo "</a>"
-	echo "<tr>"
-	for var in $cols; do
-	    eval 'echo "<td>$(html "$'"$var"'")</td>"'
-	done
-	echo "</tr>"
-##   fi
-##  echo "</li>"
+    echo "<tr>"
+    for var in $cols; do
+	eval 'echo "<td>$(html "$'"$var"'")</td>"'
+    done
+    echo "</tr>"
 }
 
 if [ -d "$CALLMONITOR_DUMPDIR" ]; then
@@ -60,11 +45,21 @@ if [ -d "$CALLMONITOR_DUMPDIR" ]; then
     tmp=/tmp/callmonitor/$$
     mkdir -p "$tmp"
     packet_snapshot "$CALLMONITOR_DUMPDIR" "$tmp"
+    empty=true
     for p in $(ls "$tmp"); do
 	. "$tmp/$p"
+	empty=false
     done
     rm -rf "$tmp"
     echo "</table>"
+    if $empty; then
+	echo '$(lang de:"Keine Ereignisse" en:"No events")'
+    fi
+else
+    echo '<p>$(lang 
+	de:"Ereignisse werden nicht aufgezeichnet."
+	en:"Events are not being recorded."
+    )</p>'
 fi
 
 cgi_end

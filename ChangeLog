@@ -736,6 +736,9 @@
 
 	* callmonitor.sh: Argument --version eingeführt
 
-2009-03-11:
+2009-04-09:
 
-	* dump.cgi: Aufzeichnung und Darstellung der letzten k Ereignisse
+	* modreg: Umstellung auf neue Datei-Registrierung; setzt aktuellen
+	Freetz-Trunk voraus.
+
+	callmonitor-1.17.1 für freetz-trunk

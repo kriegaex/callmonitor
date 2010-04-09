@@ -2,6 +2,10 @@
 Testen
 ----------------------------------------------------------------------
 
+009-03-11:
+
+	* dump.cgi: Aufzeichnung und Darstellung der letzten k Ereignisse
+
 $LF, $CR
 
 webui-Zugriff ohne Passwort testen

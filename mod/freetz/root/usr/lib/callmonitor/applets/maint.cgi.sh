@@ -83,8 +83,8 @@ SIZE="$BYTES $(lang de:"Bytes" en:"bytes")"
 echo "
 <p>$(lang
     de:"$LINES Einträge (Größe: $SIZE)
-	<a href='/cgi-bin/file.cgi?id=callers'>bearbeiten</a>"
-    en:"<a href='/cgi-bin/file.cgi?id=callers'>Edit</a>
+	<a href='$(href file callmonitor callers)'>bearbeiten</a>"
+    en:"<a href='$(href file callmonitor callers)'>Edit</a>
 	$LINES entries (size: $SIZE)"
 )</p>
 <p>$(lang

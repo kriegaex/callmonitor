@@ -29,8 +29,7 @@ pre() {
 
 config_button() {
     echo "
-<form class='btn' action='/cgi-bin/pkgconf.cgi' method='get'>
-    <input type='hidden' name='pkg' value='callmonitor'>
+<form class='btn' action='$(href cgi callmonitor)' method='get'>
     <div class='btn'><input type='submit' 
 	value='$(lang de:"Konfiguration" en:"Configuration")'></div>
 </form>

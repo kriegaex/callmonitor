@@ -67,7 +67,7 @@ sec_begin "$(lang de:"Test" en:"Check")"
 
 echo "
 <ul>
-    <li><a href='/cgi-bin/extras.cgi/callmonitor/testlookup'>$(lang 
+    <li><a href='$(href extra callmonitor testlookup)'>$(lang 
 	de:"Alle Rückwärtssuche-Anbieter ausprobieren"
 	en:"Try all reverse-lookup providers"
     )</a></li>

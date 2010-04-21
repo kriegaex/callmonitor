@@ -718,7 +718,7 @@
 
 	callmonitor-1.16
 
-2009-02-21:
+2010-02-21:
 
 	* webui.sh: Login bei Firmware 54.04.80 funktionierte nicht.
 	
@@ -732,13 +732,23 @@
 
 	callmonitor-1.17
 
-2009-02-24:
+2010-02-24:
 
 	* callmonitor.sh: Argument --version eingeführt
 
-2009-04-09:
+2010-04-09:
 
 	* modreg: Umstellung auf neue Datei-Registrierung; setzt aktuellen
 	Freetz-Trunk voraus.
 
 	callmonitor-1.17.1 für freetz-trunk
+
+2010-04-10:
+
+	* Weboberfläche: Alle internen Links korrigieren
+
+	callmonitor-1.17.2 für freetz-trunk
+
+2010-04-21:
+
+	* reverse: DasTelefonbuch und GoYellow angepasst

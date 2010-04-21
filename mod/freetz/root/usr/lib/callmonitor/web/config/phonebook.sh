@@ -57,7 +57,7 @@ sec_end
 
 sec_begin '$(lang de:"Rückwärtssuche" en:"Reverse lookup")'
 
-H_CALLERS="<a href='/cgi-bin/file.cgi?id=callers' title='$(lang 
+H_CALLERS="<a href='$(href file callmonitor callers)' title='$(lang 
 	de:"Telefonbuch des Callmonitors"
 	en:"Callmonitor's phone book"
     )'>Callers</a>"
@@ -85,7 +85,7 @@ echo "
     )</label></td>
 </tr>
 "
-H_PROVIDERS="<a href='/cgi-bin/extras.cgi/callmonitor/reverse' title='$(lang
+H_PROVIDERS="<a href='$(href extra callmonitor reverse)' title='$(lang
 	de:"Rückwärtssucheseiten im Web"
 	en:"Reverse-lookup Web sites"
     )'>$(lang de:"externen Anbietern" en:"external providers")</a>"

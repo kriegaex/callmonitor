@@ -33,7 +33,7 @@ _j_cgi_is_down() {
 	    automatisch aktiviert."
 	en:"It is required for Callmonitor's operation and is normally enabled
 	    automatically."
-    ) [<a href='/cgi-bin/extras.cgi/callmonitor/exec?jfritz=on'>$(lang de:"Einschalten" en:"Enable")</a>]
+    ) [<a href='$(href extra callmonitor exec)?jfritz=on'>$(lang de:"Einschalten" en:"Enable")</a>]
     </li>
 "
 }
@@ -43,6 +43,6 @@ _j_cgi_is_up() {
     <li>$(lang
 	de:"Die CallMonitor-Schnittstelle ($CALLMONITOR_MON_HOST:$CALLMONITOR_MON_PORT) ist aktiviert."
 	en:"The CallMonitor interface ($CALLMONITOR_MON_HOST:$CALLMONITOR_MON_PORT) is active."
-    ) [<a href='/cgi-bin/extras.cgi/callmonitor/exec?jfritz=off'>$(lang de:"Ausschalten" en:"Disable")</a>]
+    ) [<a href='$(href extra callmonitor exec)?jfritz=off'>$(lang de:"Ausschalten" en:"Disable")</a>]
 "
 }

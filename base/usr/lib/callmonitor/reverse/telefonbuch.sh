@@ -34,7 +34,7 @@ _reverse_telefonbuch_extract() {
 	    '"$REVERSE_NA"'
 	}
 	/<table[^>]*class="[^"]*\(bg-0[12]\|entry\)/,\#<td class="col4"# {
-	    \#<div class="[^"]*hide# b
+	    \#<div class="[^"]*hide#,\#</div># b
 	    \#<td class="col[23]"# s/$/,/
 	    H
 	    \#<td class="col4"# b cleanup
@@ -42,7 +42,9 @@ _reverse_telefonbuch_extract() {
 	b
 	: cleanup
 	g
-	s#<a href[^>]*>\(.*\)</a>#<rev:name>&</rev:name>#
+	s/'$'\r''\?\n/ /g
+	s#<a [^>]*href[^>]*>\(.*\)</a>#<rev:name>&</rev:name>#
+	'"$REVERSE_DECODE_ENTITIES"'
 	'"$REVERSE_SANITIZE"'
 	'"$REVERSE_OK"'
     '

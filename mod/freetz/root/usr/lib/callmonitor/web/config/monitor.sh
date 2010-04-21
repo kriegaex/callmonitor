@@ -6,7 +6,7 @@ check "$CALLMONITOR_DEBUG" yes:debug
 
 SYSLOG='$(lang de:"System-Log" en:"system log")'
 if has_package syslogd; then
-    SYSLOG="<a href='pkgconf.cgi?pkg=syslogd'>$SYSLOG</a>"
+    SYSLOG="<a href='$(href cgi syslogd)'>$SYSLOG</a>"
 fi
 
 sec_begin '$(lang de:"Starttyp" en:"Startup type")'
@@ -61,9 +61,9 @@ sec_begin '$(lang de:"Aktionen bei Anruf" en:"Actions upon calls")'
 
 echo "
 <ul>
-    <li><a href='/cgi-bin/file.cgi?id=listeners'>$(lang
+    <li><a href='$(href file callmonitor listeners)'>$(lang
 	de:"Listeners bearbeiten" en:"Edit Listeners")</a></li>
-    <li><a href='/cgi-bin/extras.cgi/callmonitor/testcall'>$(lang
+    <li><a href='$(href extra callmonitor testcall)'>$(lang
 	de:"Testanruf durchführen" en:"Perform test call")</a></li>
 </ul>
 "

@@ -3,10 +3,7 @@ Testen
 ----------------------------------------------------------------------
 
 009-03-11:
-
 	* dump.cgi: Aufzeichnung und Darstellung der letzten k Ereignisse
-
-$LF, $CR
 
 webui-Zugriff ohne Passwort testen
 Aktivierung des Callmonitor-Interfaces
@@ -14,9 +11,6 @@ Aktivierung des Callmonitor-Interfaces
 ----------------------------------------------------------------------
 Wichtig
 ----------------------------------------------------------------------
-
-Umlaute bei DasTelefonbuch
-Adresse bei GoYellow
 
 Suchreihenfolge der Telefonfonbücher: Warum Cache nicht immer als letztes?
 

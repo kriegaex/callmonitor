@@ -36,8 +36,8 @@ _reverse_goyellow_extract() {
 	    '"$REVERSE_NA"'
 	}
 	\#<div id="searchResultListing"#,\#<p class="moreInfo"# {
-	    \#<span class="normal"# b name
-	    \#<span class="\(comma\|postcode\|city\)"># H
+	    \#<span class="normal fn# b name
+	    \#<span class="\(comma\|postcode\|city \)# H
 	    \#<span class="street encAdr"># b street
 	}
 	\#<p class="moreInfo"# {

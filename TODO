@@ -2,8 +2,7 @@
 Testen
 ----------------------------------------------------------------------
 
-009-03-11:
-	* dump.cgi: Aufzeichnung und Darstellung der letzten k Ereignisse
+dump.cgi: Aufzeichnung und Darstellung der letzten k Ereignisse
 
 webui-Zugriff ohne Passwort testen
 Aktivierung des Callmonitor-Interfaces
@@ -12,6 +11,8 @@ Aktivierung des Callmonitor-Interfaces
 Wichtig
 ----------------------------------------------------------------------
 
+Eingebundene Aktionen konfigurierbar gestalten: Nicht jeder braucht alles
+(bereits vorgeladen)
 Suchreihenfolge der Telefonfonbücher: Warum Cache nicht immer als letztes?
 
 ----------------------------------------------------------------------
@@ -19,7 +20,6 @@ Demnächst anschauen
 ----------------------------------------------------------------------
 
 Expertenansicht per Javascript dynamisch aktivieren (ohne Submission)
-
 Evtl. webui_logout einfügen
 
 ----------------------------------------------------------------------

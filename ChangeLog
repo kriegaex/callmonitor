@@ -756,3 +756,11 @@
 2010-05-14:
 
 	callmonitor-1.17.3 für freetz-trunk
+
+2010-05-22:
+
+	* samsung.sh: Nachrichten an bestimmte TV-Geräte von Samsung (via SOAP)
+
+2010-05-24:
+
+	callmonitor-1.18

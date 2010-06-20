@@ -126,12 +126,12 @@ webui_post_form() (
     local post_data="${WEBUI_SID:+sid=$WEBUI_SID&}$1" REMOTE_ADDR=127.0.0.1
     webui_post_form_generic "$WEBCM" "$post_data"
 )
-webui_get() (
+# This simpler version does not need a session id any longer (and it does not
+# output an HTTP header!)
+webui_get() {
     cd "$WEBCM_DIR"
-    REQUEST_METHOD=GET REMOTE_ADDR=127.0.0.1 \
-    WEBDIR_PATH=/usr/www/html \
-    QUERY_STRING="${WEBUI_SID:+sid=$WEBUI_SID&}$1" "$WEBCM"
-)
+    "$WEBCM" "$1"
+}
 
 ## requires /usr/bin/cfg2sh
 webui_config() {
@@ -159,7 +159,7 @@ webui_query() {
 	query="$query&var:n${n}=${value}&var:n%5b${n}%5d=${value}"
 	let n++
     done
-    webui_get "$query" | sed -e '1,/^$/d;$d'
+    webui_get "$query"
 }
 
 webui_page_url() {

@@ -46,10 +46,10 @@ samsung() (
 
     samsung_call "$host" \
 	--date="$calldate" --time="$calltime" \
-	--to-number="$SOURCE_DISP" \
-	--to="$(echo "$SOURCE_ENTRY" | latin1_utf8)" \
-	--from-number="$DEST_DISP" \
-	--from="$(echo "$DEST_ENTRY" | latin1_utf8)"
+	--to-number="$DEST_DISP" \
+	--to="$(echo "$DEST_ENTRY" | latin1_utf8)" \
+	--from-number="$SOURCE_DISP" \
+	--from="$(echo "$SOURCE_ENTRY" | latin1_utf8)"
 )
 
 samsung_call() {

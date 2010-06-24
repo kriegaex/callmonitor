@@ -775,3 +775,7 @@
 2010-06-20:
 
 	* webui.sh: Robustere Implementierung von webui_get
+
+2010-06-24:
+
+	callmonitor-1.18.1

@@ -7,9 +7,12 @@ dump.cgi: Aufzeichnung und Darstellung der letzten k Ereignisse
 webui-Zugriff ohne Passwort testen
 Aktivierung des Callmonitor-Interfaces
 
+
 ----------------------------------------------------------------------
 Wichtig
 ----------------------------------------------------------------------
+
+Dienste-Eintrag entfernen, wenn angebracht: modreg daemon --hide callmonitor
 
 Suchreihenfolge der Telefonfonbücher: Warum Cache nicht immer als letztes?
 

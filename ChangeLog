@@ -783,3 +783,6 @@
 2010-07-24:
 
 	* local_ch.sh: 2. Schweizer Rückwärtssuche: tel.local.ch
+	* goyellow.sh: Rückwärtssuche bei GoYellow angepasst
+
+	callmonitor-1.18.2

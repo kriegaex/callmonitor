@@ -39,6 +39,7 @@ _reverse_goyellow_extract() {
 	    \#<span class="normal fn# b name
 	    \#<span class="\(comma\|postcode\|city \)# H
 	    \#<span class="street encAdr"># b street
+	    \#<span class="street # H
 	}
 	\#<p class="moreInfo"# {
 	    g

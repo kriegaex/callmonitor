@@ -792,3 +792,9 @@
 	* reverse.cgi.sh: Make saving work (adapt to Freetz changes)
 
 	callmonitor-1.18.3
+
+2010-08-06:
+
+	* herold_at.sh: Neue Rückwärtssuche für Österreich (beta)
+
+	callmonitor-1.18.4

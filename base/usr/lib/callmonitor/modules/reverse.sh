@@ -109,6 +109,15 @@ readonly REVERSE_DECODE_ENTITIES='
     s#&Ouml;#Ö#g
     s#&szlig;#ß#g
 '
+readonly REVERSE_DECODE_ENTITIES_UTF8='
+    s#&uuml;#'$'\xc3\xbc''#g
+    s#&auml;#'$'\xc3\xa4''#g
+    s#&ouml;#'$'\xc3\xb6''#g
+    s#&Uuml;#'$'\xc3\x9c''#g
+    s#&Auml;#'$'\xc3\x84''#g
+    s#&Ouml;#'$'\xc3\x96''#g
+    s#&szlig;#'$'\xc3\x9f''#g
+'
 readonly REVERSE_SANITIZE='
     s#</rev:name>#\&PART;#g
     s#<[^>]*># #g

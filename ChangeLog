@@ -798,3 +798,10 @@
 	* herold_at.sh: Neue Rückwärtssuche für Österreich (beta)
 
 	callmonitor-1.18.4
+
+	* telefonbuch_at.sh: O.Ö. Telefonbuchverlag hat seinen Server umbenannt:
+	  www.das-telefonbuch.at => www.dasschnelle.at
+
+	* herold_at.sh: Umlaute wurden verschluckt
+
+	callmonitor-1.18.5

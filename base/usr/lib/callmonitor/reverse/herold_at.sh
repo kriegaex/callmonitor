@@ -46,6 +46,7 @@ _reverse_herold_at_extract() {
 	g
 	s#.*<b>\([^<]*\)</b>#<rev:name>\1</rev:name>#
 	s#<br/>#, #g
+	'"$REVERSE_DECODE_ENTITIES_UTF8"'
 	'"$REVERSE_SANITIZE"'
 	'"$REVERSE_OK"'
     ' | utf8_latin1

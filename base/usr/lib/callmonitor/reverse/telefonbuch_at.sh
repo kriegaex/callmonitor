@@ -21,7 +21,7 @@
 ##
 _reverse_telefonbuch_at_url() {
     local number="0${1#${LKZ_PREFIX}43}"
-    URL="http://www.tb-online.at/index.php?pc=in&aktion=suchein&telnummer=$(urlencode "$number")"
+    URL="http://www.dasschnelle.at/index.php?pc=in&aktion=suchein&telnummer=$(urlencode "$number")"
 }
 _reverse_telefonbuch_at_request() {
     local URL=

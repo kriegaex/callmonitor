@@ -49,7 +49,7 @@ if [ -n "$REVERSE_SAVE" ]; then
     new_provider=${new_provider# }
 
     ## delegate to save.cgi
-    QUERY_STRING="form=pkg_callmonitor" webui_post_form_generic /usr/mww/cgi-bin/save.cgi \
+    PATH_INFO=/callmonitor webui_post_form_generic /usr/mww/cgi-bin/conf.cgi \
     	"reverse_provider=$(urlencode "$new_provider")&area_provider=$(urlencode "$REVERSE_AREA")"
     exit $?
 fi

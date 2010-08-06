@@ -786,3 +786,9 @@
 	* goyellow.sh: Rückwärtssuche bei GoYellow angepasst
 
 	callmonitor-1.18.2
+
+2010-08-02:
+
+	* reverse.cgi.sh: Make saving work (adapt to Freetz changes)
+
+	callmonitor-1.18.3

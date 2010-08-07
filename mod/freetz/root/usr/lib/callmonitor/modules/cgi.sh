@@ -36,25 +36,6 @@ config_button() {
 "
 }
 
-_check() {
-    local input=$1
-    local alt key val found=false
-    shift
-    for alt; do
-	key=${alt%%:*}
-	val=${alt#*:}
-	: ${val:=$key}
-	if ! $found; then
-	    case $input in
-		$key) eval "${val}${suffix}=\$checked"; found=true; continue ;;
-	    esac
-	fi
-	eval "${val}${suffix}="
-    done
-}
-check()  suffix=_chk checked=" checked" _check "$@"
-select() suffix=_sel checked=" selected" _check "$@"
-
 cgi_include() {
     local path=$1 file
     case $path in

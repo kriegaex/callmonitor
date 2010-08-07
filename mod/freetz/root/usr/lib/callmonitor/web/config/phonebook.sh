@@ -93,7 +93,9 @@ echo "
 <tr>
     <td><input type='hidden' name='reverse' value='no'><!--
     --><input type='checkbox' name='reverse' value='yes'$reverse_chk id='r4'
-	onchange='dep(this,\"cache\")'></td>
+    $(
+	[ "$CALLMONITOR_EXPERT" = yes ] && echo "onchange='dep(this,\"cache\")'"
+    )></td>
     <td><label title='$(lang
 	de:"Rufnummern wenn möglich in Namen auflösen"
 	en:"Resolve numbers to names if possible"

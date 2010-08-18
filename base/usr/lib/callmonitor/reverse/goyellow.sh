@@ -29,13 +29,17 @@ _reverse_goyellow_request() {
     wget_callmonitor "$URL" -q -O -
 }
 _reverse_goyellow_extract() {
+    local b=$'\1' e=$'\2'
+    local c="[^$b$e]"
     sed -n -e '
 	\#haben wir nichts gefunden# {
 	    '"$REVERSE_NA"'
 	}
 	\#<div id="searchResultListing"#,\#<p class="moreInfo"# {
-	    \#<span class="normal"# b name
-	    \#<span class="\(street\|comma\|postcode\|city\)"># H
+	    \#<span class="normal fn# b name
+	    \#<span class="\(comma\|postcode\|city \)# H
+	    \#<span class="street encAdr"># b street
+	    \#<span class="street # H
 	}
 	\#<p class="moreInfo"# {
 	    g
@@ -47,5 +51,15 @@ _reverse_goyellow_extract() {
 	s#.*#<rev:name>&</rev:name>#
 	h
 	b
-    ' | utf8_latin1
+	: street
+	s#.*<span[^>]*>#'"$b$b$b"'#
+	s#</span>.*#'"$e"'#
+	H
+	b
+    ' | utf8_latin1 | sed -r "
+    	: loop
+	s/$b($c*)$b($c*)$b($c)($c)?/$b\1\3$b\4\2$b/
+	t loop
+	s/[$b$e]//g
+    "
 }

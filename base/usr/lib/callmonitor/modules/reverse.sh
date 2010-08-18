@@ -1,7 +1,7 @@
 ##
 ## Callmonitor for Fritz!Box (callmonitor)
 ## 
-## Copyright (C) 2005--2008  Andreas BÃ¼hmann <buehmann@users.berlios.de>
+## Copyright (C) 2005--2008  Andreas Bühmann <buehmann@users.berlios.de>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -32,7 +32,8 @@ require reverse_config
 
 reverse_lookup() {
     local number_plain=$1 prov area_prov child afile name exit number __
-    normalize_address "$number_plain"; number=$__
+    normalize_address "$number_plain" || return 1
+    number=$__
     if ! let "${number:+1}"; then return 1; fi
 
     local lkz=$(tel_lkz "$number")
@@ -99,6 +100,24 @@ _reverse_lookup_url() {
 readonly REVERSE_OK='s/^/OK:/; p; q'
 readonly REVERSE_NA='s/.*/NA:/; p; q'
 
+readonly REVERSE_DECODE_ENTITIES='
+    s#&uuml;#ü#g
+    s#&auml;#ä#g
+    s#&ouml;#ö#g
+    s#&Uuml;#Ü#g
+    s#&Auml;#Ä#g
+    s#&Ouml;#Ö#g
+    s#&szlig;#ß#g
+'
+readonly REVERSE_DECODE_ENTITIES_UTF8='
+    s#&uuml;#'$'\xc3\xbc''#g
+    s#&auml;#'$'\xc3\xa4''#g
+    s#&ouml;#'$'\xc3\xb6''#g
+    s#&Uuml;#'$'\xc3\x9c''#g
+    s#&Auml;#'$'\xc3\x84''#g
+    s#&Ouml;#'$'\xc3\x96''#g
+    s#&szlig;#'$'\xc3\x9f''#g
+'
 readonly REVERSE_SANITIZE='
     s#</rev:name>#\&PART;#g
     s#<[^>]*># #g
@@ -113,7 +132,7 @@ readonly REVERSE_SANITIZE='
     s#&amp;#\&#g
     s#;#,#g
     s#|#;#g
-    s#[[:space:]Â ]\+# #g
+    s#\([[:space:]]\|Â \)\+# #g
     s#,\( *,\)\+#,#g
     s#; *,#;#g
     s#, *;#;#g

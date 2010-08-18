@@ -1,7 +1,7 @@
 ##
 ## Callmonitor for Fritz!Box (callmonitor)
 ## 
-## Copyright (C) 2005--2008  Andreas Bühmann <buehmann@users.berlios.de>
+## Copyright (C) 2005--2010  Andreas Bühmann <buehmann@users.berlios.de>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -19,13 +19,14 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-export CALLMONITOR_ENABLED='yes'
-export CALLMONITOR_EXPERT='no'
-export CALLMONITOR_DEBUG='no'
-export CALLMONITOR_DUMP='no'
-export CALLMONITOR_REVERSE='yes'
-export CALLMONITOR_REVERSE_CACHE='transient'
-export CALLMONITOR_REVERSE_PROVIDER=''
-export CALLMONITOR_AREA_PROVIDER='google'
-export CALLMONITOR_READ_FONBUCH='no'
-export CALLMONITOR_PHONEBOOKS='callers cache avm'
+
+xmlencode() {
+    if [ $# -eq 0 ]; then
+	sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g;'
+    else
+	case $1 in
+	    *[\&\<\>]*) echo -n "$1" | xmlencode ;;
+	    *) echo -n "$1" ;;
+	esac
+    fi
+}

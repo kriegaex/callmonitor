@@ -1,7 +1,7 @@
 ##
 ## Callmonitor for Fritz!Box (callmonitor)
 ## 
-## Copyright (C) 2005--2008  Andreas Bühmann <buehmann@users.berlios.de>
+## Copyright (C) 2005--2010  Andreas Bühmann <buehmann@users.berlios.de>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -19,13 +19,35 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-export CALLMONITOR_ENABLED='yes'
-export CALLMONITOR_EXPERT='no'
-export CALLMONITOR_DEBUG='no'
-export CALLMONITOR_DUMP='no'
-export CALLMONITOR_REVERSE='yes'
-export CALLMONITOR_REVERSE_CACHE='transient'
-export CALLMONITOR_REVERSE_PROVIDER=''
-export CALLMONITOR_AREA_PROVIDER='google'
-export CALLMONITOR_READ_FONBUCH='no'
-export CALLMONITOR_PHONEBOOKS='callers cache avm'
+_reverse_herold_at_url() {
+    local number="0${1#${LKZ_PREFIX}43}"
+    URL="http://www.herold.mobi/-/findlisting?what=$(urlencode "$number")&searchtype=WHITEPAGES"
+}
+_reverse_herold_at_request() {
+    local URL=
+    _reverse_herold_at_url "$@"
+    wget_callmonitor -q -O - "$URL"
+}
+_reverse_herold_at_extract() {
+    sed -n -e '
+	/Keine Ergebnisse/ {
+	    '"$REVERSE_NA"'
+	}
+	# very fragile
+	/^<div class="result"/,\#^</div># {
+	    /<div class="highlight/,\#<br/>$# {
+	    	\#<br/>$# b cleanup
+	    	H
+	    }
+	}
+	b
+	
+	: cleanup
+	g
+	s#.*<b>\([^<]*\)</b>#<rev:name>\1</rev:name>#
+	s#<br/>#, #g
+	'"$REVERSE_DECODE_ENTITIES_UTF8"'
+	'"$REVERSE_SANITIZE"'
+	'"$REVERSE_OK"'
+    ' | utf8_latin1
+}

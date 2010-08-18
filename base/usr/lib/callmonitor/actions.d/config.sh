@@ -62,7 +62,7 @@ config() {
     esac
     case $type in
 	post) webui_login; webui_post_form "$key=$value" > /dev/null ;;
-	query) webui_login; echo $(_c_f_boolean $(webui_query "$extra" "$key" | tail +2)) ;;
+	query) echo $(_c_f_boolean $(webui_query "$extra" "$key" | tail +2)) ;;
 	fail) echo "Unknown configuration '$1'" >&2; return 1 ;;
     esac
 }

@@ -1,7 +1,7 @@
 ##
 ## Callmonitor for Fritz!Box (callmonitor)
 ## 
-## Copyright (C) 2005--2008  Andreas Bühmann <buehmann@users.berlios.de>
+## Copyright (C) 2005--2010  Andreas Bühmann <buehmann@users.berlios.de>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -19,33 +19,30 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
-_reverse_telefonbuch_url() {
-    local number="0${1#${LKZ_PREFIX}49}"
-    URL="http://www.dastelefonbuch.de/?la=de&kw=$(urlencode "$1")&cmd=search"
+_reverse_local_ch_url() {
+    local number="0${1#${LKZ_PREFIX}41}"
+    URL="http://mobile.tel.local.ch/de/q/?what=$(urlencode "$number")"
 }
-_reverse_telefonbuch_request() {
+_reverse_local_ch_request() {
     local URL=
-    _reverse_telefonbuch_url "$@"
-    wget_callmonitor -q -O - "$URL"
+    _reverse_local_ch_url "$@"
+    wget_callmonitor "$URL" -q -O -
 }
-_reverse_telefonbuch_extract() {
+
+_reverse_local_ch_extract() {
     sed -n -e '
-	/kein Teilnehmer gefunden/ {
+	\#keine Eintr..\?ge gefunden# {
 	    '"$REVERSE_NA"'
 	}
-	/<table[^>]*class="[^"]*\(bg-0[12]\|entry\)/,\#<td class="col4"# {
-	    \#<div class="[^"]*hide#,\#</div># b
-	    \#<td class="col[23]"# s/$/,/
-	    H
-	    \#<td class="col4"# b cleanup
+	\#<div class="[^"]*\(bus\|res\)result# {
+	    s#<div class="adr">\(\([^<]\|<\([^/]\|/\([^d]\|d[^i]\|di[^v]\)\)\)*\)</div>.*$# \1#
+	    s#<p class="phoneNumber">\([^<]\|<[^/]\|</[^p]\|</p[^ >]\)*</p>##
+	    s#^.*<div class="[^"]*\(bus\|res\)result"[^>]*>##
+	    s#</\?a\(>\| [^>]*>\)##g
+	    s#<h2 class="fn">\([^<]*\)</h2>#<rev:name>\1</rev:name>#
+	    s#<br/>#,#g
+	    '"$REVERSE_SANITIZE"'
+	    '"$REVERSE_OK"'
 	}
-	b
-	: cleanup
-	g
-	s/'$'\r''\?\n/ /g
-	s#<a [^>]*href[^>]*>\(.*\)</a>#<rev:name>&</rev:name>#
-	'"$REVERSE_DECODE_ENTITIES"'
-	'"$REVERSE_SANITIZE"'
-	'"$REVERSE_OK"'
-    '
+    ' | utf8_latin1
 }

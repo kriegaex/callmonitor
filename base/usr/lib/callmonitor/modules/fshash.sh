@@ -25,6 +25,7 @@ new_fshash() {
     for op in get put remove contains keys; do
 	eval "${name}_${op}() _fshash_${op} \"$root\" \"\$@\""
     done
+    mkdir -p "$root"
 }
 
 ## convert the key into a file-system path; this is where the value gets stored

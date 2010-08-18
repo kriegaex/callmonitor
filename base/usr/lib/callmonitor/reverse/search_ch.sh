@@ -23,7 +23,7 @@
 ##
 _reverse_search_ch_url() {
     local number="0${1#${LKZ_PREFIX}41}"
-    URL="http://tel.search.ch/result.html?tel=$(urlencode "$1")"
+    URL="http://tel.search.ch/result.html?tel=$(urlencode "$number")"
 }
 _reverse_search_ch_request() {
     local URL=

@@ -809,3 +809,5 @@
 2010-08-27:
 
 	* reverse.cgi.sh: Make saving work (adapt to Freetz changes)
+
+	callmonitor-1.18.6

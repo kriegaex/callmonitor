@@ -48,8 +48,8 @@ if [ -n "$REVERSE_SAVE" ]; then
     done
     new_provider=${new_provider# }
 
-    ## delegate to save.cgi
-    PATH_INFO=/callmonitor webui_post_form_generic /usr/mww/cgi-bin/conf.cgi \
+    ## delegate to Freetz saving mechanism
+    PATH_INFO=/callmonitor webui_post_form_generic /usr/mww/cgi-bin/conf \
     	"reverse_provider=$(urlencode "$new_provider")&area_provider=$(urlencode "$REVERSE_AREA")"
     exit $?
 fi

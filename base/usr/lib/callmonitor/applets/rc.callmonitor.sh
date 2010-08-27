@@ -41,7 +41,7 @@ esac
 
 if have monitor; then
     start_daemon() {
-	echo -n "Starting $DAEMON..."
+	echo -n "Starting $DAEMON ... "
 	case $CALLMONITOR_DEBUG in
 	    yes) "$DAEMON" --debug > /dev/null 2>&1 ;; 
 	    *) "$DAEMON" > /dev/null 2>&1 ;;
@@ -49,7 +49,7 @@ if have monitor; then
 	check_status
     }
     stop_daemon() {
-	echo -n "Stopping $DAEMON..."
+	echo -n "Stopping $DAEMON ... "
 	"$DAEMON" -s
 	check_status
     }

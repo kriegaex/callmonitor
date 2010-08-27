@@ -1,5 +1,6 @@
 require webui
 require tel
+source /usr/lib/libmodredir.sh
 
 check "$CALLMONITOR_REVERSE" yes:reverse
 select "$CALLMONITOR_REVERSE_CACHE" no transient:trans persistent:pers

@@ -805,3 +805,7 @@
 	* herold_at.sh: Umlaute wurden verschluckt
 
 	callmonitor-1.18.5
+
+2010-08-27:
+
+	* reverse.cgi.sh: Make saving work (adapt to Freetz changes)

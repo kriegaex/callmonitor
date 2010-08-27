@@ -162,7 +162,12 @@ webui_query() {
     webui_get "$query"
 }
 
+# To be overwritten
+self_host() {
+    echo fritz.box
+}
+
 webui_page_url() {
     local menu=${1%/*} pagename=${1#*/}
-    echo "http://fritz.box/cgi-bin/webcm?getpage=..%2Fhtml%2F${Language:-de}%2Fmenus%2Fmenu2.html&var%3Alang=${Language:-de}&var%3Apagename=$(urlencode "$pagename")&var%3Amenu=$(urlencode "$menu")"
+    echo "http://$(self_host)/cgi-bin/webcm?getpage=..%2Fhtml%2F${Language:-de}%2Fmenus%2Fmenu2.html&var%3Alang=${Language:-de}&var%3Apagename=$(urlencode "$pagename")&var%3Amenu=$(urlencode "$menu")"
 }

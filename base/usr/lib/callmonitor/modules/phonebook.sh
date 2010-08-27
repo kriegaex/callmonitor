@@ -226,7 +226,7 @@ _pb_start() {
     rm -rf "$_pb_CACHE_DIR"
     tel_config
     if [ "$CALLMONITOR_READ_FONBUCH" = "yes" ]; then
-	echo -n "Reading AVM's phone book..." >&2
+	echo -n "Reading AVM's phone book ... " >&2
 	_pb_fonbuch_init
 	echo "done." >&2
     fi
@@ -294,7 +294,7 @@ _pb_list() {
 }
 
 _pb_flush() {
-    echo -n "Flushing temporary caches..." >&2
+    echo -n "Flushing temporary caches ... " >&2
     [ -d "$CALLMONITOR_TRANSIENT" ] && rm -rf "$CALLMONITOR_TRANSIENT"
     echo "done." >&2
 }

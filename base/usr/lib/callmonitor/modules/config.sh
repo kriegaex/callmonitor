@@ -21,7 +21,7 @@
 ## http://developer.berlios.de/projects/callmonitor/
 ##
 cfg_cat() {
-    allcfgconv -C "$1" -c -o -
+    allcfgconv -C "$1" -e -c -o -
 }
 cfg_parse() {
     sed -ne '

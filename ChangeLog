@@ -811,3 +811,11 @@
 	* reverse.cgi.sh: Make saving work (adapt to Freetz changes)
 
 	callmonitor-1.18.6
+
+2010-09-24:
+
+	* modreg daemon: Anpassung an Freetz
+	* allcfgconv -e: Robusteres Auslesen der Konfiguration bei einigen
+	Labor-Firmwares
+
+	callmonitor-1.18.7

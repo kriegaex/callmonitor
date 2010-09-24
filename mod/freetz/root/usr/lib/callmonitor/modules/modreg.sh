@@ -27,6 +27,7 @@ mod_register() {
 ## requires [webif] /usr/lib/cgi-bin/callmonitor.cgi
 ## requires [webif] /usr/lib/cgi-bin/callmonitor/maint.cgi
 	modreg cgi $DAEMON 'Callmonitor'
+	modreg daemon $DAEMON
 	modreg extra $DAEMON '$(lang de:"Wartung" en:"Maintenance")' 1 'maint'
 ## requires [webif & monitor] /usr/lib/cgi-bin/callmonitor/testcall.cgi
 ## requires [webif & monitor] /usr/lib/cgi-bin/callmonitor/dump.cgi
@@ -42,7 +43,7 @@ mod_register() {
 ## requires [webif & phonebook] /usr/lib/cgi-bin/callmonitor/reverse.cgi
 ## requires [webif & phonebook] /usr/lib/cgi-bin/callmonitor/testlookup.cgi
 ## requires [webif & phonebook] /etc/default.callmonitor/callers.def
-	    modreg extra $DAEMON '$(lang de:"Rückwärtssuche-Anbieter" en:"Reverse-lookup providers")' 1 'reverse'
+	    modreg extra $DAEMON '$(lang de:"Rückwärtssuche" en:"Reverse lookup")' 1 'reverse'
 	    modreg extra $DAEMON '$(lang de:"Test der Rückwärtssuche" en:"Test reverse lookup")' 1 'testlookup'
 	    modreg file $DAEMON 'callers' 'Callers' 1 "callers"
 	fi
@@ -62,6 +63,7 @@ mod_unregister() {
 	    modunreg extra $DAEMON 'testcall'
 	fi
 	modunreg extra $DAEMON 'maint'
+	modunreg daemon $DAEMON
 	modunreg cgi $DAEMON
     fi
 }

@@ -23,7 +23,7 @@
 ##
 _reverse_search_ch_url() {
     local number="0${1#${LKZ_PREFIX}41}"
-    URL="http://tel.search.ch/result.html?tel=$(urlencode "$number")"
+    URL="http://tel.search.ch/?tel=$(urlencode "$number")"
 }
 _reverse_search_ch_request() {
     local URL=
@@ -33,22 +33,21 @@ _reverse_search_ch_request() {
 
 _reverse_search_ch_extract() {
     sed -n -e '
-	\#Keine Eintr..\?ge gefunden.# {
+	\#Keine Eintr..\?ge gefunden# {
 	    '"$REVERSE_NA"'
 	}
-	\#<div class="rname"# b name
-	\#<div class="raddr"# b address
+	\#^<div [^>]*class="tel_item"><div#,\#</div></div>$# {
+	    \#<h5># b name
+	    \#<span class="adrgroup# b address
+	}
 	b
 	: name
-	s#.*<a href="/detail/[^"]*">\(.*\)</a>.*#\1#
 	s#.*#<rev:name>&</rev:name>#
 	h
 	b
 	: address
-	s#.*<div class="raddr">\(.*\)</div>.*#\1#
 	H
 	x
-	s/\n/, /g
 	'"$REVERSE_SANITIZE"'
 	'"$REVERSE_OK"'
     '

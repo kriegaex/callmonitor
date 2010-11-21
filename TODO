@@ -12,6 +12,9 @@ Aktivierung des Callmonitor-Interfaces
 Wichtig
 ----------------------------------------------------------------------
 
+andreasz: Seit der Version 1.7.15 für den VDR wurde der SVDR Port von 2001 auf 6419 geändert.
+http://linuxtv.org/pipermail/vdr/2010-June/023055.html
+
 Dienste-Eintrag entfernen, wenn angebracht: modreg daemon --hide callmonitor
 
 Suchreihenfolge der Telefonfonbücher: Warum Cache nicht immer als letztes?

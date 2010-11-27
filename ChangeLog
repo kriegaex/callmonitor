@@ -819,3 +819,10 @@
 	Labor-Firmwares
 
 	callmonitor-1.18.7
+
+2010-11-27:
+
+	* billiger.sh: Neue Fallback-Suche billiger-telefonieren.de statt Google
+	* search_ch.sh: Schweizer Rückwärtssuche repariert
+
+	callmonitor-1.18.8

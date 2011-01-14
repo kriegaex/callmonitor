@@ -826,3 +826,7 @@
 	* search_ch.sh: Schweizer Rückwärtssuche repariert
 
 	callmonitor-1.18.8
+
+2011-01-14:
+
+	* pronto_it.sh: Rückwärtssuche für Italien

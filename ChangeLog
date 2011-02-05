@@ -830,3 +830,11 @@
 2011-01-14:
 
 	* pronto_it.sh: Rückwärtssuche für Italien
+
+2011-02-05:
+
+	* telefonbuch.sh: Rückwärtssuche repariert ("Karte Zusatzinfo" aus
+	  Antwort entfernt)
+	* goyellow.sh: Fehlschlagende Suchen repariert
+
+	callmonitor-1.19

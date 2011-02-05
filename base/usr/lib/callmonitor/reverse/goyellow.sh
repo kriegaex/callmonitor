@@ -32,7 +32,7 @@ _reverse_goyellow_extract() {
     local b=$'\1' e=$'\2'
     local c="[^$b$e]"
     sed -n -e '
-	\#haben wir nichts gefunden# {
+	\#\(haben wir nichts\|Keine.*\) gefunden# {
 	    '"$REVERSE_NA"'
 	}
 	\#<div id="searchResultListing"#,\#<p class="moreInfo"# {

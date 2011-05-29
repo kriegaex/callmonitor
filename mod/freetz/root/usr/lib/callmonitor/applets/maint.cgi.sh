@@ -34,8 +34,8 @@ cmd_button() {
     echo "
 <div class='btn'>
     <form class='btn' action='$SELF' method='$method'>
-	<input name='cmd' value='$1' type='hidden'>
-	<input value='$2' type='submit'>
+    	$(empty "$cmd" || echo "<input name='cmd' value='$cmd' type='hidden'>")
+	<input value='$label' type='submit'>
     </form>
 </div>
 "

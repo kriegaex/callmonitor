@@ -838,3 +838,12 @@
 	* goyellow.sh: Fehlschlagende Suchen repariert
 
 	callmonitor-1.19
+
+2011-05-29:
+
+	* webui.sh: Änderungen an webui_get zurückgenommen (zugunsten neuerer
+	Labor-Firmwares)
+
+2011-06-02:
+
+	callmonitor-1.19.1

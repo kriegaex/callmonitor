@@ -145,6 +145,7 @@ fi
 ## retrieve OKZ et al. from AVM config
 tel_config() {
     if [ ! -r "$_tel_OKZ_CACHE" ]; then
+	webui_login
 	ensure_file "$_tel_OKZ_CACHE"
 	webui_query \
 	    telcfg:settings/Location/LKZPrefix \

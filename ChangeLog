@@ -852,3 +852,9 @@
 
 	* callmonitor.cfg: Neuer Standardwert bei erster Installation:
 	Callmonitor nicht automatisch aktiviert
+
+2011-09-03:
+
+	* wittegids_be.sh: Belgische Rückwärtssuche
+
+	callmonitor-1.19.2

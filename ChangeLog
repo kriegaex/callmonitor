@@ -847,3 +847,8 @@
 2011-06-02:
 
 	callmonitor-1.19.1
+
+2011-08-04:
+
+	* callmonitor.cfg: Neuer Standardwert bei erster Installation:
+	Callmonitor nicht automatisch aktiviert

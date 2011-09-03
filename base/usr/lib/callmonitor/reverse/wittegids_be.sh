@@ -31,5 +31,5 @@ _reverse_wittegids_be_extract() {
 	g
 	'"$REVERSE_SANITIZE"'
 	'"$REVERSE_OK"'
-    '
+    ' | utf8_latin1
 }

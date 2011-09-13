@@ -32,9 +32,14 @@ config() {
 	    fi
 	    ;;
 	wlan)
-	    key="wlan:settings/ap_enabled"
-	    if ? "${2:+1}"; then
-		type=post value="$(_c_value "$2" "$1")"
+	    case $2 in
+		2*) key="wlan:settings/ap_enabled" ;;
+		5*) key="wlan:settings/ap_enabled_scnd" ;;
+		*)  # backward compatibility
+		    shift; config wlan 2.4 "$@"; return $? ;;
+	    esac
+	    if ? "${3:+1}"; then
+		type=post value="$(_c_value "$3" "$1" "$2")"
 	    fi
 	    ;;
 	dect)

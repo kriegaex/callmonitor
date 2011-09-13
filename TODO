@@ -2,12 +2,6 @@
 Testen
 ----------------------------------------------------------------------
 
-dump.cgi: Aufzeichnung und Darstellung der letzten k Ereignisse
-
-webui-Zugriff ohne Passwort testen
-Aktivierung des Callmonitor-Interfaces
-
-
 ----------------------------------------------------------------------
 Wichtig
 ----------------------------------------------------------------------
@@ -23,6 +17,8 @@ Suchreihenfolge der Telefonfonbücher: Warum Cache nicht immer als letztes?
 Demnächst anschauen
 ----------------------------------------------------------------------
 
+dump.cgi: Aufzeichnung und Darstellung der letzten k Ereignisse
+
 Eingebundene Aktionen konfigurierbar gestalten: Nicht jeder braucht alles
 (bereits vorgeladen)
 
@@ -34,6 +30,8 @@ Evtl. webui_logout einfügen
 ----------------------------------------------------------------------
 Nicht so wichtig, Ideen
 ----------------------------------------------------------------------
+
+ctlmgr_ctl als alternatives Backend für `config`
 
 Die Details der letzten k Anrufe aufzeichnen und verwenden
 * als Vorgabe bei Testanrufen

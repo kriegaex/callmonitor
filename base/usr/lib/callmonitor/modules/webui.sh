@@ -47,6 +47,9 @@ WEBCM=$WEBCM_DIR/webcm
 ## See also: AVM Technical Note, Session IDs und geändertes Login-Verfahren im
 ## FRITZ!Box Webinterface, 
 ## http://www.avm.de/de/Extern/Technical_Note_Session_ID.pdf
+##
+## A login is deemed valid until the timestamp in WEBUI_EXPIRES is reached
+## (last login + WEBUI_LIFETIME seconds).
 
 ## Convert login_sid.xml to shell variables
 ##
@@ -81,8 +84,13 @@ webui_login_sid() {
     esac
 }
 
+WEBUI_LIFETIME=180
+
 ## Login (and obtain a session id)
 webui_login() {
+    local now=$(date +%s) expires=${WEBUI_EXPIRES:-0}
+    [ "$now" -lt "$expires" ] && return
+
     local password=$(webui_password) sinfo
     sinfo=$(webui_login_sid)
     if [ $? -ne 0 ]; then
@@ -111,6 +119,7 @@ webui_login() {
 	fi
 	WEBUI_SID=$SID
     fi
+    let WEBUI_EXPIRES="now + WEBUI_LIFETIME"
 }
 
 ## Terminate the current session

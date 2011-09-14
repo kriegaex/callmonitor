@@ -33,10 +33,16 @@ config() {
 	    ;;
 	wlan)
 	    case $2 in
-		2*) key="wlan:settings/ap_enabled" ;;
+		2*|"") key="wlan:settings/ap_enabled" ;;
 		5*) key="wlan:settings/ap_enabled_scnd" ;;
-		*)  # backward compatibility
-		    shift; config wlan 2.4 "$@"; return $? ;;
+		on|yes|true|1|off|no|false|0|toggle)
+		    # switch both; query 2.4 only (see above: "")
+		    shift # wlan
+		    config wlan 2.4 "$@"
+		    config wlan 5 "$@"
+		    return
+		    ;;
+		*) echo "Syntax error: $*" >&2; return 1 ;;
 	    esac
 	    if ? "${3:+1}"; then
 		type=post value="$(_c_value "$3" "$1" "$2")"

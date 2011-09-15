@@ -132,6 +132,7 @@ webui_logout() {
 	webui_post_form "security:command/logout=" > /dev/null
 	unset WEBUI_SID
     fi
+    unset WEBUI_EXPIRES
 }
 
 webui_post_form() (

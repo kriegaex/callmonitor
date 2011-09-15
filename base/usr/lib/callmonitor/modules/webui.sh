@@ -1,7 +1,7 @@
 ##
 ## Callmonitor for Fritz!Box (callmonitor)
 ## 
-## Copyright (C) 2005--2009  Andreas Bühmann <buehmann@users.berlios.de>
+## Copyright (C) 2005--2011  Andreas Bühmann <buehmann@users.berlios.de>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -84,13 +84,18 @@ webui_login_sid() {
     esac
 }
 
-WEBUI_LIFETIME=180
+WEBUI_LIFETIME=120
 
 ## Login (and obtain a session id)
 webui_login() {
     local now=$(date +%s) expires=${WEBUI_EXPIRES:-0}
     [ "$now" -lt "$expires" ] && return
+    
+    webui_login_do
 
+    let WEBUI_EXPIRES="now + WEBUI_LIFETIME"
+}
+webui_login_do() {
     local password=$(webui_password) sinfo
     sinfo=$(webui_login_sid)
     if [ $? -ne 0 ]; then
@@ -119,7 +124,6 @@ webui_login() {
 	fi
 	WEBUI_SID=$SID
     fi
-    let WEBUI_EXPIRES="now + WEBUI_LIFETIME"
 }
 
 ## Terminate the current session

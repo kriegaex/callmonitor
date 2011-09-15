@@ -47,7 +47,7 @@ if ! empty "$MAINT_CMD"; then
     cgi_begin "$TITLE ..."
     case $MAINT_CMD in
 	phonebook_tidy)
-	    echo "<p>$(lang de:"Räume Callers auf" en:"Tidying up Callers"):</p>"
+	    echo "<p>$(lang de:"Räume Telefonbuch auf" en:"Tidying up phone book"):</p>"
 	    phonebook tidy 2>&1 | pre
 	    ;;
 	phonebook_init)
@@ -73,7 +73,7 @@ fi
 cgi_begin "$TITLE" extras
 
 if have phonebook; then
-sec_begin 'Callers'
+sec_begin 'Telefonbuch (Callers)'
 
 let LINES="$({ 
     grep '[[:print:]]' "$CALLMONITOR_PERSISTENT" | wc -l; } 2>/dev/null)+0"

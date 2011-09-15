@@ -23,7 +23,7 @@ CONFIG_FILE='/tmp/flash/callmonitor/callers'
 CONFIG_SAVE='modsave flash'
 CONFIG_TYPE='text'
 
-CAPTION='Callers (Callmonitor)'
+CAPTION='$(lang de:"Telefonbuch" en:"Phone book") (Callers)'
 DESCRIPTION="$(lang
     de:"Syntax: &lt;Nummer&gt; &lt;Name&gt;[; &lt;Adresse&gt;]</code>"
     en:"Syntax: &lt;number&gt; &lt;name&gt;[; &lt;address&gt;]</code>"

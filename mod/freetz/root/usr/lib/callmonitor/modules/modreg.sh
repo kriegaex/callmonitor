@@ -37,7 +37,7 @@ mod_register() {
 	    modreg extra $DAEMON '$(lang de:"Testanruf" en:"Test call")' 1 'testcall'
 	    modreg extra $DAEMON '' 2 'exec'
 	    # modreg extra $DAEMON '$(lang de:"Anruf-Ereignisse" en:"Call events")' 1 'dump'
-	    modreg file $DAEMON 'listeners' 'Listeners' 0 "listeners"
+	    modreg file $DAEMON 'listeners' '$(lang de:"Regeln" en:"Rules")' 0 "listeners"
 	fi
 	if have phonebook; then
 ## requires [webif & phonebook] /usr/lib/cgi-bin/callmonitor/reverse.cgi
@@ -45,7 +45,7 @@ mod_register() {
 ## requires [webif & phonebook] /etc/default.callmonitor/callers.def
 	    modreg extra $DAEMON '$(lang de:"Rückwärtssuche" en:"Reverse lookup")' 1 'reverse'
 	    modreg extra $DAEMON '$(lang de:"Test der Rückwärtssuche" en:"Test reverse lookup")' 1 'testlookup'
-	    modreg file $DAEMON 'callers' 'Callers' 1 "callers"
+	    modreg file $DAEMON 'callers' '$(lang de:"Telefonbuch" en:"Phone book")' 1 "callers"
 	fi
     fi
 }

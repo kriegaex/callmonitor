@@ -24,7 +24,7 @@ CONFIG_FILE='/tmp/flash/callmonitor/listeners-1'
 CONFIG_SAVE='/mod/pkg/callmonitor/usr/lib/callmonitor/check listeners < "$CONFIG_FILE" && modsave flash || echo "Please correct the errors."'
 CONFIG_TYPE='text'
 
-CAPTION='Listeners (Callmonitor)'
+CAPTION='$(lang de:"Regeln" en:"Rules") (Listeners)'
 DESCRIPTION="$(lang
     de:"Syntax:
 	&lt;EVENT&gt;

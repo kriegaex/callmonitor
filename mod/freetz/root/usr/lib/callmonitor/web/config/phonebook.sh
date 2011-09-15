@@ -58,10 +58,10 @@ sec_end
 
 sec_begin '$(lang de:"Rückwärtssuche" en:"Reverse lookup")'
 
-H_CALLERS="<a href='$(href file callmonitor callers)' title='$(lang 
+H_CALLERS="<a href='$(href file callmonitor callers)'>$(lang 
 	de:"Telefonbuch des Callmonitors"
 	en:"Callmonitor's phone book"
-    )'>Callers</a>"
+    ) (Callers)</a>"
 
 echo "
 <table>
@@ -127,8 +127,8 @@ if [ "$CALLMONITOR_EXPERT" = yes ]; then
 	    )' value='transient'$trans_sel>$(lang
 		de:"Flüchtig" en:"Transiently")</option>
 	    <option title='$(lang 
-		de:"Namen werden in den Callers gespeichert"
-		en:"Names are stored in the Callers"
+		de:"Namen werden im Telefonbuch des Callmonitors gespeichert"
+		en:"Names are stored in Callmonitor's phone book"
 	    )' value='persistent'$pers_sel>$(lang
 		de:"Dauerhaft" en:"Persistently")</option>
 	</select></td>

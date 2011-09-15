@@ -62,7 +62,7 @@ sec_begin '$(lang de:"Aktionen bei Anruf" en:"Actions upon calls")'
 echo "
 <ul>
     <li><a href='$(href file callmonitor listeners)'>$(lang
-	de:"Listeners bearbeiten" en:"Edit Listeners")</a></li>
+	de:"Regeln bearbeiten" en:"Edit rules")</a></li>
     <li><a href='$(href extra callmonitor testcall)'>$(lang
 	de:"Testanruf durchführen" en:"Perform test call")</a></li>
 </ul>

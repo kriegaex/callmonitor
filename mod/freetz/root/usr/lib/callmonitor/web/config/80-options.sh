@@ -2,8 +2,9 @@ require cgi
 require version
 
 check "$CALLMONITOR_EXPERT" yes:expert
+sec_begin '$(lang de:"Optionen" en:"Options")'
 echo "
-    <p style='margin-left: 1em;'>
+    <p>
     <input type='hidden' name='expert' value='no'>
     <input type='checkbox' name='expert' value='yes'$expert_chk id='ex1'>
     <label for='ex1'>$(lang 
@@ -14,3 +15,4 @@ echo "
     $CALLMONITOR_VERSION</a></span>
     </p>
 "
+sec_end

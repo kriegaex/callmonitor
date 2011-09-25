@@ -22,6 +22,6 @@
 require cgi
 
 cgi_include config
-## requires /usr/lib/callmonitor/web/config/expert.sh
-## requires [monitor] /usr/lib/callmonitor/web/config/monitor.sh
-## requires [phonebook] /usr/lib/callmonitor/web/config/phonebook.sh
+## requires /usr/lib/callmonitor/web/config/*-options.sh
+## requires [monitor] /usr/lib/callmonitor/web/config/*-monitor.sh
+## requires [phonebook] /usr/lib/callmonitor/web/config/*-phonebook.sh

@@ -20,13 +20,6 @@ $(NAME)-$(MOD).tar.bz2: collect
 	$(TAR) cjf $@ $(TAR_OWNER) -C $(BUILD) $(NAME) \
 	    || (rm $@ && false)
 
-$(NAME)-reload.tar.bz2: collect
-	$(TAR) cvf $(BNAME)/$(NAME)-root.tar --format=oldgnu \
-	    $(TAR_OWNER) -C $(BNAME)/root .
-	rm -rf $(BNAME)/root
-	$(TAR) cvjf $@ $(TAR_OWNER) -C $(BUILD) $(NAME) \
-	    || (rm $@ && false)
-
 collect: check
 	rm -rf $(BNAME)
 	mkdir -p $(BNAME)/root

@@ -1,11 +1,9 @@
 MOD := freetz
 PKG := callmonitor
 
-MOD_LIST := $(notdir $(wildcard mod/*))
 VERSION := $(shell cat .version)
 NAME := $(PKG)-$(VERSION)
 ARCHIVE := $(NAME)-$(MOD).tar.bz2
-CONF := mod/$(MOD)
 BUILD := build/$(MOD)
 BNAME := $(BUILD)/$(NAME)
 EXTRAS := README COPYING ChangeLog
@@ -17,9 +15,6 @@ SHSTRIP := tools/shstrip
 .PHONY: $(ARCHIVE) build clean check collect
 
 build: $(ARCHIVE)
-
-build-all:
-	for mod in $(MOD_LIST); do $(MAKE) build MOD=$$mod; done
 
 $(NAME)-$(MOD).tar.bz2: collect
 	$(TAR) cjf $@ $(TAR_OWNER) -C $(BUILD) $(NAME) \
@@ -36,7 +31,7 @@ collect: check
 	rm -rf $(BNAME)
 	mkdir -p $(BNAME)/root
 	$(TAR) c --exclude=.svn -C base . | $(TAR) x -C $(BNAME)/root
-	$(TAR) c --exclude=.svn -C $(CONF) . |  $(TAR) x -C $(BNAME)
+	$(TAR) c --exclude=.svn -C root . |  $(TAR) x -C $(BNAME)
 	$(TAR) c --exclude=.svn docs | $(TAR) x -C $(BNAME)
 	$(TAR) c --exclude=.svn src | $(TAR) x -C $(BNAME)
 	echo $(VERSION) > $(BNAME)/root/etc/default.$(PKG)/.version
@@ -49,8 +44,7 @@ collect: check
 	fi
 
 check:
-	@[ -d $(CONF) ] || (echo Configuration $(CONF) is missing; false)
-	find base mod/*/root $(wildcard mod/*/install) -name .svn -prune \
+	find base -name .svn -prune \
 	    -or -type f -not \( -name "*.sed" -or -name "*.txt" -or -name "*.cfg" \) -exec busybox ash -n {} \;
 
 clean:

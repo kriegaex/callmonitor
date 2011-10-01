@@ -24,7 +24,7 @@ require phonebook
 require reverse
 require file
 
-SELF=testlookup
+SELF=test
 TITLE="$(lang de:"Test der Rückwärtssuche" en:"Check reverse look-up")"
 
 eval "$(modcgi number test)"
@@ -36,21 +36,8 @@ LEGEND="$SELECTED: $(lang
 	    en:"Used in actual operation"
 	)"
 
-new_test_form() {
-    echo "
-<form action='$SELF' method='post'>
-    <table><tr>
-	<td><label for='number'>$(lang
-	    de:"Rufnummer" en:"Number"):</label> </td>
-	<td>
-	    <input type='text' name='number' id='number' value='$number_val'>
-	</td>
-    </tr></table>
-    <div class='btn'><input type='submit' 
-	value='$(lang de:"Nachschlagen" en:"Look up")'></div>
-</form>
-"
-}
+## requires /usr/lib/callmonitor/web/reverse/lib/test_form.sh
+source "$CALLMONITOR_LIBDIR/web/reverse/lib/test_form.sh"
 
 show_test_results() {
     local number=$1 name status lkz disp unsupported= prov area_prov
@@ -118,7 +105,7 @@ cgi_main() {
     else
 	cgi_begin "$TITLE" extras
     fi
-    new_test_form
+    new_test_form "$SELF"
     ## config_button
     cgi_end
 }

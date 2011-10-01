@@ -41,10 +41,8 @@ mod_register() {
 	fi
 	if have phonebook; then
 ## requires [webif & phonebook] /usr/lib/cgi-bin/callmonitor/reverse.cgi
-## requires [webif & phonebook] /usr/lib/cgi-bin/callmonitor/testlookup.cgi
 ## requires [webif & phonebook] /etc/default.callmonitor/callers.def
 	    modreg extra $DAEMON '$(lang de:"Rückwärtssuche" en:"Reverse lookup")' 1 'reverse'
-	    modreg extra $DAEMON '$(lang de:"Test der Rückwärtssuche" en:"Test reverse lookup")' 1 'testlookup'
 	    modreg file $DAEMON 'callers' '$(lang de:"Telefonbuch" en:"Phone book")' 1 "callers"
 	fi
     fi
@@ -53,7 +51,6 @@ mod_unregister() {
     if have webif; then
 	if have phonebook; then
 	    modunreg file $DAEMON 'callers'
-	    modunreg extra $DAEMON 'testlookup'
 	    modunreg extra $DAEMON 'reverse'
 	fi
 	if have monitor; then

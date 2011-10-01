@@ -19,6 +19,15 @@
 ## 
 ## http://developer.berlios.de/projects/callmonitor/
 ##
+
+## requires /usr/lib/callmonitor/applets/testlookup.cgi.sh
+case $PATH_INFO in
+    /test)
+	source "$CALLMONITOR_LIBDIR/applets/testlookup.cgi.sh"
+	exit
+	;;
+esac
+
 require cgi
 require tel
 require file
@@ -26,6 +35,8 @@ require hash
 require url
 require webui
 require reverse_config
+
+source "$CALLMONITOR_LIBDIR/web/reverse/lib/test_form.sh"
 
 SELF=reverse
 TITLE='$(lang
@@ -61,20 +72,7 @@ done < $COUNTRIES
 
 select "$AREA_PROVIDER" :null
 
-cgi_begin "$TITLE" extras
-
-sec_begin "$(lang de:"Test" en:"Check")"
-
-echo "
-<ul>
-    <li><a href='$(href extra callmonitor testlookup)'>$(lang 
-	de:"Alle Rückwärtssuche-Anbieter ausprobieren"
-	en:"Try all reverse-lookup providers"
-    )</a></li>
-</ul>
-"
-
-sec_end
+cgi_begin "$TITLE"
 
 echo "<form action='$SELF' method='post'>"
 
@@ -156,5 +154,12 @@ sec_end
 
 echo "<div class='btn'><input type='submit' value='$(lang de:"Übernehmen" en:"Apply")' name='save'></div>"
 echo "</form>"
+
+sec_begin "$(lang de:"Test" en:"Check")"
+
+new_test_form "$SELF/test"
+
+sec_end
+
 
 cgi_end

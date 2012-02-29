@@ -1,6 +1,6 @@
 _reverse_telefonbuch_url() {
     local number="0${1#${LKZ_PREFIX}49}"
-    URL="http://www.dastelefonbuch.de/?la=de&kw=$(urlencode "$1")&cmd=search"
+    URL="http://www.dastelefonbuch.de/?la=de&kw=$(urlencode "$number")&cmd=search"
 }
 _reverse_telefonbuch_request() {
     local URL=

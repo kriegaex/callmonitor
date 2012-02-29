@@ -20,6 +20,9 @@ _reverse_init() {
 	   *\!*)
 		lkz=${countries%!*}
 		lkz=${lkz##*,}
+		if [ "$lkz" = "*" ]; then
+		    lkz=other
+		fi
 		case " $cfg" in
 		    *" $lkz:"*) ;;
 		    *) cfg="$cfg $lkz:$prov" ;;

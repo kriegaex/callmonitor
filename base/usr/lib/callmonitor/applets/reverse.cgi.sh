@@ -22,7 +22,7 @@ TITLE='$(lang
     en:"Reverse-lookup configuration"
 )'
 PARAMS="area:save"
-for lkz in $LKZ_LIST; do
+for lkz in $LKZ_LIST other; do
     PARAMS="$PARAMS:full_$lkz"
 done
 ## requires /usr/lib/callmonitor/reverse/country.cfg
@@ -32,7 +32,7 @@ eval "$(modcgi "$PARAMS" reverse)"
 
 if [ -n "$REVERSE_SAVE" ]; then
     new_provider=
-    for lkz in $LKZ_LIST; do
+    for lkz in $LKZ_LIST other; do
        eval "new_provider=\"\$new_provider $lkz:\$REVERSE_FULL_$lkz\""
     done
     new_provider=${new_provider# }
@@ -61,7 +61,12 @@ select_fullprovider() {
     if country_contains "$lkz"; then
 	country_get "$lkz" name
     fi
-    echo "<tr><td>$(html "$name")</td><td>+$lkz</td>"
+    local prefix="+$lkz"
+    if [ "$lkz" = other ]; then
+	name="$(lang de:"Andere" en:"Others")"
+	prefix="*"
+    fi
+    echo "<tr><td>$(html "$name")</td><td>$prefix</td>"
     echo "<td>"
     REVERSE_PROVIDER_get "$lkz" selected
     echo "<select name='full_$lkz'>"
@@ -72,13 +77,17 @@ select_fullprovider() {
 
 list_providers() {
     local match=$1 lkz=$2 selected=$3 type provider site label sel countries
+    local lkz_pattern=$lkz
+    if [ "$lkz" = other ]; then
+	lkz_pattern="*"
+    fi
     while readx type provider countries site label; do
 	case $type in
 	    $match*) ;;
 	    *) continue ;;
 	esac
 	case ",$countries," in
-	    *",$lkz,"*|*",$lkz!,"*) ;;
+	    *",$lkz_pattern,"*|*",$lkz_pattern!,"*|*",*,"*|*",*!,"*) ;;
 	    *) continue ;;
 	esac
 	if [ "$selected" = "$provider" ]; then
@@ -97,7 +106,7 @@ echo "
 	<col width='50%'>
     </colgroup>
 "
-for lkz in $LKZ_LIST; do
+for lkz in $LKZ_LIST other; do
 	select_fullprovider "$lkz"
 done
 echo "

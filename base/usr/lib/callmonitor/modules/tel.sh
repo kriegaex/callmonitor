@@ -81,8 +81,10 @@ tel_collect_lkzs() {
     LKZ_LIST=
     while readx type provider countries site label; do
 	for c in $countries; do
-	    [ "$c" = "*" ] && continue
-	    set_add LKZ_LIST "${c%!}"
+	    case $c in
+		"*"*) continue ;;
+		*) set_add LKZ_LIST "${c%!}" ;;
+	    esac
 	done
     done < "$CALLMONITOR_REVERSE_CFG"
 }

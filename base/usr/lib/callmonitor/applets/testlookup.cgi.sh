@@ -29,7 +29,7 @@ show_test_results() {
     local type provider site label countries supported
     while readx type provider countries site label; do
 	case ",$countries," in
-	    *",$lkz,"*|*",$lkz!,"*|*",*,") supported=true ;;
+	    *",$lkz,"*|*",$lkz!,"*|*",*,"|*",*!,"*) supported=true ;;
 	    *) supported=false ;;
 	esac
 	local html_label="<a href='http://$site/' target='_blank'>$(html "$label")</a>"
@@ -49,6 +49,7 @@ show_test_results() {
 	    local url link
 	    url=$(_reverse_lookup_url "$provider" "$number")
 	    link="<a href='$(html "$url")' target='_blank'>($(lang de:"Überprüfen" en:"Check"))</a>"
+	    [ -z "$url" ] && link=
 	    show_result
 	    echo -n "</p>"
 	fi

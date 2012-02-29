@@ -16,6 +16,9 @@ reverse_lookup() {
     if ! let "${number:+1}"; then return 1; fi
 
     local lkz=$(tel_lkz "$number")
+    if [ -z "$lkz" ]; then
+	lkz=other
+    fi
     _reverse_choose_provider "$lkz"
 
     afile="/var/run/phonebook/lookup-$area_prov-$number"

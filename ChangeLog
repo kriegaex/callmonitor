@@ -866,3 +866,8 @@
 	* dasoertliche.sh: (schon wieder) Anpassung an geändertes Format
 
 	callmonitor-1.19.3
+
+2012-02-29:
+
+	* reverse-userdef: Erlaubt die Einbindung einer benutzerdefinierten
+	Rückwärtssuche

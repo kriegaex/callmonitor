@@ -98,7 +98,7 @@ INFO_FIFO=$CALLMONITOR_FIFO.info
 
 if $STOP; then
     if [ ! -e "$PIDFILE" ]; then
-	echo "$APPLET: not running" 2>&1 
+	echo "not running" 2>&1 
 	exit 1
     else
 	__shutdown

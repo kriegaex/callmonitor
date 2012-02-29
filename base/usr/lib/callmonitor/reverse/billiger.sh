@@ -1,5 +1,5 @@
 _reverse_billiger_url() {
-    local number=$(expr substr "$1" 1 9)0000000000
+    local number=$(expr substr "00${1#+}" 1 9)0000000000
     URL="http://www.billiger-telefonieren.de/vorwahlrechner/?num=$(urlencode "$number")"
 }
 _reverse_billiger_request() {

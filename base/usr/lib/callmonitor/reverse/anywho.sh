@@ -1,5 +1,5 @@
 _reverse_anywho_url() {
-    local number="${1#${LKZ_PREFIX}1}"
+    local number="${1#+1}"
     URL="http://www.anywho.com/qry/wp_rl?telephone=$(urlencode "$number")"
 }
 _reverse_anywho_request() {

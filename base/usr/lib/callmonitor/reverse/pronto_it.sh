@@ -1,5 +1,5 @@
 _reverse_pronto_it_url() {
-    local number="0${1#${LKZ_PREFIX}39}"
+    local number="0${1#+39}"
     URL="http://pronto.it/?q=$(urlencode "$number")"
 }
 _reverse_pronto_it_request() {

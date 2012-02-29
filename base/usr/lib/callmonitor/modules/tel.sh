@@ -95,6 +95,7 @@ tel_lkz() {
     local number=$1 lkz
     case $number in
 	$LKZ_PREFIX*) number=${number#$LKZ_PREFIX} ;;
+	+*) number=${number#+} ;;
 	*) return 2 ;;
     esac
     for lkz in $LKZ_LIST; do

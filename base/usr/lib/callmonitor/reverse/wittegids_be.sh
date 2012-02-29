@@ -1,5 +1,5 @@
 _reverse_wittegids_be_url() {
-    local number="0${1#${LKZ_PREFIX}32}"
+    local number="0${1#+32}"
     URL="http://www.wittegids.be/q/name/telephone/$(urlencode "$number")/?customerType=ALL"
 }
 _reverse_wittegids_be_request() {

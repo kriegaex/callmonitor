@@ -1,5 +1,5 @@
 _reverse_dasoertliche_url() {
-    local number="0${1#${LKZ_PREFIX}49}"
+    local number="0${1#+49}"
     URL="http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$(urlencode "$number")"
 }
 _reverse_dasoertliche_request() {

@@ -1,5 +1,5 @@
 _reverse_goyellow_url() {
-    local number="0${1#${LKZ_PREFIX}49}"
+    local number="0${1#+49}"
     URL="http://www.goyellow.de/inverssuche/?TEL=$(urlencode "$number")"
 }
 _reverse_goyellow_request() {

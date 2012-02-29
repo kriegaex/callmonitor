@@ -1,5 +1,5 @@
 _reverse_herold_at_url() {
-    local number="0${1#${LKZ_PREFIX}43}"
+    local number="0${1#+43}"
     URL="http://www.herold.mobi/-/findlisting?what=$(urlencode "$number")&searchtype=WHITEPAGES"
 }
 _reverse_herold_at_request() {

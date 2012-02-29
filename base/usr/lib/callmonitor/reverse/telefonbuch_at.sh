@@ -1,5 +1,5 @@
 _reverse_telefonbuch_at_url() {
-    local number="0${1#${LKZ_PREFIX}43}"
+    local number="0${1#+43}"
     URL="http://www.dasschnelle.at/index.php?pc=in&aktion=suchein&telnummer=$(urlencode "$number")"
 }
 _reverse_telefonbuch_at_request() {

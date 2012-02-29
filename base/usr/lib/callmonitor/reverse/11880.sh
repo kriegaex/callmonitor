@@ -1,5 +1,5 @@
 _reverse_11880_url() {
-    local number="0${1#${LKZ_PREFIX}49}"
+    local number="0${1#+49}"
     URL="http://www.11880.com/inverssuche/index/search?method=searchSimple&_dvform_posted=1&phoneNumber=$(urlencode "$number")"
 }
 _reverse_11880_request() {

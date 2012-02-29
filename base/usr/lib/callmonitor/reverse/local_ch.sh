@@ -1,5 +1,5 @@
 _reverse_local_ch_url() {
-    local number="0${1#${LKZ_PREFIX}41}"
+    local number="0${1#+41}"
     URL="http://mobile.tel.local.ch/de/q/?what=$(urlencode "$number")"
 }
 _reverse_local_ch_request() {

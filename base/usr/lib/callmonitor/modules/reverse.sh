@@ -11,9 +11,9 @@ require reverse_config
 
 reverse_lookup() {
     local number_plain=$1 prov area_prov child afile name exit number __
-    normalize_address "$number_plain" || return 1
+    normalize_address "$number_plain" save || return 1
     number=$__
-    if ! let "${number:+1}"; then return 1; fi
+    empty "$number" && return 1
 
     local lkz=$(tel_lkz "$number")
     if [ -z "$lkz" ]; then

@@ -1,6 +1,6 @@
 _reverse_google_url() {
     ## anonymize as far as possible (use only the first nine digits)
-    local number=$(expr substr "$1" 1 9)0000000000
+    local number=$(expr substr "00${1#+}" 1 9)0000000000
     URL="http://www.google.de/search?num=1&q=$(urlencode "$number")"
 }
 _reverse_google_request() {

@@ -95,7 +95,9 @@ list_providers() {
 	else
 	    sel=
 	fi
-	echo "<option title='$site' value='$provider'$sel>$label</option>"
+	title="title='$site'"
+	[ "$site" = . ] && title=
+	echo "<option $title value='$provider'$sel>$label</option>"
     done < "$CALLMONITOR_REVERSE_CFG"
 }
 

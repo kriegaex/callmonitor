@@ -28,7 +28,6 @@ _reverse_telefonbuch_at_extract() {
 	g
 	s#\(</\?\)name>#\1rev:name>#g
 	s#</strasse>#&, #
-	p
 	'"$REVERSE_SANITIZE"'
 	'"$REVERSE_OK"'
     ' | utf8_latin1

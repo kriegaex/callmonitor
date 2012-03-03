@@ -83,7 +83,9 @@ _j_transition() {
     esac
     let INSTANCE++
     if [ -z "$uuid" ]; then
-	read -r uuid < /proc/sys/kernel/random/uuid
+	## This does not work: (only read one character)
+	## read -r uuid < /proc/sys/kernel/random/uuid
+	uuid=$(cat /proc/sys/kernel/random/uuid)
     fi
     case $output in
 	""|in:accept)

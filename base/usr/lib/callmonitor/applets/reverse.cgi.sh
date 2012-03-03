@@ -64,7 +64,7 @@ select_fullprovider() {
     local prefix="+$lkz"
     if [ "$lkz" = other ]; then
 	name="$(lang de:"Andere" en:"Others")"
-	prefix="*"
+	prefix=
     fi
     echo "<tr><td>$(html "$name")</td><td>$prefix</td>"
     echo "<td>"

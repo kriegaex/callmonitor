@@ -69,8 +69,7 @@ normalize_tel() {
 		*) __="+$lkz${number#$OKZ_PREFIX}" ;;
 	    esac
 	    ;;
-	save) __="+$lkz${number#$OKZ_PREFIX}" ;;
-	*) __="${LKZ_PREFIX}${lkz}${number#$OKZ_PREFIX}" ;;
+	*) __="+$lkz${number#$OKZ_PREFIX}" ;;
     esac
     return 0
 }

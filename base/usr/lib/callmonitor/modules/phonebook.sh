@@ -24,7 +24,7 @@ _pb_fonbuch_init() {
     local nu na
     if [ ! -e "$_pb_FONBUCH_CACHE" ]; then
         _pb_fonbuch_read | while readx nu na; do
-	    normalize_address "$nu" save
+	    normalize_address "$nu"
 	    _pb_avm_put "$__" "$na"
         done
     fi
@@ -79,7 +79,7 @@ esac
 
 _pb_get() {
     local number=$1 number_norm name exitval __
-    normalize_address "$number" save; number_norm=$__
+    normalize_address "$number"; number_norm=$__
     _pb_get_local "$number_norm"
     exitval=$?; name=$__
     if ? "exitval != 0" && $_pb_REVERSE; then
@@ -125,7 +125,7 @@ _pb_get_local() {
 _pb_find_number() {
     local nu na
     while readx nu na; do
-	normalize_address "$nu" save
+	normalize_address "$nu"
 	if [ "$__" = "$number" ]; then name=$na; return 0; fi
     done
     return 1
@@ -133,7 +133,7 @@ _pb_find_number() {
 
 _pb_put() {
     local number_plain=$1 name=$2 __
-    normalize_address "$number_plain" save
+    normalize_address "$number_plain"
     _pb_put_local "$__" "$name"
 }
 

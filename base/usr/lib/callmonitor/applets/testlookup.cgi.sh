@@ -20,7 +20,7 @@ source "$CALLMONITOR_LIBDIR/web/reverse/lib/test_form.sh"
 
 show_test_results() {
     local number=$1 name status lkz disp unsupported= prov area_prov
-    normalize_tel "$number" save; number=$__
+    normalize_tel "$number"; number=$__
     normalize_tel "$number" display; disp=$__
     lkz=$(tel_lkz "$number")
     _reverse_choose_provider "$lkz"

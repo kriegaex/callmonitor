@@ -1,7 +1,7 @@
 require if_jfritz_status
 require hash
 
-readonly var_jfritz="event id timestamp ext source dest remote duration provider state output"
+readonly var_jfritz="event id timestamp ext source dest remote duration provider state output uuid"
 
 ## analyze call information
 __read() {
@@ -15,19 +15,19 @@ __read() {
 	    DISCONNECT)	_j_load source dest provider ext ;;
 	esac
 
-	_j_load state
+	_j_load state uuid
 	_j_transition
 	
 	case $state in
 	    disconnected)
-		_j_remove state source dest provider ext
+		_j_remove state source dest provider ext uuid
 		;;
 	    *)
 		case $event in
 		    RING) _j_store source dest provider ;;
 		    CALL|CONNECT)   _j_store source dest provider ext ;;
 		esac
-		_j_store state
+		_j_store state uuid
 		;;
 	esac
     done
@@ -82,6 +82,9 @@ _j_transition() {
 	;;
     esac
     let INSTANCE++
+    if [ -z "$uuid" ]; then
+	read -r uuid < /proc/sys/kernel/random/uuid
+    fi
     case $output in
 	""|in:accept)
 	    ## not used yet
@@ -157,7 +160,7 @@ _j_output() {
     local output=$1
     local ID=$id SOURCE=$source DEST=$dest EXT=$ext DURATION=$duration
     local TIMESTAMP=$timestamp EVENT= SOURCE_OPTIONS= DEST_OPTIONS=
-    local PROVIDER=$provider
+    local PROVIDER=$provider UUID=$uuid
 
     case $output in
 	in:*)

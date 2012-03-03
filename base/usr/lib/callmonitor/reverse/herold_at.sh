@@ -1,6 +1,6 @@
 _reverse_herold_at_url() {
     local number="0${1#+43}"
-    URL="http://www.herold.mobi/-/findlisting?what=$(urlencode "$number")&searchtype=WHITEPAGES"
+    URL="http://www.herold.mobi/redirect/findlisting?what=$(urlencode "$number")&searchtype=WHITEPAGES"
 }
 _reverse_herold_at_request() {
     local URL=
@@ -9,15 +9,13 @@ _reverse_herold_at_request() {
 }
 _reverse_herold_at_extract() {
     sed -n -e '
-	/Keine Ergebnisse/ {
+	/keine Treffer/ {
 	    '"$REVERSE_NA"'
 	}
 	# very fragile
-	/^<div class="result"/,\#^</div># {
-	    /<div class="highlight/,\#<br/>$# {
-	    	\#<br/>$# b cleanup
-	    	H
-	    }
+	/^[[:space:]]*<div class="result_parent"/,\#<br/>[[:space:]]*$# {
+	    \#<br/>[[:space:]]*$# b cleanup
+	    H
 	}
 	b
 	

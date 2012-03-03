@@ -1,6 +1,6 @@
 _reverse_telefonbuch_at_url() {
     local number="0${1#+43}"
-    URL="http://www.dasschnelle.at/index.php?pc=in&aktion=suchein&telnummer=$(urlencode "$number")"
+    URL="http://www.dasschnelle.at/result/index/results?what=$(urlencode "$number")&resultsPerPage=1"
 }
 _reverse_telefonbuch_at_request() {
     local URL=
@@ -9,26 +9,26 @@ _reverse_telefonbuch_at_request() {
 }
 _reverse_telefonbuch_at_extract() {
     sed -n -e '
-	/keine passenden Teilnehmer gefunden/ {
+	/countResults : "0"/ {
 	    '"$REVERSE_NA"'
 	}
-	/<div class="ergebnis"/,/<div class="servicelinks"/ {
-	    /<div class="adresse"/ b adresse
+	/^[[:space:]]*entries : \[[[:space:]]*$/,/^[[:space:]]result : / {
+	    /^[[:space:]]*\(name\|strasse\|plz\|ort\) : / b json
 	}
+	/^[[:space:]]*result : / b cleanup
+	$ b cleanup
 	b
-	
-	: adresse
-	\#</div># b cleanup
-	/<div class="servicelinks"/ b cleanup
-	s/$/, /g
+
+	: json
+	s#^[[:space:]]*\([a-z]\+\) : "\(.*\)",[[:space:]]*$#<\1>\2</\1>#
 	H
-	n; b adresse
+	b
 	
 	: cleanup
 	g
-	s#<p class="name">\([^<]*\)</p>#<rev:name>&</rev:name>#
-	s/<p class="telnummer".*//
-	s#</p>#, #g
+	s#\(</\?\)name>#\1rev:name>#g
+	s#</strasse>#&, #
+	p
 	'"$REVERSE_SANITIZE"'
 	'"$REVERSE_OK"'
     ' | utf8_latin1

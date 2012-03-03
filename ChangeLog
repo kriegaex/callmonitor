@@ -871,3 +871,14 @@
 
 	* reverse-userdef: Erlaubt die Einbindung einer benutzerdefinierten
 	Rückwärtssuche
+
+2012-03-03:
+
+	* callmonitor: Neue Variable UUID steht Aktionen zur Verfügung. Sie
+	identifiziert den Anruf (Folge von *:request bis *:disconnect oder
+	*:cancel), nicht ein einzelnes Ereignis: Wie ID, nur
+	(im Rahmen der zufälligen UUID-Erzeugung) global eindeutig.
+
+	* herold_at.sh: An Änderungen angepasst
+	* telefonbuch_at.sh: DasSchnelle.at: An Änderungen angepasst
+

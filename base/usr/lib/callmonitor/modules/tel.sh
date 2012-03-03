@@ -7,7 +7,6 @@ _tel_OKZ_CACHE="/var/cache/phonebook/telcfg"
 
 normalize_address() {
     local number=$1
-    # _pb_okz
     case $number in
 	SIP*|*@*) normalize_sip "$@" ;;
 	*) normalize_tel "$@" ;;

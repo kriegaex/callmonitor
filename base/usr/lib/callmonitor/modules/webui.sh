@@ -155,7 +155,7 @@ webui_query() {
     webui_get "$query" | sed -e '1,/^$/d;$d'
 }
 
-# To be overwritten
+## To be overwritten
 self_host() {
     echo fritz.box
 }

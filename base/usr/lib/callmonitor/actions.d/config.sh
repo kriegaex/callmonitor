@@ -14,7 +14,7 @@ config() {
 		2*|"") key="wlan:settings/ap_enabled" ;;
 		5*) key="wlan:settings/ap_enabled_scnd" ;;
 		on|yes|true|1|off|no|false|0|toggle)
-		    # switch both; query 2.4 only (see above: "")
+		    ## switch both; query 2.4 only (see above: "")
 		    shift # wlan
 		    config wlan 2.4 "$@"
 		    config wlan 5 "$@"

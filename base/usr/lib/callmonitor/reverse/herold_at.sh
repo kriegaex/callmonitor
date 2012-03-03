@@ -12,7 +12,7 @@ _reverse_herold_at_extract() {
 	/keine Treffer/ {
 	    '"$REVERSE_NA"'
 	}
-	# very fragile
+	## very fragile
 	/^[[:space:]]*<div class="result_parent"/,\#<br/>[[:space:]]*$# {
 	    \#<br/>[[:space:]]*$# b cleanup
 	    H

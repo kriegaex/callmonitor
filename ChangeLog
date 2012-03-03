@@ -870,7 +870,12 @@
 2012-02-29:
 
 	* reverse-userdef: Erlaubt die Einbindung einer benutzerdefinierten
-	Rückwärtssuche
+	Rückwärtssuche (Kurzanleitung: /tmp/flash/callmonitor/reverse-userdef
+	muss ausführbar sein, wird aufgerufen mit Rufnummer als Argument (im
+	internationalen Format, z.B. +498912345); existiert ein Name, Ausgabe
+	auf STDOUT: "Name; Adresse" (einzeilig; in Latin-1), Rückgabewert 0;
+	existiert kein Name, Rückgabewert 1; bei Fehlern Rückgabewert 2 oder
+	größer.)
 
 2012-03-03:
 

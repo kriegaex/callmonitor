@@ -14,6 +14,8 @@ Die kommen mit Durchwahlen zurecht und unterstützen sehr viele Länder -> spric
 Demnächst anschauen
 ----------------------------------------------------------------------
 
+Genauere Fehlermeldungen bei fehlgeschlagener Rückwärtssuche
+
 Dienste-Eintrag entfernen, wenn angebracht: modreg daemon --hide callmonitor
 
 Suchreihenfolge der Telefonfonbücher: Warum Cache nicht immer als letztes?

@@ -12,6 +12,7 @@ event=$1 source=$2 dest=$3
 
 ## dummy values
 id=1 ext=4 duration=16 timestamp=$(date +"%d.%m.%y %H:%M")
+uuid=$(cat /proc/sys/kernel/random/uuid)
 
 _j_output "$event"
 

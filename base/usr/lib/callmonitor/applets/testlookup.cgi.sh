@@ -66,7 +66,9 @@ show_test_results() {
     fi
     echo "<h2>$(lang de:"Lokale Telefonbücher" en:"Local phone books") $SELECTED</h2>"
     name=$(_pb_main --local get "$number"); status=$?; link=
+    echo -n "<p>"
     show_result
+    echo "</p>"
 }
 
 ## uses $name, $status, and $link

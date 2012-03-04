@@ -1,7 +1,0 @@
-#!/bin/bash
-rm -rf inst
-mkdir inst
-ver=$(cat .version)
-mod=freetz
-tar xvfj callmonitor-$ver-$mod.tar.bz2 -C inst
-DS_LANG_STRING=de ./lang build/$mod/callmonitor-$ver/.language inst/callmonitor-$ver/root

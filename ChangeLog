@@ -890,3 +890,5 @@
 2012-03-04:
 
 	callmonitor-1.20
+
+	* config.sh: Aktion "config wlan guest [on|off]" schaltet Gast-WLAN

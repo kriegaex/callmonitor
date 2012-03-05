@@ -8,26 +8,37 @@ require reverse_config
 ## performed or if there were errors (no need to cache)
 ##
 ## The resulting name and address should be returned in Latin-1 encoding
+##
+## The provider may be chosen automatically ($2 is empty) or by hand
 
 reverse_lookup() {
-    local number_plain=$1 prov area_prov child afile name exit number __
+    local number_plain=$1 prov=$2
+    local area_prov= child afile name exit number __
     normalize_address "$number_plain" || return 1
     number=$__
     empty "$number" && return 1
 
-    local lkz=$(tel_lkz "$number")
-    if [ -z "$lkz" ]; then
-	lkz=other
+    if [ -z "$prov" ]; then
+	local lkz=$(tel_lkz "$number")
+	if [ -z "$lkz" ]; then
+	    lkz=other
+	fi
+	_reverse_choose_provider "$lkz"
+    else
+	if ! type "_reverse_${prov}_request" >/dev/null; then
+	    _reverse_load "$prov"
+	fi
     fi
-    _reverse_choose_provider "$lkz"
 
-    afile="/var/run/phonebook/lookup-$area_prov-$number"
-    _reverse_lookup "$area_prov" "$number" | _reverse_atomic "$afile" & child=$!
+    if [ -n "$area_prov" ]; then
+	afile="/var/run/phonebook/lookup-$area_prov-$number"
+	_reverse_lookup "$area_prov" "$number" | _reverse_atomic "$afile" & child=$!
+    fi
     name=$(_reverse_lookup "$prov" "$number"); exit=$?
     if ! empty "$name"; then
 	echo "$name"
 	exit=0
-    else
+    elif [ -n "$area_prov" ]; then
 	## wait for area provider to finish
 	wait $child
 	name=$(cat "$afile" 2>/dev/null); exit=$?
@@ -37,7 +48,9 @@ reverse_lookup() {
 	    exit=0
 	fi
     fi
-    { kill "$child" 2>/dev/null; rm -f "$afile"; } &
+    if [ -n "$area_prov" ]; then
+	{ kill "$child" 2>/dev/null; rm -f "$afile"; } &
+    fi
     return $exit
 }
 _reverse_choose_provider() {
@@ -131,6 +144,9 @@ _reverse_load() {
     if [ -z "$provider" ]; then return; fi
     local file=$CALLMONITOR_LIBDIR/reverse/$provider.sh
     if [ -e "$file" ]; then
+	. "$file"
+    fi
+    if [ -n "$REVERSE_DEV" -a -e "/mod/root/$provider.sh" ]; then
 	. "$file"
     fi
 }

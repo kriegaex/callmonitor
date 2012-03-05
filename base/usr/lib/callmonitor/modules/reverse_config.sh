@@ -1,6 +1,14 @@
 require hash
 ## requires /usr/lib/callmonitor/reverse/provider.cfg
 
+_reverse_countries_matches() {
+    local countries=$1 lkz=$2
+    case ",$countries," in
+	*",$lkz,"* | *",$lkz!,"* | *",*," | *",*!,"*) return 0 ;;
+	*) return 1 ;;
+    esac
+}
+
 _reverse_init() {
     local type prov countries site label lkz entry cfg=
 

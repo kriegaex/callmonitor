@@ -21,6 +21,9 @@ _reverse_telefonbuch_at_extract() {
 
 	: json
 	s#^[[:space:]]*\([a-z]\+\) : "\(.*\)",[[:space:]]*$#<\1>\2</\1>#
+	s#\\[bfnrt]##g
+	s#\\\(["\\/]\)#\1#g
+	# \u four-hex-digits is not handled
 	H
 	b
 	

@@ -28,10 +28,11 @@ show_test_results() {
     echo "<p>$(lang de:"Schlage $disp nach" en:"Looking up $disp") ...</p>"
     local type provider site label countries supported
     while readx type provider countries site label; do
-	case ",$countries," in
-	    *",$lkz,"*|*",$lkz!,"*|*",*,"|*",*!,"*) supported=true ;;
-	    *) supported=false ;;
-	esac
+	if _reverse_countries_matches "$countries" "$lkz"; then
+	    supported=true
+	else
+	    supported=false
+	fi
 	local html_label="$(html "$label")"
 	if [ "$site" != . ]; then
 	    html_label="<a href='http://$site/' target='_blank'>$html_label</a>"

@@ -77,7 +77,7 @@ select_fullprovider() {
 
 list_providers() {
     local match=$1 lkz=$2 selected=$3 type provider site label sel countries
-    local lkz_pattern=$lkz
+    local lkz_pattern=$lkz title
     if [ "$lkz" = other ]; then
 	lkz_pattern="*"
     fi
@@ -86,18 +86,13 @@ list_providers() {
 	    $match*) ;;
 	    *) continue ;;
 	esac
-	case ",$countries," in
-	    *",$lkz_pattern,"*|*",$lkz_pattern!,"*|*",*,"*|*",*!,"*) ;;
-	    *) continue ;;
-	esac
-	if [ "$selected" = "$provider" ]; then
-	    sel=" selected"
-	else
-	    sel=
+	if ! _reverse_countries_matches "$countries" "$lkz_pattern"; then
+	    continue
 	fi
+	select "$provider" "$selected:prov"
 	title="title='$site'"
 	[ "$site" = . ] && title=
-	echo "<option $title value='$provider'$sel>$label</option>"
+	echo "<option $title value='$provider'$prov_sel>$label</option>"
     done < "$CALLMONITOR_REVERSE_CFG"
 }
 

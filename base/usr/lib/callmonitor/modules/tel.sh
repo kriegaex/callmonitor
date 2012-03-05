@@ -32,14 +32,15 @@ normalize_tel() {
     esac
 
     case $number in
-	+*) number="$LKZ_PREFIX${number#+}" ;;
+	$LKZ_PREFIX*) number="+${number#$LKZ_PREFIX}" ;;
     esac
     case $number in
-	$LKZ_PREFIX*)
+	+*)
 	    lkz=$(tel_lkz "$number")
-	    number=$OKZ_PREFIX${number#$LKZ_PREFIX$lkz}
+	    number=$OKZ_PREFIX${number#+$lkz}
 	;;
     esac
+
     # number is local to country
     case $lkz in
 	49)
@@ -92,7 +93,6 @@ tel_collect_lkzs() {
 tel_lkz() {
     local number=$1 lkz
     case $number in
-	$LKZ_PREFIX*) number=${number#$LKZ_PREFIX} ;;
 	+*) number=${number#+} ;;
 	*) return 2 ;;
     esac

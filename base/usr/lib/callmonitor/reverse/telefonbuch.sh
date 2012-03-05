@@ -5,11 +5,11 @@ _reverse_telefonbuch_url() {
 _reverse_telefonbuch_request() {
     local URL=
     _reverse_telefonbuch_url "$@"
-    wget_callmonitor -q -O - "$URL"
+    wget_callmonitor -q -O - "$URL" 2>&1
 }
 _reverse_telefonbuch_extract() {
     sed -n -e '
-	/kein Teilnehmer gefunden/ {
+	/wget: server returned error: HTTP.* 410 Gone\|kein Teilnehmer gefunden/ {
 	    '"$REVERSE_NA"'
 	}
 	/<table[^>]*class="[^"]*\(bg-0[12]\|entry\)/,\#<td class="col4"# {

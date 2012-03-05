@@ -49,10 +49,8 @@ show_test_results() {
 	    echo -n "<p>"
 	    _reverse_load "$provider"
 	    name=$(_reverse_lookup "$provider" "$number" 2>/dev/null); status=$?
-	    local url link
+	    local url
 	    url=$(_reverse_lookup_url "$provider" "$number")
-	    link="<a href='$(html "$url")' target='_blank'>($(lang de:"Überprüfen" en:"Check"))</a>"
-	    [ -z "$url" ] && link=
 	    show_result
 	    echo -n "</p>"
 	fi
@@ -65,7 +63,7 @@ show_test_results() {
 	): $unsupported</p>"
     fi
     echo "<h2>$(lang de:"Lokale Telefonbücher" en:"Local phone books") $SELECTED</h2>"
-    name=$(_pb_main --local get "$number"); status=$?; link=
+    name=$(_pb_main --local get "$number"); status=$?; url=
     echo -n "<p>"
     show_result
     echo "</p>"
@@ -73,14 +71,21 @@ show_test_results() {
 
 ## uses $name, $status, and $link
 show_result() {
+    local a= ae=
+    if [ -n "$url" ]; then
+	a="<a href='$(html "$url")' target='_blank' title='$(lang de:"Überprüfen" en:"Check")'>"
+	ae="</a>"
+    fi
+    echo -n "${a}"
     case $status in
 	0)
-	    echo "$(lang de:"Gefunden: " en:"Found: ") $link"
+	    ## $(lang de:"Gefunden: " en:"Found: ")
 	    echo "$name" | pre
 	;;
-	1) echo "$(lang de:"Nicht gefunden. " en:"Not found. ") $link" ;;
-	*) echo "$(lang de:"Fehler." en:"Error.") $link" ;;
+	1) echo "$(lang de:"Nicht gefunden" en:"Not found")" ;;
+	*) echo "$(lang de:"Fehler" en:"Error")" ;;
     esac
+    echo "${ae}"
 }
 
 cgi_main() {

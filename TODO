@@ -2,19 +2,16 @@
 Testen
 ----------------------------------------------------------------------
 
-----------------------------------------------------------------------
-Wichtig
-----------------------------------------------------------------------
-
 berndy20001:
 Weiters möchte nochmals den Wunsch zur Integration von addafix äußern (http://srv1.adaffix.com/adaffix/wap/start.jsp)
 Die kommen mit Durchwahlen zurecht und unterstützen sehr viele Länder -> sprich auch für andere Länder als Österreich interessant.
 
-http://freetz.org/ticket/1650:
+----------------------------------------------------------------------
+Wichtig
+----------------------------------------------------------------------
 
-Hätte noch einen Featurewunsch: Die Callaction "wlan" kann das Gast-WLan noch nicht
-
-cmtable.save_checkbox(ctlmgr_save, "wlan:settings/guest_ap_enabled" , "activate_guest_access")
+phonebook-Option/Kommando zur gezielten Rückwärtssuche bei einem Anbieter (zum
+Debugging)
 
 ----------------------------------------------------------------------
 Demnächst anschauen

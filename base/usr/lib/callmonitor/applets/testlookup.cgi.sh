@@ -47,13 +47,11 @@ show_test_results() {
 		fi
 	    fi
 	    echo -n "<h2>$html_label$selected</h2>"
-	    echo -n "<p>"
 	    _reverse_load "$provider"
 	    name=$(_reverse_lookup "$provider" "$number" 2>/dev/null); status=$?
 	    local url
 	    url=$(_reverse_lookup_url "$provider" "$number")
 	    show_result
-	    echo -n "</p>"
 	fi
     done < "$CALLMONITOR_REVERSE_CFG"
     if ! empty "$unsupported"; then
@@ -65,9 +63,7 @@ show_test_results() {
     fi
     echo "<h2>$(lang de:"Lokale Telefonbücher" en:"Local phone books") $SELECTED</h2>"
     name=$(_pb_main --local get "$number"); status=$?; url=
-    echo -n "<p>"
     show_result
-    echo "</p>"
 }
 
 ## uses $name, $status, and $link
@@ -77,16 +73,14 @@ show_result() {
 	a="<a href='$(html "$url")' target='_blank' title='$(lang de:"Überprüfen" en:"Check")'>"
 	ae="</a>"
     fi
-    echo -n "${a}"
     case $status in
 	0)
 	    ## $(lang de:"Gefunden: " en:"Found: ")
-	    echo "$name" | pre
+	    echo "<pre>${a}$(html "$name")${ae}</pre>"
 	;;
-	1) echo "$(lang de:"Nicht gefunden" en:"Not found")" ;;
-	*) echo "$(lang de:"Fehler" en:"Error")" ;;
+	1) echo "<p>${a}$(lang de:"Nicht gefunden" en:"Not found")${ae}</p>" ;;
+	*) echo "<p>${a}$(lang de:"Fehler" en:"Error")${ae}</p>" ;;
     esac
-    echo "${ae}"
 }
 
 cgi_main() {

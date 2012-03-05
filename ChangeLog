@@ -892,3 +892,8 @@
 	callmonitor-1.20
 
 	* config.sh: Aktion "config wlan guest [on|off]" schaltet Gast-WLAN
+
+2012-03-05:
+
+	* adaffix.sh: Neue Rückwärtssuche bei m.adaffix.com
+	* anywho.sh: Rückwärtssuche bei AnyWho entfernt

@@ -47,7 +47,7 @@ __log_setup() {
 	    mkdir -p "$CALLMONITOR_DUMPDIR"
 	    packet_cleanup "$CALLMONITOR_DUMPDIR"
 	    __dump() {
-		local p=$(packet_new "$CALLMONITOR_DUMPDIR" "$INSTANCE")
+		local p=$(packet_new "$CALLMONITOR_DUMPDIR" "$UUID.$INSTANCE")
 		dump "$@" > "$p"
 		packet_deliver "$p"
 		packet_cleanup "$CALLMONITOR_DUMPDIR"

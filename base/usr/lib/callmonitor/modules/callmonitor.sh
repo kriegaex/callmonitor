@@ -27,9 +27,6 @@ require file
 ensure_file "$CALLMONITOR_LISTENERS"
 
 export INSTANCE=0
-if [ -d "$CALLMONITOR_DUMPDIR" ]; then
-    INSTANCE=$(ls -r "$CALLMONITOR_DUMPDIR" | head -n 1 | sed 's/^0*//')
-fi
 
 ## provider cache
 new_hash _provider

@@ -12,7 +12,14 @@ ___() {
     let n++
     echo "<tr>"
     for var in $cols; do
-	eval 'echo "<td>$(html "$'"$var"'")</td>"'
+	case var in
+	    TIMESTAMP|EVENT|SOURCE|DEST|ID)
+		eval 'echo "<td>"${'"$var"'}</td>"'
+	    ;;
+	    *)
+		eval 'echo "<td>$(html "${'"$var"}'")</td>"'
+	    ;;
+	esac
     done
     echo "</tr>"
 }

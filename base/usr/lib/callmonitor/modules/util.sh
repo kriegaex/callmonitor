@@ -6,5 +6,5 @@ sed_re_escape() {
 }
 grep_re_escape() { sed_re_escape "$@"; }
 sh_escape() {
-    echo "'${1//'/'\''}'"
+    echo -n "'${1//'/'\''}'"
 }

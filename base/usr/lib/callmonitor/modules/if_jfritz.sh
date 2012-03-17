@@ -1,5 +1,6 @@
 require if_jfritz_status
 require hash
+require uuid
 
 readonly var_jfritz="event id timestamp ext source dest remote duration provider state output uuid"
 
@@ -83,9 +84,7 @@ _j_transition() {
     esac
     let INSTANCE++
     if [ -z "$uuid" ]; then
-	## This does not work: (only read one character)
-	## read -r uuid < /proc/sys/kernel/random/uuid
-	uuid=$(cat /proc/sys/kernel/random/uuid)
+	uuid=$(uuid_new)
     fi
     case $output in
 	""|in:accept)

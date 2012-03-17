@@ -14,7 +14,7 @@ _reverse_telefonbuch_extract() {
 	}
 	/<table[^>]*class="[^"]*\(bg-0[12]\|entry\)/,\#<td class="col4"# {
 	    \#<div class="[^"]*hide#,\#</div># b
-	    s#<br />#,#
+	    s#<br */>#,#
 	    H
 	    \#<td class="col3"# b cleanup
 	}

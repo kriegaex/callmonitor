@@ -1,7 +1,7 @@
 require cgi
 require delivery
 
-SELF=dump
+SELF=events
 TITLE='$(lang de:"Ereignisse" en:"Events")'
 
 cgi_begin "$TITLE" extras

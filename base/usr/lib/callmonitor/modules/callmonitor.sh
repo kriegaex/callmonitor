@@ -163,7 +163,7 @@ __process_rule() {
     set --
     eval "$listener"
     local status=$?
-    if ? "status != 0"; then
+    if [ $status -ne 0 ]; then
 	__debug_rule "listener failed with an exit status of $status"
     fi
 
@@ -205,7 +205,7 @@ __match() {
     case $pattern in
 	!*) let result="!result" ;;
     esac
-    if ? result == 0; then
+    if [ $result -eq 0 ]; then
 	__debug_rule "parameter $param='$value' matches pattern '$pattern'"
     else
 	__debug_rule "parameter $param='$value' does NOT match" \
@@ -231,12 +231,12 @@ __match_event() {
 		case $event in $pattern*:*|*:$pattern*) result=0;; esac
 		;;
 	esac
-	if ? "result == 0"; then
+	if [ $result -eq 0 ]; then
 	    __debug_rule "event '$event' matches pattern '$pattern'"
 	    break
 	fi
     done
-    if ? "result == 1"; then
+    if [ $result -eq 1 ]; then
 	__debug_rule "event '$event' does NOT match pattern '$spec'"
     fi
     return $result

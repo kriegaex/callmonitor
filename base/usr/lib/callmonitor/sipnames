@@ -1,4 +1,4 @@
-#! /usr/bin/env ash
+#! /bin/ash
 ## put default names for each SIP account into the phone book
 ## and print a mapping SIP[0-9] -> SIP address
 sip_info() {

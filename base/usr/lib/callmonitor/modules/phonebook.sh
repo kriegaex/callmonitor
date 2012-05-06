@@ -82,9 +82,9 @@ _pb_get() {
     normalize_address "$number"; number_norm=$__
     _pb_get_local "$number_norm"
     exitval=$?; name=$__
-    if ? "exitval != 0" && $_pb_REVERSE; then
+    if [ $exitval -ne 0 ] && $_pb_REVERSE; then
 	name=$(reverse_lookup "$number_norm")
-	if ? $? == 0 && $_pb_CACHE; then
+	if [ $? -eq 0 ] && $_pb_CACHE; then
 	    _pb_put_local "$number_norm" "$name" >&2 &
 	    exitval=0
 	fi
@@ -237,10 +237,10 @@ _pb_tidy() {
 	rm -f "$tmpfile"
 	unlock "$book"
     fi
-    if ? exitval == 0; then
+    if [ $exitval -eq 0 ]; then
 	callmonitor_store
     fi
-    if ? exitval == 0; then
+    if [ $exitval -eq 0 ]; then
 	echo "done." >&2
     else
 	echo "failed." >&2
@@ -293,11 +293,8 @@ _pb_main() {
 	exists) _pb_get "$2" > /dev/null ;;
 	remove|rm) _pb_remove "$2" ;;
 	put) _pb_put "$2" "$3" ;;
-	init) _pb_init ;;
-	start) _pb_start ;;
-	tidy) _pb_tidy ;;
-	flush) _pb_flush ;;
 	list|ls) _pb_list "$2" ;;
+	init|start|tidy|flush) "_pb_$1" ;;
 	*) usage >&2; exit 1 ;;
     esac
     return $?

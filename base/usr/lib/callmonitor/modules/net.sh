@@ -75,13 +75,13 @@ __getmsg() {
     _getopt getmsg "$@"
 }
 _body_getmsg() {
-    if ? $# == 0; then echo "Missing hostname or IP" >&2; return 1; fi
+    if [ $# -eq 0 ]; then echo "Missing hostname or IP" >&2; return 1; fi
     __getmsg_parse "$1" || return 1; shift
     if empty "$TEMPLATE"; then
-	if ? $# == 0; then echo "Missing template" >&2; return 1; fi
+	if [ $# -eq 0 ]; then echo "Missing template" >&2; return 1; fi
 	TEMPLATE=$1; shift
     fi
-    if ? $# == 0; then set -- "$(default_$TYPE)"; fi
+    if [ $# -eq 0 ]; then set -- "$(default_$TYPE)"; fi
     _http_prepare
     $SEND "$@"
 }
@@ -168,7 +168,7 @@ __rawmsg() {
     _getopt rawmsg "$@"
 }
 _body_rawmsg() {
-    if ? $# == 0; then echo "Missing hostname or IP" >&2; return 1; fi
+    if [ $# -eq 0 ]; then echo "Missing hostname or IP" >&2; return 1; fi
     if url_parse_authority "$1"; then
 	shift
 	__msg_set_authority
@@ -176,10 +176,10 @@ _body_rawmsg() {
 	return 1
     fi
     if empty "$TEMPLATE"; then
-	if ? $# == 0; then echo "Missing template" >&2; return 1; fi
+	if [ $# -eq 0 ]; then echo "Missing template" >&2; return 1; fi
 	TEMPLATE=$1; shift
     fi
-    if ? $# == 0; then set -- "$(default_$TYPE)"; fi
+    if [ $# -eq 0 ]; then set -- "$(default_$TYPE)"; fi
     $SEND "$@"
 }
 

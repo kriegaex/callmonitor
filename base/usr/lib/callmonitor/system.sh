@@ -6,7 +6,7 @@ __is_true() {
 alias \?=__is_true
 
 empty() {
-    ! let "${*:+1}"
+    [ -z "$*" ]
 }
 
 ## utilities for managing "libraries"

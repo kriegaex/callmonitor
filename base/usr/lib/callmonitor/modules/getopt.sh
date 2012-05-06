@@ -6,10 +6,10 @@ _getopt() {
     set -f; eval "set -- $temp"; set +f
     while true; do
 	_opt_$name "$@"; consumed=$?
-	if ? "ERROR > 0"; then
+	if [ $ERROR -gt 0 ]; then
 	    return $ERROR
 	fi
-	if ? "consumed > 0"; then
+	if [ $consumed -gt 0 ]; then
 	    shift $consumed
 	else
 	    case $1 in

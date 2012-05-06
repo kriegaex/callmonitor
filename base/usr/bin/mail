@@ -1,4 +1,4 @@
-#! /usr/bin/env ash
+#! /bin/ash
 readonly PROGRAM="mail"
 readonly SPOOL="/var/spool/mail"
 readonly MAILER="/sbin/mailer"
@@ -140,7 +140,7 @@ prepare_mail() {
 	${STARTTLS+    "-l"}
     script=$dir/send
     {
-	printf "#! /usr/bin/env ash\n"
+	printf "#! /bin/ash\n"
 	for arg in "$@"; do
 	    printf "%s " "$(escape "$arg")"
 	done

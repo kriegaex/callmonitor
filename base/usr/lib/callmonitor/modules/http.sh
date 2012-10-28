@@ -8,8 +8,8 @@ LF=$'\n'
 ## _http_basic_auth <user> <password>
 _http_basic_auth() {
     local user=$1 password=$2
-    echo -n "$user:$password" | uuencode -m - |
-    sed -e '1d;2s/^/Authorization: Basic /;3,$s/^/ /;s/$/'$CR'/;$d'
+    echo -n "Authorization: Basic"
+    echo -n "$user:$password" | base64 | sed -e 's/^/ /;s/$/'$CR'/'
 }
 
 ## HTTP utilities

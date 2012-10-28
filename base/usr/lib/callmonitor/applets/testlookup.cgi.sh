@@ -23,7 +23,7 @@ show_test_results() {
     normalize_tel "$number"; number=$__
     normalize_tel "$number" display; disp=$__
     lkz=$(tel_lkz "$number")
-    _reverse_choose_provider "$lkz"
+    _reverse_choose_provider "$number"
     echo "<p style='color: gray; float: right;'>$LEGEND</p>"
     echo "<p>$(lang de:"Schlage $disp nach" en:"Looking up $disp") ...</p>"
     local type provider site label countries supported

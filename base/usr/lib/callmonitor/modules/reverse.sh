@@ -19,15 +19,9 @@ reverse_lookup() {
     empty "$number" && return 1
 
     if [ -z "$prov" ]; then
-	local lkz=$(tel_lkz "$number")
-	if [ -z "$lkz" ]; then
-	    lkz=other
-	fi
-	_reverse_choose_provider "$lkz"
+	_reverse_choose_provider "$number"
     else
-	if ! type "_reverse_${prov}_request" >/dev/null; then
-	    _reverse_load "$prov"
-	fi
+	_reverse_require_provider "$prov"
     fi
 
     if [ -n "$area_prov" ]; then
@@ -54,7 +48,11 @@ reverse_lookup() {
     return $exit
 }
 _reverse_choose_provider() {
-    local lkz=$1
+    local number=$1
+    local lkz=$(tel_lkz "$number")
+    if [ -z "$lkz" ]; then
+	lkz=other
+    fi
     REVERSE_PROVIDER_get "$lkz" prov
     area_prov=$AREA_PROVIDER
 }
@@ -139,6 +137,12 @@ readonly REVERSE_SANITIZE='
 
 ## initialization: load required provider modules
 
+_reverse_require_provider() {
+    local prov=$1
+    if ! type "_reverse_${prov}_request" >/dev/null; then
+	_reverse_load "$prov"
+    fi
+}
 _reverse_load() {
     local provider=$1
     if [ -z "$provider" ]; then return; fi

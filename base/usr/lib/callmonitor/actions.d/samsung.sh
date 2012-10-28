@@ -4,7 +4,8 @@ require xml
 require url
 
 ## Documentation of request format:
-## http://sourceforge.net/apps/mediawiki/samygo/index.php?title=MessageBoxService_request_format
+## [deprecated] http://sourceforge.net/apps/mediawiki/samygo/index.php?title=MessageBoxService_request_format
+## http://wiki.samygo.tv/index.php5/MessageBoxService_request_format
 
 ## samsung <hostname|IP>
 samsung() (

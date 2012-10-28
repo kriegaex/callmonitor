@@ -2,15 +2,27 @@
 Testen
 ----------------------------------------------------------------------
 
+base64 aktivieren!
+
 ----------------------------------------------------------------------
 Wichtig
 ----------------------------------------------------------------------
 
-cm_vars: Aussortieren von abgeleiteten Variablen (nicht in Dump)
+Kommandozeilen-Werkzeug zum einfachen Zugriff auf Rückwärtssuche:
+ * Mögliche Provider auflisten
+ * Fehler bei falschem Provider
+ * Fehler, falls Provider Nummer nicht unterstützt
+ * besseres Ausgabeformat
+ * Debugging-Ausgaben
+
+cm_vars: Aussortieren von abgeleiteten Variablen (nicht in Dump) (??)
+Normalisierung der Rufnummern vor (!) der Anwendung der regulären Ausdrücke
 
 ----------------------------------------------------------------------
 Demnächst anschauen
 ----------------------------------------------------------------------
+
+Prowl API: http://www.prowlapp.com/api.php
 
 Genauere Fehlermeldungen bei fehlgeschlagener Rückwärtssuche
 

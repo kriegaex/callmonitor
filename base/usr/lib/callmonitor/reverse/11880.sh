@@ -14,7 +14,7 @@ _reverse_11880_extract() {
 	}
 	/<[^[:space:]>]*[[:space:]]class="head[[:space:]]/,/<[^[:space:]>]*[[:space:]]class="numericdata/ {
 	    /<[^[:space:]>]*[[:space:]]class="numericdata/ b found
-	    /<a href=[^>]*#ratingForm/ d
+	    /<a href=[^>]*#ratings/ d
 	    H
 	}
 	b

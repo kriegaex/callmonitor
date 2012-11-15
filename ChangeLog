@@ -901,3 +901,16 @@
 2012-03-11:
 
 	callmonitor-1.20.1
+
+2012-11-10:
+
+	* reverse: Kleines Kommandozeilenprogramm zur Fehler- bei der
+	Rückwärtssuche. Basisversion.
+
+2012-11-15:
+
+	* dasoertliche: Nichterkennung von "fetten" Einträgen behoben (Dank an
+	knesi)
+	* 11880: Bewertung aus Ergebnis entfernt
+
+	callmonitor-1.20.2

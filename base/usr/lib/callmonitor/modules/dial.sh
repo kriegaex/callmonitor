@@ -16,5 +16,5 @@ _dial_port() {
     if ! empty "$port"; then
 	data="telcfg:settings/DialPort=$(urlencode "$port")&$data"
     fi
-    { webui_login; webui_post_form "$data"; } > /dev/null 2>&1
+    { webui_login && webui_post_form "$data"; } > /dev/null 2>&1
 }

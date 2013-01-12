@@ -1,4 +1,4 @@
-require webui
+require system
 require file
 require dump
 require set
@@ -125,9 +125,8 @@ fi
 ## retrieve OKZ et al. from AVM config
 tel_config() {
     if [ ! -r "$_tel_OKZ_CACHE" ]; then
-	webui_login
 	ensure_file "$_tel_OKZ_CACHE"
-	webui_query \
+	system_query \
 	    telcfg:settings/Location/LKZPrefix \
 	    telcfg:settings/Location/LKZ \
 	    telcfg:settings/Location/OKZPrefix \

@@ -914,3 +914,20 @@
 	* 11880: Bewertung aus Ergebnis entfernt
 
 	callmonitor-1.20.2
+
+2013-01-12:
+
+	* webui: Neue Mehrbenutzerverwaltung ab Fritz!OS 5.50 wird unterstützt;
+	beseitigt verschiedene Fehler ("Müll" in den Standortangaben,
+	fehlende Null bei der Rückwärtssuche, keine Berücksichtigung des
+	AVM-Telefonbuchs)
+	
+	Falls mit mehreren Benutzerkonten gearbeitet wird, muss einmalig der
+	Benutzername eingestellt werden, den der Callmonitor zum Zugriff auf
+	die Weboberfläche verwenden soll (um z.B. das Telefonbuch abzurufen).
+
+	Achtung: Noch wenig getestet!
+
+	* config: Umstellung auf ctlmgr_ctl, wo möglich
+
+	callmonitor-1.20.3 (beta)

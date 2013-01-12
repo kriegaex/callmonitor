@@ -47,9 +47,6 @@ echo "
     <td>$(lang de:"Ortsvorwahl" en:"Area code")</td>
     <td><input disabled size="3" value='$(html "$OKZ_PREFIX")'>
 	<input disabled size="4" value='$(html "$OKZ")'></td>
-    <td>
-	<a target='_blank' href='$(html "$(webui_page_url fon/sipoptionen)")'>$(lang de:"Ändern" en:"Change")</a>
-    </td>
 </tr>
 </table>
 "

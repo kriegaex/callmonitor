@@ -44,8 +44,7 @@ _pb_list_hash() {
 }
 ## requires /usr/www/all/html/callmonitor/fonbuch.txt
 _pb_fonbuch_read() {
-    webui_login
-    webui_get "getpage=../html/callmonitor/fonbuch.txt" | sed -e '
+    webui_login && webui_get "getpage=../html/callmonitor/fonbuch.txt" | sed -e '
 	1,/^$/d
 	## remove the VIP flag
 	s/^\([^	]*	\)!/\1/

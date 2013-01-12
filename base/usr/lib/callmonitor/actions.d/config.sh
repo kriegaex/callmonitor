@@ -1,4 +1,4 @@
-require webui
+require system
 
 config() {
     local type=query key value extra=
@@ -6,7 +6,7 @@ config() {
 	forward)
 	    key="forwardrules:settings/rule$((${2:-1}-1))/activated"
 	    if ? "${3:+1}"; then
-		type=post value="$(_c_value "$3" "$1" "$2")"
+		type=update value="$(_c_value "$3" "$1" "$2")"
 	    fi
 	    ;;
 	wlan)
@@ -24,26 +24,26 @@ config() {
 		*) echo "Syntax error: $*" >&2; return 1 ;;
 	    esac
 	    if ? "${3:+1}"; then
-		type=post value="$(_c_value "$3" "$1" "$2")"
+		type=update value="$(_c_value "$3" "$1" "$2")"
 	    fi
 	    ;;
 	dect)
 	    key="dect:settings/enabled"
 	    if ? "${2:+1}"; then
-		type=post value="$(_c_value "$2" "$1")"
+		type=update value="$(_c_value "$2" "$1")"
 	    fi
 	    ;;
 	sip)
 	    key="sip:settings/sip$((${2:-1}-1))/activated"
 	    if ? "${3:+1}"; then
-		type=post value="$(_c_value "$3" "$1" "$2")"
+		type=update value="$(_c_value "$3" "$1" "$2")"
 	    fi
 	    ;;
 	diversion)
 	    key="telcfg:settings/Diversity$((${2:-1}-1))/Active"
 	    extra="telcfg:settings/RefreshDiversity"
 	    if ? "${3:+1}"; then
-		type=post value="$(_c_value "$3" "$1" "$2")"
+		type=update value="$(_c_value "$3" "$1" "$2")"
 	    fi
 	    ;;
 	*)
@@ -51,14 +51,14 @@ config() {
 	    ;;
     esac
     case $type in
-	post) webui_login; webui_post_form "$key=$value" > /dev/null ;;
-	query) webui_login; echo $(_c_f_boolean $(webui_query "$extra" "$key" | tail +2)) ;;
+	update) system_update "$key" "$value" ;;
+	query) echo $(_c_f_boolean $(system_query "$extra" "$key" | tail +2)) ;;
 	fail) echo "Unknown configuration '$1'" >&2; return 1 ;;
     esac
 }
 
 pushservice() {
-    webui_login; webui_post_form "emailnotify:settings/TestMail=1" > /dev/null
+    system_update emailnotify:settings/TestMail 1
 }
 
 _c_boolean() {
@@ -87,4 +87,3 @@ _c_value() {
     esac
     _c_boolean "$val"
 }
-

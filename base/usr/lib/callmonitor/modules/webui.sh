@@ -1,4 +1,5 @@
 require url
+require user
 
 webui_post_form_generic() {
     local cgi=$1 post_data=$2
@@ -12,6 +13,9 @@ webui_post_form_generic() {
 
 WEBCM_DIR=/usr/www/html/cgi-bin
 WEBCM=$WEBCM_DIR/webcm
+
+LUACGI_DIR=/usr/www/all/cgi-bin
+LUACGI=$LUACGI_DIR/luacgi
 
 ## Firmware version xx.04.74 introduces session IDs
 ##
@@ -29,6 +33,10 @@ WEBCM=$WEBCM_DIR/webcm
 ##
 ## A login is deemed valid until the timestamp in WEBUI_EXPIRES is reached
 ## (last login + WEBUI_LIFETIME seconds).
+## 
+## Fritz!OS 5.50 introduces multi-user support, see 
+## http://www.avm.de/de/Extern/files/session_id/AVM_Technical_Note_-_Session_ID.pdf
+## WEBUI_TYPE is used to remember which login method was used
 
 ## Convert login_sid.xml to shell variables
 ##
@@ -57,9 +65,29 @@ webui_login_sid() {
 	    done
 	    return 0
 	;;
-	*)
-	    return 2
+	*) return 2 ;;
+    esac
+}
+## Similar handling of login_sid.lua (TODO: Merge?)
+webui_login_sid_lua() {
+    [ -e "/var/html/login_sid.lua" ] || return 1
+    local info=$(webui_post_lua "${1:+$1&}script=/login_sid.lua")
+    ## echo "$info" >&2
+    case $info in
+    	*SessionInfo*)
+	    local _ key value
+	    echo "$info" | sed -r "s#(<(SessionInfo|Rights)>|</[^>]*>)#\1\n#g" |
+	    while IFS="<>" read -r _ key value _; do
+		## echo "|$key| => |$value|" >&2
+		case $key in
+		    SID|Challenge)
+		    	echo "$key='$value'"
+		    ;;
+		esac
+	    done
+	    return 0
 	;;
+	*) return 2 ;;
     esac
 }
 
@@ -67,48 +95,105 @@ WEBUI_LIFETIME=120
 
 ## Login (and obtain a session id)
 webui_login() {
-    local now=$(date +%s) expires=${WEBUI_EXPIRES:-0}
+    local now=$(date +%s) expires=${WEBUI_EXPIRES:-0} status
     [ "$now" -lt "$expires" ] && return
     
-    webui_login_do
+    webui_login_do; status=$?
 
     let WEBUI_EXPIRES="now + WEBUI_LIFETIME"
+    return $status
 }
 webui_login_do() {
-    local password=$(webui_password) sinfo
+    local username password sinfo
+    ## Try out login methods one after another
+    sinfo=$(webui_login_sid_lua)
+    if [ $? -eq 0 ]; then
+	## echo "multi-user" >&2
+	## multi-user, >= FRITZ!OS 5.50
+	webui_set_credentials
+	local SID Challenge
+	## echo "$sinfo" >&2
+	eval "$sinfo"
+	case $(webui_sid_type "$SID") in
+	    invalid)
+		## we are being challenged; respond and (hopefully) receive a SID
+		local response=$(webui_response "$Challenge" "$password")
+		unset SID Challenge
+		sinfo=$(webui_login_sid_lua "response=$response&username=$username") &&
+		eval "$sinfo"
+		## echo "$sinfo" >&2
+		;;
+	    valid) 
+		# already logged in 
+		;;
+	    error) echo "Malformed SID" >&2 ;;
+	esac
+	WEBUI_SID=$SID
+	WEBUI_TYPE=multiuser
+	case $(webui_sid_type "$SID") in
+	    valid) return 0 ;;
+	    invalid) return 1 ;;
+	    error) return 2 ;;
+	esac
+    fi
     sinfo=$(webui_login_sid)
-    if [ $? -ne 0 ]; then
-	## old login
-	unset WEBUI_SID
-	if ! empty "$password"; then
-	    webui_post_form "login:command/password=$(urlencode "$password")" \
-	    > /dev/null
-	fi
-    else
-	## new login
+    if [ $? -eq 0 ]; then
+	## simple session ID
 	local iswriteaccess SID Challenge
+	password=$(webui_password)
 	eval "$sinfo"
 	if [ ${iswriteaccess:-0} -eq 0 ]; then
 
-    	    ## we are being challenged
-	    local md5="$(echo -n "$Challenge-$password" |
-	    	sed -e 's/./&\n/g' | tr '\n' '\0' | md5sum)"
-	    md5=${md5%% *}
-	    local response="$Challenge-$md5"
-
-    	    ## respond and (hopefully) receive a SID
+    	    ## we are being challenged; respond and (hopefully) receive a SID
+	    local response=$(webui_response "$Challenge" "$password")
 	    unset iswriteaccess SID Challenge
 	    sinfo=$(webui_login_sid "login:command/response=$response") &&
 		eval "$sinfo"
 	fi
 	WEBUI_SID=$SID
+	WEBUI_TYPE=sid
+	case $(webui_sid_type "$SID") in
+	    valid) return 0 ;;
+	    invalid) return 1 ;;
+	    error) return 2 ;;
+	esac
     fi
+    if true; then
+	## old login
+	unset WEBUI_SID
+	password=$(webui_password)
+	if ! empty "$password"; then
+	    webui_post_form "login:command/password=$(urlencode "$password")" \
+	    > /dev/null
+	fi
+	WEBUI_TYPE=classic
+	return 0 ## even if login fails (detecting that case is not easy)
+    fi
+}
+webui_response() {
+    local challenge=$1 password=$2
+    local md5="$(echo -n "$challenge-$password" |
+	sed -e 's/./&\n/g' | tr '\n' '\0' | md5sum)"
+    md5=${md5%% *}
+    local response="$challenge-$md5"
+    echo "$response"
+}
+webui_sid_type() {
+    local sid=$1
+    case $sid in
+	0000000000000000) echo "invalid" ;;
+	????????????????) echo "valid" ;;
+	*) echo "error" ;;
+    esac
 }
 
 ## Terminate the current session
 webui_logout() {
     if ! empty "$WEBUI_SID"; then
-	webui_post_form "security:command/logout=" > /dev/null
+	case $WEBUI_TYPE in
+	    multiuser) webui_login_sid_lua "logout=" > /dev/null ;;
+	    sid) webui_post_form "security:command/logout=" > /dev/null ;;
+	esac
 	unset WEBUI_SID
     fi
     unset WEBUI_EXPIRES
@@ -126,12 +211,24 @@ webui_get() (
     QUERY_STRING="${WEBUI_SID:+sid=$WEBUI_SID&}$1" "$WEBCM"
 )
 
+webui_post_lua() (
+    cd "$LUACGI_DIR"
+    local post_data="${WEBUI_SID:+sid=$WEBUI_SID&}$1" REMOTE_ADDR=127.0.0.1
+    webui_post_form_generic "$LUACGI" "$post_data"
+)
+webui_get_lua() {
+    cd "$LUACGI_DIR"
+    REQUEST_METHOD=GET REMOTE_ADDR=127.0.0.1 \
+    WEBDIR_PATH=/usr/www/html \
+    QUERY_STRING="${WEBUI_SID:+sid=$WEBUI_SID&}$1" "$LUACGI"
+}
+
 ## requires /usr/bin/cfg2sh
 webui_config() {
     cfg2sh ar7 webui
 }
 
-## cache password
+## cache password (not multi-user)
 unset WEBUI_PASSWORD
 webui_password() {
     local webui_password=
@@ -140,6 +237,22 @@ webui_password() {
 	WEBUI_PASSWORD=$webui_password
     fi
     echo "$WEBUI_PASSWORD"
+}
+## sets username and password (multi-user only!) (cached)
+unset WEBUI_USERNAME
+webui_set_credentials() {
+    if ! [ ${WEBUI_USERNAME+set} ]; then
+	WEBUI_USERNAME=$CALLMONITOR_USERNAME
+	if user_is_compat; then
+	    WEBUI_USERNAME=""
+	fi
+	WEBUI_PASSWORD=$CALLMONITOR_PASSWORD
+	if [ -z "$WEBUI_PASSWORD" ]; then
+	    WEBUI_PASSWORD=$(user_getpw "$WEBUI_USERNAME")
+	fi
+    fi
+    username=$WEBUI_USERNAME
+    password=$WEBUI_PASSWORD
 }
 
 ## 2008-08-23: The interface to query.txt has been modified in recent 7270
@@ -158,9 +271,4 @@ webui_query() {
 ## To be overwritten
 self_host() {
     echo fritz.box
-}
-
-webui_page_url() {
-    local menu=${1%/*} pagename=${1#*/}
-    echo "http://$(self_host)/cgi-bin/webcm?getpage=..%2Fhtml%2F${Language:-de}%2Fmenus%2Fmenu2.html&var%3Alang=${Language:-de}&var%3Apagename=$(urlencode "$pagename")&var%3Amenu=$(urlencode "$menu")"
 }

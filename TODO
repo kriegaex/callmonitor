@@ -2,11 +2,16 @@
 Testen
 ----------------------------------------------------------------------
 
-base64 aktivieren!
+Neue Login-Methode; alte Login-Methoden
+GUI für Benutzername
+config-Modul auf ctlmgr_ctl umstellen, wo möglich
 
 ----------------------------------------------------------------------
 Wichtig
 ----------------------------------------------------------------------
+
+Fehlermeldung beim Login
+Prüfen, ob überhaupt ein Benutzer gesetzt ist
 
 Kommandozeilen-Werkzeug zum einfachen Zugriff auf Rückwärtssuche:
  * Fehler bei falschem Provider

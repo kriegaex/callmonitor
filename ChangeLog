@@ -931,3 +931,10 @@
 	* config: Umstellung auf ctlmgr_ctl, wo möglich
 
 	callmonitor-1.20.3 (beta)
+
+2013-01-13:
+
+	* web: Kosmetische Korrekturen
+	* webui: Kleine Änderung in der Reihenfolge der Parameter
+
+	callmonitor-1.20.4 (beta)

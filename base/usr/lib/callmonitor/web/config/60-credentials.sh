@@ -3,15 +3,16 @@ require user
 for once in my_life; do ## ;-) to allow "break"ing
 
 user_supported || break
-user_is_compat && break
+# user_is_compat && break
+# user_auth_is_skipped && break
 
 sec_begin '$(lang de:"Zugangsdaten" en:"Credentials")'
 
 echo "
 <p>
 $(lang 
-    de:"Für den Zugriff auf die AVM-Weboberfläche"
-    en:"For accessing the AVM web interface"
+    de:"Für den Zugriff auf die AVM-Weboberfläche im Mehrbenutzermodus (Anmeldung mit FRITZ!Box-Benutzernamen und Kennwort)"
+    en:"For accessing the AVM web interface in multi-user mode"
 )
 </p>
 <p>

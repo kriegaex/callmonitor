@@ -40,3 +40,7 @@ user_supported() {
 user_is_compat() {
     [ "$(ctlmgr_ctl r boxusers settings/compatibility_mode)" -eq 1 ]
 }
+
+user_auth_is_skipped() {
+    [ "$(ctlmgr_ctl r boxusers settings/skip_auth_from_homenetwork)" -eq 1 ]
+}

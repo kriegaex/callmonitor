@@ -119,7 +119,7 @@ webui_login_do() {
 		## we are being challenged; respond and (hopefully) receive a SID
 		local response=$(webui_response "$Challenge" "$password")
 		unset SID Challenge
-		sinfo=$(webui_login_sid_lua "response=$response&username=$username") &&
+		sinfo=$(webui_login_sid_lua "username=$username&response=$response") &&
 		eval "$sinfo"
 		## echo "$sinfo" >&2
 		;;

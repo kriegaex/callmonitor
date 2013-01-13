@@ -1,5 +1,5 @@
 ## Execute a single action (such as dboxmessage or anything else that can
-## appear in the "Listeners")
+## appear in the rules)
 
 require callmonitor_config
 require usage

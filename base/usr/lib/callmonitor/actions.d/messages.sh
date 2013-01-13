@@ -1,8 +1,8 @@
-## Listener types and common utilities; separate function for each type
-## of listener. Put your own into $CALLMONITOR_LIBDIR/actions.local.d/*.sh
+## Action types and common utilities; separate function for each type
+## of action. Put your own into $CALLMONITOR_LIBDIR/actions.local.d/*.sh
 ## 
 ## These environment variables are set by callmonitor before calling
-## calling a listener:
+## calling an action:
 ##  EVENT	event {in,out}:{request,cancel,connect,disconnect}
 ##  SOURCE	source number
 ##  SOURCE_NAME source name
@@ -24,7 +24,7 @@ for_leases() {
     done < /var/flash/multid.leases
 }
 
-## simple *box listeners
+## simple *box actions
 dboxpopup() {
     getmsg -T dboxpopup -t "/control/message?popup=%s" -m 1 "$@"
 }

@@ -1,4 +1,4 @@
-## Syntax of rules in file $CALLMONITOR_LISTENERS (not compatible
+## Syntax of rules in file $CALLMONITOR_RULES (not compatible
 ## with versions 0.8 and less):
 ## 
 ## <event-spec> [!]<source-regexp> [!]<dest-regexp> <command line (rest)>
@@ -24,7 +24,7 @@ require tel
 require hash
 require file
 
-ensure_file "$CALLMONITOR_LISTENERS"
+ensure_file "$CALLMONITOR_RULES"
 
 export INSTANCE=0
 
@@ -43,14 +43,14 @@ _provider_name() {
 __incoming_call() {
     __prepare_env
 
-    local event_spec source_pattern dest_pattern listener rule=0
-    while readx event_spec source_pattern dest_pattern listener
+    local event_spec source_pattern dest_pattern action rule=0
+    while readx event_spec source_pattern dest_pattern action
     do
 	## process rule asynchronously
 	RULE=$rule \
-	__process_rule "$event_spec" "$source_pattern" "$dest_pattern" "$listener" &
+	__process_rule "$event_spec" "$source_pattern" "$dest_pattern" "$action" &
 	let rule++
-    done < "$CALLMONITOR_LISTENERS"
+    done < "$CALLMONITOR_RULES"
     wait
 }
 
@@ -135,7 +135,7 @@ __prepare_env() {
 	SOURCE_ADDRESS DEST_ADDRESS SOURCE_DISP DEST_DISP EVENT ID EXT DURATION
 	TIMESTAMP PROVIDER UUID"
 
-    ## make call information available to listeners
+    ## make call information available to actions
     export $var_cm
 
     ## dump information to file
@@ -144,8 +144,8 @@ __prepare_env() {
 
 ## process a single rule
 __process_rule() {
-    local event_spec=$1 source_pattern=$2 dest_pattern=$3 listener=$4
-    __debug_rule "processing rule '$event_spec' '$source_pattern' '$dest_pattern' '$listener'"
+    local event_spec=$1 source_pattern=$2 dest_pattern=$3 action=$4
+    __debug_rule "processing rule '$event_spec' '$source_pattern' '$dest_pattern' '$action'"
 
     ## match
     if ! {
@@ -157,14 +157,14 @@ __process_rule() {
 	return 1
     fi
 
-    ## execute listener
+    ## execute action
     __debug_rule "SUCCEEDED"
-    __info_rule "ACTION: '$listener'"
+    __info_rule "ACTION: '$action'"
     set --
-    eval "$listener"
+    eval "$action"
     local status=$?
     if [ $status -ne 0 ]; then
-	__debug_rule "listener failed with an exit status of $status"
+	__debug_rule "action failed with an exit status of $status"
     fi
 
     return 0

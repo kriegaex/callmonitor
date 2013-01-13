@@ -1,4 +1,4 @@
-## check for errors in 'Listeners' (read from stdin)
+## check for errors in rules (read from stdin)
 
 ## line number
 lineno=0

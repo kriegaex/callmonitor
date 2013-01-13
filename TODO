@@ -10,6 +10,8 @@ config-Modul auf ctlmgr_ctl umstellen, wo möglich
 Wichtig
 ----------------------------------------------------------------------
 
+Holzhammer-Patch entfernen
+
 Fehlermeldung beim Login
 Prüfen, ob überhaupt ein Benutzer gesetzt ist
 
@@ -21,6 +23,8 @@ Kommandozeilen-Werkzeug zum einfachen Zugriff auf Rückwärtssuche:
 
 cm_vars: Aussortieren von abgeleiteten Variablen (nicht in Dump) (??)
 Normalisierung der Rufnummern vor (!) der Anwendung der regulären Ausdrücke
+
+"listener" in Fehlermeldungen umbenennen
 
 ----------------------------------------------------------------------
 Demnächst anschauen

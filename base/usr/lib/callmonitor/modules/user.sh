@@ -1,3 +1,5 @@
+# retrieves a password
+# (passwords containing umlauts are not handled correctly)
 user_getpw() {
     local user=${1:-@CompatMode} found=false
     cfg2sh ar7 boxusers | sed -rn "s/^boxusers_users_(name|password)=/\1=/p" |

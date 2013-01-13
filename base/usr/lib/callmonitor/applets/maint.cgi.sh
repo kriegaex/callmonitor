@@ -52,7 +52,7 @@ fi
 cgi_begin "$TITLE" extras
 
 if have phonebook; then
-sec_begin 'Telefonbuch (Callers)'
+sec_begin 'Telefonbuch'
 
 let LINES="$({ 
     grep '[[:print:]]' "$CALLMONITOR_PERSISTENT" | wc -l; } 2>/dev/null)+0"

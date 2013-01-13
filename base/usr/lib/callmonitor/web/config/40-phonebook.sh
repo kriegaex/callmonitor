@@ -56,9 +56,9 @@ sec_end
 sec_begin '$(lang de:"Rückwärtssuche" en:"Reverse lookup")'
 
 H_CALLERS="<a href='$(href file callmonitor callers)'>$(lang 
-	de:"Telefonbuch des Callmonitors"
-	en:"Callmonitor's phone book"
-    ) (Callers)</a>"
+	de:"internen Telefonbuch des Callmonitors"
+	en:"Callmonitor's internal phone book"
+    )</a>"
 
 echo "
 <table>
@@ -78,8 +78,8 @@ echo "
     <td><input type='hidden' name='phonebooks' value='callers cache avm'><!--
     --><input type='checkbox' name='phonebooks' value='avm callers cache'$before_chk id='prio'></td>
     <td><label for='prio'>$(lang
-	de:"vor Callers"
-	en:"before Callers"
+	de:"vor internem Telefonbuch"
+	en:"before internal phonebook"
     )</label></td>
 </tr>
 "

@@ -10,12 +10,12 @@ sec_begin '$(lang de:"Zugangsdaten" en:"Credentials")'
 echo "
 <p>
 $(lang 
-    de:"FÃ¼r den Zugriff auf die AVM-WeboberflÃ¤che"
+    de:"Für den Zugriff auf die AVM-Weboberfläche"
     en:"For accessing the AVM web interface"
 )
 </p>
 <p>
-<label for='username'>$(lang de:'Benutzername' en:'Username')</label>
+<label for='username'>$(lang de:"Benutzername" en:"Username"):</label>
 <select name='username' id='username'>
 "
 { user_list; echo "$CALLMONITOR_USERNAME"; } | sort -u | 

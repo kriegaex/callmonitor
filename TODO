@@ -25,6 +25,8 @@ Kommandozeilen-Werkzeug zum einfachen Zugriff auf Rückwärtssuche:
 cm_vars: Aussortieren von abgeleiteten Variablen (nicht in Dump) (??)
 Normalisierung der Rufnummern vor (!) der Anwendung der regulären Ausdrücke
 
+"Callmonitor-Schnittstelle jetzt aktivieren" entfernen; wenn es automatisch nicht geht, warum sollte es dann manuell funktionieren?
+
 ----------------------------------------------------------------------
 Demnächst anschauen
 ----------------------------------------------------------------------

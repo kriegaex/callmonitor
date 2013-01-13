@@ -56,8 +56,8 @@ sec_end
 sec_begin '$(lang de:"Rückwärtssuche" en:"Reverse lookup")'
 
 H_CALLERS="<a href='$(href file callmonitor callers)'>$(lang 
-	de:"internen Telefonbuch des Callmonitors"
-	en:"Callmonitor's internal phone book"
+	de:"Callmonitor-Telefonbuch"
+	en:"Callmonitor's phone book"
     )</a>"
 
 echo "
@@ -73,13 +73,13 @@ echo "
 	onchange='dep(this,\"prio\")'></td>
     <td><label for='r5'>$(lang
 	de:"Im FRITZ!Box-Telefonbuch nachschlagen"
-	en:"Lookup in the FRITZ!Box's phone book"
+	en:"Lookup in FRITZ!Box's phone book"
     )</label></td>
     <td><input type='hidden' name='phonebooks' value='callers cache avm'><!--
     --><input type='checkbox' name='phonebooks' value='avm callers cache'$before_chk id='prio'></td>
     <td><label for='prio'>$(lang
-	de:"vor internem Telefonbuch"
-	en:"before internal phonebook"
+	de:"vor Callmonitor-Telefonbuch"
+	en:"before Callmonitor's phone book"
     )</label></td>
 </tr>
 "

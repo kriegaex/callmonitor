@@ -11,7 +11,11 @@ _j_cgi_is_down() {
 	    automatisch aktiviert."
 	en:"It is required for Callmonitor's operation and is normally enabled
 	    automatically."
-    ) [<a href='$(href extra callmonitor exec)?jfritz=on'>$(lang de:"Einschalten" en:"Enable")</a>]
+    )
+    $(lang
+        de:"Bitte wählen Sie #96*5* von einem angeschlossenen Telefon."
+	en:"Please dial #96*5* from a connected telephone."
+    )
     </li>
 "
 }
@@ -21,6 +25,6 @@ _j_cgi_is_up() {
     <li>$(lang
 	de:"Die CallMonitor-Schnittstelle ($CALLMONITOR_MON_HOST:$CALLMONITOR_MON_PORT) ist aktiviert."
 	en:"The CallMonitor interface ($CALLMONITOR_MON_HOST:$CALLMONITOR_MON_PORT) is active."
-    ) [<a href='$(href extra callmonitor exec)?jfritz=off'>$(lang de:"Ausschalten" en:"Disable")</a>]
+    )
 "
 }

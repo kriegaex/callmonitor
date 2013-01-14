@@ -3,18 +3,14 @@ Testen
 ----------------------------------------------------------------------
 
 Neue Login-Methode; alte Login-Methoden
-GUI für Benutzername
-config-Modul auf ctlmgr_ctl umstellen, wo möglich
-listeners → rules
+ => es gibt Probleme bei bolle + hermann:
+ Evtl. ein Problem mit der IP-Adresse/Netzwerkkonfiguration?
 
 ----------------------------------------------------------------------
 Wichtig
 ----------------------------------------------------------------------
 
-Holzhammer-Patch entfernen
-
 Fehlermeldung beim Login
-Prüfen, ob überhaupt ein Benutzer gesetzt ist
 
 Kommandozeilen-Werkzeug zum einfachen Zugriff auf Rückwärtssuche:
  * Fehler bei falschem Provider
@@ -24,8 +20,6 @@ Kommandozeilen-Werkzeug zum einfachen Zugriff auf Rückwärtssuche:
 
 cm_vars: Aussortieren von abgeleiteten Variablen (nicht in Dump) (??)
 Normalisierung der Rufnummern vor (!) der Anwendung der regulären Ausdrücke
-
-"Callmonitor-Schnittstelle jetzt aktivieren" entfernen; wenn es automatisch nicht geht, warum sollte es dann manuell funktionieren?
 
 ----------------------------------------------------------------------
 Demnächst anschauen
@@ -55,8 +49,6 @@ Evtl. webui_logout einfügen
 ----------------------------------------------------------------------
 Nicht so wichtig, Ideen
 ----------------------------------------------------------------------
-
-ctlmgr_ctl als alternatives Backend für `config`
 
 Die Details der letzten k Anrufe aufzeichnen und verwenden
 * als Vorgabe bei Testanrufen

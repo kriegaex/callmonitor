@@ -1,11 +1,15 @@
 system_query() {
-    local key module path
+    local key module path value
     case $SYSTEM_METHOD in
 	ctl)
 	    for key; do
 		if [ -z "$key" ]; then echo; continue; fi
 		system_split "$key"
-		echo "$(ctlmgr_ctl r "$module" "$path")"
+		value="$(ctlmgr_ctl r "$module" "$path")"
+		case $value in
+		    no-emu|err|er) echo "" ;;
+		    *) echo "$value" ;;
+		esac
 	    done
 	    ;;
 	webui) webui_login && webui_query "$@" ;;

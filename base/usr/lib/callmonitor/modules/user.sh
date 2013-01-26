@@ -1,3 +1,5 @@
+require system
+
 # retrieves a password
 # (passwords containing umlauts are not handled correctly)
 user_getpw() {
@@ -38,9 +40,9 @@ user_supported() {
 
 ## returns 0 if compatability mode is enabled
 user_is_compat() {
-    [ "$(ctlmgr_ctl r boxusers settings/compatibility_mode)" -eq 1 ]
+    [ "$(system_query boxusers:settings/compatibility_mode)" = 1 ]
 }
 
 user_auth_is_skipped() {
-    [ "$(ctlmgr_ctl r boxusers settings/skip_auth_from_homenetwork)" -eq 1 ]
+    [ "$(system_query boxusers:settings/skip_auth_from_homenetwork)" = 1 ]
 }

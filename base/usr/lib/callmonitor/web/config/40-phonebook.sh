@@ -35,8 +35,8 @@ sec_begin '$(lang de:"Standortangaben" en:"Location data")'
 echo "
 <table width='100%'>
     <colgroup>
-	<col width='25%' span='2'>
-	<col width='50%'>
+	<col width='25%'>
+	<col width='75%'>
     </colgroup>
 <tr>
     <td>$(lang de:"Landesvorwahl" en:"Country code")</td>

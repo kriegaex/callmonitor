@@ -14,8 +14,8 @@ require() {
     local lib=$1; shift
     local file=${CALLMONITOR_LIBDIR}/modules/$lib.sh
     if ? "LIB_$lib != 1"; then
-	. "$file" "$@"
 	let "LIB_$lib = 1"
+	. "$file" "$@"
     fi
 }
 

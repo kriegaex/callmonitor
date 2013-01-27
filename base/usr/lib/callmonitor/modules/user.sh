@@ -40,7 +40,7 @@ user_supported() {
 
 ## returns 0 if compatability mode is enabled
 user_is_compat() {
-    [ "$(system_query boxusers:settings/compatibility_mode)" = 1 ]
+    [ "$(system_query boxusers:settings/compatibility_mode)" != 0 ]
 }
 
 user_auth_is_skipped() {

@@ -2,6 +2,7 @@ require cgi
 
 SELF=testcall
 TITLE="$(lang de:"Testanruf" en:"Test call")"
+HELP=/packages/callmonitor/testcall
 
 eval "$(modcgi source:dest:event:event_dir testcall)"
 
@@ -71,6 +72,7 @@ show_testcall_results() {
 }
 
 cgi_main() {
+    cgi --help="$HELP"
     if let "${TESTCALL_SOURCE+1}"; then
 	cgi_begin "$TITLE ..."
 	show_testcall_results

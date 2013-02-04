@@ -21,6 +21,7 @@ TITLE='$(lang
     de:"Konfiguration der Rückwärtssuche"
     en:"Reverse-lookup configuration"
 )'
+HELP=/packages/callmonitor/reverse_search
 PARAMS="area:save"
 for lkz in $LKZ_LIST other; do
     PARAMS="$PARAMS:full_$lkz"
@@ -50,6 +51,7 @@ done < $COUNTRIES
 
 select "$AREA_PROVIDER" :null
 
+cgi --help="$HELP"
 cgi_begin "$TITLE"
 
 echo "<form action='$SELF' method='post'>"

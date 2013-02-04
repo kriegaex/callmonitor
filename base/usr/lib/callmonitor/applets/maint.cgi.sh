@@ -4,6 +4,7 @@ require if_jfritz_cgi
 
 SELF=maint
 TITLE='$(lang de:"Callmonitor-Wartung" en:"Callmonitor maintenance")'
+HELP=/packages/callmonitor/maintenance
 
 cmd_button() {
     local cmd=$1 label=$2 method=post
@@ -21,6 +22,8 @@ cmd_button() {
 }
 
 eval "$(modcgi cmd maint)"
+
+cgi --help="$HELP"
 
 if ! empty "$MAINT_CMD"; then
     cgi_begin "$TITLE ..."

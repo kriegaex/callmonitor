@@ -19,3 +19,4 @@ DESCRIPTION="$(lang
 	(e.g., <code>in:request ^(08|15) ..4711$ dboxpopup 192.168.3.4</code>)"
 )<br>
 <a target='_blank' href='http://trac.freetz.org/wiki/packages/callmonitor'>$(lang de:"Hilfe im Wiki" en:"Help (wiki)")</a>"
+HELP=/packages/callmonitor/listeners

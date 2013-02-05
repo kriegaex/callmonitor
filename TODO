@@ -10,20 +10,6 @@ Neue Login-Methode; alte Login-Methoden
 Wichtig
 ----------------------------------------------------------------------
 
-http://www.ip-phone-forum.de/showthread.php?t=191723&page=30
-
-Ich wollte gerade reporten das die Rückwärtssuche über den test im WebFrontend nicht funktioniert bis ich festgestellt habe das die Ergebnisse mit schwarzer Schrift auf schwarzen Grund dargestellt werden. Ich nutze das Style Sheet "green status-bars" und skin "newfreetz".
-Mit skin "legacy" und "gray status-bars" sieht es aber deutlich besser aus
-
-Ich hätte noch einen Verbesserungsvorschlag: Möglichkeit der Übernahme ins Telefonbuch nach erfolgreicher testweise Rückwärtssuche (Test der Rückwärtssuche). Ich nutze den Callmonitor jetzt noch nicht sooo lang, aber habe bereits mehrere von der FritzBox bisher nicht erkannte Nummer im Log nachschlagen können und hätte mich dann über einen Button für so eine automatisierte Möglichkeit der Datenübernahme gefreut.
-
-reverse: adaffix + dasoertliche
-
-Layout-Fehler im WebIF: http://freetz.org/attachment/ticket/1955/webif-fehler.jpg
-
-
-ctlmgr_ctl-Fehlerausgaben: http://www.wehavemorefun.de/fritzbox/User-Interface-Module 
-
 Fehlermeldung beim Login
 
 Kommandozeilen-Werkzeug zum einfachen Zugriff auf Rückwärtssuche:
@@ -38,6 +24,15 @@ Normalisierung der Rufnummern vor (!) der Anwendung der regulären Ausdrücke
 ----------------------------------------------------------------------
 Demnächst anschauen
 ----------------------------------------------------------------------
+
+ctlmgr_ctl-Fehlerausgaben: http://www.wehavemorefun.de/fritzbox/User-Interface-Module 
+
+http://www.ip-phone-forum.de/showthread.php?t=191723&page=30
+
+Ich wollte gerade reporten das die Rückwärtssuche über den test im WebFrontend nicht funktioniert bis ich festgestellt habe das die Ergebnisse mit schwarzer Schrift auf schwarzen Grund dargestellt werden. Ich nutze das Style Sheet "green status-bars" und skin "newfreetz".
+Mit skin "legacy" und "gray status-bars" sieht es aber deutlich besser aus
+
+Ich hätte noch einen Verbesserungsvorschlag: Möglichkeit der Übernahme ins Telefonbuch nach erfolgreicher testweise Rückwärtssuche (Test der Rückwärtssuche). Ich nutze den Callmonitor jetzt noch nicht sooo lang, aber habe bereits mehrere von der FritzBox bisher nicht erkannte Nummer im Log nachschlagen können und hätte mich dann über einen Button für so eine automatisierte Möglichkeit der Datenübernahme gefreut.
 
 Prowl API: http://www.prowlapp.com/api.php
 

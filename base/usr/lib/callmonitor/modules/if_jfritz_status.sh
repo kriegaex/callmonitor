@@ -1,7 +1,7 @@
 require dial
 
 _j_is_up() {
-    busybox nc "$CALLMONITOR_MON_HOST" "$CALLMONITOR_MON_PORT" < /dev/null > /dev/null 2>&1
+    nc_scan "$CALLMONITOR_MON_HOST" "$CALLMONITOR_MON_PORT"
 }
 
 _j_dial() {

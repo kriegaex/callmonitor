@@ -952,3 +952,12 @@
 2013-02-03:
 
 	callmonitor-1.20.6 (beta)
+
+2013-02-04:
+
+	* config: Hilfe-Links repariert (Danke, Whoopie!)
+
+2013-02-05:
+
+	* if_jfritz_status: nc mit NC_110_COMPAT hing, mit ihm das
+	Callmonitor-Webinterface

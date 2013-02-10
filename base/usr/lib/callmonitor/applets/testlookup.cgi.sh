@@ -5,6 +5,7 @@ require file
 
 SELF=test
 TITLE="$(lang de:"Test der Rückwärtssuche" en:"Check reverse look-up")"
+HELP=/packages/callmonitor/reverse_search
 
 eval "$(modcgi number test)"
 
@@ -84,6 +85,7 @@ show_result() {
 }
 
 cgi_main() {
+    cgi --help="$HELP"
     if let "${TEST_NUMBER+1}"; then
 	cgi_begin "$TITLE ..."
 	show_test_results "$TEST_NUMBER"

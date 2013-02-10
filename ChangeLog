@@ -961,3 +961,9 @@
 
 	* if_jfritz_status: nc mit NC_110_COMPAT hing, mit ihm das
 	Callmonitor-Webinterface
+
+2013-02-10:
+
+	* 60-credentials: Status-Anzeige und ein paar erklärende Worte
+
+	callmonitor-1.20.7 (beta)

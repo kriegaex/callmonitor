@@ -201,24 +201,24 @@ webui_logout() {
 
 webui_post_form() (
     cd "$WEBCM_DIR"
-    local post_data="${WEBUI_SID:+sid=$WEBUI_SID&}$1" REMOTE_ADDR=127.0.0.1
+    local post_data="${WEBUI_SID:+sid=$WEBUI_SID&}$1" REMOTE_ADDR=${CALLMONITOR_REMOTE_ADDR:-127.0.0.1}
     webui_post_form_generic "$WEBCM" "$post_data"
 )
 webui_get() (
     cd "$WEBCM_DIR"
-    REQUEST_METHOD=GET REMOTE_ADDR=127.0.0.1 \
+    REQUEST_METHOD=GET REMOTE_ADDR=${CALLMONITOR_REMOTE_ADDR:-127.0.0.1} \
     WEBDIR_PATH=/usr/www/html \
     QUERY_STRING="${WEBUI_SID:+sid=$WEBUI_SID&}$1" "$WEBCM"
 )
 
 webui_post_lua() (
     cd "$LUACGI_DIR"
-    local post_data="${WEBUI_SID:+sid=$WEBUI_SID&}$1" REMOTE_ADDR=127.0.0.1
+    local post_data="${WEBUI_SID:+sid=$WEBUI_SID&}$1" REMOTE_ADDR=${CALLMONITOR_REMOTE_ADDR:-127.0.0.1}
     webui_post_form_generic "$LUACGI" "$post_data"
 )
 webui_get_lua() {
     cd "$LUACGI_DIR"
-    REQUEST_METHOD=GET REMOTE_ADDR=127.0.0.1 \
+    REQUEST_METHOD=GET REMOTE_ADDR=${CALLMONITOR_REMOTE_ADDR:-127.0.0.1} \
     WEBDIR_PATH=/usr/www/html \
     QUERY_STRING="${WEBUI_SID:+sid=$WEBUI_SID&}$1" "$LUACGI"
 }

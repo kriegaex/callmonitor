@@ -967,3 +967,10 @@
 	* 60-credentials: Status-Anzeige und ein paar erklärende Worte
 
 	callmonitor-1.20.7 (beta)
+
+2013-02-23:
+
+	* webui: Die vom Callmonitor benutzte IP-Adresse ist über
+	CALLMONITOR_REMOTE_ADDR einstellbar.
+
+	callmonitor-1.20.8 (beta)

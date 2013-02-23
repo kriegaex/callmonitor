@@ -5,10 +5,15 @@ Testen
 Neue Login-Methode; alte Login-Methoden
  => es gibt Probleme bei bolle + hermann:
  Evtl. ein Problem mit der IP-Adresse/Netzwerkkonfiguration?
+ => weitere Probleme bei hookdr (auch 7390 mit 5.50, Einzelbenutzer)
+ => make & vice_pres: Vermutlich hilft eine andere REMOTE_ADDR (im "Heimnetz"
+ der Box, aber ungleich Box selbst)
 
 ----------------------------------------------------------------------
 Wichtig
 ----------------------------------------------------------------------
+
+Diagnoseausgabe für webui
 
 Fehlermeldung beim Login
 
@@ -24,8 +29,6 @@ Normalisierung der Rufnummern vor (!) der Anwendung der regulären Ausdrücke
 ----------------------------------------------------------------------
 Demnächst anschauen
 ----------------------------------------------------------------------
-
-Anzeige auf der Konfig-Seite, welcher Login-Modus Verwendung findet
 
 ctlmgr_ctl-Fehlerausgaben: http://www.wehavemorefun.de/fritzbox/User-Interface-Module 
 

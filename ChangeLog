@@ -974,3 +974,10 @@
 	CALLMONITOR_REMOTE_ADDR einstellbar.
 
 	callmonitor-1.20.8 (beta)
+
+	* webui: Neue Voreinstellung einer (simulierten) IP-Adresse aus dem
+	"Heimnetz" könnte die Login-Probleme auf der 7390 lösen.
+
+2013-02-24:
+
+	callmonitor-1.20.9 (beta)

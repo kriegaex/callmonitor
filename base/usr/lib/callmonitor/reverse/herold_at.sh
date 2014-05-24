@@ -15,18 +15,13 @@ _reverse_herold_at_extract() {
         '"$REVERSE_NA"'
     }
     /myMap\.addMarker/ {
-        s/.*new Map([^)]\+);myMap\.addMarker/\n###/
+        s/.*new Map([^)]\+);myMap\.addMarker//
         s/myMap\.addMarker.*//
-        s/.*###.*.title.:.\(.*\).,.tel.:.*.,.addr.:.\(.*\).,.icon.*/<rev:name>\1<\/rev:name>\2/
-        h
-    }
-    $ {
-        g
+        s/^.*.title.:.\(.*\).,.tel.:.*.,.addr.:.\(.*\).,.icon.*/<rev:name>\1<\/rev:name> \2/
         s#<br/>#, #g
         '"$REVERSE_DECODE_ENTITIES_UTF8"'
         '"$REVERSE_SANITIZE"'
         '"$REVERSE_OK"'
-        p
     }
     ' | utf8_latin1
 }

@@ -35,6 +35,5 @@ _reverse_telefonbuch_extract() {
         '"$REVERSE_DECODE_ENTITIES"'
         '"$REVERSE_SANITIZE"'
         '"$REVERSE_OK"'
-        }
    '
 }

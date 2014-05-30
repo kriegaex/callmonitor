@@ -1,3 +1,4 @@
+require system
 require url
 require user
 
@@ -71,6 +72,18 @@ webui_login_sid() {
 ## Similar handling of login_sid.lua (TODO: Merge?)
 webui_login_sid_lua() {
     [ -e "/var/html/login_sid.lua" ] || return 1
+
+    ## Check for "skip_auth_from_homenetwork"-option, an option available since
+    ## AVM completely switched to the lua-based web server.
+    ## A simple check for "/var/html/login_sid.lua" is not enough. Some firmware
+    ## versions "in-between" like e.g. 7170.04.88, *.05.2x and even some *.05.5x
+    ## contain both "/var/html/login_sid.lua" and "/var/html/html/login_sid.xml".
+    ## The logic below is shamelessly stolen from LCR-Updater by Harald Becker.
+    ## A possible alternative would be to check /etc/.version and fallback to
+    ## the non-lua-based method if the value it contains is smaller than 05.50.
+    [ "$SYSTEM_METHOD" = "webui" ] && return 1
+    [ -z "$(system_query boxusers:settings/skip_auth_from_homenetwork)" ] && return 1
+
     local info=$(webui_post_lua "${1:+$1&}script=/login_sid.lua")
     ## echo "$info" >&2
     case $info in

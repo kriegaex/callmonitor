@@ -981,3 +981,9 @@
 2013-02-24:
 
 	callmonitor-1.20.9 (beta)
+
+2014-10-12:
+
+	* mail/message: Neue Aktion mailmessage_html, welche die Mail
+	(zusätzlich zum Text) als HTML verschickt. Dabei wird die entfernte
+	Rufnummer als Link dargestellt, welcher auf Smartphones klickbar ist.

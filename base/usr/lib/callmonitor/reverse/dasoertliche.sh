@@ -9,29 +9,27 @@ _reverse_dasoertliche_request() {
 }
 _reverse_dasoertliche_extract() {
    sed -n -e '
-	: main
         \#Kein Teilnehmer gefunden:\|keine Treffer finden# {
-	    '"$REVERSE_NA"'
-	}
-	\#<div[[:space:]]\+class="adresse\([[:space:]][^"]*\)\?"[[:space:]]*>#,\#<div[[:space:]]class="\(zusatz\|topx\)"# {
-	    \#<div \+class="counter"# d
-	    \#<script #,\#</script># d
-	    s#^.*<a[[:space:]][^>]*class="preview[^"]*"[^>]*>\(.*\)$#\1#
-	    t holdname
-	    \#<div[[:space:]]class="\(zusatz\|topx\)"# b cleanup
-	    H
+            '"$REVERSE_NA"'
+        }
+        \#<div[[:space:]]\+class="hit[^>]\+id="entry_1#,\#</address[[:space:]]*># {
+            \#<a[[:space:]]#,\#</a[[:space:]]*># {
+                H
+                \#</a># {
+                    g
+                    s#.*#<rev:name>&</rev:name>#
+                    h
+                }
+            }
+            \#<address#,\#</address[[:space:]]*># {
+                H
+                \#</address[[:space:]]*># b found
+            }
         }
         b
-
-        : holdname
-	s#.*#<rev:name>&</rev:name>#
-        h
-	b
-
-	: cleanup
-	g
-	s/\(<br\/>\)\?\n\|<br\/>/, /g
-	'"$REVERSE_SANITIZE"'
-	'"$REVERSE_OK"'
+        :found
+        g
+        '"$REVERSE_SANITIZE"'
+        '"$REVERSE_OK"'
     '
 }
